@@ -2,6 +2,7 @@
 
 import Card from "@/components/ui/Card";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
+import VarnaScoreHoverCard, { type VarnaScoreData } from "@/components/ui/VarnaScoreHoverCard";
 import { LucideIcon } from "lucide-react";
 
 interface KPICardProps {
@@ -15,6 +16,7 @@ interface KPICardProps {
   accentColor?: "none" | "deep-clay" | "sage-mineral" | "slate-mist" | "midnight-blue";
   delay?: number;
   subtitle?: string;
+  varnaScoreData?: VarnaScoreData;
 }
 
 export default function KPICard({
@@ -27,6 +29,7 @@ export default function KPICard({
   accentColor = "none",
   delay = 0,
   subtitle,
+  varnaScoreData,
 }: KPICardProps) {
   return (
     <Card delay={delay} accentColor={accentColor} className="group" hoverEffect={true}>
@@ -35,15 +38,29 @@ export default function KPICard({
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/60 mb-2">
             {title}
           </p>
-          <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-warm-stone">
-            <AnimatedCounter
-              value={value}
-              prefix={prefix}
-              suffix={suffix}
-              decimals={decimals}
-              delay={delay + 0.15}
-            />
-          </div>
+          {varnaScoreData ? (
+            <VarnaScoreHoverCard {...varnaScoreData}>
+              <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-warm-stone cursor-help">
+                <AnimatedCounter
+                  value={value}
+                  prefix={prefix}
+                  suffix={suffix}
+                  decimals={decimals}
+                  delay={delay + 0.15}
+                />
+              </div>
+            </VarnaScoreHoverCard>
+          ) : (
+            <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-warm-stone">
+              <AnimatedCounter
+                value={value}
+                prefix={prefix}
+                suffix={suffix}
+                decimals={decimals}
+                delay={delay + 0.15}
+              />
+            </div>
+          )}
           {subtitle && (
             <p className="text-[11px] text-slate-mist/95 dark:text-warm-stone/50 mt-2 font-light">
               {subtitle}

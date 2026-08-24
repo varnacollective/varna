@@ -10,6 +10,7 @@ import {
   Award,
   Clock,
 } from "lucide-react";
+import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
@@ -178,6 +179,14 @@ function OverviewSection({
           subtitle={
             summary.avgVarnaScore >= 80 ? "Premium sustainability rating" : "Approved sustainability rating"
           }
+          varnaScoreData={{
+            score: Math.round(summary.avgVarnaScore),
+            eScore: Math.round(summary.avgEScore),
+            sScore: Math.round(summary.avgSScore),
+            gScore: Math.round(summary.avgGScore),
+            cScore: Math.round(summary.avgCScore),
+            supplierName: "Portfolio Average",
+          }}
         />
         <KPICard
           title="Avg Lead Time"
@@ -268,10 +277,19 @@ function SuppliersSection({ data }: { data: DashboardData }) {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 my-4">
+              <div className="grid grid-cols-2 gap-4 my-4">
               <div>
                 <p className="text-[9px] uppercase text-slate-mist dark:text-warm-stone/50 tracking-widest font-light">Varna Score</p>
-                <p className="text-xl font-serif text-deep-clay dark:text-warm-stone font-light mt-0.5">{supplier.varnaScore}</p>
+                <VarnaScoreHoverCard
+                  score={supplier.varnaScore}
+                  eScore={supplier.eScore}
+                  sScore={supplier.sScore}
+                  gScore={supplier.gScore}
+                  cScore={supplier.cScore}
+                  supplierName={supplier.enterpriseName}
+                >
+                  <p className="text-xl font-serif text-deep-clay dark:text-warm-stone font-light mt-0.5 cursor-help">{supplier.varnaScore}</p>
+                </VarnaScoreHoverCard>
               </div>
               <div>
                 <p className="text-[9px] uppercase text-slate-mist dark:text-warm-stone/50 tracking-widest font-light">Total Spend</p>

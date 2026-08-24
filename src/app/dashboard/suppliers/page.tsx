@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import Sidebar from "@/components/layout/Sidebar";
+import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
+import DataTierBadge from "@/components/ui/DataTierBadge";
 import {
   Calendar,
   Download,
@@ -141,7 +143,7 @@ export default function SuppliersDashboard() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/50 mb-2">
               Total Spend
             </p>
-            <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-white">
+            <div className="text-3xl font-serif font-light tracking-tighter text-carbon-ink dark:text-white">
               $40.0K
             </div>
             <p className="text-[10px] text-slate-mist/80 dark:text-warm-stone/40 mt-2 font-light">
@@ -157,9 +159,18 @@ export default function SuppliersDashboard() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/50 mb-2">
               Avg. Varna Score
             </p>
-            <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-white">
-              46<span className="text-lg font-light text-slate-mist">/100</span>
-            </div>
+            <VarnaScoreHoverCard
+              score={46}
+              eScore={37}
+              sScore={51}
+              gScore={48}
+              cScore={51}
+              supplierName="Portfolio Average"
+            >
+              <div className="text-3xl font-serif font-light tracking-tighter text-carbon-ink dark:text-white cursor-help">
+                46<span className="text-lg font-light text-slate-mist">/100</span>
+              </div>
+            </VarnaScoreHoverCard>
             <p className="text-[10px] text-slate-mist/80 dark:text-warm-stone/40 mt-2 font-light">
               Weighted average composite profile rating
             </p>
@@ -258,46 +269,58 @@ export default function SuppliersDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* Supplier Card 1: Bare Necessities */}
-            <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between transition-transform duration-300 ease-out hover:scale-[1.01]">
               
               {/* Header block */}
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
-                      Bare Necessities
-                    </h4>
+                    <div className="flex items-center gap-2.5 mb-0.5">
+                      <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
+                        Bare Necessities
+                      </h4>
+                      <DataTierBadge tier="verified" />
+                    </div>
                     <p className="text-xs text-slate-mist dark:text-warm-stone/50 font-light mt-0.5">
                       Zero Waste Solutions Pvt. Ltd. &bull; Bengaluru, Karnataka
                     </p>
                   </div>
                   {/* SVG score ring (61%) */}
-                  <div className="relative w-14 h-14 flex-shrink-0">
-                    <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="15.915"
-                        fill="none"
-                        className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
-                        strokeWidth="2.5"
-                      />
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="15.915"
-                        fill="none"
-                        stroke="#738678" // sage-mineral representing high score
-                        strokeWidth="3.2"
-                        strokeDasharray="61, 100"
-                        strokeLinecap="square"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-[11px] font-serif font-semibold text-carbon-ink dark:text-white">61%</span>
-                      <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
+                  <VarnaScoreHoverCard
+                    score={61}
+                    eScore={65}
+                    sScore={72}
+                    gScore={80}
+                    cScore={90}
+                    supplierName="Bare Necessities"
+                  >
+                    <div className="relative w-14 h-14 flex-shrink-0 cursor-help">
+                      <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="15.915"
+                          fill="none"
+                          className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
+                          strokeWidth="2.5"
+                        />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="15.915"
+                          fill="none"
+                          stroke="#738678"
+                          strokeWidth="3.2"
+                          strokeDasharray="61, 100"
+                          strokeLinecap="square"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-[11px] font-serif font-semibold text-carbon-ink dark:text-white">61%</span>
+                        <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
+                      </div>
                     </div>
-                  </div>
+                  </VarnaScoreHoverCard>
                 </div>
 
                 {/* Sourced line */}
@@ -373,46 +396,58 @@ export default function SuppliersDashboard() {
             </div>
 
             {/* Supplier Card 2: Kheoni */}
-            <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between transition-transform duration-300 ease-out hover:scale-[1.01]">
               
               {/* Header block */}
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
-                      Kheoni
-                    </h4>
+                    <div className="flex items-center gap-2.5 mb-0.5">
+                      <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
+                        Kheoni
+                      </h4>
+                      <DataTierBadge tier="lapsed" />
+                    </div>
                     <p className="text-xs text-slate-mist dark:text-warm-stone/50 font-light mt-0.5">
                       Heritage Organic Foods LLP &bull; Indore, Madhya Pradesh
                     </p>
                   </div>
                   {/* SVG score ring (11%) */}
-                  <div className="relative w-14 h-14 flex-shrink-0">
-                    <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="15.915"
-                        fill="none"
-                        className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
-                        strokeWidth="2.5"
-                      />
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="15.915"
-                        fill="none"
-                        stroke="#7A3F1E" // deep-clay representing low score
-                        strokeWidth="3.2"
-                        strokeDasharray="11, 100"
-                        strokeLinecap="square"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-[11px] font-serif font-semibold text-carbon-ink dark:text-white">11%</span>
-                      <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
+                  <VarnaScoreHoverCard
+                    score={11}
+                    eScore={8}
+                    sScore={15}
+                    gScore={15}
+                    cScore={12}
+                    supplierName="Kheoni"
+                  >
+                    <div className="relative w-14 h-14 flex-shrink-0 cursor-help">
+                      <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="15.915"
+                          fill="none"
+                          className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
+                          strokeWidth="2.5"
+                        />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="15.915"
+                          fill="none"
+                          stroke="#7A3F1E"
+                          strokeWidth="3.2"
+                          strokeDasharray="11, 100"
+                          strokeLinecap="square"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-[11px] font-serif font-semibold text-carbon-ink dark:text-white">11%</span>
+                        <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
+                      </div>
                     </div>
-                  </div>
+                  </VarnaScoreHoverCard>
                 </div>
 
                 {/* Sourced line */}
