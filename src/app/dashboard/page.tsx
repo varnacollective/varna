@@ -8,7 +8,6 @@ import {
   Wallet,
   ShoppingBag,
   Award,
-  Clock,
 } from "lucide-react";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 
@@ -151,7 +150,7 @@ function OverviewSection({
   return (
     <div className="space-y-8">
       {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <KPICard
           title="Total Spend"
           value={summary.totalSpend}
@@ -187,15 +186,6 @@ function OverviewSection({
             cScore: Math.round(summary.avgCScore),
             supplierName: "Portfolio Average",
           }}
-        />
-        <KPICard
-          title="Avg Lead Time"
-          value={summary.avgLeadTimeDays}
-          suffix=" days"
-          icon={Clock}
-          accentColor="midnight-blue"
-          delay={0.2}
-          subtitle="Mean order cycle duration"
         />
       </div>
 

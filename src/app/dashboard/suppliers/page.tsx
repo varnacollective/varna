@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import Sidebar from "@/components/layout/Sidebar";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
+import ConfidenceChecklistHoverCard from "@/components/ui/ConfidenceChecklistHoverCard";
 import DataTierBadge from "@/components/ui/DataTierBadge";
+import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 import {
   Calendar,
   Download,
@@ -286,13 +288,12 @@ export default function SuppliersDashboard() {
                     </p>
                   </div>
                   {/* SVG score ring (61%) */}
-                  <VarnaScoreHoverCard
-                    score={61}
-                    eScore={65}
-                    sScore={72}
-                    gScore={80}
-                    cScore={90}
+                  <ConfidenceChecklistHoverCard
                     supplierName="Bare Necessities"
+                    score={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].score}
+                    totalConfirmed={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].totalConfirmed}
+                    status={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].status}
+                    checklist={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].checklist}
                   >
                     <div className="relative w-14 h-14 flex-shrink-0 cursor-help">
                       <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
@@ -320,7 +321,7 @@ export default function SuppliersDashboard() {
                         <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
                       </div>
                     </div>
-                  </VarnaScoreHoverCard>
+                  </ConfidenceChecklistHoverCard>
                 </div>
 
                 {/* Sourced line */}
@@ -413,13 +414,12 @@ export default function SuppliersDashboard() {
                     </p>
                   </div>
                   {/* SVG score ring (11%) */}
-                  <VarnaScoreHoverCard
-                    score={11}
-                    eScore={8}
-                    sScore={15}
-                    gScore={15}
-                    cScore={12}
+                  <ConfidenceChecklistHoverCard
                     supplierName="Kheoni"
+                    score={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].score}
+                    totalConfirmed={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].totalConfirmed}
+                    status={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].status}
+                    checklist={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].checklist}
                   >
                     <div className="relative w-14 h-14 flex-shrink-0 cursor-help">
                       <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
@@ -447,7 +447,7 @@ export default function SuppliersDashboard() {
                         <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
                       </div>
                     </div>
-                  </VarnaScoreHoverCard>
+                  </ConfidenceChecklistHoverCard>
                 </div>
 
                 {/* Sourced line */}

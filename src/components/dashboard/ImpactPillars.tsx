@@ -2,6 +2,12 @@
 
 import Card from "@/components/ui/Card";
 import ProgressRing from "@/components/ui/ProgressRing";
+import PillarTooltip from "@/components/ui/PillarTooltip";
+import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
+import {
+  PILLAR_DEFINITIONS,
+  PILLAR_CRITERIA_BREAKDOWN,
+} from "@/lib/mock-data";
 
 interface ImpactPillarsProps {
   eScore: number;
@@ -40,17 +46,39 @@ export default function ImpactPillars({
         ESG Performance Pillars
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {PILLAR_CONFIG.map((pillar, i) => (
-          <ProgressRing
-            key={pillar.key}
-            value={scores[i]}
-            color={getPillarColor(scores[i])}
-            label={pillar.label}
-            delay={delay + 0.08 * i}
-            size={110}
-            strokeWidth={6}
-          />
-        ))}
+        {PILLAR_CONFIG.map((pillar, i) => {
+          const pillarColor = getPillarColor(scores[i]);
+          const breakdown = PILLAR_CRITERIA_BREAKDOWN[pillar.label];
+          const definition = PILLAR_DEFINITIONS[pillar.label];
+
+          return (
+            <div key={pillar.key} className="flex flex-col items-center gap-3">
+              {/* Score Ring — hover shows sub-pillar breakdown */}
+              <PillarBreakdownHoverCard
+                pillarLabel={pillar.label}
+                pillarScore={breakdown?.pillarScore ?? Math.round(scores[i])}
+                criteria={breakdown?.criteria ?? []}
+                color={pillarColor}
+              >
+                <ProgressRing
+                  value={scores[i]}
+                  color={pillarColor}
+                  label=""
+                  delay={delay + 0.08 * i}
+                  size={110}
+                  strokeWidth={6}
+                />
+              </PillarBreakdownHoverCard>
+
+              {/* Label — hover shows educational tooltip */}
+              <PillarTooltip content={definition ?? pillar.label}>
+                <span className="text-[10px] font-semibold text-slate-mist dark:text-warm-stone/60 uppercase tracking-[0.2em] text-center cursor-help hover:text-carbon-ink dark:hover:text-warm-stone transition-colors duration-200">
+                  {pillar.label}
+                </span>
+              </PillarTooltip>
+            </div>
+          );
+        })}
       </div>
     </Card>
   );

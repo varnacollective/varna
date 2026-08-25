@@ -295,3 +295,116 @@ export function getSupplierTierDistribution(
     color: tierColors[tier] || "#6B7280",
   }));
 }
+
+// ──────────────── Pillar Definitions (Tooltip Text) ────────────────
+
+export const PILLAR_DEFINITIONS: Record<string, string> = {
+  Environmental:
+    "Evaluates the climate, material, water, pollution, and packaging impact of the supplier's product and production.",
+  Social:
+    "Evaluates the quality and depth of employment, gender inclusion, working conditions, and community livelihood impact.",
+  Governance:
+    "Evaluates legal standing, regulatory compliance, ethical operation, and sourcing integrity.",
+  Cultural:
+    "Evaluates India's craft and heritage production systems, skill rarity, and climate-vulnerable community context.",
+};
+
+// ──────────────── Pillar Criteria Breakdown ────────────────
+
+export interface PillarCriterion {
+  name: string;
+  score: number;
+  weight: string;
+}
+
+export interface PillarBreakdown {
+  pillarScore: number;
+  criteria: PillarCriterion[];
+}
+
+export const PILLAR_CRITERIA_BREAKDOWN: Record<string, PillarBreakdown> = {
+  Environmental: {
+    pillarScore: 79,
+    criteria: [
+      { name: "Carbon Intensity", score: 85, weight: "30%" },
+      { name: "Material Sustainability", score: 80, weight: "25%" },
+      { name: "Circularity & End-of-Life", score: 75, weight: "20%" },
+      { name: "Water Usage", score: 70, weight: "10%" },
+      { name: "Pollution & Hazardous Content", score: 80, weight: "10%" },
+      { name: "Packaging Impact", score: 85, weight: "5%" },
+    ],
+  },
+  Social: {
+    pillarScore: 85,
+    criteria: [
+      { name: "Employment & Livelihood Impact", score: 90, weight: "30%" },
+      { name: "Gender Inclusion", score: 85, weight: "25%" },
+      { name: "Working Conditions & Fair Wages", score: 80, weight: "25%" },
+      { name: "Health, Safety & Wellbeing", score: 85, weight: "20%" },
+    ],
+  },
+  Governance: {
+    pillarScore: 80,
+    criteria: [
+      { name: "Legal & Regulatory Compliance", score: 85, weight: "40%" },
+      { name: "Business Ethics & Honest Dealing", score: 80, weight: "35%" },
+      { name: "Responsible Sourcing Basics", score: 75, weight: "25%" },
+    ],
+  },
+  Cultural: {
+    pillarScore: 86,
+    criteria: [
+      { name: "Craft Authenticity & Process Integrity", score: 90, weight: "40%" },
+      { name: "Skill Rarity & GI Status", score: 85, weight: "35%" },
+      { name: "Climate-Vulnerable Community Context", score: 80, weight: "25%" },
+    ],
+  },
+};
+
+// ──────────────── Supplier Confidence Checklists ────────────────
+
+export type ConfidenceStatus = "verified" | "partial" | "lapsed" | "missing";
+
+export interface ConfidenceChecklistItem {
+  item: string;
+  status: ConfidenceStatus;
+  score: number;
+}
+
+export interface SupplierConfidenceData {
+  score: number;
+  totalConfirmed: string;
+  status: string;
+  checklist: ConfidenceChecklistItem[];
+}
+
+export const SUPPLIER_CONFIDENCE_CHECKLISTS: Record<string, SupplierConfidenceData> = {
+  "Bare Necessities": {
+    score: 61,
+    totalConfirmed: "11 of 18 tracked data points confirmed",
+    status: "Verified",
+    checklist: [
+      { item: "Incorporation certificate", status: "verified", score: 1.0 },
+      { item: "Tax registration (GSTIN)", status: "verified", score: 1.0 },
+      { item: "MSME / Udyam recognition", status: "verified", score: 1.0 },
+      { item: "Signed, dated Code of Conduct", status: "partial", score: 0.25 },
+      { item: "Packaging disclosed (5L refill)", status: "verified", score: 1.0 },
+      { item: "Environmental mgmt. (ISO 14001)", status: "lapsed", score: 0.5 },
+      { item: "PETA Cruelty-Free / Vegan License", status: "verified", score: 1.0 },
+      { item: "Full composition % disclosed", status: "missing", score: 0.0 },
+    ],
+  },
+  Kheoni: {
+    score: 11,
+    totalConfirmed: "2 of 18 tracked data points confirmed",
+    status: "Early Stage",
+    checklist: [
+      { item: "Incorporation certificate", status: "verified", score: 1.0 },
+      { item: "Tax registration (GSTIN)", status: "verified", score: 1.0 },
+      { item: "Full formulation & weights disclosed", status: "verified", score: 1.0 },
+      { item: "MSME / Udyam recognition", status: "missing", score: 0.0 },
+      { item: "Certifications on file", status: "missing", score: 0.0 },
+      { item: "Environmental management systems", status: "missing", score: 0.0 },
+    ],
+  },
+};
