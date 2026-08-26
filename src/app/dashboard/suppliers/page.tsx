@@ -46,7 +46,9 @@ export default function SuppliersDashboard() {
   }, []);
 
   const handleSectionChange = (section: string) => {
-    if (section !== "suppliers") {
+    if (section === "algorithm") {
+      router.push("/algorithm");
+    } else if (section !== "suppliers") {
       router.push(`/dashboard?section=${section}`);
     }
   };

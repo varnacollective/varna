@@ -58,6 +58,8 @@ export default function DashboardPage() {
   const handleSectionChange = (section: string) => {
     if (section === "suppliers") {
       router.push("/dashboard/suppliers");
+    } else if (section === "algorithm") {
+      router.push("/algorithm");
     } else {
       setActiveSection(section);
       window.history.pushState({}, "", `/dashboard?section=${section}`);

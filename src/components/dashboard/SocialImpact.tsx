@@ -28,7 +28,7 @@ export default function SocialImpact({
           Social & Cultural Impact
         </h3>
         {/* Subtle cursive accent */}
-        <span className="font-accent text-lg text-deep-clay dark:text-warm-stone/70 -rotate-2 select-none">
+        <span className="font-accent text-lg text-deep-clay dark:text-warm-stone/70 select-none">
           artisan empowered community
         </span>
       </div>

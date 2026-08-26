@@ -7,6 +7,7 @@ import {
   Store,
   ShoppingBag,
   Leaf,
+  Network,
   LogOut,
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   { id: "suppliers", label: "Suppliers", icon: Store },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "impact", label: "Impact", icon: Leaf },
+  { id: "algorithm", label: "Algorithm", icon: Network },
 ];
 
 interface SidebarProps {

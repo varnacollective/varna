@@ -30,7 +30,7 @@ export default function CarbonImpact({
           Carbon Footprint Impact
         </h3>
         {/* Subtle cursive accent */}
-        <span className="font-accent text-lg text-deep-clay dark:text-warm-stone/70 -rotate-2 select-none">
+        <span className="font-accent text-lg text-deep-clay dark:text-warm-stone/70 select-none">
           climate positive target
         </span>
       </div>
