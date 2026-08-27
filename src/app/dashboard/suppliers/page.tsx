@@ -3,10 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
 import Sidebar from "@/components/layout/Sidebar";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import ConfidenceChecklistHoverCard from "@/components/ui/ConfidenceChecklistHoverCard";
 import DataTierBadge from "@/components/ui/DataTierBadge";
+import type { DataTier } from "@/components/ui/DataTierBadge";
+import type { SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 import {
   Calendar,
@@ -36,13 +39,282 @@ function formatSpend(val: number): string {
   return `$${(val / 1000).toFixed(1)}K`;
 }
 
+// ─────────────── Supplier Profile Card ───────────────
+
+interface SupplierProfileCardProps {
+  name: string;
+  legalName: string;
+  location: string;
+  dataTier: DataTier;
+  varnaScore: number;
+  eScore: number;
+  sScore: number;
+  gScore: number;
+  cScore: number;
+  skuCount: number;
+  totalUnits: number;
+  confidenceScore: number;
+  confidenceColor: string;
+  confidenceDasharray: string;
+  tags: { icon: typeof ShieldCheck; label: string; colorClass: string }[];
+  categoryBars: { label: string; val: number }[];
+  barColorClass: string;
+  quote: string;
+  sdgs: { val: string; color: string; label: string }[];
+  liveConfidenceData?: Record<string, SupplierConfidenceData>;
+}
+
+function SupplierProfileCard({
+  name,
+  legalName,
+  location,
+  dataTier,
+  varnaScore,
+  eScore,
+  sScore,
+  gScore,
+  cScore,
+  skuCount,
+  totalUnits,
+  confidenceScore,
+  confidenceColor,
+  confidenceDasharray,
+  tags,
+  categoryBars,
+  barColorClass,
+  quote,
+  sdgs,
+  liveConfidenceData,
+}: SupplierProfileCardProps) {
+  // Use live data from Google Sheets if available, otherwise fall back to mock
+  const confidenceData = (liveConfidenceData && Object.keys(liveConfidenceData).length > 0)
+    ? liveConfidenceData[name]
+    : SUPPLIER_CONFIDENCE_CHECKLISTS[name];
+
+  return (
+    <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between transition-transform duration-300 ease-out hover:scale-[1.01]">
+      
+      {/* Header block */}
+      <div>
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <div className="flex items-center gap-2.5 mb-0.5">
+              <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
+                {name}
+              </h4>
+              <DataTierBadge tier={dataTier} />
+            </div>
+            <p className="text-xs text-slate-mist dark:text-warm-stone/50 font-light mt-0.5">
+              {legalName} &bull; {location}
+            </p>
+          </div>
+
+          {/* Top-Right: Actual Varna Score (hover → VarnaScoreHoverCard) */}
+          <VarnaScoreHoverCard
+            score={varnaScore}
+            eScore={eScore}
+            sScore={sScore}
+            gScore={gScore}
+            cScore={cScore}
+            supplierName={name}
+          >
+            <motion.div
+              className="flex flex-col items-center cursor-help select-none"
+              whileHover={{ scale: 1.08 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            >
+              <span className="text-3xl font-serif font-light tracking-tighter text-deep-clay dark:text-warm-stone">
+                {varnaScore}
+              </span>
+              <span className="text-[7px] font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 mt-0.5">
+                Varna Score
+              </span>
+            </motion.div>
+          </VarnaScoreHoverCard>
+        </div>
+
+        {/* Sourced line — updated format */}
+        <div className="text-xs font-semibold text-sage-mineral dark:text-[#8AA391] mb-6">
+          Sourced {skuCount} SKUs | Units Ordered: {totalUnits}
+        </div>
+
+        {/* Scan Tags */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {tags.map((tag) => {
+            const Icon = tag.icon;
+            return (
+              <span
+                key={tag.label}
+                className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${tag.colorClass}`}
+              >
+                <Icon className="w-3 h-3" />
+                {tag.label}
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Category Read Progress Bars */}
+        <div className="space-y-4 mb-6">
+          {categoryBars.map((cat) => (
+            <div key={cat.label} className="space-y-1.5">
+              <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-slate-mist dark:text-warm-stone/50 font-light">
+                <span>{cat.label}</span>
+                <span className="font-semibold text-carbon-ink dark:text-white">{cat.val}%</span>
+              </div>
+              <div className="h-1 bg-warm-stone/20 dark:bg-black/25 rounded-none overflow-hidden">
+                <div
+                  className={`h-full ${barColorClass}`}
+                  style={{ width: `${cat.val}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* What this means text block */}
+        <blockquote className="border-l border-slate-mist/30 dark:border-midnight-blue pl-4 py-1.5 my-6">
+          <p className="text-xs font-serif italic font-light text-slate-mist dark:text-warm-stone/85 leading-relaxed">
+            &ldquo;{quote}&rdquo;
+          </p>
+        </blockquote>
+      </div>
+
+      {/* Bottom Section: SDG Alignment + Confidence Ring inline */}
+      <div>
+        <p className="text-[9px] uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 font-semibold mb-3">
+          SDG Alignment Index
+        </p>
+        <div className="flex items-center gap-4">
+          {/* SDG colored boxes — enhanced with labels, hover animations */}
+          <div className="flex gap-3">
+            {sdgs.map((sdg, idx) => {
+              const isUnknown = sdg.val === "?";
+              return (
+                <motion.div
+                  key={`${sdg.val}-${idx}`}
+                  className={`relative group flex flex-col cursor-default ${
+                    isUnknown
+                      ? "w-11 h-11 border border-dashed border-slate-mist/30 dark:border-warm-stone/20 bg-transparent rounded-sm items-center justify-center"
+                      : `w-11 h-11 shadow-sm rounded-sm overflow-hidden ${sdg.color} bg-gradient-to-br from-white/10 to-black/20 border border-black/10`
+                  }`}
+                  whileHover={{ scale: 1.15, y: -3 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                  title={sdg.label}
+                >
+                  {isUnknown ? (
+                    <span className="text-[11px] font-light text-slate-mist/50 dark:text-warm-stone/40">
+                      ?
+                    </span>
+                  ) : (
+                    <div className="w-full h-full flex flex-col relative p-1.5">
+                      <span className="text-[14px] font-black leading-none tracking-tighter text-white drop-shadow-sm">
+                        {sdg.val}
+                      </span>
+                      {/* Decorative elements to make it look like a real badge */}
+                      <div className="mt-auto text-[4px] font-bold uppercase tracking-widest text-white/90 leading-tight">
+                        {sdg.label.split(" ")[0]}
+                        <br />
+                        {sdg.label.split(" ").slice(1).join(" ")}
+                      </div>
+                    </div>
+                  )}
+                  {/* Hover label tooltip */}
+                  {!isUnknown && (
+                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 whitespace-nowrap">
+                      <span className="text-[9px] font-semibold uppercase tracking-widest text-white dark:text-warm-stone bg-carbon-ink dark:bg-[#1E2022] px-2 py-1 rounded shadow-xl border border-slate-mist/10">
+                        {sdg.label}
+                      </span>
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Spacer to push ring to right */}
+          <div className="flex-1" />
+
+          {/* Confidence Ring (moved to bottom, 20% larger → w-16 h-16) */}
+          {confidenceData && (
+            <ConfidenceChecklistHoverCard
+              supplierName={name}
+              score={confidenceData.score}
+              totalConfirmed={confidenceData.totalConfirmed}
+              status={confidenceData.status}
+              checklist={confidenceData.checklist}
+            >
+              <motion.div
+                className="relative w-16 h-16 flex-shrink-0 cursor-help"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="15.915"
+                    fill="none"
+                    className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
+                    strokeWidth="2.5"
+                  />
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="15.915"
+                    fill="none"
+                    stroke={confidenceColor}
+                    strokeWidth="3.2"
+                    strokeDasharray={confidenceDasharray}
+                    strokeLinecap="square"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-[12px] font-serif font-semibold text-carbon-ink dark:text-white">
+                    {confidenceScore}%
+                  </span>
+                  <span className="text-[6px] uppercase tracking-wider text-slate-mist">
+                    Confidence
+                  </span>
+                </div>
+              </motion.div>
+            </ConfidenceChecklistHoverCard>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────── Main Page ───────────────
+
 export default function SuppliersDashboard() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [liveConfidenceData, setLiveConfidenceData] = useState<Record<string, SupplierConfidenceData>>({});
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Fetch live confidence data from the Confidence spreadsheet
+  useEffect(() => {
+    async function fetchConfidence() {
+      try {
+        const res = await fetch("/api/confidence");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        if (json.success && json.data) {
+          setLiveConfidenceData(json.data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch live confidence data, using mock fallback:", err);
+        // liveConfidenceData stays empty → SupplierProfileCard falls back to mock
+      }
+    }
+    fetchConfidence();
   }, []);
 
   const handleSectionChange = (section: string) => {
@@ -192,7 +464,7 @@ export default function SuppliersDashboard() {
           </div>
         </section>
 
-        {/* 5. Spend by Product Category Section */}
+        {/* 5. Spend by Product Category Section — donut increased by 30% */}
         <section className="mb-8 bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8">
           <div className="border-b border-slate-mist/20 dark:border-midnight-blue pb-4 mb-6">
             <h3 className="text-lg font-serif font-light text-carbon-ink dark:text-warm-stone tracking-tighter">
@@ -204,8 +476,8 @@ export default function SuppliersDashboard() {
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-12">
-            {/* Left: Donut Chart */}
-            <div className="relative w-56 h-56 flex-shrink-0">
+            {/* Left: Donut Chart — increased from w-56 h-56 to w-72 h-72 (+30%) */}
+            <div className="relative w-72 h-72 flex-shrink-0">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -214,8 +486,8 @@ export default function SuppliersDashboard() {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={65}
-                    outerRadius={95}
+                    innerRadius={80}
+                    outerRadius={120}
                     paddingAngle={3}
                     cornerRadius={0}
                     strokeWidth={1}
@@ -273,245 +545,76 @@ export default function SuppliersDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* Supplier Card 1: Bare Necessities */}
-            <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between transition-transform duration-300 ease-out hover:scale-[1.01]">
-              
-              {/* Header block */}
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <div className="flex items-center gap-2.5 mb-0.5">
-                      <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
-                        Bare Necessities
-                      </h4>
-                      <DataTierBadge tier="verified" />
-                    </div>
-                    <p className="text-xs text-slate-mist dark:text-warm-stone/50 font-light mt-0.5">
-                      Zero Waste Solutions Pvt. Ltd. &bull; Bengaluru, Karnataka
-                    </p>
-                  </div>
-                  {/* SVG score ring (61%) */}
-                  <ConfidenceChecklistHoverCard
-                    supplierName="Bare Necessities"
-                    score={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].score}
-                    totalConfirmed={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].totalConfirmed}
-                    status={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].status}
-                    checklist={SUPPLIER_CONFIDENCE_CHECKLISTS["Bare Necessities"].checklist}
-                  >
-                    <div className="relative w-14 h-14 flex-shrink-0 cursor-help">
-                      <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15.915"
-                          fill="none"
-                          className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
-                          strokeWidth="2.5"
-                        />
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15.915"
-                          fill="none"
-                          stroke="#738678"
-                          strokeWidth="3.2"
-                          strokeDasharray="61, 100"
-                          strokeLinecap="square"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-[11px] font-serif font-semibold text-carbon-ink dark:text-white">61%</span>
-                        <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
-                      </div>
-                    </div>
-                  </ConfidenceChecklistHoverCard>
-                </div>
-
-                {/* Sourced line */}
-                <div className="text-xs font-semibold text-sage-mineral dark:text-[#8AA391] mb-6">
-                  Sourced 4 SKUs in your last order
-                </div>
-
-                {/* Scan Tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="flex items-center gap-1.5 px-3 py-1 bg-[#E1EAE3] text-sage-mineral dark:bg-[#202E24] dark:text-[#8AA391] text-[10px] font-semibold uppercase tracking-wider">
-                    <ShieldCheck className="w-3 h-3" /> Cruelty-free (PETA)
-                  </span>
-                  <span className="flex items-center gap-1.5 px-3 py-1 bg-[#F9F4DF] text-[#A68F35] dark:bg-[#342F1C] dark:text-[#D5C27F] text-[10px] font-semibold uppercase tracking-wider">
-                    <Zap className="w-3 h-3" /> DPIIT startup
-                  </span>
-                  <span className="flex items-center gap-1.5 px-3 py-1 bg-[#DFE6F9] text-midnight-blue dark:bg-[#1E2638] dark:text-warm-stone text-[10px] font-semibold uppercase tracking-wider">
-                    <RefreshCw className="w-3 h-3" /> Refillable format
-                  </span>
-                </div>
-
-                {/* Category Read Progress Bars */}
-                <div className="space-y-4 mb-6">
-                  {[
-                    { label: "Governance", val: 80 },
-                    { label: "Environment", val: 65 },
-                    { label: "Community", val: 90 },
-                  ].map((cat) => (
-                    <div key={cat.label} className="space-y-1.5">
-                      <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-slate-mist dark:text-warm-stone/50 font-light">
-                        <span>{cat.label}</span>
-                        <span className="font-semibold text-carbon-ink dark:text-white">{cat.val}%</span>
-                      </div>
-                      <div className="h-1 bg-warm-stone/20 dark:bg-black/25 rounded-none overflow-hidden">
-                        <div
-                          className="h-full bg-slate-mist dark:bg-warm-stone"
-                          style={{ width: `${cat.val}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* What this means text block */}
-                <blockquote className="border-l border-slate-mist/30 dark:border-midnight-blue pl-4 py-1.5 my-6">
-                  <p className="text-xs font-serif italic font-light text-slate-mist dark:text-warm-stone/85 leading-relaxed">
-                    "Highly recommended for personal care products. Demonstrates strong ethical transparency and local employment models."
-                  </p>
-                </blockquote>
-              </div>
-
-              {/* SDG Alignment */}
-              <div>
-                <p className="text-[9px] uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 font-semibold mb-3">
-                  SDG Alignment Index
-                </p>
-                <div className="flex gap-2.5">
-                  {[
-                    { val: "8", color: "bg-[#A21942] text-white" },  // Decent Work
-                    { val: "9", color: "bg-[#FF3A21] text-white" },  // Innovation
-                    { val: "12", color: "bg-[#BF8B2E] text-white" }, // Responsible Consump.
-                    { val: "16", color: "bg-[#00689D] text-white" }, // Peace & Justice
-                  ].map((sdg) => (
-                    <div
-                      key={sdg.val}
-                      className={`w-9 h-9 flex items-center justify-center font-bold text-xs ${sdg.color}`}
-                      title={`SDG ${sdg.val}`}
-                    >
-                      {sdg.val}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <SupplierProfileCard
+              name="Bare Necessities"
+              legalName="Zero Waste Solutions Pvt. Ltd."
+              location="Bengaluru, Karnataka"
+              dataTier="verified"
+              varnaScore={73.5}
+              eScore={65}
+              sScore={80}
+              gScore={75}
+              cScore={70}
+              skuCount={4}
+              totalUnits={1240}
+              confidenceScore={liveConfidenceData["Bare Necessities"]?.score ?? 61}
+              confidenceColor="#738678"
+              confidenceDasharray={`${liveConfidenceData["Bare Necessities"]?.score ?? 61}, 100`}
+              tags={[
+                { icon: ShieldCheck, label: "Cruelty-free (PETA)", colorClass: "bg-[#E1EAE3] text-sage-mineral dark:bg-[#202E24] dark:text-[#8AA391]" },
+                { icon: Zap, label: "DPIIT startup", colorClass: "bg-[#F9F4DF] text-[#A68F35] dark:bg-[#342F1C] dark:text-[#D5C27F]" },
+                { icon: RefreshCw, label: "Refillable format", colorClass: "bg-[#DFE6F9] text-midnight-blue dark:bg-[#1E2638] dark:text-warm-stone" },
+              ]}
+              categoryBars={[
+                { label: "Governance", val: 80 },
+                { label: "Environment", val: 65 },
+                { label: "Community", val: 90 },
+              ]}
+              barColorClass="bg-slate-mist dark:bg-warm-stone"
+              quote="Highly recommended for personal care products. Demonstrates strong ethical transparency and local employment models."
+              sdgs={[
+                { val: "8", color: "bg-[#A21942] text-white", label: "Decent Work" },
+                { val: "9", color: "bg-[#FF3A21] text-white", label: "Innovation" },
+                { val: "12", color: "bg-[#BF8B2E] text-white", label: "Responsible Consumption" },
+                { val: "16", color: "bg-[#00689D] text-white", label: "Peace & Justice" },
+              ]}
+              liveConfidenceData={liveConfidenceData}
+            />
 
             {/* Supplier Card 2: Kheoni */}
-            <div className="bg-white dark:bg-[#2A2B2E] border border-slate-mist/30 dark:border-midnight-blue p-8 flex flex-col justify-between transition-transform duration-300 ease-out hover:scale-[1.01]">
-              
-              {/* Header block */}
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <div className="flex items-center gap-2.5 mb-0.5">
-                      <h4 className="text-2xl font-serif text-carbon-ink dark:text-white font-light tracking-tight">
-                        Kheoni
-                      </h4>
-                      <DataTierBadge tier="lapsed" />
-                    </div>
-                    <p className="text-xs text-slate-mist dark:text-warm-stone/50 font-light mt-0.5">
-                      Heritage Organic Foods LLP &bull; Indore, Madhya Pradesh
-                    </p>
-                  </div>
-                  {/* SVG score ring (11%) */}
-                  <ConfidenceChecklistHoverCard
-                    supplierName="Kheoni"
-                    score={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].score}
-                    totalConfirmed={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].totalConfirmed}
-                    status={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].status}
-                    checklist={SUPPLIER_CONFIDENCE_CHECKLISTS["Kheoni"].checklist}
-                  >
-                    <div className="relative w-14 h-14 flex-shrink-0 cursor-help">
-                      <svg className="-rotate-90 w-full h-full" viewBox="0 0 36 36">
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15.915"
-                          fill="none"
-                          className="stroke-carbon-ink/10 dark:stroke-warm-stone/10"
-                          strokeWidth="2.5"
-                        />
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15.915"
-                          fill="none"
-                          stroke="#7A3F1E"
-                          strokeWidth="3.2"
-                          strokeDasharray="11, 100"
-                          strokeLinecap="square"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-[11px] font-serif font-semibold text-carbon-ink dark:text-white">11%</span>
-                        <span className="text-[6px] uppercase tracking-wider text-slate-mist">Varna</span>
-                      </div>
-                    </div>
-                  </ConfidenceChecklistHoverCard>
-                </div>
-
-                {/* Sourced line */}
-                <div className="text-xs font-semibold text-sage-mineral dark:text-[#8AA391] mb-6">
-                  Sourced 2 SKUs in your last order
-                </div>
-
-                {/* Scan Tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="flex items-center gap-1.5 px-3 py-1 bg-[#ECEAE6] text-slate-mist dark:bg-black/30 dark:text-warm-stone/60 text-[10px] font-semibold uppercase tracking-wider border border-slate-mist/20">
-                    <AlertOctagon className="w-3 h-3 text-deep-clay" /> EHS system lapsed
-                  </span>
-                </div>
-
-                {/* Category Read Progress Bars */}
-                <div className="space-y-4 mb-6">
-                  {[
-                    { label: "Governance", val: 15 },
-                    { label: "Environment", val: 8 },
-                    { label: "Community", val: 12 },
-                  ].map((cat) => (
-                    <div key={cat.label} className="space-y-1.5">
-                      <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-slate-mist dark:text-warm-stone/50 font-light">
-                        <span>{cat.label}</span>
-                        <span className="font-semibold text-carbon-ink dark:text-white">{cat.val}%</span>
-                      </div>
-                      <div className="h-1 bg-warm-stone/20 dark:bg-black/25 rounded-none overflow-hidden">
-                        <div
-                          className="h-full bg-deep-clay dark:bg-[#7A3F1E]"
-                          style={{ width: `${cat.val}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* What this means text block */}
-                <blockquote className="border-l border-deep-clay/35 pl-4 py-1.5 my-6">
-                  <p className="text-xs font-serif italic font-light text-slate-mist dark:text-warm-stone/85 leading-relaxed">
-                    "Exercise caution. Sourcing from this entity currently presents exposure due to undocumented labor practices and environmental licensing gaps."
-                  </p>
-                </blockquote>
-              </div>
-
-              {/* SDG Alignment */}
-              <div>
-                <p className="text-[9px] uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 font-semibold mb-3">
-                  SDG Alignment Index
-                </p>
-                <div className="flex gap-2.5">
-                  {Array.from({ length: 4 }).map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="w-9 h-9 flex items-center justify-center bg-slate-mist/20 dark:bg-black/20 text-slate-mist/60 dark:text-warm-stone/40 border border-slate-mist/10 font-bold text-xs"
-                      title="No SDG data verified"
-                    >
-                      ?
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <SupplierProfileCard
+              name="Kheoni"
+              legalName="Heritage Organic Foods LLP"
+              location="Indore, Madhya Pradesh"
+              dataTier="lapsed"
+              varnaScore={28.2}
+              eScore={8}
+              sScore={12}
+              gScore={15}
+              cScore={0}
+              skuCount={2}
+              totalUnits={380}
+              confidenceScore={liveConfidenceData["Kheoni"]?.score ?? 11}
+              confidenceColor="#7A3F1E"
+              confidenceDasharray={`${liveConfidenceData["Kheoni"]?.score ?? 11}, 100`}
+              tags={[
+                { icon: AlertOctagon, label: "EHS system lapsed", colorClass: "bg-[#ECEAE6] text-slate-mist dark:bg-black/30 dark:text-warm-stone/60 border border-slate-mist/20" },
+              ]}
+              categoryBars={[
+                { label: "Governance", val: 15 },
+                { label: "Environment", val: 8 },
+                { label: "Community", val: 12 },
+              ]}
+              barColorClass="bg-deep-clay dark:bg-[#7A3F1E]"
+              quote="Exercise caution. Sourcing from this entity currently presents exposure due to undocumented labor practices and environmental licensing gaps."
+              sdgs={[
+                { val: "?", color: "", label: "Unverified" },
+                { val: "?", color: "", label: "Unverified" },
+                { val: "?", color: "", label: "Unverified" },
+                { val: "?", color: "", label: "Unverified" },
+              ]}
+              liveConfidenceData={liveConfidenceData}
+            />
 
           </div>
         </section>

@@ -14,6 +14,7 @@ interface ImpactPillarsProps {
   sScore: number;
   gScore: number;
   cScore: number;
+  pillarBreakdown?: Record<string, any>;
   delay?: number;
 }
 
@@ -29,9 +30,16 @@ export default function ImpactPillars({
   sScore,
   gScore,
   cScore,
+  pillarBreakdown,
   delay = 0,
 }: ImpactPillarsProps) {
   const scores = [eScore, sScore, gScore, cScore];
+
+  // If Cultural score is 0, filter it out
+  const showCultural = cScore > 0;
+  const visiblePillars = showCultural
+    ? PILLAR_CONFIG
+    : PILLAR_CONFIG.filter((p) => p.key !== "C");
 
   // Dynamically compute the color using our brand palette
   const getPillarColor = (score: number) => {
@@ -40,15 +48,22 @@ export default function ImpactPillars({
     return "#7A3F1E";                  // (deep-clay) warning / highlight accents
   };
 
+  // Dynamic grid: 3 cols centered when Cultural hidden, 4 cols when shown
+  const gridCols = showCultural
+    ? "grid-cols-2 md:grid-cols-4"
+    : "grid-cols-3";
+
   return (
     <Card delay={delay} hoverEffect={false} className="p-8">
       <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/50 mb-8 border-b border-slate-mist/20 dark:border-midnight-blue pb-3">
         ESG Performance Pillars
       </h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {PILLAR_CONFIG.map((pillar, i) => {
-          const pillarColor = getPillarColor(scores[i]);
-          const breakdown = PILLAR_CRITERIA_BREAKDOWN[pillar.label];
+      <div className={`grid ${gridCols} gap-6 justify-items-center`}>
+        {visiblePillars.map((pillar) => {
+          const originalIndex = PILLAR_CONFIG.findIndex((p) => p.key === pillar.key);
+          const score = scores[originalIndex];
+          const pillarColor = getPillarColor(score);
+          const breakdown = pillarBreakdown?.[pillar.label] ?? PILLAR_CRITERIA_BREAKDOWN[pillar.label];
           const definition = PILLAR_DEFINITIONS[pillar.label];
 
           return (
@@ -56,15 +71,15 @@ export default function ImpactPillars({
               {/* Score Ring — hover shows sub-pillar breakdown */}
               <PillarBreakdownHoverCard
                 pillarLabel={pillar.label}
-                pillarScore={breakdown?.pillarScore ?? Math.round(scores[i])}
+                pillarScore={breakdown?.pillarScore ?? Math.round(score)}
                 criteria={breakdown?.criteria ?? []}
                 color={pillarColor}
               >
                 <ProgressRing
-                  value={scores[i]}
+                  value={score}
                   color={pillarColor}
                   label=""
-                  delay={delay + 0.08 * i}
+                  delay={delay + 0.08 * originalIndex}
                   size={110}
                   strokeWidth={6}
                 />

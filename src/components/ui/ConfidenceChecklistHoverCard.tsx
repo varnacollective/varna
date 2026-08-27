@@ -83,7 +83,9 @@ export default function ConfidenceChecklistHoverCard({
   }, []);
 
   const CARD_WIDTH = 360;
-  const CARD_HEIGHT_ESTIMATE = 120 + checklist.length * 36;
+  // Cap the height estimate so the card never exceeds viewport; checklist scrolls internally
+  const MAX_CARD_HEIGHT = 480;
+  const CARD_HEIGHT_ESTIMATE = Math.min(120 + checklist.length * 36, MAX_CARD_HEIGHT);
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current) return;
@@ -93,10 +95,13 @@ export default function ConfidenceChecklistHoverCard({
     const spaceBelow = viewportHeight - rect.bottom;
     const placement = spaceBelow < CARD_HEIGHT_ESTIMATE + 16 ? "above" : "below";
 
-    const top =
+    let top =
       placement === "below"
         ? rect.bottom + 10
         : rect.top - CARD_HEIGHT_ESTIMATE - 10;
+
+    // Clamp so the card never goes off-screen vertically
+    top = Math.max(8, Math.min(top, viewportHeight - CARD_HEIGHT_ESTIMATE - 8));
 
     let left = rect.left + rect.width / 2 - CARD_WIDTH / 2;
     left = Math.max(16, Math.min(left, window.innerWidth - CARD_WIDTH - 16));
@@ -209,8 +214,8 @@ export default function ConfidenceChecklistHoverCard({
                     {totalConfirmed}
                   </p>
 
-                  {/* Checklist */}
-                  <div className="space-y-0.5">
+                  {/* Checklist — scrollable when many items */}
+                  <div className="space-y-0.5 max-h-[260px] overflow-y-auto scrollbar-thin">
                     {checklist.map((item, idx) => {
                       const config = STATUS_CONFIG[item.status];
                       const Icon = config.icon;
@@ -234,6 +239,12 @@ export default function ConfidenceChecklistHoverCard({
                           />
                           <span className={`text-[10px] font-light tracking-wide flex-1 ${config.textClass}`}>
                             {item.item}
+                          </span>
+                          <span
+                            className="text-[9px] font-semibold tabular-nums flex-shrink-0 min-w-[28px] text-right"
+                            style={{ color: config.color }}
+                          >
+                            {Math.round(item.score * 100)}
                           </span>
                           <span
                             className="text-[8px] font-semibold uppercase tracking-widest flex-shrink-0"

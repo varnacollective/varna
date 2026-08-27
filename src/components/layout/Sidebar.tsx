@@ -16,7 +16,7 @@ const NAV_ITEMS = [
   { id: "suppliers", label: "Suppliers", icon: Store },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "impact", label: "Impact", icon: Leaf },
-  { id: "algorithm", label: "Algorithm", icon: Network },
+  { id: "algorithm", label: "Framework", icon: Network },
 ];
 
 interface SidebarProps {

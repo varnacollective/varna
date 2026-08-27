@@ -120,6 +120,7 @@ export default function DashboardPage() {
                 summary={summary}
                 categorySpend={categorySpend}
                 tierDistribution={tierDistribution}
+                supplierImpactData={data.supplierImpactData}
               />
             )}
             {activeSection === "suppliers" && (
@@ -129,7 +130,7 @@ export default function DashboardPage() {
               <OrdersSection summary={summary} />
             )}
             {activeSection === "impact" && (
-              <ImpactSection summary={summary} />
+              <ImpactSection summary={summary} supplierImpactData={data.supplierImpactData} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -144,10 +145,12 @@ function OverviewSection({
   summary,
   categorySpend,
   tierDistribution,
+  supplierImpactData,
 }: {
   summary: DashboardData["summary"];
   categorySpend: DashboardData["categorySpend"];
   tierDistribution: DashboardData["tierDistribution"];
+  supplierImpactData: DashboardData["supplierImpactData"];
 }) {
   return (
     <div className="space-y-8">
@@ -197,6 +200,7 @@ function OverviewSection({
         sScore={summary.avgSScore}
         gScore={summary.avgGScore}
         cScore={summary.avgCScore}
+        pillarBreakdown={summary.pillarBreakdown}
         delay={0.25}
       />
 
@@ -215,6 +219,9 @@ function OverviewSection({
         <SocialImpact
           artisansSupported={summary.totalArtisansSupported}
           womenWorkforcePercent={summary.womenWorkforcePercent}
+          culturalScore={summary.avgCScore}
+          wageRatio={supplierImpactData?.[0]?.wageRatio || 1.05}
+          supplierImpactData={supplierImpactData}
           delay={0.45}
         />
       </div>
@@ -338,7 +345,6 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
     { label: "Total Orders", value: summary.totalOrders, prefix: "", suffix: "" },
     { label: "Total Spend", value: summary.totalSpend, prefix: "₹", suffix: "" },
     { label: "Vetted Suppliers", value: summary.totalSuppliers, prefix: "", suffix: "" },
-    { label: "Avg Lead Time", value: summary.avgLeadTimeDays, prefix: "", suffix: " days" },
   ];
 
   return (
@@ -352,7 +358,7 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {orderStats.map((stat, idx) => (
           <Card key={stat.label} delay={idx * 0.05} className="text-left">
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/60 mb-2">
@@ -385,7 +391,13 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
 
 // ─────────────── Impact Section ───────────────
 
-function ImpactSection({ summary }: { summary: DashboardData["summary"] }) {
+function ImpactSection({
+  summary,
+  supplierImpactData,
+}: {
+  summary: DashboardData["summary"];
+  supplierImpactData: DashboardData["supplierImpactData"];
+}) {
   return (
     <div className="space-y-8">
       <div className="flex flex-col items-start border-b border-slate-mist/25 dark:border-midnight-blue pb-3 mb-6">
@@ -402,6 +414,7 @@ function ImpactSection({ summary }: { summary: DashboardData["summary"] }) {
         sScore={summary.avgSScore}
         gScore={summary.avgGScore}
         cScore={summary.avgCScore}
+        pillarBreakdown={summary.pillarBreakdown}
         delay={0.1}
       />
 
@@ -413,6 +426,9 @@ function ImpactSection({ summary }: { summary: DashboardData["summary"] }) {
         <SocialImpact
           artisansSupported={summary.totalArtisansSupported}
           womenWorkforcePercent={summary.womenWorkforcePercent}
+          culturalScore={summary.avgCScore}
+          wageRatio={supplierImpactData?.[0]?.wageRatio || 1.05}
+          supplierImpactData={supplierImpactData}
           delay={0.25}
         />
       </div>

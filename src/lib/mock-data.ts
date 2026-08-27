@@ -29,6 +29,7 @@ export interface ClientSummary {
   womenWorkforcePercent: number;
   totalSuppliers: number;
   avgLeadTimeDays: number;
+  pillarBreakdown?: Record<string, any>;
 }
 
 export interface SupplierDetail {

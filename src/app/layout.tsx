@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter, Cedarville_Cursive } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -56,6 +57,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

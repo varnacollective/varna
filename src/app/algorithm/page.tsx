@@ -162,7 +162,7 @@ export default function AlgorithmPage() {
               The Varna Framework
             </h1>
             <p className="text-xs uppercase tracking-widest text-warm-stone/50 font-light">
-              Algorithm Visualization
+              Framework Visualization
             </p>
           </div>
           

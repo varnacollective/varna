@@ -23,12 +23,28 @@ interface PortfolioMixChartProps {
   delay?: number;
 }
 
-// Brand specific color mappings for Supplier Tiers
+// Varna MSME Tier mapping: old tier names → new MSME tier names
+const TIER_RENAME: Record<string, string> = {
+  Platinum: "Micro A",
+  Gold: "Micro B",
+  Silver: "Small",
+  Bronze: "Medium",
+};
+
+// Brand specific color mappings for MSME Tiers
 const TIER_COLORS: Record<string, string> = {
-  Platinum: "#7A3F1E", // deep-clay
-  Gold: "#738678",     // sage-mineral
-  Silver: "#6F848F",   // slate-mist
-  Bronze: "#B5AB94",   // dark warm-stone for separation
+  "Micro A": "#7A3F1E",  // deep-clay
+  "Micro B": "#738678",  // sage-mineral
+  Small: "#6F848F",      // slate-mist
+  Medium: "#B5AB94",     // dark warm-stone for separation
+};
+
+// Tier → Supplier brand names (assessment data)
+const TIER_BRANDS: Record<string, string[]> = {
+  "Micro A": ["Kheoni Ventures Pvt Ltd"],
+  "Micro B": ["Bare Necessities"],
+  Small: ["UKHI India Private Limited"],
+  Medium: [],
 };
 
 interface TooltipPayload {
@@ -46,19 +62,41 @@ function CustomTooltip({
 }) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
+  const brands = TIER_BRANDS[d.tier] || [];
+
   return (
-    <div className="bg-[#E4DEC9] dark:bg-[#222326] border border-slate-mist/50 dark:border-midnight-blue p-3 shadow-md rounded-none text-carbon-ink dark:text-warm-stone font-sans text-xs">
-      <div className="flex items-center gap-2 mb-1.5">
+    <div className="bg-[#1E2022] border border-slate-mist/30 p-4 shadow-lg rounded-none font-sans text-xs min-w-[200px] z-50">
+      {/* Tier Header */}
+      <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-slate-mist/15">
         <div
-          className="w-2.5 h-2.5 rounded-none"
+          className="w-3 h-3 rounded-none flex-shrink-0"
           style={{ backgroundColor: TIER_COLORS[d.tier] || d.color }}
         />
-        <p className="font-semibold text-carbon-ink dark:text-warm-stone uppercase tracking-wider text-[9px]">{d.tier} Tier</p>
+        <p className="font-semibold text-warm-stone uppercase tracking-wider text-[10px]">
+          {d.tier} Tier
+        </p>
+        <span className="ml-auto text-warm-stone/60 tabular-nums font-light">
+          {d.count} supplier{d.count !== 1 ? "s" : ""}
+        </span>
       </div>
-      <p>
-        Suppliers:{" "}
-        <span className="font-semibold text-deep-clay dark:text-warm-stone">{d.count}</span>
-      </p>
+
+      {/* Brand list */}
+      {brands.length > 0 ? (
+        <div className="space-y-1.5">
+          {brands.map((brand) => (
+            <div key={brand} className="flex items-center gap-2">
+              <div className="w-1 h-1 bg-warm-stone/40 flex-shrink-0" />
+              <span className="text-warm-stone/90 font-light tracking-wide text-[10px]">
+                {brand}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-warm-stone/40 italic font-light text-[10px]">
+          No suppliers in this tier
+        </p>
+      )}
     </div>
   );
 }
@@ -67,12 +105,32 @@ export default function PortfolioMixChart({
   data,
   delay = 0,
 }: PortfolioMixChartProps) {
-  const total = data.reduce((sum, d) => sum + d.count, 0);
+  // Base structure with all 4 MSME tiers to ensure they always appear on the x-axis
+  const baseTiers = [
+    { tier: "Micro A", count: 0 },
+    { tier: "Micro B", count: 0 },
+    { tier: "Small", count: 0 },
+    { tier: "Medium", count: 0 },
+  ];
+
+  // Remap input data to MSME tier names
+  const remappedInput = data.map((d) => ({
+    ...d,
+    tier: TIER_RENAME[d.tier] || d.tier,
+  }));
+
+  // Merge the input data into the base structure
+  const remappedData = baseTiers.map(base => {
+    const found = remappedInput.find(d => d.tier === base.tier);
+    return found ? { ...base, count: found.count } : base;
+  });
+
+  const total = remappedData.reduce((sum, d) => sum + d.count, 0);
 
   // Normalize data with colors
-  const chartData = data.map((d) => ({
+  const chartData = remappedData.map((d) => ({
     ...d,
-    color: TIER_COLORS[d.tier] || d.color,
+    color: TIER_COLORS[d.tier] || "#6F848F",
   }));
 
   return (
@@ -109,7 +167,11 @@ export default function PortfolioMixChart({
               tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
               allowDecimals={false}
             />
-            <Tooltip content={<CustomTooltip />} cursor={false} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={false}
+              wrapperStyle={{ zIndex: 50 }}
+            />
             <Bar dataKey="count" radius={[0, 0, 0, 0]} maxBarSize={40}>
               {chartData.map((entry) => (
                 <Cell
