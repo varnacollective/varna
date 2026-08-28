@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import Sidebar from "@/components/layout/Sidebar";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
+import ChatWidget from "@/components/ChatWidget";
 import ConfidenceChecklistHoverCard from "@/components/ui/ConfidenceChecklistHoverCard";
 import DataTierBadge from "@/components/ui/DataTierBadge";
 import type { DataTier } from "@/components/ui/DataTierBadge";
@@ -551,9 +552,9 @@ export default function SuppliersDashboard() {
               location="Bengaluru, Karnataka"
               dataTier="verified"
               varnaScore={73.5}
-              eScore={65}
-              sScore={80}
-              gScore={75}
+              eScore={liveConfidenceData["Bare Necessities"]?.eScore ?? 65}
+              sScore={liveConfidenceData["Bare Necessities"]?.sScore ?? 80}
+              gScore={liveConfidenceData["Bare Necessities"]?.gScore ?? 75}
               cScore={70}
               skuCount={4}
               totalUnits={1240}
@@ -566,9 +567,10 @@ export default function SuppliersDashboard() {
                 { icon: RefreshCw, label: "Refillable format", colorClass: "bg-[#DFE6F9] text-midnight-blue dark:bg-[#1E2638] dark:text-warm-stone" },
               ]}
               categoryBars={[
-                { label: "Governance", val: 80 },
-                { label: "Environment", val: 65 },
-                { label: "Community", val: 90 },
+                { label: "Environment", val: liveConfidenceData["Bare Necessities"]?.eScore ?? 65 },
+                { label: "Social", val: liveConfidenceData["Bare Necessities"]?.sScore ?? 80 },
+                { label: "Governance", val: liveConfidenceData["Bare Necessities"]?.gScore ?? 75 },
+                { label: "Carbon Impact", val: liveConfidenceData["Bare Necessities"]?.cScore ?? 70 },
               ]}
               barColorClass="bg-slate-mist dark:bg-warm-stone"
               quote="Highly recommended for personal care products. Demonstrates strong ethical transparency and local employment models."
@@ -588,9 +590,9 @@ export default function SuppliersDashboard() {
               location="Indore, Madhya Pradesh"
               dataTier="lapsed"
               varnaScore={28.2}
-              eScore={8}
-              sScore={12}
-              gScore={15}
+              eScore={liveConfidenceData["Kheoni"]?.eScore ?? 8}
+              sScore={liveConfidenceData["Kheoni"]?.sScore ?? 12}
+              gScore={liveConfidenceData["Kheoni"]?.gScore ?? 15}
               cScore={0}
               skuCount={2}
               totalUnits={380}
@@ -601,9 +603,10 @@ export default function SuppliersDashboard() {
                 { icon: AlertOctagon, label: "EHS system lapsed", colorClass: "bg-[#ECEAE6] text-slate-mist dark:bg-black/30 dark:text-warm-stone/60 border border-slate-mist/20" },
               ]}
               categoryBars={[
-                { label: "Governance", val: 15 },
-                { label: "Environment", val: 8 },
-                { label: "Community", val: 12 },
+                { label: "Environment", val: liveConfidenceData["Kheoni"]?.eScore ?? 8 },
+                { label: "Social", val: liveConfidenceData["Kheoni"]?.sScore ?? 12 },
+                { label: "Governance", val: liveConfidenceData["Kheoni"]?.gScore ?? 15 },
+                { label: "Carbon Impact", val: liveConfidenceData["Kheoni"]?.cScore ?? 0 },
               ]}
               barColorClass="bg-deep-clay dark:bg-[#7A3F1E]"
               quote="Exercise caution. Sourcing from this entity currently presents exposure due to undocumented labor practices and environmental licensing gaps."
@@ -619,6 +622,9 @@ export default function SuppliersDashboard() {
           </div>
         </section>
       </main>
+      
+      {/* Varna Chat Assistant */}
+      <ChatWidget dashboardData={liveConfidenceData} />
     </div>
   );
 }

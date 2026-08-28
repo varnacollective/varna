@@ -374,6 +374,10 @@ export interface ConfidenceChecklistItem {
 
 export interface SupplierConfidenceData {
   score: number;
+  eScore?: number;
+  sScore?: number;
+  gScore?: number;
+  cScore?: number;
   totalConfirmed: string;
   status: string;
   checklist: ConfidenceChecklistItem[];

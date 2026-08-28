@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { unstable_cache } from "next/cache";
 import {
   type ClientMaster,
   type ClientSummary,
@@ -36,7 +37,7 @@ function getAuth() {
   });
 }
 
-async function getSheetData(range: string) {
+async function getSheetData(range: string): Promise<string[][]> {
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
   const sheetId = process.env.GOOGLE_SHEET_ID;
@@ -48,6 +49,20 @@ async function getSheetData(range: string) {
   });
   return res.data.values || [];
 }
+
+// ── Server-Side Cache Layer (ISR — 300s / 5 min TTL) ─────────────────────────
+// All clients share ONE cached copy of the raw sheet data.
+// After 300s the next request triggers a background revalidation (stale-while-revalidate).
+// This prevents Google Sheets API rate limits (HTTP 429) with 25-30 concurrent hotel clients.
+
+const getCachedSheetData = unstable_cache(
+  async (range: string) => {
+    console.log(`[CACHE MISS] Fetching main sheet: ${range}`);
+    return getSheetData(range);
+  },
+  ["google-sheet-main"],
+  { revalidate: 300, tags: ["sheets-main"] }
+);
 
 // Helper to parse numbers safely from strings like "1,268.40" or "68%"
 function parseNumber(val: string): number {
@@ -102,7 +117,7 @@ export async function validateClient(
   _password: string
 ): Promise<ClientMaster | null> {
   try {
-    const rows = await getSheetData("9_CLIENT_MASTER!A3:J");
+    const rows = await getCachedSheetData("9_CLIENT_MASTER!A3:J");
     const targetNorm = normalizeId(clientId);
 
     for (const row of rows) {
@@ -142,7 +157,7 @@ export async function fetchDashboardData(
 
       // 2. Fetch Client Summary
       let summary: ClientSummary | null = null;
-      const summaryRows = await getSheetData("6_CLIENT_SUMMARY!A3:AZ");
+      const summaryRows = await getCachedSheetData("6_CLIENT_SUMMARY!A3:AZ");
       for (const row of summaryRows) {
         if (row[0] && normalizeId(row[0]) === targetNorm) {
           const avgVarnaScore = parseNumber(row[10]);
@@ -215,7 +230,7 @@ export async function fetchDashboardData(
 
       // 3. Fetch Suppliers
       const suppliers: SupplierDetail[] = [];
-      const supplierRows = await getSheetData("7_SUPPLIER_DETAIL_BY_CLIENT!A3:Z");
+      const supplierRows = await getCachedSheetData("7_SUPPLIER_DETAIL_BY_CLIENT!A3:Z");
       for (const row of supplierRows) {
         if (row[0] && normalizeId(row[0]) === targetNorm) {
           let tierStr = row[3] || "Bronze";
@@ -244,7 +259,7 @@ export async function fetchDashboardData(
 
       // 4. Fetch Category Spend
       const categorySpend: CategorySpend[] = [];
-      const categoryRows = await getSheetData("8_CATEGORY_SPEND_BY_CLIENT!A3:Z");
+      const categoryRows = await getCachedSheetData("8_CATEGORY_SPEND_BY_CLIENT!A3:Z");
       for (const row of categoryRows) {
         if (row[0] && normalizeId(row[0]) === targetNorm) {
           categorySpend.push({
@@ -287,7 +302,7 @@ export async function fetchDashboardData(
       // 6. Fetch Assessment Impact Data (Gender & Wages)
       const supplierImpactData: { name: string; womenPct: number; wageRatio: number }[] = [];
       try {
-        const impactRows = await getSheetData("'2 Assessment Input'!A3:Z");
+        const impactRows = await getCachedSheetData("'2 Assessment Input'!A3:Z");
         for (const row of impactRows) {
           if (row[0] && normalizeId(row[0]) === targetNorm) {
             supplierImpactData.push({
@@ -300,7 +315,7 @@ export async function fetchDashboardData(
       } catch (err) {
         console.warn("Failed to fetch 2_ASSESSMENT_IMPACT, falling back to mock impact data:", err);
       }
-      
+
       // Fallback for impact data if empty
       if (supplierImpactData.length === 0) {
         supplierImpactData.push(
@@ -363,6 +378,15 @@ async function getConfidenceSheetData(range: string): Promise<string[][]> {
   return res.data.values || [];
 }
 
+const getCachedConfidenceSheetData = unstable_cache(
+  async (range: string) => {
+    console.log(`[CACHE MISS] Fetching confidence sheet: ${range}`);
+    return getConfidenceSheetData(range);
+  },
+  ["google-sheet-confidence"],
+  { revalidate: 300, tags: ["sheets-confidence"] }
+);
+
 /**
  * Score-to-status mapping for the confidence checklist.
  * 1.0 → "verified", 0.5 → "lapsed", 0.25 → "partial", 0.0 → "missing"
@@ -388,6 +412,10 @@ export async function getConfidenceData(): Promise<
     string,
     {
       score: number;
+      eScore?: number;
+      sScore?: number;
+      gScore?: number;
+      cScore?: number;
       totalConfirmed: string;
       status: string;
       checklist: { item: string; status: "verified" | "lapsed" | "partial" | "missing"; score: number }[];
@@ -397,8 +425,8 @@ export async function getConfidenceData(): Promise<
   try {
     // Fetch both tabs in parallel
     const [summaryRows, scoringRows] = await Promise.all([
-      getConfidenceSheetData("Summary!A2:G100"),
-      getConfidenceSheetData("Scoring!A2:E500"),
+      getCachedConfidenceSheetData("Summary!A2:G100"),
+      getCachedConfidenceSheetData("Scoring!A2:E500"),
     ]);
 
     // 1. Build scoring checklist grouped by supplier name
@@ -431,6 +459,10 @@ export async function getConfidenceData(): Promise<
       string,
       {
         score: number;
+        eScore?: number;
+        sScore?: number;
+        gScore?: number;
+        cScore?: number;
         totalConfirmed: string;
         status: string;
         checklist: { item: string; status: "verified" | "lapsed" | "partial" | "missing"; score: number }[];
@@ -453,8 +485,22 @@ export async function getConfidenceData(): Promise<
       const confirmedCount = checklist.filter((c) => c.score >= 1.0).length;
       const totalItems = checklist.length;
 
+      const gRaw = parseFloat(row[1] || "0");
+      const eRaw = parseFloat(row[2] || "0");
+      const sRaw = parseFloat(row[3] || "0");
+      const cRaw = parseFloat(row[4] || "0");
+
+      const gScore = isNaN(gRaw) ? 0 : Math.round((gRaw / 5) * 100);
+      const eScore = isNaN(eRaw) ? 0 : Math.round((eRaw / 5) * 100);
+      const sScore = isNaN(sRaw) ? 0 : Math.round((sRaw / 4) * 100);
+      const cScore = isNaN(cRaw) ? 0 : Math.round((cRaw / 4) * 100);
+
       result[supplierName] = {
         score: confidencePercent,
+        eScore,
+        sScore,
+        gScore,
+        cScore,
         totalConfirmed: `${confirmedCount} of ${totalItems} tracked data points confirmed`,
         status: confidencePercent >= 50 ? "Verified" : "Early Stage",
         checklist,

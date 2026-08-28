@@ -10,6 +10,7 @@ import {
   Award,
 } from "lucide-react";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
+import ChatWidget from "@/components/ChatWidget";
 
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
@@ -135,6 +136,9 @@ export default function DashboardPage() {
           </motion.div>
         </AnimatePresence>
       </main>
+      
+      {/* Varna Chat Assistant */}
+      <ChatWidget dashboardData={data} />
     </div>
   );
 }
