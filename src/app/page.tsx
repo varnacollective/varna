@@ -42,8 +42,16 @@ export default function LoginPage() {
         return;
       }
 
+      // Handle Superadmin redirect
+      if (data.isSuperAdmin || data.redirectUrl === "/superadmin" || clientId.trim().toLowerCase() === "superadmin") {
+        localStorage.setItem("varna_superadmin", "true");
+        router.push("/superadmin");
+        return;
+      }
+
       // Ensure local storage is cleared
       localStorage.removeItem("varna_client");
+      localStorage.removeItem("varna_superadmin");
       router.push("/dashboard");
     } catch {
       setError("Network error. Please try again.");
@@ -164,13 +172,7 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-slate-mist/20 dark:border-midnight-blue">
-              <p className="text-[10px] tracking-wider text-slate-mist dark:text-slate-mist/70 leading-relaxed font-light">
-                Prototype Credentials:<br />
-                Client IDs: <span className="font-mono text-carbon-ink dark:text-warm-stone font-normal">CLT-001</span> (The Oberoi Group), <span className="font-mono text-carbon-ink dark:text-warm-stone font-normal">CLT-002</span> (Taj Hotels), <span className="font-mono text-carbon-ink dark:text-warm-stone font-normal">CLT-003</span> (ITC Hotels)<br />
-                Password: <span className="italic">Any value is accepted</span>
-              </p>
-            </div>
+
           </div>
         </motion.div>
       </main>

@@ -96,7 +96,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
                       part.type === "text" ? (
                         <span key={i}>{part.text}</span>
                       ) : null
-                    ) ?? m.content}
+                    ) ?? (m as any).content ?? ""}
                   </div>
                 </div>
               ))}

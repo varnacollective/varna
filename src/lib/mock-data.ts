@@ -58,6 +58,15 @@ export interface CategorySpend {
   avgVarnaScore: number;
 }
 
+export interface DashboardData {
+  client: ClientMaster;
+  summary: ClientSummary;
+  suppliers: SupplierDetail[];
+  categorySpend: CategorySpend[];
+  tierDistribution: { tier: string; count: number; color: string }[];
+  supplierImpactData: { name: string; womenPct: number; wageRatio: number }[];
+}
+
 // ──────────────── 9_CLIENT_MASTER ────────────────
 
 export const MOCK_CLIENTS: ClientMaster[] = [

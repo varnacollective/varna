@@ -38,6 +38,7 @@ If the user asks "Why is my score X?" or "How do I improve?", analyze the 'User'
     return result.toUIMessageStreamResponse({
       onError: (event) => {
         console.error("Stream error event:", event);
+        return "An error occurred while generating the response.";
       },
     });
   } catch (error: any) {
