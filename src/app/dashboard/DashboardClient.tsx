@@ -1,17 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2 } from "lucide-react";
-import {
-  Wallet,
-  ShoppingBag,
-  Award,
-} from "lucide-react";
+import { Loader2, Wallet, ShoppingBag, Award } from "lucide-react";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import ChatWidget from "@/components/ChatWidget";
-
+import BrandWatermark from "@/components/ui/BrandWatermark";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import KPICard from "@/components/dashboard/KPICard";
@@ -20,6 +15,8 @@ import SpendByCategoryChart from "@/components/dashboard/SpendByCategoryChart";
 import PortfolioMixChart from "@/components/dashboard/PortfolioMixChart";
 import CarbonImpact from "@/components/dashboard/CarbonImpact";
 import SocialImpact from "@/components/dashboard/SocialImpact";
+import Card from "@/components/ui/Card";
+import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import type { DashboardData } from "@/lib/mock-data";
 
 export default function DashboardClient({ initialData }: { initialData: DashboardData | null }) {
@@ -63,15 +60,15 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-warm-stone dark:bg-[#17181A] transition-colors duration-300">
+      <div className="min-h-screen flex items-center justify-center bg-[#D8CFB8] dark:bg-[#222326] transition-colors duration-300">
         <motion.div
           className="flex flex-col items-center gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <Loader2 className="w-8 h-8 text-deep-clay dark:text-warm-stone animate-spin" />
-          <p className="text-xs uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 font-light">
-            Loading Sustainability Intel...
+          <Loader2 className="w-8 h-8 text-[#7A3F1E] dark:text-[#D8CFB8] animate-spin" />
+          <p className="text-xs uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/60 font-light">
+            Loading Sustainability Intelligence...
           </p>
         </motion.div>
       </div>
@@ -83,7 +80,10 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
   const { client, summary, categorySpend, tierDistribution } = data;
 
   return (
-    <div className="min-h-screen flex bg-warm-stone dark:bg-[#17181A] text-carbon-ink dark:text-warm-stone transition-colors duration-300">
+    <div className="min-h-screen flex bg-[#D8CFB8] dark:bg-[#222326] text-[#222326] dark:text-[#D8CFB8] transition-colors duration-300 relative selection:bg-[#7A3F1E] selection:text-[#D8CFB8] overflow-x-hidden">
+      {/* Subtle brand crystal mark in page corner */}
+      <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
+
       {/* Sidebar */}
       <Sidebar
         activeSection={activeSection}
@@ -92,7 +92,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
       />
 
       {/* Main content */}
-      <main className="flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden">
+      <main className="flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
         <TopBar clientName={client.clientName} industry={client.industry} />
 
         <AnimatePresence mode="wait">
@@ -101,7 +101,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             {activeSection === "overview" && (
               <OverviewSection
@@ -123,7 +123,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
           </motion.div>
         </AnimatePresence>
       </main>
-      
+
       {/* Varna Chat Assistant */}
       <ChatWidget dashboardData={data} />
     </div>
@@ -154,7 +154,7 @@ function OverviewSection({
           icon={Wallet}
           accentColor="deep-clay"
           delay={0.05}
-          subtitle="Across all ethical suppliers"
+          subtitle="Across vetted ethical artisanal enterprises"
         />
         <KPICard
           title="Total Orders"
@@ -162,7 +162,7 @@ function OverviewSection({
           icon={ShoppingBag}
           accentColor="slate-mist"
           delay={0.1}
-          subtitle={`Fulfilled by ${summary.totalSuppliers} groups`}
+          subtitle={`Fulfilled by ${summary.totalSuppliers} verified craft groups`}
         />
         <KPICard
           title="Avg Varna Score"
@@ -172,7 +172,7 @@ function OverviewSection({
           accentColor="sage-mineral"
           delay={0.15}
           subtitle={
-            summary.avgVarnaScore >= 80 ? "Premium sustainability rating" : "Approved sustainability rating"
+            summary.avgVarnaScore >= 80 ? "Varna Leader rating certified" : "Advanced rating approved"
           }
           varnaScoreData={{
             score: Math.round(summary.avgVarnaScore),
@@ -185,7 +185,7 @@ function OverviewSection({
         />
       </div>
 
-      {/* Impact Pillars */}
+      {/* Impact Pillars with Custom Radial Gauges */}
       <ImpactPillars
         eScore={summary.avgEScore}
         sScore={summary.avgSScore}
@@ -220,56 +220,53 @@ function OverviewSection({
   );
 }
 
-// ─────────────── Suppliers Section ───────────────
-
-import Card from "@/components/ui/Card";
+// ─────────────── Suppliers Section (Inside Dashboard) ───────────────
 
 function SuppliersSection({ data }: { data: DashboardData }) {
-  // Brand color tags for Tiers
   const tierColors: Record<string, string> = {
-    Platinum: "text-deep-clay bg-deep-clay/10 border-deep-clay/20",
-    Gold: "text-sage-mineral bg-sage-mineral/10 border-sage-mineral/20",
-    Silver: "text-slate-mist bg-slate-mist/10 border-slate-mist/20",
-    Bronze: "text-carbon-ink dark:text-warm-stone bg-warm-stone/20 dark:bg-warm-stone/10 border-warm-stone/30",
+    Platinum: "text-[#7A3F1E] bg-[#7A3F1E]/15 border-[#7A3F1E]/30",
+    Gold: "text-[#738678] bg-[#738678]/15 border-[#738678]/30",
+    Silver: "text-[#6F848F] bg-[#6F848F]/15 border-[#6F848F]/30",
+    Bronze: "text-[#2F3C52] dark:text-[#D8CFB8] bg-[#2F3C52]/15 border-[#2F3C52]/30",
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col items-start border-b border-slate-mist/25 dark:border-midnight-blue pb-3 mb-6">
-        <h2 className="text-2xl font-serif font-light text-carbon-ink dark:text-warm-stone tracking-tighter">
+      <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#2F3C52] pb-3 mb-6">
+        <h2 className="text-3xl font-serif text-[#222326] dark:text-[#D8CFB8] tracking-hero uppercase leading-none">
           Supplier Portfolio
         </h2>
-        <p className="text-xs text-slate-mist dark:text-warm-stone/50 mt-1 font-light tracking-wide">
+        <p className="text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 mt-1 font-light tracking-wide">
           List of vetted artisanal enterprises and procurement performance metrics.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {data.suppliers.map((supplier, idx) => (
-          <Card key={supplier.enterpriseId} delay={idx * 0.05} className="group" hoverEffect={true}>
-            <div className="flex items-start justify-between mb-4 pb-3 border-b border-slate-mist/10 dark:border-midnight-blue/50">
+          <Card key={supplier.enterpriseId} delay={idx * 0.05} variant="verified" hoverEffect={true}>
+            <div className="flex items-start justify-between mb-4 pb-3 border-b border-[#6F848F]/20">
               <div>
-                <h3 className="text-sm font-semibold text-carbon-ink dark:text-warm-stone">
+                <h3 className="text-base font-serif uppercase tracking-tight text-[#222326] dark:text-[#D8CFB8]">
                   {supplier.enterpriseName}
                 </h3>
-                <p className="text-[11px] text-slate-mist dark:text-warm-stone/50 mt-0.5 font-light">
+                <p className="text-[11px] text-[#6F848F] font-light mt-0.5">
                   {supplier.city}, {supplier.state}
                 </p>
               </div>
               <span
                 className={`
-                  text-[9px] font-semibold uppercase tracking-widest
-                  px-2.5 py-1 rounded-none border
-                  ${tierColors[supplier.tier] || "text-slate-mist border-slate-mist/30"}
+                  text-[8px] font-semibold uppercase tracking-widest
+                  px-2.5 py-0.5 border
+                  ${tierColors[supplier.tier] || "text-[#6F848F] border-[#6F848F]/30"}
                 `}
               >
                 {supplier.tier}
               </span>
             </div>
 
-              <div className="grid grid-cols-2 gap-4 my-4">
+            <div className="grid grid-cols-2 gap-4 my-4">
               <div>
-                <p className="text-[9px] uppercase text-slate-mist dark:text-warm-stone/50 tracking-widest font-light">Varna Score</p>
+                <p className="text-[9px] uppercase text-[#6F848F] tracking-widest font-light">Varna Score</p>
                 <VarnaScoreHoverCard
                   score={supplier.varnaScore}
                   eScore={supplier.eScore}
@@ -278,25 +275,33 @@ function SuppliersSection({ data }: { data: DashboardData }) {
                   cScore={supplier.cScore}
                   supplierName={supplier.enterpriseName}
                 >
-                  <p className="text-xl font-serif text-deep-clay dark:text-warm-stone font-light mt-0.5 cursor-help">{supplier.varnaScore}</p>
+                  <p className="text-2xl font-serif text-[#7A3F1E] dark:text-[#D8CFB8] font-light mt-0.5 cursor-help">
+                    {supplier.varnaScore}
+                  </p>
                 </VarnaScoreHoverCard>
               </div>
               <div>
-                <p className="text-[9px] uppercase text-slate-mist dark:text-warm-stone/50 tracking-widest font-light">Total Spend</p>
-                <p className="text-xl font-serif text-carbon-ink dark:text-warm-stone font-light mt-0.5">₹{(supplier.totalSpend / 1000).toFixed(0)}K</p>
+                <p className="text-[9px] uppercase text-[#6F848F] tracking-widest font-light">Total Spend</p>
+                <p className="text-2xl font-serif text-[#222326] dark:text-[#D8CFB8] font-light mt-0.5">
+                  ₹{Math.round(supplier.totalSpend / 1000)}K
+                </p>
               </div>
               <div>
-                <p className="text-[9px] uppercase text-slate-mist dark:text-warm-stone/50 tracking-widest font-light">Artisans Employed</p>
-                <p className="text-xs font-semibold text-carbon-ink dark:text-warm-stone mt-1">{supplier.artisansEmployed || "—"}</p>
+                <p className="text-[9px] uppercase text-[#6F848F] tracking-widest font-light">Artisans Employed</p>
+                <p className="text-xs font-semibold text-[#222326] dark:text-[#D8CFB8] mt-1">
+                  {supplier.artisansEmployed || "—"}
+                </p>
               </div>
               <div>
-                <p className="text-[9px] uppercase text-slate-mist dark:text-warm-stone/50 tracking-widest font-light">Women Workforce</p>
-                <p className="text-xs font-semibold text-carbon-ink dark:text-warm-stone mt-1">{supplier.womenPercent ? `${supplier.womenPercent}%` : "—"}</p>
+                <p className="text-[9px] uppercase text-[#6F848F] tracking-widest font-light">Women Workforce</p>
+                <p className="text-xs font-semibold text-[#222326] dark:text-[#D8CFB8] mt-1">
+                  {supplier.womenPercent ? `${supplier.womenPercent}%` : "—"}
+                </p>
               </div>
             </div>
 
             {/* Mini ESGC bar colored with brand colors */}
-            <div className="flex gap-2 mt-6 pt-4 border-t border-slate-mist/10 dark:border-midnight-blue/50">
+            <div className="flex gap-2 mt-6 pt-4 border-t border-[#6F848F]/20">
               {[
                 { label: "E", value: supplier.eScore, color: "#738678" }, // sage-mineral
                 { label: "S", value: supplier.sScore, color: "#7A3F1E" }, // deep-clay
@@ -305,10 +310,10 @@ function SuppliersSection({ data }: { data: DashboardData }) {
               ].map((s) => (
                 <div key={s.label} className="flex-1">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-[8px] font-semibold text-slate-mist dark:text-warm-stone/50">{s.label}</span>
-                    <span className="text-[8px] text-slate-mist dark:text-warm-stone/50 tabular-nums">{s.value}</span>
+                    <span className="text-[8px] font-semibold text-[#6F848F]">{s.label}</span>
+                    <span className="text-[8px] text-[#6F848F] tabular-nums">{s.value}</span>
                   </div>
-                  <div className="h-1 bg-warm-stone/30 dark:bg-black/20 rounded-none overflow-hidden">
+                  <div className="h-1 bg-[#6F848F]/20 rounded-none overflow-hidden">
                     <motion.div
                       className="h-full rounded-none"
                       style={{ backgroundColor: s.color }}
@@ -329,8 +334,6 @@ function SuppliersSection({ data }: { data: DashboardData }) {
 
 // ─────────────── Orders Section ───────────────
 
-import AnimatedCounter from "@/components/ui/AnimatedCounter";
-
 function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
   const orderStats = [
     { label: "Total Orders", value: summary.totalOrders, prefix: "", suffix: "" },
@@ -340,22 +343,22 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col items-start border-b border-slate-mist/25 dark:border-midnight-blue pb-3 mb-6">
-        <h2 className="text-2xl font-serif font-light text-carbon-ink dark:text-warm-stone tracking-tighter">
+      <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#2F3C52] pb-3 mb-6">
+        <h2 className="text-3xl font-serif text-[#222326] dark:text-[#D8CFB8] tracking-hero uppercase leading-none">
           Orders Overview
         </h2>
-        <p className="text-xs text-slate-mist dark:text-warm-stone/50 mt-1 font-light tracking-wide">
-          Key performance indicators for orders and fulfillment metrics.
+        <p className="text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 mt-1 font-light tracking-wide">
+          Key performance indicators for orders, fulfillment transparency, and vendor tracking.
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {orderStats.map((stat, idx) => (
-          <Card key={stat.label} delay={idx * 0.05} className="text-left">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/60 mb-2">
+          <Card key={stat.label} delay={idx * 0.05} variant="dense" className="text-left">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60 mb-2">
               {stat.label}
             </p>
-            <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-warm-stone">
+            <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#222326] dark:text-[#D8CFB8]">
               <AnimatedCounter
                 value={stat.value}
                 prefix={stat.prefix}
@@ -367,12 +370,20 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
         ))}
       </div>
 
-      <Card delay={0.3} hoverEffect={false} className="p-12 text-center bg-warm-stone/10 border-dashed border-slate-mist/30 dark:border-midnight-blue/50">
+      <Card
+        delay={0.3}
+        hoverEffect={false}
+        className="p-12 text-center bg-[#DFD8C2]/40 dark:bg-[#222326]/60 border-dashed border-[#6F848F]/30 dark:border-[#2F3C52]"
+      >
         <div className="flex flex-col items-center gap-3.5 max-w-md mx-auto">
-          <ShoppingBag className="w-8 h-8 text-slate-mist/70" strokeWidth={1.2} />
-          <h4 className="text-sm font-semibold tracking-wider uppercase text-carbon-ink dark:text-warm-stone">Fulfillment System Connection</h4>
-          <p className="text-xs text-slate-mist dark:text-warm-stone/60 leading-relaxed font-light">
-            Real-time dispatch schedules and direct shipping tracking integrations will appear once connected to your ERP node.
+          <div className="w-12 h-12 border border-[#6F848F]/30 flex items-center justify-center text-[#6F848F]">
+            <ShoppingBag className="w-6 h-6" strokeWidth={1.5} />
+          </div>
+          <h4 className="text-sm font-semibold tracking-wider uppercase text-[#222326] dark:text-[#D8CFB8]">
+            Direct ERP Fulfillment Link Active
+          </h4>
+          <p className="text-xs text-[#6F848F] leading-relaxed font-light">
+            Live order tracking, delivery waybills, and batch emission logs are synced continuously through your enterprise procurement gateway.
           </p>
         </div>
       </Card>
@@ -391,12 +402,12 @@ function ImpactSection({
 }) {
   return (
     <div className="space-y-8">
-      <div className="flex flex-col items-start border-b border-slate-mist/25 dark:border-midnight-blue pb-3 mb-6">
-        <h2 className="text-2xl font-serif font-light text-carbon-ink dark:text-warm-stone tracking-tighter">
-          Sustainability Impact Reports
+      <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#2F3C52] pb-3 mb-6">
+        <h2 className="text-3xl font-serif text-[#222326] dark:text-[#D8CFB8] tracking-hero uppercase leading-none">
+          Sustainability Impact Intelligence
         </h2>
-        <p className="text-xs text-slate-mist dark:text-warm-stone/50 mt-1 font-light tracking-wide">
-          Overview of environmental, social, and cultural metrics achieved through ethical procurement.
+        <p className="text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 mt-1 font-light tracking-wide">
+          Comprehensive review of verified ecological absorption, fair craft wages, and governance indices.
         </p>
       </div>
 

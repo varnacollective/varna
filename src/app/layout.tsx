@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter, Cedarville_Cursive } from "next/font/google";
+import { Cormorant_Garamond, Playfair_Display, Inter, Caveat, Cedarville_Cursive } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/next";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-cormorant",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -16,6 +23,13 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
   weight: ["300", "400", "500", "600", "700"],
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  display: "swap",
+  weight: ["400", "600", "700"],
 });
 
 const cedarville = Cedarville_Cursive({
@@ -48,10 +62,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} ${cedarville.variable} font-sans antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-50 transition-colors duration-300`}>
+      <body className={`${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#D8CFB8] dark:bg-[#222326] text-[#222326] dark:text-[#D8CFB8] transition-colors duration-300 selection:bg-[#7A3F1E] selection:text-[#D8CFB8]`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange={false}
         >

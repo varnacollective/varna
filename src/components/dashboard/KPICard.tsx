@@ -12,7 +12,7 @@ interface KPICardProps {
   suffix?: string;
   decimals?: number;
   icon: LucideIcon;
-  iconColor?: string; // Kept for backwards compatibility but styled brand-forward
+  iconColor?: string;
   accentColor?: "none" | "deep-clay" | "sage-mineral" | "slate-mist" | "midnight-blue";
   delay?: number;
   subtitle?: string;
@@ -35,12 +35,12 @@ export default function KPICard({
     <Card delay={delay} accentColor={accentColor} className="group" hoverEffect={true}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-mist dark:text-warm-stone/60 mb-2">
+          <p className="text-[10px] font-sans font-semibold uppercase tracking-[0.18em] text-[#6F848F] dark:text-[#D8CFB8]/60 mb-2">
             {title}
           </p>
           {varnaScoreData ? (
             <VarnaScoreHoverCard {...varnaScoreData}>
-              <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-warm-stone cursor-help">
+              <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#222326] dark:text-[#D8CFB8] cursor-help">
                 <AnimatedCounter
                   value={value}
                   prefix={prefix}
@@ -51,7 +51,7 @@ export default function KPICard({
               </div>
             </VarnaScoreHoverCard>
           ) : (
-            <div className="text-3xl font-sans font-light tracking-tight text-carbon-ink dark:text-warm-stone">
+            <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#222326] dark:text-[#D8CFB8]">
               <AnimatedCounter
                 value={value}
                 prefix={prefix}
@@ -62,7 +62,7 @@ export default function KPICard({
             </div>
           )}
           {subtitle && (
-            <p className="text-[11px] text-slate-mist/95 dark:text-warm-stone/50 mt-2 font-light">
+            <p className="text-[11px] text-[#6F848F] dark:text-[#D8CFB8]/50 mt-2 font-light leading-snug">
               {subtitle}
             </p>
           )}
@@ -70,13 +70,13 @@ export default function KPICard({
         <div
           className="
             flex items-center justify-center
-            w-11 h-11 border border-slate-mist/30 dark:border-midnight-blue
-            bg-warm-stone/30 dark:bg-black/20 text-deep-clay dark:text-warm-stone
+            w-12 h-12 border border-[#6F848F]/30 dark:border-[#2F3C52]
+            bg-[#DFD8C2]/40 dark:bg-[#222326]/60 text-[#7A3F1E] dark:text-[#D8CFB8]
             transition-transform duration-300
-            group-hover:scale-105 rounded-none
+            group-hover:scale-105 rounded-none flex-shrink-0
           "
         >
-          <Icon className="w-5 h-5 text-deep-clay dark:text-warm-stone" strokeWidth={1.5} />
+          <Icon className="w-5 h-5 text-[#7A3F1E] dark:text-[#D8CFB8]" strokeWidth={1.5} />
         </div>
       </div>
     </Card>

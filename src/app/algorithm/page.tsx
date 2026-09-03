@@ -1,122 +1,22 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, OrbitControls, Float, Html, Line } from "@react-three/drei";
-import * as THREE from "three";
-import Sidebar from "@/components/layout/Sidebar";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
-
-// Minimal glowing connecting line
-function ConnectionLine({ start, end }: { start: THREE.Vector3, end: THREE.Vector3 }) {
-  const points = useMemo(() => [start, end], [start, end]);
-  return (
-    <Line points={points} color="white" lineWidth={1} transparent opacity={0.3} />
-  );
-}
-
-// Fixed-scale annotation tooltip
-function FloatingAnnotation({ title, text }: { title: string, text: string }) {
-  return (
-    <Html center distanceFactor={15} zIndexRange={[100, 0]}>
-      <div className="w-64 p-4 bg-[#D8CFB8] text-[#222326] rounded-md shadow-xl pointer-events-none select-none text-left">
-        <p className="text-sm font-bold uppercase tracking-widest mb-2 border-b border-[#222326]/20 pb-1">{title}</p>
-        <p className="text-xs font-medium leading-relaxed">{text}</p>
-      </div>
-    </Html>
-  );
-}
-
-function FrameworkScene() {
-  const centerPos = useMemo(() => new THREE.Vector3(0, 0, 0), []);
-  const impactPos = useMemo(() => new THREE.Vector3(-5, 3, 0), []);
-  const readinessPos = useMemo(() => new THREE.Vector3(5, 2, 0), []);
-  const riskPos = useMemo(() => new THREE.Vector3(0, -4, 2), []);
-
-  const glassProps = {
-    transmission: 0.9,
-    opacity: 1,
-    metalness: 0.1,
-    roughness: 0.1,
-    ior: 1.5,
-    thickness: 2,
-    clearcoat: 1,
-    transparent: true,
-  };
-
-  const centerRef = useRef<THREE.Mesh>(null!);
-
-  useFrame((state, delta) => {
-    if (centerRef.current) {
-      centerRef.current.rotation.y += delta * 0.25;
-      centerRef.current.rotation.x += delta * 0.15;
-    }
-  });
-
-  return (
-    <>
-      <Environment preset="city" environmentIntensity={1.5} />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={2} />
-      <spotLight position={[10, 10, 10]} angle={0.2} penumbra={1} intensity={1} castShadow />
-
-      {/* Impact (50%) - Sphere */}
-      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-        <group position={impactPos}>
-          <mesh>
-            <sphereGeometry args={[1, 64, 64]} />
-            <meshPhysicalMaterial color="#738678" emissive="#738678" emissiveIntensity={0.3} {...glassProps} />
-          </mesh>
-          <FloatingAnnotation title="Impact (50%)" text="What the enterprise actually does. Evaluates environmental practices, social impact, governance, and cultural heritage." />
-        </group>
-      </Float>
-
-      {/* Readiness (30%) - Cube */}
-      <Float speed={2} rotationIntensity={1} floatIntensity={1.5}>
-        <group position={readinessPos}>
-          <mesh>
-            <boxGeometry args={[1.3, 1.3, 1.3]} />
-            <meshPhysicalMaterial color="#6F848F" emissive="#6F848F" emissiveIntensity={0.3} {...glassProps} />
-          </mesh>
-          <FloatingAnnotation title="Readiness (30%)" text="How well practices are managed. Evaluates tracking, documentation, and systematic processes." />
-        </group>
-      </Float>
-
-      {/* Risk (20%) - Tetrahedron */}
-      <Float speed={1.2} rotationIntensity={0.8} floatIntensity={1.2}>
-        <group position={riskPos}>
-          <mesh>
-            <tetrahedronGeometry args={[1.2]} />
-            <meshPhysicalMaterial color="#7A3F1E" emissive="#7A3F1E" emissiveIntensity={0.3} {...glassProps} />
-          </mesh>
-          <FloatingAnnotation title="Risk (20%)" text="Compliance and reliability. Starts at 100, with deductions applied for regulatory gaps or material risk." />
-        </group>
-      </Float>
-
-      {/* Center - Final Score - Octahedron */}
-      <Float speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
-        <group position={centerPos}>
-          <mesh ref={centerRef}>
-            <octahedronGeometry args={[1.8, 0]} />
-            <meshPhysicalMaterial color="#D8CFB8" emissive="#D8CFB8" emissiveIntensity={0.4} {...glassProps} />
-          </mesh>
-          <FloatingAnnotation title="Final Varna Score" text="A Force for Good, Built into Every Purchase." />
-        </group>
-      </Float>
-
-      {/* Connection Lines */}
-      <ConnectionLine start={impactPos} end={centerPos} />
-      <ConnectionLine start={readinessPos} end={centerPos} />
-      <ConnectionLine start={riskPos} end={centerPos} />
-    </>
-  );
-}
+import Sidebar from "@/components/layout/Sidebar";
+import BrandWatermark from "@/components/ui/BrandWatermark";
+import Card from "@/components/ui/Card";
+import { Sun, Moon, ArrowRight, ShieldCheck, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function AlgorithmPage() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSectionChange = (section: string) => {
     if (section !== "algorithm") {
@@ -134,189 +34,460 @@ export default function AlgorithmPage() {
     router.push("/");
   };
 
+  if (!mounted) return null;
+
   return (
-    <div className="min-h-screen flex bg-[#F9F9F8] dark:bg-carbon-ink font-sans selection:bg-deep-clay selection:text-warm-stone">
+    <div className="min-h-screen flex bg-[#D8CFB8] dark:bg-[#222326] text-[#222326] dark:text-[#D8CFB8] font-sans transition-colors duration-300 relative selection:bg-[#7A3F1E] selection:text-[#D8CFB8] overflow-x-hidden">
+      {/* Subtle brand crystal mark in page corner */}
+      <BrandWatermark position="bottom-right" size={600} opacity={0.04} />
+
       <Sidebar
         activeSection="algorithm"
         onSectionChange={handleSectionChange}
         onLogout={handleLogout}
       />
 
-      <main className="flex-1 ml-24 relative">
-        
+      <main className="flex-1 ml-24 relative z-10">
         {/* Floating Theme Toggle */}
         <div className="fixed top-8 right-8 z-50">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 border border-slate-mist/30 text-warm-stone/50 hover:text-warm-stone bg-carbon-ink/50 backdrop-blur-md transition-colors"
+            className="p-2.5 border border-[#6F848F]/40 text-[#222326] dark:text-[#D8CFB8] bg-[#E4DEC9]/80 dark:bg-[#272A30]/80 backdrop-blur-md shadow-sm transition-colors hover:border-[#7A3F1E] cursor-pointer"
             title="Toggle theme"
           >
-            {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         </div>
 
-        {/* 1. Hero Section (3D Visualization) */}
-        <section className="relative h-screen w-full bg-carbon-ink text-warm-stone">
-          <div className="absolute top-12 left-12 z-10 pointer-events-none">
-            <h1 className="text-4xl font-serif font-light tracking-tighter text-warm-stone leading-tight mb-3">
+        {/* ── 1. HERO SECTION & DIAMOND FORMULA ARCHITECTURE ───────────────── */}
+        <section className="pt-16 pb-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25">
+          {/* Header Block: Clear vertical spacing, full-width, zero overlap */}
+          <div className="flex flex-col items-start mb-16">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#D8CFB8]/70">
+                The Varna Framework · Architecture &amp; Methodology
+              </span>
+              <span className="w-8 h-px bg-[#7A3F1E]/40 dark:bg-[#D8CFB8]/30" />
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-[#222326] dark:text-[#D8CFB8] tracking-hero leading-tight mb-4 uppercase">
               The Varna Framework
             </h1>
-            <p className="text-xs uppercase tracking-widest text-warm-stone/50 font-light">
-              Framework Visualization
+
+            <p className="text-sm sm:text-base text-[#222326]/75 dark:text-[#D8CFB8]/70 max-w-3xl font-light leading-relaxed">
+              India's first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook—and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
+            </p>
+
+            <span className="font-accent text-xl text-[#7A3F1E] dark:text-[#D8CFB8]/80 mt-2 select-none">
+              quiet. slow. intentional.
+            </span>
+          </div>
+
+          {/* ── Diamond Formula Diagram Section ─────────────────────────────────── */}
+          <div className="w-full bg-[#E4DEC9] dark:bg-[#272A30] border border-[#6F848F]/30 dark:border-[#2F3C52] p-8 sm:p-12 shadow-sm relative">
+            <div className="text-center mb-10">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60">
+                Core Scoring Model · Convergent Diamond Architecture
+              </p>
+              <h3 className="text-2xl font-serif tracking-tight text-[#222326] dark:text-[#D8CFB8] mt-1 uppercase">
+                Weight Distribution &amp; Synthesis
+              </h3>
+            </div>
+
+            {/* Desktop Diamond SVG Connector Network + Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
+              {/* Card 1: Impact (50%) */}
+              <div className="border border-[#738678]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#738678] transition-colors">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-[#738678]" />
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-[9px] font-semibold uppercase tracking-widest text-[#738678]">
+                      Pillar 01
+                    </span>
+                    <span className="text-2xl font-serif text-[#738678] font-light">
+                      50%
+                    </span>
+                  </div>
+                  <h4 className="text-xl font-serif text-[#222326] dark:text-[#D8CFB8] mb-2 uppercase tracking-tight">
+                    Impact
+                  </h4>
+                  <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                    Evaluates tangible operations across four balanced pillars: Environmental stewardship, Social equity, Governance compliance, and Cultural craft preservation.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-[#6F848F]/20 flex flex-wrap gap-1.5">
+                  {["Environmental", "Social", "Governance", "Cultural"].map((d) => (
+                    <span key={d} className="text-[8px] uppercase tracking-wider px-2 py-0.5 border border-[#738678]/30 bg-[#738678]/10 text-[#738678]">
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Card 2: Readiness (30%) */}
+              <div className="border border-[#6F848F]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#6F848F] transition-colors">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-[#6F848F]" />
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-[9px] font-semibold uppercase tracking-widest text-[#6F848F]">
+                      Pillar 02
+                    </span>
+                    <span className="text-2xl font-serif text-[#6F848F] font-light">
+                      30%
+                    </span>
+                  </div>
+                  <h4 className="text-xl font-serif text-[#222326] dark:text-[#D8CFB8] mb-2 uppercase tracking-tight">
+                    Readiness
+                  </h4>
+                  <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                    Assesses management capability, operational tracking systems, traceable bills of materials, and long-term organizational capacity for sustainable production.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-[#6F848F]/20 flex flex-wrap gap-1.5">
+                  {["Traceability", "Management", "Systems", "Disclosures"].map((d) => (
+                    <span key={d} className="text-[8px] uppercase tracking-wider px-2 py-0.5 border border-[#6F848F]/30 bg-[#6F848F]/10 text-[#6F848F]">
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Card 3: Risk (20%) */}
+              <div className="border border-[#7A3F1E]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#7A3F1E] transition-colors">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-[#7A3F1E]" />
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-[9px] font-semibold uppercase tracking-widest text-[#7A3F1E]">
+                      Pillar 03
+                    </span>
+                    <span className="text-2xl font-serif text-[#7A3F1E] font-light">
+                      20%
+                    </span>
+                  </div>
+                  <h4 className="text-xl font-serif text-[#222326] dark:text-[#D8CFB8] mb-2 uppercase tracking-tight">
+                    Risk
+                  </h4>
+                  <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                    Evaluates regulatory compliance status, documentation validity, and adverse issues. Calibrated starting at 100 with deductions applied only for verified infractions.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-[#6F848F]/20 flex flex-wrap gap-1.5">
+                  {["Compliance", "Verification", "Integrity", "Labor Law"].map((d) => (
+                    <span key={d} className="text-[8px] uppercase tracking-wider px-2 py-0.5 border border-[#7A3F1E]/30 bg-[#7A3F1E]/10 text-[#7A3F1E]">
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Convergence Arrow & Final Score Node */}
+            <div className="mt-8 flex flex-col items-center">
+              <div className="w-px h-8 bg-[#6F848F]/40 mb-2" />
+              
+              <div className="w-full max-w-md border-2 border-[#7A3F1E] bg-[#D8CFB8] dark:bg-[#222326] p-6 text-center shadow-lg relative">
+                <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#7A3F1E] dark:text-[#D8CFB8]">
+                  Weighted Mathematical Synthesis
+                </span>
+                <h3 className="text-3xl font-serif text-[#222326] dark:text-[#D8CFB8] tracking-tight uppercase my-1">
+                  Final Varna Score (100)
+                </h3>
+                <p className="text-[11px] text-[#222326]/70 dark:text-[#D8CFB8]/60 font-light">
+                  (0.50 × Impact) + (0.30 × Readiness) + (0.20 × Risk)
+                </p>
+                <div className="mt-3 inline-flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-[#738678] font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Determines MSME Performance Band &amp; Procurement Tier</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 2. SECTION 1 · THE THREE PRINCIPLES ──────────────────────────── */}
+        <section id="section-1" className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25">
+          <div className="text-center mb-12">
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#D8CFB8]/60 block mb-2">
+              Section 1 · Foundational Philosophy
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#D8CFB8] uppercase tracking-tight">
+              The Three Principles
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card variant="editorial">
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#D8CFB8]/60 mb-3 block">
+                Principle 01
+              </span>
+              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#D8CFB8] mb-3 uppercase tracking-tight">
+                Objective
+              </h3>
+              <p className="text-sm text-[#222326]/75 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                Every score is rooted in empirical, verifiable operational inputs mapped to transparent scoring rubrics—never subjective assessor impressions or vanity narratives.
+              </p>
+            </Card>
+
+            <Card variant="editorial">
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#D8CFB8]/60 mb-3 block">
+                Principle 02
+              </span>
+              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#D8CFB8] mb-3 uppercase tracking-tight">
+                Calibrated
+              </h3>
+              <p className="text-sm text-[#222326]/75 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                Scoring algorithms scale dynamically based on enterprise category, employee headcount, annual revenue, and operating tenure. Micro artisans are never penalized for lacking corporate ESG compliance officers.
+              </p>
+            </Card>
+
+            <Card variant="editorial">
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#D8CFB8]/60 mb-3 block">
+                Principle 03
+              </span>
+              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#D8CFB8] mb-3 uppercase tracking-tight">
+                Developmental
+              </h3>
+              <p className="text-sm text-[#222326]/75 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                A Varna rating is a baseline trajectory, not a static verdict. Every assessment automatically yields an prioritized improvement roadmap guiding suppliers toward the Leader tier.
+              </p>
+            </Card>
+          </div>
+        </section>
+
+        {/* ── 3. SECTION 2 · THE FORMULA BREAKDOWN (with scroll-mt-28) ──────── */}
+        <section
+          id="section-2"
+          className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25"
+        >
+          <div className="mb-12">
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#D8CFB8]/60 block mb-2">
+              Section 2 · Mathematical Framework
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#D8CFB8] uppercase tracking-tight">
+              The Formula Breakdown
+            </h2>
+            <p className="text-sm text-[#222326]/75 dark:text-[#D8CFB8]/70 max-w-2xl font-light mt-2">
+              How individual indicators are audited, aggregated, and balanced into the final enterprise rating.
             </p>
           </div>
-          
-          <Canvas camera={{ position: [0, 0, 11], fov: 45 }}>
-            <FrameworkScene />
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-          </Canvas>
-          
-          {/* Scroll Down Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-widest text-warm-stone/40 animate-pulse pointer-events-none">
-            Scroll to read
+
+          <div className="space-y-6">
+            <Card variant="default" className="border-l-4 border-l-[#738678]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 border border-[#738678]/40 bg-[#738678]/10 flex items-center justify-center text-xl font-serif text-[#738678] flex-shrink-0">
+                    50%
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-serif uppercase tracking-tight text-[#222326] dark:text-[#D8CFB8]">
+                      Impact Dimension
+                    </h4>
+                    <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light mt-1">
+                      Direct measurements of environmental efficiency, carbon emissions avoided, artisanal living wages, and cultural heritage protection.
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right text-xs font-sans text-[#6F848F] uppercase tracking-wider font-medium">
+                  Impact Score = (E × 0.35) + (S × 0.35) + (G × 0.15) + (C × 0.15)
+                </div>
+              </div>
+            </Card>
+
+            <Card variant="default" className="border-l-4 border-l-[#6F848F]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 border border-[#6F848F]/40 bg-[#6F848F]/10 flex items-center justify-center text-xl font-serif text-[#6F848F] flex-shrink-0">
+                    30%
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-serif uppercase tracking-tight text-[#222326] dark:text-[#D8CFB8]">
+                      Readiness Dimension
+                    </h4>
+                    <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light mt-1">
+                      Verification of inventory tracking protocols, supply-chain transparency, worker safety standards, and operational resilience.
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right text-xs font-sans text-[#6F848F] uppercase tracking-wider font-medium">
+                  Readiness Score = Sum of Audited Operational Controls
+                </div>
+              </div>
+            </Card>
+
+            <Card variant="default" className="border-l-4 border-l-[#7A3F1E]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 border border-[#7A3F1E]/40 bg-[#7A3F1E]/10 flex items-center justify-center text-xl font-serif text-[#7A3F1E] flex-shrink-0">
+                    20%
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-serif uppercase tracking-tight text-[#222326] dark:text-[#D8CFB8]">
+                      Risk Dimension
+                    </h4>
+                    <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light mt-1">
+                      Legal compliance standing (GSTIN, Udyam MSME status, statutory labor adherence). Begins at 100 and applies formulaic point deductions.
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right text-xs font-sans text-[#6F848F] uppercase tracking-wider font-medium">
+                  Risk Score = 100 − Deductions for Confirmed Gaps
+                </div>
+              </div>
+            </Card>
           </div>
         </section>
 
-        {/* 2. Scrollable Narrative Content */}
-        
-        {/* Intro Block */}
-        <section className="py-24 px-12 md:px-24 bg-[#F9F9F8] text-carbon-ink dark:bg-carbon-ink dark:text-warm-stone text-center border-b border-slate-mist/20">
-          <p className="text-2xl md:text-3xl font-serif font-light leading-relaxed max-w-4xl mx-auto">
-            What is the Varna Framework? India's first sustainability credentialing standard designed specifically for small and micro enterprises. Built for enterprises that conventional ESG frameworks overlook—and for buyers who need more than a checkbox.
-          </p>
-        </section>
-
-        {/* Section 1: The Three Principles */}
-        <section className="py-24 px-12 md:px-24 bg-white dark:bg-[#2A2B2E]">
-          <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 mb-12 text-center">
-            Section 1 &bull; The Three Principles
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-            <div className="border-t border-carbon-ink/10 dark:border-warm-stone/10 pt-6">
-              <h3 className="text-xl font-serif text-carbon-ink dark:text-warm-stone mb-4 tracking-tight">Objective</h3>
-              <p className="text-sm text-carbon-ink/70 dark:text-warm-stone/70 font-light leading-relaxed">
-                Every score comes from actual data mapped to defined bands—not assessor opinion.
-              </p>
-            </div>
-            <div className="border-t border-carbon-ink/10 dark:border-warm-stone/10 pt-6">
-              <h3 className="text-xl font-serif text-carbon-ink dark:text-warm-stone mb-4 tracking-tight">Calibrated</h3>
-              <p className="text-sm text-carbon-ink/70 dark:text-warm-stone/70 font-light leading-relaxed">
-                Scoring is adjusted for enterprise size and age.
-              </p>
-            </div>
-            <div className="border-t border-carbon-ink/10 dark:border-warm-stone/10 pt-6">
-              <h3 className="text-xl font-serif text-carbon-ink dark:text-warm-stone mb-4 tracking-tight">Developmental</h3>
-              <p className="text-sm text-carbon-ink/70 dark:text-warm-stone/70 font-light leading-relaxed">
-                The framework is a starting point, not a verdict. Every score comes with a roadmap to improve it.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 2: The Formula Breakdown */}
-        <section className="py-24 px-12 md:px-24 bg-[#F9F9F8] dark:bg-carbon-ink border-t border-slate-mist/20">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 mb-12">
-              Section 2 &bull; The Formula Breakdown
+        {/* ── 4. SECTION 3 · THE MULTIPLIER EFFECT (Calculation Pipeline) ──── */}
+        <section id="section-3" className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25">
+          <div className="text-center mb-14">
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#D8CFB8]/60 block mb-2">
+              Section 3 · Data Quality Multipliers
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#D8CFB8] uppercase tracking-tight">
+              The Evidence Multiplier Pipeline
             </h2>
-            <div className="space-y-12">
-              <div className="flex gap-8 items-start">
-                <div className="w-16 h-16 rounded-full bg-[#738678]/10 border border-[#738678]/30 flex items-center justify-center flex-shrink-0 text-[#738678] font-serif text-2xl">50</div>
-                <div>
-                  <h3 className="text-2xl font-serif text-carbon-ink dark:text-warm-stone mb-3">Impact (50%)</h3>
-                  <p className="text-base text-carbon-ink/70 dark:text-warm-stone/70 font-light leading-relaxed">
-                    What your enterprise actually does. Split across Environmental, Social, Governance, and Cultural dimensions.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-8 items-start">
-                <div className="w-16 h-16 rounded-full bg-[#6F848F]/10 border border-[#6F848F]/30 flex items-center justify-center flex-shrink-0 text-[#6F848F] font-serif text-2xl">30</div>
-                <div>
-                  <h3 className="text-2xl font-serif text-carbon-ink dark:text-warm-stone mb-3">Readiness (30%)</h3>
-                  <p className="text-base text-carbon-ink/70 dark:text-warm-stone/70 font-light leading-relaxed">
-                    How well you manage and document your sustainability practices.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-8 items-start">
-                <div className="w-16 h-16 rounded-full bg-[#7A3F1E]/10 border border-[#7A3F1E]/30 flex items-center justify-center flex-shrink-0 text-[#7A3F1E] font-serif text-2xl">20</div>
-                <div>
-                  <h3 className="text-2xl font-serif text-carbon-ink dark:text-warm-stone mb-3">Risk (20%)</h3>
-                  <p className="text-base text-carbon-ink/70 dark:text-warm-stone/70 font-light leading-relaxed">
-                    Your regulatory compliance status and data reliability. Deductions apply only for verified compliance issues.
-                  </p>
-                </div>
-              </div>
+            <p className="text-sm text-[#222326]/75 dark:text-[#D8CFB8]/70 max-w-2xl mx-auto font-light mt-2">
+              How self-reported claims are adjusted by verified documentation to yield the final Effective Score.
+            </p>
+          </div>
+
+          {/* Clean Horizontal Pipeline Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-14 items-center">
+            <div className="p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center">
+              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] block mb-1">Step 01</span>
+              <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#D8CFB8]">Actual Data</h5>
+              <p className="text-[10px] text-[#6F848F] mt-1 font-light">Supplier metrics &amp; invoices</p>
+            </div>
+
+            <div className="hidden md:flex justify-center text-[#7A3F1E]">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+
+            <div className="p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center">
+              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] block mb-1">Step 02</span>
+              <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#D8CFB8]">Band Lookup</h5>
+              <p className="text-[10px] text-[#6F848F] mt-1 font-light">Industry MSME threshold</p>
+            </div>
+
+            <div className="hidden md:flex justify-center text-[#7A3F1E]">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+
+            <div className="p-4 border-2 border-[#7A3F1E] bg-[#E4DEC9] dark:bg-[#272A30] text-center shadow-sm">
+              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#7A3F1E] block mb-1">Step 03</span>
+              <h5 className="text-sm font-serif uppercase text-[#7A3F1E] dark:text-[#D8CFB8]">Multiplier</h5>
+              <p className="text-[10px] text-[#6F848F] mt-1 font-light">0.50× · 0.75× · 1.00×</p>
             </div>
           </div>
-        </section>
 
-        {/* Section 3: The Multiplier Effect */}
-        <section className="py-24 px-12 md:px-24 bg-carbon-ink text-warm-stone">
-          <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-mist/70 mb-16">
-              Section 3 &bull; The Multiplier Effect
-            </h2>
-            
-            <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-16 overflow-x-auto pb-4">
-              <div className="px-6 py-4 border border-warm-stone/20 bg-warm-stone/5 font-serif text-lg whitespace-nowrap">Actual Data</div>
-              <div className="text-warm-stone/40">→</div>
-              <div className="px-6 py-4 border border-warm-stone/20 bg-warm-stone/5 font-serif text-lg whitespace-nowrap">Band Lookup</div>
-              <div className="text-warm-stone/40">→</div>
-              <div className="px-6 py-4 border border-warm-stone/20 bg-warm-stone/10 font-serif text-lg whitespace-nowrap">Raw Score</div>
-              <div className="text-warm-stone/40">→</div>
-              <div className="px-6 py-4 border border-deep-clay/50 bg-deep-clay/20 font-serif text-lg text-warm-stone whitespace-nowrap shadow-[0_0_20px_rgba(122,63,30,0.3)]">Evidence Multiplier</div>
-              <div className="text-warm-stone/40">→</div>
-              <div className="px-6 py-4 border border-warm-stone/40 bg-warm-stone/20 font-serif text-xl whitespace-nowrap font-semibold">Effective Score</div>
+          {/* Evidence Quality Tiers */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="p-6 border border-[#7A3F1E]/40 bg-[#E4DEC9] dark:bg-[#272A30]">
+              <div className="text-3xl font-serif text-[#7A3F1E] mb-2 font-light">0.50×</div>
+              <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#D8CFB8] mb-1">
+                None / Proxy Data
+              </h5>
+              <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                Metric is estimated using regional averages or industry proxies without primary receipts.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16 text-left">
-              <div className="p-6 border border-warm-stone/10 bg-black/20">
-                <div className="text-2xl font-serif text-deep-clay mb-2">0.5x</div>
-                <div className="text-xs uppercase tracking-wider mb-2 font-semibold">None / Proxy</div>
-                <p className="text-xs font-light text-warm-stone/60">Data is estimated or absent.</p>
-              </div>
-              <div className="p-6 border border-warm-stone/10 bg-black/20">
-                <div className="text-2xl font-serif text-slate-mist mb-2">0.75x</div>
-                <div className="text-xs uppercase tracking-wider mb-2 font-semibold">Self-Reported</div>
-                <p className="text-xs font-light text-warm-stone/60">Data is claimed but unaudited.</p>
-              </div>
-              <div className="p-6 border border-warm-stone/10 bg-black/20">
-                <div className="text-2xl font-serif text-sage-mineral mb-2">1.0x</div>
-                <div className="text-xs uppercase tracking-wider mb-2 font-semibold">Third-Party Verified</div>
-                <p className="text-xs font-light text-warm-stone/60">Data is backed by certified documentation.</p>
-              </div>
+            <div className="p-6 border border-[#6F848F]/40 bg-[#E4DEC9] dark:bg-[#272A30]">
+              <div className="text-3xl font-serif text-[#6F848F] mb-2 font-light">0.75×</div>
+              <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#D8CFB8] mb-1">
+                Self-Reported
+              </h5>
+              <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                Data is signed and declared by enterprise management but awaiting third-party verification.
+              </p>
             </div>
 
-            <p className="text-3xl font-serif font-light text-warm-stone/90 italic">
+            <div className="p-6 border border-[#738678]/40 bg-[#E4DEC9] dark:bg-[#272A30]">
+              <div className="text-3xl font-serif text-[#738678] mb-2 font-light">1.00×</div>
+              <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#D8CFB8] mb-1">
+                Third-Party Verified
+              </h5>
+              <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light leading-relaxed">
+                Backed by active certificates, third-party audit reports, and verified traceability slips.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="font-accent text-2xl md:text-3xl text-[#7A3F1E] dark:text-[#D8CFB8]/90 select-none">
               "The score is not a judgment. It is a calculation."
             </p>
           </div>
         </section>
 
-        {/* Section 4: Performance Bands */}
-        <section className="py-24 px-12 md:px-24 bg-white dark:bg-[#2A2B2E]">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/50 mb-12 text-center">
-              Section 4 &bull; Performance Bands
+        {/* ── 5. SECTION 4 · PERFORMANCE BANDS ─────────────────────────────── */}
+        <section id="section-4" className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#D8CFB8]/60 block mb-2">
+              Section 4 · Classification Scale
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#D8CFB8] uppercase tracking-tight">
+              Performance Bands
             </h2>
-            <div className="space-y-4">
-              {[
-                { title: "Varna Leader", range: "85 - 100", color: "border-deep-clay", text: "text-deep-clay" },
-                { title: "Advanced", range: "70 - 84", color: "border-sage-mineral", text: "text-sage-mineral" },
-                { title: "Emerging", range: "55 - 69", color: "border-slate-mist", text: "text-slate-mist" },
-                { title: "Foundational", range: "40 - 54", color: "border-carbon-ink dark:border-warm-stone/40", text: "text-carbon-ink dark:text-warm-stone" },
-                { title: "Not Ready", range: "Below 40", color: "border-red-900/40", text: "text-red-900/60 dark:text-red-400/60" },
-              ].map((band) => (
-                <div key={band.title} className={`flex justify-between items-center p-6 border-l-4 ${band.color} bg-[#F9F9F8] dark:bg-black/10`}>
-                  <h3 className={`text-xl font-serif ${band.text}`}>{band.title}</h3>
-                  <div className="text-sm font-sans tracking-widest font-light text-carbon-ink/60 dark:text-warm-stone/60">{band.range}</div>
+          </div>
+
+          <div className="max-w-4xl mx-auto space-y-4">
+            {[
+              {
+                title: "Varna Leader",
+                range: "85–100",
+                color: "border-l-[#738678]",
+                textColor: "text-[#738678]",
+                desc: "Industry-leading ESG operations, third-party verified evidence, full traceability.",
+              },
+              {
+                title: "Advanced",
+                range: "70–84",
+                color: "border-l-[#6F848F]",
+                textColor: "text-[#6F848F]",
+                desc: "High compliance, verifiable environmental & living wage tracking, consistent reporting.",
+              },
+              {
+                title: "Emerging",
+                range: "55–69",
+                color: "border-l-[#A89C82]",
+                textColor: "text-[#5C5238] dark:text-warm-stone",
+                desc: "Foundational practices in place; actively building formalized sustainability documentation.",
+              },
+              {
+                title: "Foundational",
+                range: "40–54",
+                color: "border-l-[#7A3F1E]",
+                textColor: "text-[#7A3F1E]",
+                desc: "Core statutory compliance established; requires technical assistance to scale impact metrics.",
+              },
+              {
+                title: "Not Ready",
+                range: "<40",
+                color: "border-l-[#7A3F1E]/60",
+                textColor: "text-[#7A3F1E]/80",
+                desc: "Compliance or disclosure gaps identified; not approved for enterprise procurement catalog.",
+              },
+            ].map((band) => (
+              <div
+                key={band.title}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between p-6 border-l-4 ${band.color} bg-[#E4DEC9] dark:bg-[#272A30] border border-[#6F848F]/25 shadow-sm gap-2`}
+              >
+                <div>
+                  <h4 className={`text-xl font-serif uppercase tracking-tight ${band.textColor}`}>
+                    {band.title}
+                  </h4>
+                  <p className="text-xs text-[#222326]/70 dark:text-[#D8CFB8]/70 font-light mt-0.5">
+                    {band.desc}
+                  </p>
                 </div>
-              ))}
-            </div>
+                <span className="text-sm font-sans tracking-widest uppercase font-semibold text-[#222326]/80 dark:text-[#D8CFB8]/80 whitespace-nowrap">
+                  {band.range}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
-
       </main>
     </div>
   );

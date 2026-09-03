@@ -17,18 +17,22 @@ module.exports = {
         "carbon-ink": "#222326",     // Body text, high contrast items, iconography
       },
       fontFamily: {
-        // Premium Serif for Headings/H1 (Tight tracking, breathing room)
-        serif: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
-        // Clean Geometric Sans-Serif for Body/Sub-headings/UI (Leading relaxed)
-        sans: ["var(--font-inter)", "Inter", "Avenir", "sans-serif"],
-        // Authentic Handwriting Font for stylistic accents
-        accent: ["var(--font-cedarville)", "Cedarville Cursive", "cursive"],
+        // Premium Serif for Headings/H1 (Versailles / Cormorant Garamond / Playfair Display)
+        serif: ["Versailles", "var(--font-cormorant)", "var(--font-playfair)", "Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
+        // Clean Geometric Sans-Serif for Body/Sub-headings/UI (Avenir / Inter)
+        sans: ["Avenir", "var(--font-inter)", "Inter", "Futura PT", "sans-serif"],
+        // Authentic Handwriting Font for stylistic accents (<5% of UI)
+        accent: ["var(--font-caveat)", "var(--font-cedarville)", "Caveat", "Cedarville Cursive", "cursive"],
       },
       letterSpacing: {
-        tighter: "-0.07em", // Tight tracking applied to Versailles headings
+        hero: "-0.07em",       // Tight negative tracking (-70) on Versailles hero titles
+        tighter: "-0.07em",
+        section: "0.18em",     // Wide tracking for section labels ("SECTION 1 · THE THREE PRINCIPLES")
+        label: "0.08em",       // Subtle tracking on uppercase captions & microcopy
       },
       lineHeight: {
-        relaxed: "1.4", // Avenir geometric font spacing
+        tight: "1",            // Headings line-height: 1
+        relaxed: "1.4",        // Avenir body line-height: 1.4
       },
     },
   },
