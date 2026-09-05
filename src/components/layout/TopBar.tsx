@@ -37,22 +37,22 @@ export default function TopBar({ clientName, industry }: TopBarProps) {
       className="
         flex flex-col sm:flex-row items-start sm:items-center justify-between
         px-8 py-6 mb-8 gap-4
-        bg-[#E4DEC9] dark:bg-[#272A30] border border-[#6F848F]/30 dark:border-[#2F3C52]
-        rounded-none shadow-sm
+        bg-[#E4DEC9] dark:bg-[#22252B] border border-[#6F848F]/30 dark:border-[#8C9DA8]/20
+        rounded-none shadow-elevation-low dark:shadow-elevation-dark-low
       "
     >
       {/* Left: Branding + Client info */}
       <div className="flex flex-col items-start">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#D8CFB8]/70">
+          <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#FAF6EE]/80">
             Enterprise Portal · Procurement Intelligence
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#D8CFB8] tracking-hero uppercase leading-none mt-1">
+        <h1 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mt-1">
           {clientName}
         </h1>
         {industry && (
-          <p className="text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 mt-1 font-light tracking-wide">
+          <p className="text-xs text-[#6F848F] dark:text-[#FAF6EE]/65 mt-1 font-light tracking-wide">
             {industry} · Active Assessment Interval
           </p>
         )}
@@ -60,18 +60,18 @@ export default function TopBar({ clientName, industry }: TopBarProps) {
 
       {/* Right: Date + Actions */}
       <div className="flex items-center gap-5">
-        <div className="hidden md:flex items-center gap-2 text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 font-light tracking-wider uppercase">
-          <Calendar className="w-3.5 h-3.5 text-[#6F848F]" strokeWidth={1.5} />
+        <div className="hidden md:flex items-center gap-2 text-xs text-[#6F848F] dark:text-[#FAF6EE]/70 font-light tracking-wider uppercase">
+          <Calendar className="w-3.5 h-3.5 text-[#6F848F] dark:text-[#8C9DA8]" strokeWidth={1.5} />
           <span>{currentDate}</span>
         </div>
 
-        <div className="h-6 w-px bg-[#6F848F]/25 dark:bg-[#2F3C52] hidden sm:block" />
+        <div className="h-6 w-px bg-[#6F848F]/25 dark:bg-[#8C9DA8]/20 hidden sm:block" />
 
         {/* Theme Toggle */}
         {mounted && (
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2.5 border border-[#6F848F]/30 hover:border-[#7A3F1E] text-[#6F848F] dark:text-[#D8CFB8]/60 hover:text-[#222326] dark:hover:text-[#D8CFB8] transition-all duration-200 rounded-none bg-[#DFD8C2]/40 dark:bg-[#222326]/60 cursor-pointer"
+            className="p-2.5 border border-[#6F848F]/30 dark:border-[#8C9DA8]/30 hover:border-[#7A3F1E] text-[#6F848F] dark:text-[#FAF6EE]/80 hover:text-[#222326] dark:hover:text-[#FAF6EE] transition-all duration-200 rounded-none bg-[#DFD8C2]/40 dark:bg-[#1A1C20] cursor-pointer"
             title="Toggle theme"
           >
             {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
@@ -83,7 +83,7 @@ export default function TopBar({ clientName, industry }: TopBarProps) {
           className="
             flex items-center gap-2.5
             px-5 py-3 rounded-none
-            bg-[#7A3F1E] hover:bg-[#683315] dark:bg-[#D8CFB8] dark:hover:bg-[#E8E2D1] text-[#D8CFB8] dark:text-[#222326]
+            bg-[#7A3F1E] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:hover:bg-[#E8E2D1] text-[#D8CFB8] dark:text-[#18191D]
             text-xs font-serif uppercase tracking-widest transition-all duration-200 shadow-sm cursor-pointer
           "
         >

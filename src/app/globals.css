@@ -65,25 +65,25 @@
 
   /* ── Dark / Technical Theme (Overview, Suppliers, Orders) ─────────────────────── */
   .dark {
-    --background: #222326;          /* Carbon Ink base */
-    --foreground: #D8CFB8;          /* Warm Stone text */
-    --card: #272A30;                /* Midnight Blue/Carbon Ink composite panel */
-    --card-foreground: #D8CFB8;
-    --popover: #272A30;
-    --popover-foreground: #D8CFB8;
-    --primary: #7A3F1E;             /* Deep Clay accent */
-    --primary-foreground: #D8CFB8;
-    --secondary: #6F848F;           /* Slate Mist panels */
-    --secondary-foreground: #D8CFB8;
-    --muted: #2F3C52;               /* Midnight Blue */
-    --muted-foreground: #6F848F;     /* Slate Mist */
-    --accent: #738678;              /* Sage Mineral */
-    --accent-foreground: #D8CFB8;
-    --destructive: rgba(122, 63, 30, 0.85); /* Deep Clay alert (no raw red) */
-    --destructive-foreground: #D8CFB8;
-    --border: rgba(111, 132, 143, 0.25); /* Slate Mist 25% */
-    --input: rgba(111, 132, 143, 0.20);
-    --ring: #D8CFB8;
+    --background: #18191D;          /* Deep Carbon Ink base (dark boutique-hotel-bar canvas) */
+    --foreground: #FAF6EE;          /* Crisp Warm Stone / near-white high contrast */
+    --card: #22252B;                /* Midnight-tinted Carbon Ink elevated card surface */
+    --card-foreground: #FAF6EE;
+    --popover: #24272E;
+    --popover-foreground: #FAF6EE;
+    --primary: #944D25;             /* Luminous Deep Clay accent */
+    --primary-foreground: #FAF6EE;
+    --secondary: #8298A5;           /* Brightened Slate Mist panels */
+    --secondary-foreground: #FAF6EE;
+    --muted: #252A34;               /* Deep Midnight Blue surface */
+    --muted-foreground: #8C9DA8;     /* Legible mid-tone secondary caption */
+    --accent: #829888;              /* Brightened Sage Mineral */
+    --accent-foreground: #FAF6EE;
+    --destructive: rgba(148, 77, 37, 0.9); /* Luminous Deep Clay alert */
+    --destructive-foreground: #FAF6EE;
+    --border: rgba(140, 157, 168, 0.18); /* Soft luminous border highlight */
+    --input: rgba(140, 157, 168, 0.15);
+    --ring: #FAF6EE;
   }
 }
 
@@ -218,4 +218,99 @@
   background-size: 200% 100%;
   animation: shimmer 2s infinite linear;
 }
+
+/* ── Luxury Gradient & Texture Utilities ────────────────────────────────── */
+.text-gradient-clay {
+  background: linear-gradient(135deg, #7A3F1E 0%, #A85422 50%, #4E230B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-sage {
+  background: linear-gradient(135deg, #738678 0%, #8EA593 50%, #47574B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #C5A059 0%, #D8CFB8 60%, #9B783E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtle ambient gradient mesh for page backgrounds */
+@utility bg-canvas {
+  background-color: var(--background);
+}
+
+@utility bg-ambient-mesh-light {
+  background-color: #D8CFB8;
+  background-image: 
+    radial-gradient(at 10% 15%, rgba(228, 222, 201, 0.7) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(115, 134, 120, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(122, 63, 30, 0.06) 0px, transparent 50%),
+    radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.08) 0px, transparent 50%);
+}
+
+@utility bg-ambient-mesh-dark {
+  background-color: #18191D;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(37, 42, 52, 0.7) 0px, transparent 55%),
+    radial-gradient(at 85% 15%, rgba(47, 60, 82, 0.35) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(148, 77, 37, 0.10) 0px, transparent 50%),
+    radial-gradient(at 20% 85%, rgba(130, 152, 136, 0.08) 0px, transparent 50%);
+}
+
+/* Fail-safe theme override: when .dark is active, any container with bg-ambient-mesh-light flips to deep Carbon Ink */
+:is(.dark, .dark *) .bg-ambient-mesh-light,
+.dark .bg-ambient-mesh-light {
+  background-color: #18191D !important;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(37, 42, 52, 0.7) 0px, transparent 55%),
+    radial-gradient(at 85% 15%, rgba(47, 60, 82, 0.35) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(148, 77, 37, 0.10) 0px, transparent 50%),
+    radial-gradient(at 20% 85%, rgba(130, 152, 136, 0.08) 0px, transparent 50%) !important;
+}
+
+.bg-ambient-mesh {
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(at 10% 15%, rgba(228, 222, 201, 0.7) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(115, 134, 120, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(122, 63, 30, 0.06) 0px, transparent 50%),
+    radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.08) 0px, transparent 50%);
+}
+
+:is(.dark, .dark *) .bg-ambient-mesh,
+.dark .bg-ambient-mesh {
+  background-color: #18191D !important;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(37, 42, 52, 0.7) 0px, transparent 55%),
+    radial-gradient(at 85% 15%, rgba(47, 60, 82, 0.35) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(148, 77, 37, 0.10) 0px, transparent 50%),
+    radial-gradient(at 20% 85%, rgba(130, 152, 136, 0.08) 0px, transparent 50%) !important;
+}
+
+/* Elevation shadows */
+.elevation-low {
+  box-shadow: 0 2px 10px -2px rgba(34, 35, 38, 0.06), 0 1px 3px rgba(34, 35, 38, 0.04);
+}
+.dark .elevation-low {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(140, 157, 168, 0.12);
+}
+
+.elevation-mid {
+  box-shadow: 0 10px 30px -4px rgba(34, 35, 38, 0.12), 0 4px 8px -2px rgba(34, 35, 38, 0.06);
+}
+.dark .elevation-mid {
+  box-shadow: 0 14px 44px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(140, 157, 168, 0.16);
+}
+
+.elevation-high {
+  box-shadow: 0 24px 54px -8px rgba(34, 35, 38, 0.22), 0 8px 16px -4px rgba(34, 35, 38, 0.12);
+}
+.dark .elevation-high {
+  box-shadow: 0 28px 70px -8px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(140, 157, 168, 0.2);
+}
+
 

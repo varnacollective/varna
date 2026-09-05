@@ -10,6 +10,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  CartesianGrid,
+  LabelList,
 } from "recharts";
 import { BarChart3 } from "lucide-react";
 
@@ -66,17 +68,17 @@ function CustomTooltip({
   const brands = TIER_BRANDS[d.tier] || [];
 
   return (
-    <div className="bg-[#E4DEC9] dark:bg-[#272A30] border border-[#6F848F]/40 p-4 shadow-lg rounded-none font-sans text-xs min-w-[200px] z-50">
+    <div className="bg-[#E4DEC9] dark:bg-[#22252B] border border-[#6F848F]/30 dark:border-[#8C9DA8]/25 p-4 shadow-elevation-high dark:shadow-elevation-dark-high rounded-lg font-sans text-xs min-w-[200px] z-50">
       {/* Tier Header */}
-      <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-[#6F848F]/20">
+      <div className="flex items-center gap-2.5 mb-3 pb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/15">
         <div
-          className="w-3 h-3 rounded-none flex-shrink-0"
+          className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-xs"
           style={{ backgroundColor: TIER_COLORS[d.tier] || d.color }}
         />
-        <p className="font-semibold text-[#222326] dark:text-[#D8CFB8] uppercase tracking-wider text-[10px]">
+        <p className="font-semibold text-[#222326] dark:text-[#FAF6EE] uppercase tracking-wider text-[10px]">
           {d.tier} Tier
         </p>
-        <span className="ml-auto text-[#6F848F] tabular-nums font-light">
+        <span className="ml-auto text-[#6F848F] dark:text-[#8C9DA8] tabular-nums font-light text-[11px]">
           {d.count} supplier{d.count !== 1 ? "s" : ""}
         </span>
       </div>
@@ -86,15 +88,15 @@ function CustomTooltip({
         <div className="space-y-1.5">
           {brands.map((brand) => (
             <div key={brand} className="flex items-center gap-2">
-              <div className="w-1 h-1 bg-[#7A3F1E] dark:bg-[#D8CFB8]/60 flex-shrink-0" />
-              <span className="text-[#222326] dark:text-[#D8CFB8]/90 font-light tracking-wide text-[10px]">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#7A3F1E] dark:bg-[#FAF6EE]/70 flex-shrink-0" />
+              <span className="text-[#222326] dark:text-[#FAF6EE]/90 font-light tracking-wide text-[10px]">
                 {brand}
               </span>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-[#6F848F] italic font-light text-[10px]">
+        <p className="text-[#6F848F] dark:text-[#8C9DA8] italic font-light text-[10px]">
           No suppliers in this tier
         </p>
       )}
@@ -132,8 +134,8 @@ export default function PortfolioMixChart({
 
   if (total === 0) {
     return (
-      <Card delay={delay} hoverEffect={false} className="p-8">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60 mb-2 border-b border-[#6F848F]/20 dark:border-[#2F3C52] pb-3">
+      <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
+        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/20 pb-3">
           Supplier Tier Distribution
         </h3>
         <div className="h-48 flex flex-col items-center justify-center text-center p-6 border border-dashed border-[#6F848F]/30 bg-[#DFD8C2]/20 dark:bg-[#222326]/40">
@@ -150,13 +152,13 @@ export default function PortfolioMixChart({
   }
 
   return (
-    <Card delay={delay} hoverEffect={false} className="p-8">
-      <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60 mb-2 border-b border-[#6F848F]/20 dark:border-[#2F3C52] pb-3">
+    <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
+      <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/20 pb-3">
         Supplier Tier Distribution
       </h3>
-      <p className="text-3xl font-serif font-light text-[#7A3F1E] dark:text-[#D8CFB8] tracking-tighter mb-6 mt-2">
+      <p className="text-3xl sm:text-4xl font-serif font-light text-[#7A3F1E] dark:text-[#FAF6EE] tracking-hero mb-6 mt-2">
         {total}{" "}
-        <span className="text-[10px] font-sans font-light uppercase tracking-wider text-[#6F848F] dark:text-[#D8CFB8]/60 ml-1">
+        <span className="text-[10px] font-sans font-light uppercase tracking-wider text-[#6F848F] dark:text-[#8C9DA8] ml-1.5">
           total suppliers
         </span>
       </p>
@@ -170,9 +172,16 @@ export default function PortfolioMixChart({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            barCategoryGap="30%"
-            margin={{ top: 0, right: 0, bottom: 0, left: -20 }}
+            barCategoryGap="32%"
+            margin={{ top: 18, right: 10, bottom: 0, left: -20 }}
           >
+            {/* Barely-there subtle gridlines */}
+            <CartesianGrid
+              vertical={false}
+              stroke="#6F848F"
+              strokeOpacity={0.12}
+              strokeDasharray="3 3"
+            />
             <XAxis
               dataKey="tier"
               axisLine={false}
@@ -187,17 +196,26 @@ export default function PortfolioMixChart({
             />
             <Tooltip
               content={<CustomTooltip />}
-              cursor={false}
+              cursor={{ fill: "rgba(111, 132, 143, 0.08)" }}
               wrapperStyle={{ zIndex: 50 }}
             />
             <Bar
               dataKey="count"
-              radius={[0, 0, 0, 0]}
-              maxBarSize={38}
+              radius={[4, 4, 0, 0]}
+              maxBarSize={40}
               isAnimationActive={true}
               animationBegin={200}
-              animationDuration={800}
+              animationDuration={900}
+              className="transition-all duration-200 hover:opacity-90"
             >
+              <LabelList
+                dataKey="count"
+                position="top"
+                fill="#6F848F"
+                fontSize={11}
+                offset={6}
+                formatter={(val: any) => (Number(val) > 0 ? Number(val) : "")}
+              />
               {chartData.map((entry) => (
                 <Cell key={entry.tier} fill={entry.color} />
               ))}
@@ -206,12 +224,12 @@ export default function PortfolioMixChart({
         </ResponsiveContainer>
       </motion.div>
 
-      {/* Tier badges */}
+      {/* Tier badges with circular colored dots */}
       <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-[#6F848F]/20 dark:border-[#2F3C52]">
         {chartData.map((d) => (
-          <div key={d.tier} className="flex items-center gap-2">
+          <div key={d.tier} className="flex items-center gap-2 p-1 rounded hover:bg-[#6F848F]/10 dark:hover:bg-[#D8CFB8]/5 transition-colors">
             <div
-              className="w-2.5 h-2.5 rounded-none flex-shrink-0"
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-xs"
               style={{ backgroundColor: d.color }}
             />
             <span className="text-[11px] font-light text-[#6F848F] dark:text-[#D8CFB8]/80 uppercase tracking-wider">
@@ -223,3 +241,4 @@ export default function PortfolioMixChart({
     </Card>
   );
 }
+

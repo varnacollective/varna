@@ -35,69 +35,74 @@ export default function CarbonImpact({
   return (
     <Card
       delay={delay}
+      variant="chart"
       hoverEffect={false}
-      accentColor="sage-mineral"
       className="p-8 relative overflow-hidden"
     >
+      {/* Subtle Botanical Leaf Watermark for Material Texture */}
+      <div className="absolute -right-8 -bottom-8 pointer-events-none select-none opacity-[0.05] dark:opacity-[0.04]">
+        <Leaf className="w-52 h-52 text-[#738678]" strokeWidth={1} />
+      </div>
+
       {/* Header */}
-      <div className="flex justify-between items-start mb-6 border-b border-[#6F848F]/25 dark:border-[#2F3C52] pb-3">
+      <div className="flex justify-between items-start mb-6 border-b border-[#6F848F]/20 dark:border-[#2F3C52]/70 pb-3 relative z-10">
         <div>
-          <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60">
+          <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8]">
             Carbon Footprint Impact · Sequestration Array
           </h3>
-          <p className="text-[11px] text-[#222326]/70 dark:text-[#D8CFB8]/60 font-light mt-0.5">
+          <p className="text-[11px] text-[#222326]/75 dark:text-[#8C9DA8] font-light mt-0.5">
             Verified CO₂e emissions avoided through circular procurement
           </p>
         </div>
-        <span className="text-[9px] font-sans font-medium uppercase tracking-widest text-[#738678] border border-[#738678]/30 bg-[#738678]/10 px-2 py-0.5">
+        <span className="text-[9px] font-sans font-semibold uppercase tracking-widest text-[#738678] dark:text-[#8AA391] border border-[#738678]/30 dark:border-[#829888]/30 bg-[#738678]/10 dark:bg-[#829888]/15 px-2.5 py-0.5 rounded-full shadow-xs">
           EPA Verified
         </span>
       </div>
 
       {/* Main Metric Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 relative z-10">
         {/* Net CO2e Avoided */}
-        <div className="flex items-center gap-4 p-4 border border-[#6F848F]/25 bg-[#DFD8C2]/40 dark:bg-[#222326]/60">
+        <div className="flex items-center gap-4 p-4 rounded-lg bg-[#DFD8C2]/40 dark:bg-[#1A1C22]/80 border border-[#6F848F]/15 dark:border-[#8C9DA8]/15 shadow-elevation-low">
           <motion.div
-            className="flex items-center justify-center w-12 h-12 border border-[#738678]/40 bg-[#738678]/10 text-[#738678] flex-shrink-0"
+            className="flex items-center justify-center w-11 h-11 rounded-full bg-[#738678]/15 dark:bg-[#738678]/25 text-[#738678] dark:text-[#8AA391] shadow-xs flex-shrink-0"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: delay + 0.2, duration: 0.4 }}
           >
-            <Leaf className="w-5 h-5 text-[#738678]" strokeWidth={1.5} />
+            <Leaf className="w-5 h-5 text-[#738678] dark:text-[#8AA391]" strokeWidth={1.5} />
           </motion.div>
           <div>
-            <div className="text-3xl font-serif font-light tracking-tight text-[#222326] dark:text-[#D8CFB8]">
+            <div className="text-3xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
               <AnimatedCounter
                 value={totalCO2eAvoidedKg}
                 delay={delay + 0.15}
                 suffix=" kg"
               />
             </div>
-            <p className="text-[10px] text-[#6F848F] uppercase tracking-wider font-light mt-0.5">
+            <p className="text-[10px] text-[#6F848F] dark:text-[#8C9DA8] uppercase tracking-wider font-light mt-0.5">
               Emissions Avoided
             </p>
           </div>
         </div>
 
         {/* Tree Absorption Equivalent */}
-        <div className="flex items-center gap-4 p-4 border border-[#6F848F]/25 bg-[#DFD8C2]/40 dark:bg-[#222326]/60">
+        <div className="flex items-center gap-4 p-4 rounded-lg bg-[#DFD8C2]/40 dark:bg-[#1A1C22]/80 border border-[#6F848F]/15 dark:border-[#8C9DA8]/15 shadow-elevation-low">
           <motion.div
-            className="flex items-center justify-center w-12 h-12 border border-[#738678]/40 bg-[#738678]/10 text-[#738678] flex-shrink-0"
+            className="flex items-center justify-center w-11 h-11 rounded-full bg-[#738678]/15 dark:bg-[#738678]/25 text-[#738678] dark:text-[#8AA391] shadow-xs flex-shrink-0"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: delay + 0.25, duration: 0.4 }}
           >
-            <TreePine className="w-5 h-5 text-[#738678]" strokeWidth={1.5} />
+            <TreePine className="w-5 h-5 text-[#738678] dark:text-[#8AA391]" strokeWidth={1.5} />
           </motion.div>
           <div>
-            <div className="text-3xl font-serif font-light tracking-tight text-[#738678] dark:text-[#8AA391]">
+            <div className="text-3xl font-serif font-light tracking-hero text-[#738678] dark:text-[#8AA391]">
               <AnimatedCounter value={treesEquivalent} delay={delay + 0.3} />
-              <span className="text-xs font-sans font-light uppercase tracking-wider text-[#6F848F] ml-1.5">
+              <span className="text-xs font-sans font-light uppercase tracking-wider text-[#6F848F] dark:text-[#8C9DA8] ml-1.5">
                 trees
               </span>
             </div>
-            <p className="text-[10px] text-[#6F848F] uppercase tracking-wider font-light mt-0.5">
+            <p className="text-[10px] text-[#6F848F] dark:text-[#8C9DA8] uppercase tracking-wider font-light mt-0.5">
               Ecological Absorption
             </p>
           </div>
@@ -105,10 +110,10 @@ export default function CarbonImpact({
       </div>
 
       {/* Structured Icon-Array Data Visualization */}
-      <div className="bg-[#DFD8C2]/50 dark:bg-[#222326]/80 p-5 border border-[#6F848F]/25 dark:border-[#2F3C52]">
-        <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#6F848F]/20">
+      <div className="bg-[#DFD8C2]/50 dark:bg-[#1C1F26] p-5 rounded-lg border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shadow-elevation-low relative z-10">
+        <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/15">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#222326] dark:text-[#D8CFB8]">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#222326] dark:text-[#FAF6EE]">
               Sequestration Progress Array
             </span>
             <span className="text-[9px] text-[#6F848F] font-light">

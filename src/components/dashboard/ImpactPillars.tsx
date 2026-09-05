@@ -47,12 +47,12 @@ export default function ImpactPillars({
     : "grid-cols-3";
 
   return (
-    <Card delay={delay} hoverEffect={false} className="p-8">
-      <div className="flex justify-between items-center mb-8 border-b border-[#6F848F]/25 dark:border-[#2F3C52] pb-3">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60">
+    <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
+      <div className="flex justify-between items-center mb-8 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/20 pb-3">
+        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8]">
           ESG Performance Pillars · Real-time Gauges
         </h3>
-        <span className="text-[9px] font-sans font-medium uppercase tracking-widest text-[#738678] dark:text-[#8AA391]">
+        <span className="text-[9px] font-sans font-semibold uppercase tracking-widest text-[#738678] dark:text-[#8AA391] bg-[#738678]/10 dark:bg-[#829888]/15 px-2.5 py-0.5 rounded-full border border-[#738678]/25 dark:border-[#829888]/30">
           Framework Calibrated
         </span>
       </div>
@@ -87,7 +87,7 @@ export default function ImpactPillars({
 
               {/* Label — hover shows educational tooltip */}
               <PillarTooltip content={definition ?? pillar.label}>
-                <span className="text-[11px] font-semibold text-[#222326] dark:text-[#D8CFB8]/80 uppercase tracking-[0.18em] text-center cursor-help hover:text-[#7A3F1E] dark:hover:text-[#D8CFB8] transition-colors duration-200 mt-1">
+                <span className="text-[11px] font-semibold text-[#222326] dark:text-[#FAF6EE] uppercase tracking-[0.18em] text-center cursor-help hover:text-[#7A3F1E] dark:hover:text-[#E89260] transition-colors duration-200 mt-1">
                   {pillar.label}
                 </span>
               </PillarTooltip>

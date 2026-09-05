@@ -338,13 +338,13 @@ export default function SupplierProfileCard({
         <div className="flex justify-between items-start mb-2">
           <div>
             <div className="flex items-center gap-2.5 mb-1">
-              <h4 className="text-xl font-serif text-[#222326] dark:text-[#D8CFB8] font-light tracking-tight truncate max-w-[220px]">
+              <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tight truncate max-w-[220px]">
                 {name}
               </h4>
               <DataTierBadge tier={dataTier} />
             </div>
             {/* 2. Subtitle: Legal Name • Location */}
-            <p className="text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 font-light truncate max-w-[280px]">
+            <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] font-light truncate max-w-[280px]">
               {legalName} &bull; {location}
             </p>
           </div>
@@ -363,10 +363,10 @@ export default function SupplierProfileCard({
               whileHover={{ scale: 1.08 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
             >
-              <span className="text-2xl font-serif font-light tracking-tighter text-[#7A3F1E] dark:text-[#D8CFB8]">
+              <span className="text-2xl font-serif font-light tracking-tighter text-[#7A3F1E] dark:text-[#FAF6EE]">
                 {varnaScore}
               </span>
-              <span className="text-[7px] font-sans font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/50 mt-0.5">
+              <span className="text-[7px] font-sans font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] mt-0.5">
                 Varna Score
               </span>
             </motion.div>
@@ -411,11 +411,11 @@ export default function SupplierProfileCard({
             }
             return (
               <div key={cat.label} className="space-y-1">
-                <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-[#6F848F] dark:text-[#D8CFB8]/60 font-light">
+                <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-[#6F848F] dark:text-[#8C9DA8] font-light">
                   <span>{cat.label}</span>
-                  <span className="font-semibold text-[#222326] dark:text-[#D8CFB8]">{cat.val}%</span>
+                  <span className="font-semibold text-[#222326] dark:text-[#FAF6EE]">{cat.val}%</span>
                 </div>
-                <div className="h-1.5 bg-[#6F848F]/20 dark:bg-black/25 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-[#6F848F]/20 dark:bg-[#18191D] rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full ${barColorClass}`}
                     style={{ width: `${cat.val}%` }}
@@ -427,20 +427,20 @@ export default function SupplierProfileCard({
         </div>
 
         {/* 6. Testimonial Quote Callout Block */}
-        <div className="bg-[#6F848F]/10 dark:bg-[#D8CFB8]/5 border-l-2 border-[#7A3F1E] dark:border-[#D8CFB8] px-3 py-2 rounded-r my-2 shrink-0">
-          <p className="text-[11px] italic text-[#222326]/85 dark:text-[#D8CFB8]/85 line-clamp-2 max-h-[36px] overflow-hidden leading-tight font-serif">
+        <div className="bg-[#6F848F]/10 dark:bg-[#1A1D23] border-l-2 border-[#7A3F1E] dark:border-[#9E5528] px-3 py-2 rounded-r my-2 shrink-0">
+          <p className="text-[11px] italic text-[#222326]/85 dark:text-[#FAF6EE]/90 line-clamp-2 max-h-[36px] overflow-hidden leading-tight font-serif">
             "{quoteText}"
           </p>
         </div>
       </div>
 
       {/* 7. Footer Row: SDG Alignment Badges + Evidence Quality Ring (Anchored to bottom) */}
-      <div className="mt-auto pt-3 border-t border-[#6F848F]/20 dark:border-[#2F3C52] shrink-0">
+      <div className="mt-auto pt-3 border-t border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shrink-0">
         <div className="flex justify-between items-center mb-2">
-          <p className="text-[9px] uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/60 font-semibold">
+          <p className="text-[9px] uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] font-semibold">
             SDG Alignment Index
           </p>
-          <span className="text-[9px] uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/60 font-semibold">
+          <span className="text-[9px] uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] font-semibold">
             Evidence Quality
           </span>
         </div>

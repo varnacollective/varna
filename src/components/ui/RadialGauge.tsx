@@ -89,16 +89,16 @@ export default function RadialGauge({
   const bandKey = getPerformanceBand(value);
   const band = PERFORMANCE_BANDS[bandKey];
 
-  // Pillar-specific two-tone color gradient pairs from brand palette
+  // Pillar-specific two-tone color gradient pairs from brand palette (brightened for dark mode vibrancy)
   const pillarGradients: Record<string, [string, string]> = {
-    E: value >= 75 ? ["#738678", "#6F848F"] : ["#7A3F1E", "#738678"], // Sage Mineral ↔ Deep Clay
-    S: value >= 75 ? ["#7A3F1E", "#6F848F"] : ["#7A3F1E", "#2F3C52"], // Deep Clay ↔ Slate Mist
-    G: ["#6F848F", "#2F3C52"],                                        // Slate Mist ↔ Midnight Blue
-    C: ["#2F3C52", "#7A3F1E"],                                        // Midnight Blue ↔ Deep Clay
-    Overall: value >= 80 ? ["#738678", "#6F848F"] : ["#7A3F1E", "#6F848F"],
+    E: value >= 75 ? ["#829888", "#7D929E"] : ["#944D25", "#829888"], // Sage Mineral ↔ Deep Clay
+    S: value >= 75 ? ["#944D25", "#7D929E"] : ["#944D25", "#3D4D68"], // Deep Clay ↔ Slate Mist
+    G: ["#7D929E", "#3D4D68"],                                        // Slate Mist ↔ Midnight Blue
+    C: ["#3D4D68", "#944D25"],                                        // Midnight Blue ↔ Deep Clay
+    Overall: value >= 80 ? ["#829888", "#7D929E"] : ["#944D25", "#7D929E"],
   };
 
-  const [colorStart, colorEnd] = pillarGradients[pillarKey] || ["#738678", "#7A3F1E"];
+  const [colorStart, colorEnd] = pillarGradients[pillarKey] || ["#829888", "#944D25"];
 
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -125,6 +125,9 @@ export default function RadialGauge({
               <stop offset="0%" stopColor={colorStart} />
               <stop offset="100%" stopColor={colorEnd} />
             </linearGradient>
+            <filter id={`${gradientId}-glow`} x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor={colorStart} floodOpacity="0.4" />
+            </filter>
           </defs>
 
           {/* Background track */}
@@ -133,22 +136,23 @@ export default function RadialGauge({
             cy={size / 2}
             r={radius}
             fill="none"
-            className="stroke-slate-mist/15 dark:stroke-slate-mist/20"
+            className="stroke-slate-mist/15 dark:stroke-[#8C9DA8]/15"
             strokeWidth={strokeWidth}
             strokeDasharray={`${totalArc} ${circumference}`}
             strokeLinecap="round"
           />
 
-          {/* Animated Gauge Arc */}
+          {/* Animated Gauge Arc with Ambient Glow */}
           <motion.circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
             fill="none"
             stroke={`url(#${gradientId})`}
-            strokeWidth={strokeWidth}
+            strokeWidth={strokeWidth + 1}
             strokeLinecap="round"
             strokeDasharray={`${totalArc} ${circumference}`}
+            filter={`url(#${gradientId}-glow)`}
             initial={{ strokeDashoffset: totalArc }}
             animate={{ strokeDashoffset: progressOffset }}
             transition={{
@@ -162,7 +166,7 @@ export default function RadialGauge({
         {/* Center Content: Score number + Trend Delta */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
           <motion.span
-            className="text-2xl font-serif text-carbon-ink dark:text-warm-stone font-light tracking-tighter"
+            className="text-2xl font-serif text-carbon-ink dark:text-[#FAF6EE] font-light tracking-tighter"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: delay + 0.4, duration: 0.4 }}
@@ -196,12 +200,12 @@ export default function RadialGauge({
         </div>
       </div>
 
-      {/* Performance Band Pill under the number */}
+      {/* Performance Band Pill — Refined rounded-full chip with soft fill */}
       <div className="flex flex-col items-center gap-1">
         <span
           className={`
-            px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.14em]
-            border ${band.badgeBg} ${band.badgeText} ${band.badgeBorder}
+            px-2.5 py-0.5 rounded-full text-[8px] font-semibold uppercase tracking-[0.14em] shadow-xs
+            ${band.badgeBg} ${band.badgeText} border ${band.badgeBorder}
           `}
           title={`Framework Band: ${band.name} (${band.range})`}
         >
@@ -217,3 +221,4 @@ export default function RadialGauge({
     </motion.div>
   );
 }
+

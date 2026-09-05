@@ -17,6 +17,7 @@ interface KPICardProps {
   delay?: number;
   subtitle?: string;
   varnaScoreData?: VarnaScoreData;
+  isHero?: boolean;
 }
 
 export default function KPICard({
@@ -30,55 +31,83 @@ export default function KPICard({
   delay = 0,
   subtitle,
   varnaScoreData,
+  isHero = true,
 }: KPICardProps) {
+  const isVarnaScore = Boolean(varnaScoreData) || title.toLowerCase().includes("varna");
+
   return (
-    <Card delay={delay} accentColor={accentColor} className="group" hoverEffect={true}>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-[10px] font-sans font-semibold uppercase tracking-[0.18em] text-[#6F848F] dark:text-[#D8CFB8]/60 mb-2">
+    <Card
+      delay={delay}
+      variant={isHero ? "hero" : "default"}
+      className="group relative overflow-hidden"
+      hoverEffect={true}
+    >
+      {/* Subtle Background Watermark Icon for Material Depth */}
+      <div className="absolute -right-4 -bottom-4 pointer-events-none select-none opacity-[0.06] dark:opacity-[0.04] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
+        <Icon className="w-36 h-36 text-[#222326] dark:text-[#FAF6EE]" strokeWidth={1} />
+      </div>
+
+      <div className="flex items-start justify-between relative z-10">
+        <div className="flex-1 pr-3">
+          {/* Section label: small, muted, uppercase, wide tracking */}
+          <p className="text-[10px] font-sans font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2">
             {title}
           </p>
+
+          {/* Monumental Hero Metric */}
           {varnaScoreData ? (
             <VarnaScoreHoverCard {...varnaScoreData}>
-              <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#222326] dark:text-[#D8CFB8] cursor-help">
+              <div className="text-4xl sm:text-5xl font-serif font-light tracking-hero leading-none cursor-help text-gradient-clay dark:text-gradient-gold my-1.5 inline-block">
                 <AnimatedCounter
                   value={value}
                   prefix={prefix}
                   suffix={suffix}
                   decimals={decimals}
-                  delay={delay + 0.15}
+                  delay={delay + 0.1}
                 />
               </div>
             </VarnaScoreHoverCard>
           ) : (
-            <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#222326] dark:text-[#D8CFB8]">
+            <div className={`text-4xl sm:text-5xl font-serif font-light tracking-hero leading-none my-1.5 ${
+              isVarnaScore ? "text-gradient-clay dark:text-gradient-gold" : "text-[#222326] dark:text-[#FAF6EE]"
+            }`}>
               <AnimatedCounter
                 value={value}
                 prefix={prefix}
                 suffix={suffix}
                 decimals={decimals}
-                delay={delay + 0.15}
+                delay={delay + 0.1}
               />
             </div>
           )}
+
           {subtitle && (
-            <p className="text-[11px] text-[#6F848F] dark:text-[#D8CFB8]/50 mt-2 font-light leading-snug">
+            <p className="text-[11px] text-[#6F848F] dark:text-[#8C9DA8] mt-2.5 font-light leading-snug max-w-[260px]">
               {subtitle}
             </p>
           )}
         </div>
+
+        {/* Refined Soft-Filled Circular Badge (Never a plain bordered square) */}
         <div
-          className="
+          className={`
             flex items-center justify-center
-            w-12 h-12 border border-[#6F848F]/30 dark:border-[#2F3C52]
-            bg-[#DFD8C2]/40 dark:bg-[#222326]/60 text-[#7A3F1E] dark:text-[#D8CFB8]
-            transition-transform duration-300
-            group-hover:scale-105 rounded-none flex-shrink-0
-          "
+            w-11 h-11 rounded-full
+            ${
+              accentColor === "deep-clay" || isVarnaScore
+                ? "bg-[#7A3F1E]/12 dark:bg-[#944D25]/25 text-[#7A3F1E] dark:text-[#FAF6EE]"
+                : accentColor === "sage-mineral"
+                ? "bg-[#738678]/15 dark:bg-[#829888]/25 text-[#738678] dark:text-[#FAF6EE]"
+                : "bg-[#6F848F]/15 dark:bg-[#8298A5]/25 text-[#6F848F] dark:text-[#FAF6EE]"
+            }
+            shadow-xs transition-transform duration-300
+            group-hover:scale-110 flex-shrink-0
+          `}
         >
-          <Icon className="w-5 h-5 text-[#7A3F1E] dark:text-[#D8CFB8]" strokeWidth={1.5} />
+          <Icon className="w-5 h-5" strokeWidth={1.5} />
         </div>
       </div>
     </Card>
   );
 }
+
