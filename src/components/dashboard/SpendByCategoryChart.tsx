@@ -130,6 +130,9 @@ export default function SpendByCategoryChart({
                 cornerRadius={0}
                 strokeWidth={1}
                 stroke="var(--card)"
+                isAnimationActive={true}
+                animationBegin={200}
+                animationDuration={800}
               >
                 {data.map((_, idx) => (
                   <Cell

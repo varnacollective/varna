@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import Sidebar from "@/components/layout/Sidebar";
 import BrandWatermark from "@/components/ui/BrandWatermark";
 import Card from "@/components/ui/Card";
+import FlowConnector from "@/components/ui/FlowConnector";
 import { Sun, Moon, ArrowRight, ShieldCheck, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function AlgorithmPage() {
@@ -97,7 +98,13 @@ export default function AlgorithmPage() {
             {/* Desktop Diamond SVG Connector Network + Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
               {/* Card 1: Impact (50%) */}
-              <div className="border border-[#738678]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#738678] transition-colors">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="border border-[#738678]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#738678] transition-colors"
+              >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-[#738678]" />
                 <div>
                   <div className="flex justify-between items-start mb-3">
@@ -122,10 +129,16 @@ export default function AlgorithmPage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Card 2: Readiness (30%) */}
-              <div className="border border-[#6F848F]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#6F848F] transition-colors">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.25 }}
+                className="border border-[#6F848F]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#6F848F] transition-colors"
+              >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-[#6F848F]" />
                 <div>
                   <div className="flex justify-between items-start mb-3">
@@ -150,10 +163,16 @@ export default function AlgorithmPage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Card 3: Risk (20%) */}
-              <div className="border border-[#7A3F1E]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#7A3F1E] transition-colors">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.4 }}
+                className="border border-[#7A3F1E]/40 bg-[#DFD8C2]/60 dark:bg-[#222326]/70 p-6 flex flex-col justify-between relative group hover:border-[#7A3F1E] transition-colors"
+              >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-[#7A3F1E]" />
                 <div>
                   <div className="flex justify-between items-start mb-3">
@@ -178,12 +197,18 @@ export default function AlgorithmPage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Convergence Arrow & Final Score Node */}
-            <div className="mt-8 flex flex-col items-center">
-              <div className="w-px h-8 bg-[#6F848F]/40 mb-2" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.55 }}
+              className="mt-8 flex flex-col items-center"
+            >
+              <FlowConnector direction="vertical" length={36} color="#7A3F1E" className="mb-2" />
               
               <div className="w-full max-w-md border-2 border-[#7A3F1E] bg-[#D8CFB8] dark:bg-[#222326] p-6 text-center shadow-lg relative">
                 <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#7A3F1E] dark:text-[#D8CFB8]">
@@ -200,7 +225,7 @@ export default function AlgorithmPage() {
                   <span>Determines MSME Performance Band &amp; Procurement Tier</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -351,33 +376,84 @@ export default function AlgorithmPage() {
             </p>
           </div>
 
-          {/* Clean Horizontal Pipeline Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-14 items-center">
-            <div className="p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center">
+          {/* Animated Horizontal Pipeline Layout with FlowConnectors */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-14">
+            {/* Step 01 */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center"
+            >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] block mb-1">Step 01</span>
               <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#D8CFB8]">Actual Data</h5>
-              <p className="text-[10px] text-[#6F848F] mt-1 font-light">Supplier metrics &amp; invoices</p>
-            </div>
+              <p className="text-[10px] text-[#6F848F] mt-1 font-light">Metrics &amp; Invoices</p>
+            </motion.div>
 
-            <div className="hidden md:flex justify-center text-[#7A3F1E]">
-              <ArrowRight className="w-4 h-4" />
-            </div>
+            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
+            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
 
-            <div className="p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center">
+            {/* Step 02 */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center"
+            >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] block mb-1">Step 02</span>
               <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#D8CFB8]">Band Lookup</h5>
-              <p className="text-[10px] text-[#6F848F] mt-1 font-light">Industry MSME threshold</p>
-            </div>
+              <p className="text-[10px] text-[#6F848F] mt-1 font-light">MSME Thresholds</p>
+            </motion.div>
 
-            <div className="hidden md:flex justify-center text-[#7A3F1E]">
-              <ArrowRight className="w-4 h-4" />
-            </div>
+            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
+            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
 
-            <div className="p-4 border-2 border-[#7A3F1E] bg-[#E4DEC9] dark:bg-[#272A30] text-center shadow-sm">
-              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#7A3F1E] block mb-1">Step 03</span>
+            {/* Step 03 */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+              className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 bg-[#E4DEC9] dark:bg-[#272A30] text-center"
+            >
+              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] block mb-1">Step 03</span>
+              <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#D8CFB8]">Raw Score</h5>
+              <p className="text-[10px] text-[#6F848F] mt-1 font-light">Linear Map (0–100)</p>
+            </motion.div>
+
+            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
+            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
+
+            {/* Step 04 */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+              className="w-full md:w-auto flex-1 p-4 border border-[#7A3F1E]/60 bg-[#E4DEC9] dark:bg-[#272A30] text-center shadow-sm"
+            >
+              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#7A3F1E] block mb-1">Step 04</span>
               <h5 className="text-sm font-serif uppercase text-[#7A3F1E] dark:text-[#D8CFB8]">Multiplier</h5>
               <p className="text-[10px] text-[#6F848F] mt-1 font-light">0.50× · 0.75× · 1.00×</p>
-            </div>
+            </motion.div>
+
+            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
+            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
+
+            {/* Step 05 */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+              className="w-full md:w-auto flex-1 p-4 border-2 border-[#738678] bg-[#E4DEC9] dark:bg-[#272A30] text-center shadow-md"
+            >
+              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#738678] block mb-1">Step 05</span>
+              <h5 className="text-sm font-serif uppercase text-[#738678] dark:text-[#D8CFB8]">Effective</h5>
+              <p className="text-[10px] text-[#738678] mt-1 font-light">Verified Score</p>
+            </motion.div>
           </div>
 
           {/* Evidence Quality Tiers */}

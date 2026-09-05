@@ -62,13 +62,20 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#D8CFB8] dark:bg-[#222326] transition-colors duration-300">
         <motion.div
-          className="flex flex-col items-center gap-4"
+          className="flex flex-col items-center gap-6 w-full max-w-sm px-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <Loader2 className="w-8 h-8 text-[#7A3F1E] dark:text-[#D8CFB8] animate-spin" />
-          <p className="text-xs uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/60 font-light">
-            Loading Sustainability Intelligence...
+          <div className="flex items-center gap-3">
+            <img src="/logo-light.svg" alt="Varna" className="block dark:hidden h-10 w-auto" />
+            <img src="/logo-dark.svg" alt="Varna" className="hidden dark:block h-10 w-auto" />
+          </div>
+          <div className="w-full space-y-3">
+            <div className="h-4 w-full rounded-none animate-shimmer" />
+            <div className="h-4 w-3/4 mx-auto rounded-none animate-shimmer" />
+          </div>
+          <p className="text-[10px] uppercase tracking-[0.25em] text-[#7A3F1E] dark:text-[#D8CFB8]/70 font-semibold mt-2">
+            Synthesizing Procurement Intelligence...
           </p>
         </motion.div>
       </div>

@@ -190,7 +190,14 @@ export default function PortfolioMixChart({
               cursor={false}
               wrapperStyle={{ zIndex: 50 }}
             />
-            <Bar dataKey="count" radius={[0, 0, 0, 0]} maxBarSize={38}>
+            <Bar
+              dataKey="count"
+              radius={[0, 0, 0, 0]}
+              maxBarSize={38}
+              isAnimationActive={true}
+              animationBegin={200}
+              animationDuration={800}
+            >
               {chartData.map((entry) => (
                 <Cell key={entry.tier} fill={entry.color} />
               ))}

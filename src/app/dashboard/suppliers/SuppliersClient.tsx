@@ -6,16 +6,15 @@ import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import Sidebar from "@/components/layout/Sidebar";
 import BrandWatermark from "@/components/ui/BrandWatermark";
-import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import ChatWidget from "@/components/ChatWidget";
-import ConfidenceChecklistHoverCard from "@/components/ui/ConfidenceChecklistHoverCard";
+import Card from "@/components/ui/Card";
+import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
+import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import DataTierBadge from "@/components/ui/DataTierBadge";
 import type { DataTier } from "@/components/ui/DataTierBadge";
 import type { SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
-import SDGBadge from "@/components/ui/SDGBadge";
-import ConfidenceRing from "@/components/ui/ConfidenceRing";
-import Card from "@/components/ui/Card";
+import SupplierProfileCard from "./SupplierProfileCard";
 import {
   Calendar,
   Download,
@@ -42,216 +41,7 @@ function formatSpend(val: number): string {
   return `$${(val / 1000).toFixed(1)}K`;
 }
 
-// ─────────────── Supplier Profile Card ───────────────
 
-interface SupplierProfileCardProps {
-  name: string;
-  legalName: string;
-  location: string;
-  dataTier: DataTier;
-  varnaScore: number;
-  eScore: number;
-  sScore: number;
-  gScore: number;
-  cScore?: number;
-  carbonScore?: number;
-  skuCount: number;
-  totalUnits: number;
-  confidenceScore: number;
-  confidenceColor: string;
-  confidenceDasharray: string;
-  tags?: { icon: typeof ShieldCheck; label: string; colorClass: string }[];
-  categoryBars: { label: string; val: number }[];
-  barColorClass: string;
-  quote?: string;
-  description?: string;
-  summary?: string;
-  sdgIds: number[];
-  liveConfidenceData?: Record<string, SupplierConfidenceData>;
-}
-
-function SupplierProfileCard({
-  name,
-  legalName,
-  location,
-  dataTier,
-  varnaScore,
-  eScore,
-  sScore,
-  gScore,
-  cScore = 0,
-  carbonScore: carbonScoreProp,
-  skuCount,
-  totalUnits,
-  confidenceScore,
-  tags = [],
-  categoryBars,
-  barColorClass,
-  sdgIds = [],
-  liveConfidenceData,
-}: SupplierProfileCardProps) {
-  const carbonScore = carbonScoreProp ?? cScore ?? 0;
-
-  // Resolve confidence data from live feed or mock lookup
-  const confidenceData =
-    (liveConfidenceData && liveConfidenceData[name]) ||
-    SUPPLIER_CONFIDENCE_CHECKLISTS[name] ||
-    SUPPLIER_CONFIDENCE_CHECKLISTS["UKHI India Private Limited"];
-
-  const effectiveConfidence = confidenceData?.score ?? confidenceScore ?? 52;
-  const isVerified = dataTier === "verified" || effectiveConfidence >= 60;
-
-  return (
-    <Card
-      variant={isVerified ? "verified" : "default"}
-      className="p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 h-full"
-      hoverEffect={true}
-    >
-      {/* Header block */}
-      <div>
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <h4 className="text-2xl font-serif text-[#222326] dark:text-[#D8CFB8] font-light tracking-tight">
-                {name}
-              </h4>
-              <DataTierBadge tier={dataTier} />
-            </div>
-            <p className="text-xs text-[#6F848F] dark:text-[#D8CFB8]/60 font-light">
-              {legalName} &bull; {location}
-            </p>
-          </div>
-
-          {/* Top-Right: Varna Score */}
-          <VarnaScoreHoverCard
-            score={varnaScore}
-            eScore={eScore}
-            sScore={sScore}
-            gScore={gScore}
-            cScore={carbonScore}
-            supplierName={name}
-          >
-            <motion.div
-              className="flex flex-col items-center cursor-help select-none pl-3"
-              whileHover={{ scale: 1.08 }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            >
-              <span className="text-3xl font-serif font-light tracking-tighter text-[#7A3F1E] dark:text-[#D8CFB8]">
-                {varnaScore}
-              </span>
-              <span className="text-[7px] font-sans font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/50 mt-0.5">
-                Varna Score
-              </span>
-            </motion.div>
-          </VarnaScoreHoverCard>
-        </div>
-
-        {/* Sourced summary line */}
-        <div className="text-xs font-sans font-semibold uppercase tracking-wider text-[#738678] dark:text-[#8AA391] mb-6">
-          Sourced {skuCount} SKUs | Units Ordered: {totalUnits}
-        </div>
-
-        {/* Scan Tags */}
-        {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6">
-            {tags.map((tag) => {
-              const Icon = tag.icon;
-              return (
-                <span
-                  key={tag.label}
-                  className={`flex items-center gap-1.5 px-3 py-1 text-[9px] font-semibold uppercase tracking-wider border ${tag.colorClass}`}
-                >
-                  <Icon className="w-3 h-3" />
-                  {tag.label}
-                </span>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Category Read Progress Bars */}
-        <div className="space-y-4 mb-6">
-          {categoryBars.map((cat) => {
-            if (cat.label.toLowerCase().includes("carbon") && carbonScore <= 0) {
-              return null;
-            }
-            return (
-              <div key={cat.label} className="space-y-1.5">
-                <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-[#6F848F] dark:text-[#D8CFB8]/60 font-light">
-                  <span>{cat.label}</span>
-                  <span className="font-semibold text-[#222326] dark:text-[#D8CFB8]">{cat.val}%</span>
-                </div>
-                <div className="h-1.5 bg-[#6F848F]/20 dark:bg-black/25 rounded-none overflow-hidden">
-                  <div
-                    className={`h-full ${barColorClass}`}
-                    style={{ width: `${cat.val}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Bottom Section: SDG Alignment + Dynamic Confidence Ring */}
-      <div className="pt-4 border-t border-[#6F848F]/20 dark:border-[#2F3C52]">
-        <div className="flex justify-between items-center mb-3">
-          <p className="text-[9px] uppercase tracking-widest text-[#6F848F] dark:text-[#D8CFB8]/60 font-semibold">
-            SDG Alignment Index
-          </p>
-          <span className="text-[9px] uppercase tracking-widest text-[#6F848F] font-semibold">
-            Evidence Quality
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between gap-4">
-          {/* SDG official UN colored badges */}
-          <div className="flex flex-wrap gap-2">
-            {sdgIds && sdgIds.length > 0 ? (
-              sdgIds.map((goalNum, idx) => (
-                <SDGBadge
-                  key={`${name}-sdg-${goalNum}-${idx}`}
-                  goalNumber={goalNum}
-                  size={42}
-                />
-              ))
-            ) : (
-              // Intentional awaiting verification badges (never raw "?")
-              [1, 2, 3].map((i) => (
-                <SDGBadge key={i} isAwaitingVerification={true} size={42} />
-              ))
-            )}
-          </div>
-
-          {/* Dynamic Evidence Confidence Ring Component */}
-          {confidenceData ? (
-            <ConfidenceChecklistHoverCard
-              supplierName={name}
-              score={effectiveConfidence}
-              totalConfirmed={confidenceData.totalConfirmed}
-              status={confidenceData.status}
-              checklist={confidenceData.checklist}
-            >
-              <div className="cursor-help flex-shrink-0">
-                <ConfidenceRing
-                  score={effectiveConfidence}
-                  size={58}
-                  strokeWidth={4.5}
-                />
-              </div>
-            </ConfidenceChecklistHoverCard>
-          ) : (
-            <ConfidenceRing
-              score={effectiveConfidence}
-              size={58}
-              strokeWidth={4.5}
-            />
-          )}
-        </div>
-      </div>
-    </Card>
-  );
-}
 
 // ─────────────── Main Suppliers View ───────────────
 
@@ -376,7 +166,7 @@ export default function SuppliersClient({
               Total Orders
             </p>
             <div className="text-3xl sm:text-4xl font-serif font-light tracking-tight text-[#222326] dark:text-[#D8CFB8]">
-              5
+              <AnimatedCounter value={5} />
             </div>
             <p className="text-[10px] text-[#6F848F] mt-2 font-light">
               Suppliers sourced within active procurement cycle
@@ -389,7 +179,7 @@ export default function SuppliersClient({
               Total Spend
             </p>
             <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#7A3F1E] dark:text-[#D8CFB8]">
-              $40.0K
+              $<AnimatedCounter value={40.0} decimals={1} />K
             </div>
             <p className="text-[10px] text-[#6F848F] mt-2 font-light">
               Ethical procurement capital deployed
@@ -413,7 +203,7 @@ export default function SuppliersClient({
               supplierName="Portfolio Average"
             >
               <div className="text-3xl sm:text-4xl font-serif font-light tracking-tighter text-[#222326] dark:text-[#D8CFB8] cursor-help">
-                46<span className="text-lg font-light text-[#6F848F]">/100</span>
+                <AnimatedCounter value={46} /><span className="text-lg font-light text-[#6F848F]">/100</span>
               </div>
             </VarnaScoreHoverCard>
             <p className="text-[10px] text-[#6F848F] mt-2 font-light">
@@ -567,7 +357,7 @@ export default function SuppliersClient({
               return (
                 <div
                   key={supplier.enterprise_id || name}
-                  className="min-w-[90%] md:min-w-[62%] lg:min-w-[50%] snap-center shrink-0"
+                  className="min-w-[90%] md:min-w-[62%] lg:min-w-[50%] snap-center shrink-0 flex"
                 >
                   <SupplierProfileCard
                     name={name}
@@ -585,6 +375,7 @@ export default function SuppliersClient({
                     confidenceScore={confidencePct}
                     confidenceColor={isVerified ? "#738678" : "#7A3F1E"}
                     confidenceDasharray={`${confidencePct}, 100`}
+                    badges={supplier.badges || []}
                     tags={[]}
                     categoryBars={[
                       { label: "Environment", val: supplier.e_pillar_score ?? 60 },

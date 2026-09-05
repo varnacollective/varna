@@ -68,7 +68,13 @@ export default function Card({
       className={`
         rounded-none overflow-hidden relative transition-all duration-300
         ${variantStyles[variant]}
-        ${hoverEffect ? "hover:border-slate-mist/60 dark:hover:border-slate-mist/40 hover:shadow-md" : ""}
+        ${
+          hoverEffect
+            ? variant === "verified"
+              ? "hover:border-sage-mineral/60 dark:hover:border-sage-mineral/50 hover:shadow-[0_4px_24px_rgba(115,134,120,0.18)]"
+              : "hover:border-slate-mist/60 dark:hover:border-slate-mist/40 hover:shadow-[0_4px_24px_rgba(122,63,30,0.12)]"
+            : ""
+        }
         ${className}
       `}
       {...props}

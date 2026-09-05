@@ -2,16 +2,19 @@
 
 import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion";
+import { Leaf, Users, Shield, Palette, AlertTriangle } from "lucide-react";
+import { POPOVER_ENTRANCE, EASE_SMOOTH, STAGGER_DELAY } from "@/lib/motion";
+import { getPerformanceBand } from "@/lib/motion";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export interface VarnaScoreData {
-  score: number;   // Overall Varna score (0–100)
-  eScore: number;  // Environmental (0–100)
-  sScore: number;  // Social (0–100)
-  gScore: number;  // Governance (0–100)
-  cScore: number;  // Cultural (0–100)
+  score: number;
+  eScore: number;
+  sScore: number;
+  gScore: number;
+  cScore: number;
   supplierName?: string;
 }
 
@@ -22,23 +25,33 @@ interface VarnaScoreHoverCardProps extends VarnaScoreData {
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function getBarColor(value: number): string {
-  if (value >= 70) return "#738678"; // sage-mineral — strong
-  if (value >= 45) return "#6F848F"; // slate-mist — moderate
-  return "#7A3F1E";                  // deep-clay — low / risk
+  if (value >= 70) return "#738678";
+  if (value >= 45) return "#6F848F";
+  return "#7A3F1E";
 }
 
-function getScoreLabel(score: number): string {
-  if (score >= 80) return "Excellent";
-  if (score >= 60) return "Good";
-  if (score >= 40) return "Fair";
-  if (score >= 20) return "Low";
-  return "Critical";
-}
+const SECTION_ICONS = {
+  impact: Leaf,
+  readiness: Shield,
+  risk: AlertTriangle,
+} as const;
 
-function getScoreLabelColor(score: number): string {
-  if (score >= 60) return "text-sage-mineral";
-  if (score >= 40) return "text-slate-mist";
-  return "text-deep-clay";
+const PILLAR_ICONS = [Leaf, Users, Shield, Palette];
+
+// ── Animated Count-Up ────────────────────────────────────────────────────────
+
+function CountUpNumber({ value, className }: { value: number; className?: string }) {
+  const spring = useSpring(0, { stiffness: 50, damping: 30, duration: 800 });
+  const display = useTransform(spring, (v) => Math.round(v));
+  const [str, setStr] = useState("0");
+
+  useEffect(() => {
+    spring.set(value);
+    const unsub = display.on("change", (v) => setStr(String(v)));
+    return unsub;
+  }, [value, spring, display]);
+
+  return <span className={className}>{str}</span>;
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -64,24 +77,20 @@ export default function VarnaScoreHoverCard({
     return () => setMounted(false);
   }, []);
 
-  const CARD_HEIGHT = 380;
-  const CARD_WIDTH = 340;
+  const CARD_HEIGHT = 420;
+  const CARD_WIDTH = 360;
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
 
-    // Determine vertical placement
     const spaceBelow = viewportHeight - rect.bottom;
     const placement = spaceBelow < CARD_HEIGHT + 16 ? "above" : "below";
 
-    const top =
-      placement === "below"
-        ? rect.bottom + 8
-        : rect.top - CARD_HEIGHT - 8;
+    let top = placement === "below" ? rect.bottom + 8 : rect.top - CARD_HEIGHT - 8;
+    top = Math.max(8, Math.min(top, viewportHeight - CARD_HEIGHT - 8));
 
-    // Center horizontally, clamped to viewport
     let left = rect.left + rect.width / 2 - CARD_WIDTH / 2;
     left = Math.max(16, Math.min(left, window.innerWidth - CARD_WIDTH - 16));
 
@@ -89,34 +98,21 @@ export default function VarnaScoreHoverCard({
   }, []);
 
   const handleMouseEnter = useCallback(() => {
-    if (leaveTimeout.current) {
-      clearTimeout(leaveTimeout.current);
-      leaveTimeout.current = null;
-    }
-    enterTimeout.current = setTimeout(() => {
-      calculatePosition();
-      setIsOpen(true);
-    }, 300);
+    if (leaveTimeout.current) { clearTimeout(leaveTimeout.current); leaveTimeout.current = null; }
+    enterTimeout.current = setTimeout(() => { calculatePosition(); setIsOpen(true); }, 300);
   }, [calculatePosition]);
 
   const handleMouseLeave = useCallback(() => {
-    if (enterTimeout.current) {
-      clearTimeout(enterTimeout.current);
-      enterTimeout.current = null;
-    }
-    leaveTimeout.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 150);
+    if (enterTimeout.current) { clearTimeout(enterTimeout.current); enterTimeout.current = null; }
+    leaveTimeout.current = setTimeout(() => { setIsOpen(false); }, 150);
   }, []);
 
-  const handlePointerDown = useCallback(() => {
-    if (enterTimeout.current) {
-      clearTimeout(enterTimeout.current);
-      enterTimeout.current = null;
-    }
-  }, []);
+  const handleClick = useCallback(() => {
+    if (isOpen) { setIsOpen(false); return; }
+    calculatePosition();
+    setIsOpen(true);
+  }, [isOpen, calculatePosition]);
 
-  // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (enterTimeout.current) clearTimeout(enterTimeout.current);
@@ -128,181 +124,190 @@ export default function VarnaScoreHoverCard({
   const readinessScore = Math.round((gScore + cScore) / 2);
   const riskScore = Math.round(100 - (eScore * 0.3 + sScore * 0.3 + gScore * 0.2 + cScore * 0.2));
   const riskIsHigh = riskScore > 50;
+  const band = getPerformanceBand(score);
 
-  // Impact pillars
   const pillars = [
-    { key: "E", label: "Environmental", value: eScore },
-    { key: "S", label: "Social", value: sScore },
-    { key: "G", label: "Governance", value: gScore },
-    { key: "C", label: "Cultural", value: cScore },
+    { key: "E", label: "Environmental", value: eScore, icon: Leaf },
+    { key: "S", label: "Social", value: sScore, icon: Users },
+    { key: "G", label: "Governance", value: gScore, icon: Shield },
+    { key: "C", label: "Cultural", value: cScore, icon: Palette },
   ];
-
-  const slideDir = position.placement === "below" ? 6 : -6;
 
   return (
     <>
-      {/* Trigger wrapper — no visual footprint */}
       <div
         ref={triggerRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onPointerDown={handlePointerDown}
-        className="inline-block cursor-default"
+        onClick={handleClick}
+        className="inline-block cursor-help"
       >
         {children}
       </div>
 
-      {/* Portal-rendered hover card */}
       {mounted &&
         createPortal(
           <AnimatePresence>
             {isOpen && (
               <motion.div
-                initial={{ opacity: 0, y: slideDir }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: slideDir / 2 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 30,
-                  mass: 0.8,
-                }}
+                {...POPOVER_ENTRANCE}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 className="fixed z-[9999] pointer-events-auto"
-                style={{
-                  top: position.top,
-                  left: position.left,
-                  width: CARD_WIDTH,
-                }}
+                style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
               >
-                {/* ── Card Shell ──────────────────────────────────────── */}
                 <div
                   className="
-                    bg-white dark:bg-carbon-ink
+                    bg-white/95 dark:bg-carbon-ink/95 backdrop-blur-xl
                     border border-slate-mist/30 dark:border-slate-mist/20
-                    shadow-[0_8px_32px_rgba(47,60,82,0.12)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.45)]
-                    p-6 font-sans select-none
+                    shadow-[0_8px_40px_rgba(47,60,82,0.18)] dark:shadow-[0_12px_50px_rgba(0,0,0,0.55)]
+                    font-sans select-none overflow-hidden
                   "
                 >
-                  {/* ── Header ─────────────────────────────────────── */}
-                  <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-mist/20 dark:border-midnight-blue">
-                    <div>
-                      <h4 className="text-sm font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone leading-tight">
-                        Varna Score Breakdown
-                      </h4>
-                      {supplierName && (
-                        <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 mt-0.5 font-light tracking-wide">
-                          {supplierName}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-2xl font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone">
-                        {score}
-                      </span>
-                      <span className={`text-[9px] font-semibold uppercase tracking-widest ${getScoreLabelColor(score)}`}>
-                        {getScoreLabel(score)}
-                      </span>
-                    </div>
-                  </div>
+                  {/* Colored top border */}
+                  <div className="h-1 w-full" style={{ backgroundColor: band.color }} />
 
-                  {/* ── Impact Section (50%) ────────────────────────── */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-carbon-ink dark:text-warm-stone/80">
-                        Impact
-                      </span>
-                      <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/40 bg-slate-mist/10 dark:bg-warm-stone/5 px-2 py-0.5">
-                        50% Weight
-                      </span>
+                  <div className="p-6">
+                    {/* ── Header ─────────────────────────────────── */}
+                    <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-mist/20 dark:border-midnight-blue">
+                      <div>
+                        <h4 className="text-sm font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone leading-tight">
+                          Varna Score Breakdown
+                        </h4>
+                        {supplierName && (
+                          <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 mt-0.5 font-light tracking-wide">
+                            {supplierName}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5">
+                        <CountUpNumber
+                          value={score}
+                          className="text-3xl font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone"
+                        />
+                        <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${band.bg} ${band.text} ${band.border}`}>
+                          {band.name}
+                        </span>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      {pillars.map((p) => (
-                        <div key={p.key} className="flex items-center gap-2.5">
-                          <span className="text-[9px] w-20 text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
-                            {p.label}
-                          </span>
-                          <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                            <motion.div
-                              className="h-full"
-                              style={{ backgroundColor: getBarColor(p.value) }}
-                              initial={{ width: 0 }}
-                              animate={{ width: `${p.value}%` }}
-                              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                            />
-                          </div>
-                          <span className="text-[9px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums w-7 text-right">
-                            {p.value}
+
+                    {/* ── Impact Section (50%) ────────────────────── */}
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-1.5">
+                          <Leaf className="w-3 h-3 text-sage-mineral" strokeWidth={2} />
+                          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
+                            Impact
                           </span>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* ── Readiness Section (30%) ─────────────────────── */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-carbon-ink dark:text-warm-stone/80">
-                        Readiness
-                      </span>
-                      <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/40 bg-slate-mist/10 dark:bg-warm-stone/5 px-2 py-0.5">
-                        30% Weight
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-[9px] w-20 text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
-                        Mgmt & Certs
-                      </span>
-                      <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                        <motion.div
-                          className="h-full"
-                          style={{ backgroundColor: getBarColor(readinessScore) }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${readinessScore}%` }}
-                          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        />
+                        <span className="text-[8px] font-semibold uppercase tracking-widest text-sage-mineral bg-sage-mineral/10 px-2 py-0.5 border border-sage-mineral/20">
+                          50% Weight
+                        </span>
                       </div>
-                      <span className="text-[9px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums w-7 text-right">
-                        {readinessScore}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* ── Risk Section (20%) ──────────────────────────── */}
-                  <div className="mb-5">
-                    <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-carbon-ink dark:text-warm-stone/80">
-                        Risk
-                      </span>
-                      <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-mist dark:text-warm-stone/40 bg-slate-mist/10 dark:bg-warm-stone/5 px-2 py-0.5">
-                        20% Weight
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-[9px] w-20 text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
-                        Compliance
-                      </span>
-                      <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                        <motion.div
-                          className="h-full"
-                          style={{ backgroundColor: riskIsHigh ? "#7A3F1E" : "#738678" }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${100 - riskScore}%` }}
-                          transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        />
+                      <div className="space-y-2.5">
+                        {pillars.map((p, idx) => {
+                          const PillarIcon = p.icon;
+                          return (
+                            <div key={p.key} className="flex items-center gap-2.5">
+                              <PillarIcon className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
+                              <span className="text-[10px] w-[72px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
+                                {p.label}
+                              </span>
+                              <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
+                                <motion.div
+                                  className="h-full rounded-r-sm"
+                                  style={{ backgroundColor: getBarColor(p.value) }}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${p.value}%` }}
+                                  transition={{ duration: 0.7, delay: idx * STAGGER_DELAY + 0.15, ease: EASE_SMOOTH }}
+                                />
+                              </div>
+                              <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono w-7 text-right">
+                                {p.value}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <span className={`text-[9px] font-medium tabular-nums w-7 text-right ${riskIsHigh ? "text-deep-clay" : "text-carbon-ink dark:text-warm-stone/80"}`}>
-                        {100 - riskScore}
-                      </span>
                     </div>
-                  </div>
 
-                  {/* ── Footer Note ─────────────────────────────────── */}
-                  <div className="pt-4 border-t border-slate-mist/15 dark:border-midnight-blue/60">
-                    <p className="text-[9px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
-                      Calculated using the Varna Framework 2.0. Intersection Suppliers receive a +5 bonus.
-                    </p>
+                    {/* ── Readiness Section (30%) ─────────────────── */}
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-1.5">
+                          <Shield className="w-3 h-3 text-slate-mist" strokeWidth={2} />
+                          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
+                            Readiness
+                          </span>
+                        </div>
+                        <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-mist bg-slate-mist/10 px-2 py-0.5 border border-slate-mist/20">
+                          30% Weight
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <Shield className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
+                        <span className="text-[10px] w-[72px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
+                          Mgmt & Certs
+                        </span>
+                        <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-r-sm"
+                            style={{ backgroundColor: getBarColor(readinessScore) }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${readinessScore}%` }}
+                            transition={{ duration: 0.7, delay: 0.35, ease: EASE_SMOOTH }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono w-7 text-right">
+                          {readinessScore}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ── Risk Section (20%) ──────────────────────── */}
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-1.5">
+                          <AlertTriangle className="w-3 h-3 text-deep-clay" strokeWidth={2} />
+                          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
+                            Risk
+                          </span>
+                        </div>
+                        <span className="text-[8px] font-semibold uppercase tracking-widest text-deep-clay bg-deep-clay/10 px-2 py-0.5 border border-deep-clay/20">
+                          20% Weight
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <AlertTriangle className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
+                        <span className="text-[10px] w-[72px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
+                          Compliance
+                        </span>
+                        <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-r-sm"
+                            style={{ backgroundColor: riskIsHigh ? "#7A3F1E" : "#738678" }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${100 - riskScore}%` }}
+                            transition={{ duration: 0.7, delay: 0.45, ease: EASE_SMOOTH }}
+                          />
+                        </div>
+                        <span className={`text-[10px] font-medium tabular-nums font-mono w-7 text-right ${riskIsHigh ? "text-deep-clay" : "text-carbon-ink dark:text-warm-stone/80"}`}>
+                          {100 - riskScore}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ── Footer Note ─────────────────────────────── */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6, duration: 0.4 }}
+                      className="pt-4 border-t border-slate-mist/15 dark:border-midnight-blue/60"
+                    >
+                      <p className="text-[9px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
+                        Calculated using the Varna Framework 2.0. Intersection Suppliers receive a +5 bonus.
+                      </p>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>

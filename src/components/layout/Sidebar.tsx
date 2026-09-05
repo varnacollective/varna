@@ -61,8 +61,8 @@ export default function Sidebar({
                 group rounded-none border-y border-transparent cursor-pointer
                 ${
                   isActive
-                    ? "bg-[#D8CFB8]/15 text-[#D8CFB8] border-l-2 border-l-[#738678]"
-                    : "text-[#D8CFB8]/60 hover:text-[#D8CFB8] hover:bg-[#D8CFB8]/5"
+                    ? "bg-[#D8CFB8]/15 text-[#D8CFB8] relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-gradient-to-b before:from-[#7A3F1E] before:to-[#6F848F] shadow-[0_0_12px_rgba(122,63,30,0.25)]"
+                    : "text-[#D8CFB8]/60 hover:text-[#D8CFB8] hover:bg-[#D8CFB8]/10"
                 }
               `}
               title={item.label}
