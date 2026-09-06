@@ -22,6 +22,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import BrandLogo from "@/components/ui/BrandLogo";
+
 export interface BadgeConfig {
   icon: LucideIcon;
   bgClass: string;
@@ -243,6 +245,7 @@ export interface SupplierProfileCardProps {
   name: string;
   legalName: string;
   location: string;
+  logoPath?: string;
   dataTier: DataTier;
   varnaScore: number;
   eScore: number;
@@ -270,6 +273,7 @@ export default function SupplierProfileCard({
   name,
   legalName,
   location,
+  logoPath,
   dataTier,
   varnaScore,
   eScore,
@@ -326,6 +330,16 @@ export default function SupplierProfileCard({
   const visibleBadges = badges.slice(0, 3);
   const hiddenBadges = badges.slice(3);
 
+  const supplierDetails = {
+    "Legal Entity": legalName && legalName !== name ? legalName : undefined,
+    "Location": location,
+    "Assessment Tier": dataTier === "verified" ? "Verified Enterprise" : "Self-Reported",
+    "Varna Score": `${varnaScore} / 100`,
+    "Data Confidence": `${confidenceScore}%`,
+    "Sourced Portfolio": `${skuCount} SKUs (${totalUnits.toLocaleString()} Units)`,
+    "Certifications": badges?.length ? badges.join(", ") : undefined,
+  };
+
   return (
     <Card
       variant={isVerified ? "verified" : "default"}
@@ -338,7 +352,15 @@ export default function SupplierProfileCard({
         <div className="flex justify-between items-start mb-2">
           <div>
             <div className="flex items-center gap-2.5 mb-1">
-              <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tight truncate max-w-[220px]">
+              <BrandLogo
+                logoPath={logoPath}
+                alt={name}
+                name={name}
+                size="sm"
+                entityType="supplier"
+                details={supplierDetails}
+              />
+              <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tight truncate max-w-[180px] sm:max-w-[200px]">
                 {name}
               </h4>
               <DataTierBadge tier={dataTier} />

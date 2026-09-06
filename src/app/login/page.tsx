@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, AlertCircle, Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
+import BrandLogo from "@/components/ui/BrandLogo";
 
 export default function LoginPage() {
   const router = useRouter();

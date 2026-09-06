@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, AlertCircle, Eye, EyeOff, Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import BrandWatermark from "@/components/ui/BrandWatermark";
+import BrandLogo from "@/components/ui/BrandLogo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -77,10 +78,10 @@ export default function LoginPage() {
         <BrandWatermark position="bottom-right" size={480} opacity={0.06} />
 
         {/* Top Brand Mark */}
-        <div className="relative z-10 flex items-center gap-3">
-          <img src="/logo-dark.svg" alt="Varna Collective" className="h-11 w-auto object-contain drop-shadow" />
-          <div className="h-6 w-px bg-[#D8CFB8]/30" />
-          <span className="text-[10px] tracking-[0.25em] font-semibold uppercase text-[#D8CFB8]/80">
+        <div className="relative z-10 flex items-center gap-3.5">
+          <img src="/logo-dark.svg" alt="Varna Collective" className="h-14 sm:h-16 lg:h-18 w-auto object-contain drop-shadow-md" />
+          <div className="h-8 w-px bg-[#D8CFB8]/30" />
+          <span className="text-[11px] sm:text-xs tracking-[0.25em] font-semibold uppercase text-[#D8CFB8]/90">
             Enterprise Portal
           </span>
         </div>
@@ -105,7 +106,6 @@ export default function LoginPage() {
             <ShieldCheck className="w-4 h-4 text-[#738678]" />
             <span>Varna Trust Protocol · 18 Verifiable Indicators</span>
           </div>
-          <span>Oberoi &amp; Luxury Portfolio</span>
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import DashboardClient from "./DashboardClient";
-import type { DashboardData } from "@/lib/mock-data";
+import { type DashboardData, type SupplierDetail, getClientLogoFallback, getSupplierLogoFallback } from "@/lib/mock-data";
 
 export default async function DashboardServerPage() {
   const cookieStore = await cookies();
@@ -124,6 +124,40 @@ export default async function DashboardServerPage() {
       avgVarnaScore: 0, // Fallback as not in DB
     })) || [];
 
+    // 6. Fetch Suppliers for Dashboard Portfolio View
+    const { data: scoresData } = await supabase
+      .from("scores_summary")
+      .select("enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score");
+
+    const suppliersList: SupplierDetail[] = (scoresData || []).map((s: any) => {
+      const name = s.enterprise_name || "";
+      const lower = name.toLowerCase();
+      const isBare = lower.includes("bare");
+      const isUKHI = lower.includes("ukhi");
+      const tier = isBare ? "Platinum" : isUKHI ? "Gold" : "Silver";
+
+      return {
+        clientId,
+        enterpriseId: s.enterprise_id || name,
+        enterpriseName: name,
+        tier,
+        varnaScore: s.final_varna_score ?? 0,
+        eScore: s.e_pillar_score ?? 0,
+        sScore: s.s_pillar_score ?? 0,
+        gScore: s.g_pillar_score ?? 0,
+        cScore: s.c_pillar_score ?? 0,
+        totalSpend: isBare ? 1680000 : isUKHI ? 960000 : 800000,
+        totalOrders: isBare ? 12 : isUKHI ? 8 : 5,
+        city: isBare ? "Bengaluru" : isUKHI ? "Pune" : "Indore",
+        state: isBare ? "Karnataka" : isUKHI ? "Maharashtra" : "Madhya Pradesh",
+        artisansEmployed: isBare ? 45 : isUKHI ? 120 : 30,
+        womenPercent: isBare ? 82 : isUKHI ? 65 : 75,
+        logoPath: s.logo_path || getSupplierLogoFallback(name),
+      };
+    });
+
+    const clientLogo = clientData?.logo_path || getClientLogoFallback(session.clientName);
+
     const dashboardData: DashboardData = {
       client: {
         clientId: session.clientId,
@@ -133,6 +167,7 @@ export default async function DashboardServerPage() {
         state: clientData?.state || "Unknown State",
         onboardingDate: clientData?.onboarding_date || "2024-01-01",
         status: clientData?.status || "Active",
+        logoPath: clientLogo,
       },
       summary: {
         clientId: session.clientId,
@@ -188,8 +223,8 @@ export default async function DashboardServerPage() {
           },
         },
         sdgImpact: [],
-      } as any, // Type override since we are migrating the schema away from Google Sheets
-      suppliers: [], // We'll populate this fully on the Suppliers page
+      } as any,
+      suppliers: suppliersList,
       categorySpend,
       tierDistribution,
       supplierImpactData,

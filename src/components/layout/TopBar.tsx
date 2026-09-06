@@ -1,18 +1,23 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Calendar, Moon, Sun } from "lucide-react";
+import { Download, Calendar, Moon, Sun, Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
+
+import BrandLogo from "@/components/ui/BrandLogo";
 
 interface TopBarProps {
   clientName: string;
   industry?: string;
+  logoPath?: string;
+  clientDetails?: Record<string, any>;
 }
 
-export default function TopBar({ clientName, industry }: TopBarProps) {
+export default function TopBar({ clientName, industry, logoPath, clientDetails }: TopBarProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -26,7 +31,17 @@ export default function TopBar({ clientName, industry }: TopBarProps) {
   });
 
   const handleDownload = () => {
-    alert("Enterprise PDF report export is preparing to download.");
+    setIsExporting(true);
+    setTimeout(() => {
+      alert("Enterprise PDF report export is preparing to download.");
+      setIsExporting(false);
+    }, 600);
+  };
+
+  const defaultDetails = clientDetails || {
+    "Industry Sector": industry,
+    "Account Status": "Active Assessment Interval",
+    "Portal Access": "Authenticated Enterprise Client",
   };
 
   return (
@@ -43,14 +58,26 @@ export default function TopBar({ clientName, industry }: TopBarProps) {
     >
       {/* Left: Branding + Client info */}
       <div className="flex flex-col items-start">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#FAF6EE]/80">
+        <div className="flex items-center gap-2.5 mb-1.5">
+          <img src="/logo-light.svg" alt="Varna" className="block dark:hidden h-7 sm:h-8 w-auto object-contain shrink-0" />
+          <img src="/logo-dark.svg" alt="Varna" className="hidden dark:block h-7 sm:h-8 w-auto object-contain shrink-0" />
+          <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#FAF6EE]/85">
             Enterprise Portal · Procurement Intelligence
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mt-1">
-          {clientName}
-        </h1>
+        <div className="flex items-center gap-3 mt-1">
+          <BrandLogo
+            logoPath={logoPath}
+            alt={clientName}
+            name={clientName}
+            size="md"
+            entityType="client"
+            details={defaultDetails}
+          />
+          <h1 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+            {clientName}
+          </h1>
+        </div>
         {industry && (
           <p className="text-xs text-[#6F848F] dark:text-[#FAF6EE]/65 mt-1 font-light tracking-wide">
             {industry} · Active Assessment Interval
@@ -80,15 +107,21 @@ export default function TopBar({ clientName, industry }: TopBarProps) {
 
         <button
           onClick={handleDownload}
-          className="
+          disabled={isExporting}
+          className={`
             flex items-center gap-2.5
             px-5 py-3 rounded-none
             bg-[#7A3F1E] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:hover:bg-[#E8E2D1] text-[#D8CFB8] dark:text-[#18191D]
             text-xs font-serif uppercase tracking-widest transition-all duration-200 shadow-sm cursor-pointer
-          "
+            ${isExporting ? "opacity-75 cursor-wait" : ""}
+          `}
         >
-          <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
-          <span>Export Report</span>
+          {isExporting ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
+          )}
+          <span>{isExporting ? "Exporting..." : "Export Report"}</span>
         </button>
       </div>
     </motion.header>

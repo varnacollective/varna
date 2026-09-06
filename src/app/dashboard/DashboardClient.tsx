@@ -35,15 +35,13 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
     // Read ?section= query param from client side safely
     const params = new URLSearchParams(window.location.search);
     const sec = params.get("section");
-    if (sec && ["overview", "orders", "impact"].includes(sec)) {
+    if (sec && ["overview", "suppliers", "orders", "impact"].includes(sec)) {
       setActiveSection(sec);
     }
   }, [initialData, router]);
 
   const handleSectionChange = (section: string) => {
-    if (section === "suppliers") {
-      router.push("/dashboard/suppliers");
-    } else if (section === "algorithm") {
+    if (section === "algorithm") {
       router.push("/algorithm");
     } else {
       setActiveSection(section);
@@ -100,7 +98,19 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
 
       {/* Main content */}
       <main className="flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
-        <TopBar clientName={client.clientName} industry={client.industry} />
+        <TopBar
+          clientName={client.clientName}
+          industry={client.industry}
+          logoPath={client.logoPath}
+          clientDetails={{
+            "Industry Sector": client.industry,
+            "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
+            "Status": client.status || "Active",
+            "Onboarding Date": client.onboardingDate,
+            "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
+            "Total Spend": summary?.totalSpend ? `₹${summary.totalSpend.toLocaleString('en-IN')}` : undefined,
+          }}
+        />
 
         <AnimatePresence mode="wait">
           <motion.div

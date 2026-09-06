@@ -30,7 +30,7 @@ If the user asks "Why is my score X?" or "How do I improve?", analyze the 'User'
     const modelMessages = await convertToModelMessages(messages);
 
     const result = await streamText({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-3.6-flash'),
       system: systemPrompt,
       messages: modelMessages,
     });

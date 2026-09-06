@@ -12,6 +12,7 @@ export interface ClientMaster {
   state: string;
   onboardingDate: string;
   status: string;
+  logoPath?: string;
 }
 
 export interface ClientSummary {
@@ -30,6 +31,7 @@ export interface ClientSummary {
   totalSuppliers: number;
   avgLeadTimeDays: number;
   pillarBreakdown?: Record<string, any>;
+  logoPath?: string;
 }
 
 export interface SupplierDetail {
@@ -48,6 +50,7 @@ export interface SupplierDetail {
   state: string;
   artisansEmployed: number;
   womenPercent: number;
+  logoPath?: string;
 }
 
 export interface CategorySpend {
@@ -452,3 +455,21 @@ export const SUPPLIER_CONFIDENCE_CHECKLISTS: Record<string, SupplierConfidenceDa
     ],
   },
 };
+
+export function getClientLogoFallback(clientName?: string): string {
+  if (!clientName) return "/logos/clients/oberoi-dubai.png";
+  const lower = clientName.toLowerCase();
+  if (lower.includes("six senses")) return "/logos/clients/six-senses.jpg";
+  if (lower.includes("dorchester")) return "/logos/clients/dorchester-collection.png";
+  return "/logos/clients/oberoi-dubai.png";
+}
+
+export function getSupplierLogoFallback(supplierName?: string): string | undefined {
+  if (!supplierName) return undefined;
+  const lower = supplierName.toLowerCase();
+  if (lower.includes("bare")) return "/logos/suppliers/bare-necessities.png";
+  if (lower.includes("ukhi")) return "/logos/suppliers/ukhi.jpg";
+  if (lower.includes("kheoni")) return "/logos/suppliers/kheoni.jpg";
+  return undefined;
+}
+

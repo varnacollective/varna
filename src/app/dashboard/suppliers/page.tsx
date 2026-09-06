@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import SuppliersClient from "./SuppliersClient";
 
+import { getSupplierLogoFallback } from "@/lib/mock-data";
+
 export default async function SuppliersServerPage() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("varna_session");
@@ -26,7 +28,7 @@ export default async function SuppliersServerPage() {
     // 1. Fetch scores_summary (all active suppliers)
     const { data: scoresData, error: scoresError } = await supabase
       .from("scores_summary")
-      .select("enterprise_id, enterprise_name, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score, overall_assessor_summary, sdg_alignments");
+      .select("enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score, overall_assessor_summary, sdg_alignments");
 
     if (scoresError) {
       console.error("Supabase scores_summary error:", scoresError);
@@ -53,7 +55,7 @@ export default async function SuppliersServerPage() {
     // 4. Fetch enterprise_master (for metadata flags like material innovation, women-led, udyam)
     const { data: enterpriseMasterData, error: enterpriseMasterError } = await supabase
       .from("enterprise_master")
-      .select("enterprise_id, enterprise_name, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number");
+      .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number");
 
     if (enterpriseMasterError) {
       console.error("Supabase enterprise_master error:", enterpriseMasterError);
@@ -140,9 +142,19 @@ export default async function SuppliersServerPage() {
         return eName === sName || eName.includes(sName) || sName.includes(eName);
       });
 
+      const masterRow = (enterpriseMasterData || []).find((m: any) => {
+        if (scoreRow.enterprise_id && m.enterprise_id === scoreRow.enterprise_id) return true;
+        if (!m.enterprise_name) return false;
+        const mName = m.enterprise_name.trim().toLowerCase();
+        const eName = name.trim().toLowerCase();
+        return eName === mName || eName.includes(mName) || mName.includes(eName);
+      });
+      const logoPath = scoreRow.logo_path || masterRow?.logo_path || getSupplierLogoFallback(name);
+
       return {
         enterprise_id: scoreRow.enterprise_id,
         enterprise_name: name,
+        logo_path: logoPath,
         final_varna_score: scoreRow.final_varna_score ?? 0,
         e_pillar_score: scoreRow.e_pillar_score ?? 0,
         s_pillar_score: scoreRow.s_pillar_score ?? 0,
