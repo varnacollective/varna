@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField } from "../FormFields";
+import { StepWrapper, Field, TextareaField, SelectField, SectionDivider } from "../FormFields";
 
 const YES_NO_PARTIAL = [
   { value: "yes", label: "Yes" },
@@ -61,12 +61,9 @@ export default function Step3Environment() {
         hint="Select the primary source of energy used in your operations."
       />
 
-      <div className="pt-4 border-t border-slate-mist/10">
-        <p className="text-[10px] font-mono uppercase tracking-widest text-slate-mist/60 mb-6">
-          Chemical Use & Disposal
-        </p>
-        <div className="space-y-8">
-          <TextareaField
+      <SectionDivider label="Chemical Use &amp; Disposal" />
+      <div className="space-y-6">
+        <TextareaField
             name="chemical_usage"
             label="Chemicals & Dyes Used in Production"
             placeholder="List any dyes, fixatives, finishing agents, or other chemicals used. Note 'None' if not applicable."
@@ -80,7 +77,6 @@ export default function Step3Environment() {
             hint="e.g. 'Effluent treatment plant on-site', 'third-party waste contractor', 'No chemical waste generated'."
             rows={3}
           />
-        </div>
       </div>
 
       <TextareaField

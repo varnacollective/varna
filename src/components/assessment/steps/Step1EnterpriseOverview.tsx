@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField, DriveUploadField } from "../FormFields";
+import { StepWrapper, Field, TextareaField, SelectField, DriveUploadField, SectionDivider } from "../FormFields";
 
 const LEGAL_STRUCTURE_OPTIONS = [
   { value: "sole_proprietorship", label: "Sole Proprietorship" },
@@ -28,7 +28,7 @@ export default function Step1EnterpriseOverview() {
       title="Enterprise Overview"
       subtitle="Tell us about your enterprise's legal identity, scale, and the people behind it."
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Field
           name="legal_name"
           label="Legal Entity Name"
@@ -42,7 +42,7 @@ export default function Step1EnterpriseOverview() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Field
           name="udyam_number"
           label="Udyam Registration Number"
@@ -56,7 +56,7 @@ export default function Step1EnterpriseOverview() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Field
           name="year_established"
           label="Year Established"
@@ -84,7 +84,7 @@ export default function Step1EnterpriseOverview() {
         rows={2}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <SelectField
           name="annual_turnover"
           label="Annual Turnover (Last FY)"
@@ -99,52 +99,44 @@ export default function Step1EnterpriseOverview() {
       </div>
 
       {/* Founder Information */}
-      <div className="pt-4 border-t border-slate-mist/10">
-        <p className="text-[10px] font-mono uppercase tracking-widest text-slate-mist/60 mb-6">
-          Founders & Story
-        </p>
-        <div className="space-y-8">
-          <Field
-            name="founder_name"
-            label="Founder / Key Promoter Name(s)"
-            placeholder="Full names of founders"
-          />
-          <TextareaField
-            name="founders_story"
-            label="Founder's Story"
-            placeholder="Tell us about your journey, what drives your enterprise, and why craft / sustainability matters to you."
-            rows={5}
-            hint="This narrative may appear in our supplier profiles. Write authentically — 150–400 words."
-          />
-        </div>
+      <SectionDivider label="Founders & Story" />
+      <div className="space-y-6">
+        <Field
+          name="founder_name"
+          label="Founder / Key Promoter Name(s)"
+          placeholder="Full names of founders"
+        />
+        <TextareaField
+          name="founders_story"
+          label="Founder's Story"
+          placeholder="Tell us about your journey, what drives your enterprise, and why craft / sustainability matters to you."
+          rows={5}
+          hint="This narrative may appear in our supplier profiles. Write authentically — 150–400 words."
+        />
       </div>
 
       {/* Primary Contact */}
-      <div className="pt-4 border-t border-slate-mist/10">
-        <p className="text-[10px] font-mono uppercase tracking-widest text-slate-mist/60 mb-6">
-          Primary Contact
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-          <Field
-            name="primary_contact_name"
-            label="Contact Name"
-            required
-            placeholder="Full name"
-          />
-          <Field
-            name="primary_contact_email"
-            label="Email Address"
-            required
-            type="email"
-            placeholder="name@enterprise.com"
-          />
-          <Field
-            name="primary_contact_phone"
-            label="Phone / WhatsApp"
-            type="tel"
-            placeholder="+91 98765 43210"
-          />
-        </div>
+      <SectionDivider label="Primary Contact" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <Field
+          name="primary_contact_name"
+          label="Contact Name"
+          required
+          placeholder="Full name"
+        />
+        <Field
+          name="primary_contact_email"
+          label="Email Address"
+          required
+          type="email"
+          placeholder="name@enterprise.com"
+        />
+        <Field
+          name="primary_contact_phone"
+          label="Phone / WhatsApp"
+          type="tel"
+          placeholder="+91 98765 43210"
+        />
       </div>
     </StepWrapper>
   );

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { ChevronRight, ChevronLeft, Send, CheckCircle2 } from "lucide-react";
+import { EASE_SMOOTH } from "@/lib/motion";
 
 import Step1EnterpriseOverview from "./steps/Step1EnterpriseOverview";
 import Step2Products from "./steps/Step2Products";
@@ -109,15 +110,15 @@ const STEP_COMPONENTS = [
   Step7Management,
 ];
 
-// ─── Slide animation variants ────────────────────────────────────────────────
+// ─── Step transition — fade + directional slide using app EASE_SMOOTH ────────
 const slideVariants = {
   enter: (dir: number) => ({
-    x: dir > 0 ? 60 : -60,
+    x: dir > 0 ? 40 : -40,
     opacity: 0,
   }),
   center: { x: 0, opacity: 1 },
   exit: (dir: number) => ({
-    x: dir > 0 ? -60 : 60,
+    x: dir > 0 ? -40 : 40,
     opacity: 0,
   }),
 };
@@ -125,6 +126,45 @@ const slideVariants = {
 interface AssessmentFormProps {
   uuid: string;
   enterpriseName: string;
+}
+
+// ─── Varna brand mark — faceted diamond + wordmark, matching the app header ──
+function VarnaBrandMark({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex items-center gap-2.5 select-none ${className}`}>
+      {/* Faceted diamond icon — consistent with app-wide brand mark */}
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <polygon
+          points="10,1 19,7 16,17 4,17 1,7"
+          fill="none"
+          stroke="#7A3F1E"
+          strokeWidth="1.4"
+        />
+        <polygon
+          points="10,1 16,7 10,17 4,7"
+          fill="#7A3F1E"
+          fillOpacity="0.18"
+        />
+        <line x1="10" y1="1" x2="10" y2="17" stroke="#7A3F1E" strokeWidth="0.7" strokeOpacity="0.5" />
+        <line x1="1" y1="7" x2="19" y2="7" stroke="#7A3F1E" strokeWidth="0.7" strokeOpacity="0.5" />
+      </svg>
+      <div className="flex flex-col gap-0">
+        <span className="text-[11px] font-semibold tracking-[0.3em] uppercase text-warm-stone leading-none">
+          Varna Collective
+        </span>
+        <span className="text-[8px] tracking-[0.22em] uppercase text-slate-mist leading-none mt-0.5">
+          Enterprise Assessment
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormProps) {
@@ -240,22 +280,21 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
   // ── Success screen ───────────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#181A1D] flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#181A1D] flex items-center justify-center px-6 relative overflow-hidden">
+        {/* Ambient orbs */}
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-sage-mineral/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-deep-clay/5 rounded-full blur-3xl pointer-events-none" />
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center max-w-md"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE_SMOOTH }}
+          className="text-center max-w-md z-10"
         >
           <div className="w-16 h-16 border border-sage-mineral/40 bg-sage-mineral/10 flex items-center justify-center mx-auto mb-8">
             <CheckCircle2 className="w-8 h-8 text-sage-mineral" />
           </div>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-1.5 h-1.5 bg-deep-clay rotate-45 inline-block" />
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-mist">
-              Varna Collective
-            </span>
-          </div>
+          <VarnaBrandMark className="justify-center mb-6" />
           <h1 className="text-3xl font-serif font-light text-warm-stone tracking-tight mb-4">
             Assessment Submitted
           </h1>
@@ -275,157 +314,172 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
   const isLastStep = currentStep === STEPS.length - 1;
 
   return (
-    <div className="min-h-screen bg-[#181A1D] bg-ambient-mesh-dark text-warm-stone font-sans flex flex-col">
-      {/* ── Top Progress Bar ─────────────────────────────────────────────── */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-0.5 bg-slate-mist/10">
+    <div className="min-h-screen bg-[#181A1D] text-warm-stone font-sans flex flex-col relative overflow-hidden">
+      {/* ── Ambient background texture (quiet luxury, no legibility impact) ── */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 right-1/3 w-[600px] h-[600px] bg-deep-clay/4 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-sage-mineral/4 rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-midnight-blue/10 rounded-full blur-[140px]" />
+      </div>
+
+      {/* ── Top progress bar — glowing clay fill ─────────────────────────── */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-slate-mist/10">
         <motion.div
           className="h-full bg-deep-clay"
-          style={{ boxShadow: "0 0 12px 0 rgba(122, 63, 30, 0.7)" }}
+          style={{ boxShadow: "0 0 16px 2px rgba(122, 63, 30, 0.65)" }}
           initial={{ width: `${(1 / STEPS.length) * 100}%` }}
           animate={{ width: `${progressPct}%` }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.55, ease: EASE_SMOOTH }}
         />
       </div>
 
-      {/* ── Brand Header ────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 border-b border-slate-mist/10 bg-[#181A1D]/95 backdrop-blur-md px-6 sm:px-10 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-deep-clay rotate-45" />
-          <span className="text-[11px] font-mono uppercase tracking-[0.22em] text-slate-mist">
-            Varna Collective
-          </span>
-          <span className="text-slate-mist/30 text-xs">·</span>
-          <span className="text-[11px] font-mono uppercase tracking-widest text-warm-stone/60 hidden sm:inline">
-            Enterprise Assessment
-          </span>
-        </div>
+      {/* ── Header ──────────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-slate-mist/12 bg-[#181A1D]/96 backdrop-blur-md px-6 sm:px-10 h-16 flex items-center justify-between">
+        <VarnaBrandMark />
+
         <div className="text-right">
-          <p className="text-[10px] font-mono text-slate-mist uppercase tracking-widest">
+          <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-warm-stone/80 leading-none">
             {enterpriseName}
           </p>
-          <p className="text-[9px] font-mono text-slate-mist/50">
+          <p className="text-[9px] font-mono text-slate-mist/60 mt-0.5 leading-none">
             Step {currentStep + 1} of {STEPS.length} — {STEPS[currentStep].label}
           </p>
         </div>
       </header>
 
-      {/* ── Step Navigator (desktop pill strip) ─────────────────────────── */}
-      <div className="hidden md:flex items-center justify-center pt-8 pb-0 px-6 gap-0 overflow-x-auto">
-        {STEPS.map((step, idx) => {
-          const isActive = idx === currentStep;
-          const isComplete = idx < currentStep;
-          return (
-            <div key={step.number} className="flex items-center">
-              <button
-                onClick={() => {
-                  if (idx < currentStep) {
-                    setDirection(-1);
-                    setCurrentStep(idx);
-                  }
-                }}
-                disabled={idx > currentStep}
-                className={`flex items-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-all duration-200 cursor-pointer disabled:cursor-default ${
-                  isActive
-                    ? "text-warm-stone border-b-2 border-deep-clay pb-[6px]"
-                    : isComplete
-                    ? "text-slate-mist hover:text-warm-stone/80"
-                    : "text-slate-mist/30"
-                }`}
-              >
-                <span
-                  className={`w-4 h-4 flex items-center justify-center text-[9px] font-bold border ${
+      {/* ── Desktop step navigator ───────────────────────────────────────── */}
+      <div className="hidden md:block relative z-10 border-b border-slate-mist/10 bg-[#181A1D]/80">
+        <div className="flex items-center justify-center px-6 overflow-x-auto">
+          {STEPS.map((step, idx) => {
+            const isActive = idx === currentStep;
+            const isComplete = idx < currentStep;
+            return (
+              <div key={step.number} className="flex items-center">
+                <button
+                  onClick={() => {
+                    if (idx < currentStep) {
+                      setDirection(-1);
+                      setCurrentStep(idx);
+                    }
+                  }}
+                  disabled={idx > currentStep}
+                  className={`flex items-center gap-2 px-3.5 py-4 text-[10px] font-mono uppercase tracking-widest transition-all duration-200 border-b-2 whitespace-nowrap cursor-pointer disabled:cursor-default ${
                     isActive
-                      ? "border-deep-clay text-deep-clay bg-deep-clay/10"
+                      ? "text-warm-stone border-deep-clay"
                       : isComplete
-                      ? "border-sage-mineral text-sage-mineral bg-sage-mineral/10"
-                      : "border-slate-mist/20 text-slate-mist/30"
+                      ? "text-slate-mist/70 border-transparent hover:text-warm-stone/70 hover:border-slate-mist/30"
+                      : "text-slate-mist/25 border-transparent"
                   }`}
                 >
-                  {isComplete ? "✓" : step.number}
-                </span>
-                {step.short}
-              </button>
-              {idx < STEPS.length - 1 && (
-                <div
-                  className={`w-8 h-px mx-1 ${
-                    idx < currentStep ? "bg-sage-mineral/40" : "bg-slate-mist/15"
-                  }`}
-                />
-              )}
-            </div>
-          );
-        })}
+                  {/* Step number badge */}
+                  <span
+                    className={`w-[18px] h-[18px] flex items-center justify-center text-[9px] font-bold transition-all duration-200 ${
+                      isActive
+                        ? "bg-deep-clay text-warm-stone"
+                        : isComplete
+                        ? "bg-sage-mineral/20 text-sage-mineral border border-sage-mineral/40"
+                        : "border border-slate-mist/20 text-slate-mist/30"
+                    }`}
+                  >
+                    {isComplete ? (
+                      <svg width="8" height="7" viewBox="0 0 8 7" fill="none" aria-hidden="true">
+                        <path d="M1 3.5L3 5.5L7 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    ) : (
+                      step.number
+                    )}
+                  </span>
+                  {step.short}
+                </button>
+
+                {/* Connector line */}
+                {idx < STEPS.length - 1 && (
+                  <div
+                    className={`w-6 h-px mx-0.5 shrink-0 transition-colors duration-300 ${
+                      idx < currentStep ? "bg-sage-mineral/35" : "bg-slate-mist/12"
+                    }`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* ── Form Content ────────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col items-center px-4 sm:px-6 pt-10 pb-32">
+      {/* ── Form content ────────────────────────────────────────────────── */}
+      <main className="flex-1 flex flex-col items-center px-4 sm:px-6 pt-8 pb-36 relative z-10">
         <div className="w-full max-w-2xl">
           <FormProvider {...methods}>
-            <div className="relative overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={currentStep}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <StepComponent />
-                </motion.div>
-              </AnimatePresence>
-            </div>
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={currentStep}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.32, ease: EASE_SMOOTH }}
+              >
+                <StepComponent />
+              </motion.div>
+            </AnimatePresence>
           </FormProvider>
         </div>
       </main>
 
-      {/* ── Sticky Bottom Navigation ─────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-mist/10 bg-[#181A1D]/98 backdrop-blur-md px-6 sm:px-10 py-4 flex items-center justify-between">
+      {/* ── Sticky bottom navigation bar ────────────────────────────────── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-mist/12 bg-[#181A1D]/98 backdrop-blur-md px-6 sm:px-10 h-[64px] flex items-center justify-between">
+        {/* Previous */}
         <button
           id="assessment-prev-btn"
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-widest text-slate-mist border border-slate-mist/20 hover:border-warm-stone/30 hover:text-warm-stone transition-all duration-200 disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-widest text-slate-mist border border-slate-mist/20 hover:border-warm-stone/30 hover:text-warm-stone transition-all duration-200 disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           Previous
         </button>
 
-        <div className="flex items-center gap-3">
-          {/* Mobile step indicator */}
-          <span className="text-[10px] font-mono text-slate-mist md:hidden">
+        {/* Centre: progress dots (both mobile + desktop) */}
+        <div className="flex items-center gap-2">
+          {/* Mobile: "X / 7" text */}
+          <span className="text-[10px] font-mono text-slate-mist sm:hidden">
             {currentStep + 1} / {STEPS.length}
           </span>
 
-          {/* Dot indicators */}
+          {/* Dot indicators — same system as top stepper, visually unified */}
           <div className="hidden sm:flex items-center gap-1.5">
             {STEPS.map((_, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className={`transition-all duration-300 ${
-                  idx === currentStep
-                    ? "w-4 h-1.5 bg-deep-clay"
-                    : idx < currentStep
-                    ? "w-1.5 h-1.5 bg-sage-mineral/60"
-                    : "w-1.5 h-1.5 bg-slate-mist/20"
-                }`}
+                animate={{
+                  width: idx === currentStep ? 20 : 6,
+                  backgroundColor:
+                    idx === currentStep
+                      ? "#7A3F1E"
+                      : idx < currentStep
+                      ? "rgba(115, 134, 120, 0.55)"
+                      : "rgba(111, 132, 143, 0.18)",
+                }}
+                transition={{ duration: 0.25, ease: EASE_SMOOTH }}
+                className="h-1.5 rounded-none"
               />
             ))}
           </div>
         </div>
 
+        {/* Next / Submit */}
         {isLastStep ? (
           <button
             id="assessment-submit-btn"
             onClick={onSubmit}
             disabled={submitting}
-            className="flex items-center gap-2.5 px-6 py-2.5 bg-deep-clay text-warm-stone text-xs font-mono uppercase tracking-widest transition-all duration-200 hover:bg-[#944D25] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-            style={{ boxShadow: "0 0 20px -4px rgba(122, 63, 30, 0.6)" }}
+            className="flex items-center gap-2.5 px-6 py-2.5 bg-warm-stone text-carbon-ink text-xs font-serif tracking-[0.18em] uppercase transition-all duration-200 hover:bg-[#E4DEC9] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            style={{ boxShadow: "0 0 22px -4px rgba(216, 207, 184, 0.25)" }}
           >
             {submitting ? (
               <>
-                <div className="w-3.5 h-3.5 border border-warm-stone/40 border-t-warm-stone rounded-full animate-spin" />
+                <div className="w-3.5 h-3.5 border border-carbon-ink/40 border-t-carbon-ink rounded-full animate-spin" />
                 Submitting…
               </>
             ) : (
@@ -439,21 +493,28 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
           <button
             id="assessment-next-btn"
             onClick={goNext}
-            className="flex items-center gap-2.5 px-6 py-2.5 bg-deep-clay text-warm-stone text-xs font-mono uppercase tracking-widest transition-all duration-200 hover:bg-[#944D25] cursor-pointer"
-            style={{ boxShadow: "0 0 20px -4px rgba(122, 63, 30, 0.6)" }}
+            className="flex items-center gap-2.5 px-6 py-2.5 bg-warm-stone text-carbon-ink text-xs font-serif tracking-[0.18em] uppercase transition-all duration-200 hover:bg-[#E4DEC9] active:scale-[0.99] cursor-pointer group"
+            style={{ boxShadow: "0 0 22px -4px rgba(216, 207, 184, 0.25)" }}
           >
             Next
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>
         )}
       </div>
 
-      {/* Submit error */}
-      {submitError && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-red-950/80 border border-red-700/50 text-red-300 text-xs font-sans px-5 py-3 backdrop-blur-sm">
-          {submitError}
-        </div>
-      )}
+      {/* Submit error toast */}
+      <AnimatePresence>
+        {submitError && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-red-950/90 border border-red-700/50 text-red-300 text-xs font-sans px-5 py-3 backdrop-blur-sm whitespace-nowrap"
+          >
+            {submitError}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
