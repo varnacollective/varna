@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   CheckCircle2,
 } from "lucide-react";
+import LinkGenerator from "@/components/SuperAdmin/LinkGenerator";
 
 export const revalidate = 0;
 
@@ -171,6 +172,9 @@ export default async function SuperAdminOverviewPage() {
           })}
         </div>
       </div>
+
+      {/* Assessment Link Generator */}
+      <LinkGenerator />
 
       {/* Quick Security Architecture Notes */}
       <div className="bg-[#18191B] border border-slate-mist/15 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
