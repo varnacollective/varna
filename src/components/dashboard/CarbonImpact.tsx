@@ -39,11 +39,6 @@ export default function CarbonImpact({
       hoverEffect={false}
       className="p-8 relative overflow-hidden"
     >
-      {/* Subtle Botanical Leaf Watermark for Material Texture */}
-      <div className="absolute -right-8 -bottom-8 pointer-events-none select-none opacity-[0.05] dark:opacity-[0.04]">
-        <Leaf className="w-52 h-52 text-[#738678]" strokeWidth={1} />
-      </div>
-
       {/* Header */}
       <div className="flex justify-between items-start mb-6 border-b border-[#6F848F]/20 dark:border-[#2F3C52]/70 pb-3 relative z-10">
         <div>

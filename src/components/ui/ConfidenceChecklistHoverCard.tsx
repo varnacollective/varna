@@ -11,7 +11,7 @@ interface ConfidenceChecklistHoverCardProps {
   supplierName: string;
   score: number;
   totalConfirmed: string;
-  status: string;
+  status?: string;
   checklist: ConfidenceChecklistItem[];
   children: ReactNode;
 }
@@ -61,12 +61,6 @@ const STATUS_CONFIG: Record<
     label: "Missing",
   },
 };
-
-function getOverallStatusPill(status: string) {
-  if (status === "Verified") return { bg: "bg-sage-mineral/15", text: "text-sage-mineral", border: "border-sage-mineral/30" };
-  if (status === "Early Stage" || status === "Lapsed") return { bg: "bg-deep-clay/15", text: "text-deep-clay", border: "border-deep-clay/30" };
-  return { bg: "bg-slate-mist/15", text: "text-slate-mist", border: "border-slate-mist/30" };
-}
 
 // Animated ring for the drawer header
 function DrawerConfidenceRing({ score, size = 80 }: { score: number; size?: number }) {
@@ -131,7 +125,7 @@ export default function ConfidenceChecklistHoverCard({
   supplierName,
   score,
   totalConfirmed,
-  status,
+  status: _status,
   checklist,
   children,
 }: ConfidenceChecklistHoverCardProps) {
@@ -162,8 +156,6 @@ export default function ConfidenceChecklistHoverCard({
     }
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
-
-  const overallPill = getOverallStatusPill(status);
 
   return (
     <>
@@ -237,16 +229,11 @@ export default function ConfidenceChecklistHoverCard({
                       </button>
                     </div>
 
-                    {/* Ring + Status */}
+                    {/* Ring + Confirmation Summary */}
                     <div className="flex items-center gap-5">
                       <DrawerConfidenceRing score={score} size={80} />
-                      <div className="flex flex-col gap-2">
-                        <span
-                          className={`inline-flex items-center text-[9px] font-semibold uppercase tracking-widest px-2.5 py-1 border ${overallPill.bg} ${overallPill.text} ${overallPill.border}`}
-                        >
-                          {status}
-                        </span>
-                        <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 font-light">
+                      <div>
+                        <p className="text-[11px] text-slate-mist dark:text-warm-stone/70 font-light">
                           {totalConfirmed}
                         </p>
                       </div>

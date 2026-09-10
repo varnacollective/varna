@@ -42,11 +42,6 @@ export default function KPICard({
       className="group relative overflow-hidden"
       hoverEffect={true}
     >
-      {/* Subtle Background Watermark Icon for Material Depth */}
-      <div className="absolute -right-4 -bottom-4 pointer-events-none select-none opacity-[0.06] dark:opacity-[0.04] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
-        <Icon className="w-36 h-36 text-[#222326] dark:text-[#FAF6EE]" strokeWidth={1} />
-      </div>
-
       <div className="flex items-start justify-between relative z-10">
         <div className="flex-1 pr-3">
           {/* Section label: small, muted, uppercase, wide tracking */}

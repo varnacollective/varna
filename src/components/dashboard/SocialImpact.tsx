@@ -38,11 +38,6 @@ export default function SocialImpact({
       hoverEffect={false}
       className="p-8 relative overflow-hidden flex flex-col justify-between"
     >
-      {/* Subtle Background Artisan Watermark */}
-      <div className="absolute -right-8 -bottom-8 pointer-events-none select-none opacity-[0.05] dark:opacity-[0.04]">
-        <Users className="w-52 h-52 text-[#7A3F1E]" strokeWidth={1} />
-      </div>
-
       <div className="relative z-10">
         <div className="flex justify-between items-start mb-6 border-b border-[#6F848F]/20 dark:border-[#2F3C52]/70 pb-3">
           <div>

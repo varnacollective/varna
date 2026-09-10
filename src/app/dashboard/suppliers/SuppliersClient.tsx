@@ -10,8 +10,6 @@ import ChatWidget from "@/components/ChatWidget";
 import Card from "@/components/ui/Card";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
-import DataTierBadge from "@/components/ui/DataTierBadge";
-import type { DataTier } from "@/components/ui/DataTierBadge";
 import type { SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 import SupplierProfileCard from "./SupplierProfileCard";

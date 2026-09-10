@@ -4,7 +4,6 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import Card from "@/components/ui/Card";
-import DataTierBadge from "@/components/ui/DataTierBadge";
 import type { DataTier } from "@/components/ui/DataTierBadge";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import SDGBadge from "@/components/ui/SDGBadge";
@@ -360,10 +359,9 @@ export default function SupplierProfileCard({
                 entityType="supplier"
                 details={supplierDetails}
               />
-              <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tight truncate max-w-[180px] sm:max-w-[200px]">
+              <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tight truncate max-w-[220px] sm:max-w-[250px]">
                 {name}
               </h4>
-              <DataTierBadge tier={dataTier} />
             </div>
             {/* 2. Subtitle: Legal Name • Location */}
             <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] font-light truncate max-w-[280px]">
