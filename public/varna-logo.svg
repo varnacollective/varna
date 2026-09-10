@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 50 100 125" fill="none">
+  <!-- Plane 1: Primary angular facet in Deep Clay -->
+  <path
+    d="M107.92 167.55L92.48 62.32c-0.13-0.89 0.95-1.43 1.59-0.79l49.1 49.49c1.12 1.13 1.8 2.63 1.9 4.22l3.36 52.27L107.92 167.55z"
+    fill="#7A3F1E"
+  />
+  <!-- Plane 2: Overlapping facet in Warm Sandstone / Gold tint -->
+  <path
+    d="M107.88 167.66l17.02-61.53c0.19-0.7 1.05-0.96 1.59-0.47l29.42 26.57c1.04 0.94 1.46 2.39 1.1 3.75l-8.47 31.58L107.88 167.66z"
+    fill="#D8CFB8"
+    fill-opacity="0.9"
+  />
+  <!-- Plane 3: Subtle folding line art contour -->
+  <path
+    d="M92.48 62.32L107.92 167.55l39.06-25.75"
+    stroke="#222326"
+    stroke-width="1.2"
+    stroke-opacity="0.3"
+  />
+</svg>

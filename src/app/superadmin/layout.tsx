@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -113,7 +114,14 @@ export default function SuperAdminLayout({
           <div className="p-6 border-b border-slate-mist/15">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 bg-deep-clay rotate-45" />
+                <Image
+                  src="/varna-logo.svg"
+                  alt="Varna Collective"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 object-contain"
+                  priority
+                />
                 <span className="text-[10px] font-semibold tracking-[0.25em] text-warm-stone/80 uppercase">
                   Varna Collective
                 </span>

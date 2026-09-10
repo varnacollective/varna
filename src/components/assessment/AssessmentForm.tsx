@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -128,38 +129,23 @@ interface AssessmentFormProps {
   enterpriseName: string;
 }
 
-// ─── Varna brand mark — faceted diamond + wordmark, matching the app header ──
+// ─── Varna brand mark — official logo + wordmark, matching the app header ──
 function VarnaBrandMark({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Faceted diamond icon — consistent with app-wide brand mark */}
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <polygon
-          points="10,1 19,7 16,17 4,17 1,7"
-          fill="none"
-          stroke="#7A3F1E"
-          strokeWidth="1.4"
-        />
-        <polygon
-          points="10,1 16,7 10,17 4,7"
-          fill="#7A3F1E"
-          fillOpacity="0.18"
-        />
-        <line x1="10" y1="1" x2="10" y2="17" stroke="#7A3F1E" strokeWidth="0.7" strokeOpacity="0.5" />
-        <line x1="1" y1="7" x2="19" y2="7" stroke="#7A3F1E" strokeWidth="0.7" strokeOpacity="0.5" />
-      </svg>
-      <div className="flex flex-col gap-0">
+    <div className={`flex items-center gap-3 select-none ${className}`}>
+      <Image
+        src="/varna-logo.svg"
+        alt="Varna Collective Logo"
+        width={32}
+        height={32}
+        className="w-8 h-8 object-contain"
+        priority
+      />
+      <div className="flex flex-col gap-0.5">
         <span className="text-[11px] font-semibold tracking-[0.3em] uppercase text-warm-stone leading-none">
           Varna Collective
         </span>
-        <span className="text-[8px] tracking-[0.22em] uppercase text-slate-mist leading-none mt-0.5">
+        <span className="text-[8px] tracking-[0.22em] uppercase text-slate-mist leading-none">
           Enterprise Assessment
         </span>
       </div>

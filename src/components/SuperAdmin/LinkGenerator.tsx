@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Link2, Copy, Check, Loader2, Sparkles } from "lucide-react";
 
 export default function LinkGenerator() {
@@ -60,7 +61,13 @@ export default function LinkGenerator() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-1.5 h-1.5 bg-deep-clay rotate-45 inline-block" />
+            <Image
+              src="/varna-logo.svg"
+              alt="Varna Collective"
+              width={16}
+              height={16}
+              className="w-4 h-4 object-contain"
+            />
             <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-mist">
               Supplier Onboarding
             </span>
