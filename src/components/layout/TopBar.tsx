@@ -1,23 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Calendar, Moon, Sun, Loader2 } from "lucide-react";
+import { Calendar, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
 import BrandLogo from "@/components/ui/BrandLogo";
+import ExportButton from "@/components/ExportButton";
+import type { DashboardData } from "@/lib/mock-data";
 
 interface TopBarProps {
   clientName: string;
   industry?: string;
   logoPath?: string;
   clientDetails?: Record<string, any>;
+  dashboardData?: DashboardData | null;
 }
 
-export default function TopBar({ clientName, industry, logoPath, clientDetails }: TopBarProps) {
+export default function TopBar({ clientName, industry, logoPath, clientDetails, dashboardData }: TopBarProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -30,13 +32,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails }
     day: "numeric",
   });
 
-  const handleDownload = () => {
-    setIsExporting(true);
-    setTimeout(() => {
-      alert("Enterprise PDF report export is preparing to download.");
-      setIsExporting(false);
-    }, 600);
-  };
+
 
   const defaultDetails = clientDetails || {
     "Industry Sector": industry,
@@ -105,24 +101,16 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails }
           </button>
         )}
 
-        <button
-          onClick={handleDownload}
-          disabled={isExporting}
-          className={`
-            flex items-center gap-2.5
-            px-5 py-3 rounded-none
-            bg-[#7A3F1E] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:hover:bg-[#E8E2D1] text-[#D8CFB8] dark:text-[#18191D]
-            text-xs font-serif uppercase tracking-widest transition-all duration-200 shadow-sm cursor-pointer
-            ${isExporting ? "opacity-75 cursor-wait" : ""}
-          `}
-        >
-          {isExporting ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
-          )}
-          <span>{isExporting ? "Exporting..." : "Export Report"}</span>
-        </button>
+        {dashboardData ? (
+          <ExportButton data={dashboardData} variant="topbar" />
+        ) : (
+          <button
+            disabled
+            className="flex items-center gap-2.5 px-5 py-3 rounded-none bg-[#7A3F1E]/50 text-[#D8CFB8]/60 dark:bg-[#FAF6EE]/30 dark:text-[#18191D]/50 text-xs font-serif uppercase tracking-widest cursor-not-allowed"
+          >
+            Export Report
+          </button>
+        )}
       </div>
     </motion.header>
   );

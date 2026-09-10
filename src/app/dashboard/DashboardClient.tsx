@@ -102,6 +102,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
           clientName={client.clientName}
           industry={client.industry}
           logoPath={client.logoPath}
+          dashboardData={data}
           clientDetails={{
             "Industry Sector": client.industry,
             "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
