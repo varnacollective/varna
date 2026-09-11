@@ -52,7 +52,9 @@ export default function LoginPage() {
 
       localStorage.removeItem("varna_client");
       localStorage.removeItem("varna_superadmin");
-      router.push("/dashboard");
+
+      const targetUrl = data.redirectUrl || (data.isGroup ? "/group-dashboard" : "/dashboard");
+      router.push(targetUrl);
     } catch {
       setError("Network connection error. Please try again.");
       setLoading(false);

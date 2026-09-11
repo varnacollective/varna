@@ -456,12 +456,13 @@ export const SUPPLIER_CONFIDENCE_CHECKLISTS: Record<string, SupplierConfidenceDa
   },
 };
 
-export function getClientLogoFallback(clientName?: string): string {
-  if (!clientName) return "/logos/clients/oberoi-dubai.png";
+export function getClientLogoFallback(clientName?: string): string | undefined {
+  if (!clientName) return undefined;
   const lower = clientName.toLowerCase();
   if (lower.includes("six senses")) return "/logos/clients/six-senses.jpg";
   if (lower.includes("dorchester")) return "/logos/clients/dorchester-collection.png";
-  return "/logos/clients/oberoi-dubai.png";
+  if (lower.includes("oberoi")) return "/logos/clients/oberoi-dubai.png";
+  return undefined;
 }
 
 export function getSupplierLogoFallback(supplierName?: string): string | undefined {

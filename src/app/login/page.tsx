@@ -56,7 +56,8 @@ export default function LoginPage() {
         router.push("/superadmin");
       } else {
         localStorage.removeItem("varna_superadmin");
-        router.push("/dashboard");
+        const targetUrl = data.redirectUrl || (data.isGroup ? "/group-dashboard" : "/dashboard");
+        router.push(targetUrl);
       }
     } catch {
       if (isSuperAdminLocal) {

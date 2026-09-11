@@ -14,7 +14,7 @@ export default async function DashboardServerPage() {
 
   const supabase = await createClient();
 
-  let session: { clientId: string; clientName: string };
+  let session: { clientId: string; clientName: string; isGroup?: boolean; parentGroup?: string };
   try {
     session = JSON.parse(sessionCookie.value);
   } catch {
@@ -22,6 +22,10 @@ export default async function DashboardServerPage() {
   }
 
   const clientId = session.clientId;
+  const isGroup = Boolean(session.isGroup) || clientId?.toUpperCase().startsWith("GRP-");
+  if (isGroup) {
+    redirect("/group-dashboard");
+  }
 
   try {
     // 1. Fetch Client Master
