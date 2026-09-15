@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Wallet, ShoppingBag, Award, ShieldCheck, Database, Radio } from "lucide-react";
+import { Loader2, Wallet, ShoppingBag, Award } from "lucide-react";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import ChatWidget from "@/components/ChatWidget";
 import BrandWatermark from "@/components/ui/BrandWatermark";
@@ -390,61 +390,6 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
           </Card>
         ))}
       </div>
-
-      {/* Enriched ERP Fulfillment Link Gateway Card */}
-      <Card
-        delay={0.3}
-        hoverEffect={false}
-        variant="editorial"
-        className="p-8 sm:p-10 text-center relative overflow-hidden group border border-[#6F848F]/25 dark:border-[#8C9DA8]/20 bg-[#E8E2D1] dark:bg-gradient-to-b dark:from-[#22262E] dark:to-[#1A1C22]"
-      >
-        {/* Ambient subtle glow and grid pattern in dark mode */}
-        <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-[radial-gradient(ellipse_at_center,rgba(115,134,120,0.15),transparent_70%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(#8C9DA8_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.04]" />
-        </div>
-
-        <div className="flex flex-col items-center gap-5 max-w-xl mx-auto relative z-10">
-          {/* Glowing illuminated icon container */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute -inset-1.5 rounded-full bg-[#738678]/20 dark:bg-[#829888]/20 blur-md" />
-            <div className="relative w-14 h-14 rounded-full bg-[#738678]/15 dark:bg-[#738678]/25 border border-[#738678]/30 dark:border-[#829888]/40 flex items-center justify-center text-[#738678] dark:text-[#8AA391] shadow-elevation-low dark:shadow-[0_0_20px_rgba(130,152,136,0.3)]">
-              <ShoppingBag className="w-6 h-6" strokeWidth={1.75} />
-            </div>
-          </div>
-
-          {/* Active status pill badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#738678]/10 dark:bg-[#738678]/20 border border-[#738678]/25 dark:border-[#829888]/30 text-[9px] font-sans font-semibold uppercase tracking-widest text-[#738678] dark:text-[#8AA391]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#738678] dark:bg-[#8AA391] animate-ping" />
-            Direct ERP Fulfillment Link Active
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="text-base font-serif font-normal tracking-[0.16em] uppercase text-[#222326] dark:text-[#FAF6EE]">
-              Enterprise Gateway Synchronization
-            </h4>
-            <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] leading-relaxed font-light max-w-lg">
-              Live order tracking, delivery waybills, and batch emission logs are synced continuously through your enterprise procurement gateway with cryptographic assurance.
-            </p>
-          </div>
-
-          {/* Enterprise specification chips for richness */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full pt-2">
-            <div className="flex items-center justify-center gap-2 p-2.5 rounded bg-[#DFD8C2]/40 dark:bg-[#1C1F26] border border-[#6F848F]/20 dark:border-[#8C9DA8]/15 text-[10px] text-[#6F848F] dark:text-[#8C9DA8]">
-              <Database className="w-3.5 h-3.5 text-[#738678] dark:text-[#8AA391]" />
-              <span>REST / Webhook v2</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 p-2.5 rounded bg-[#DFD8C2]/40 dark:bg-[#1C1F26] border border-[#6F848F]/20 dark:border-[#8C9DA8]/15 text-[10px] text-[#6F848F] dark:text-[#8C9DA8]">
-              <Radio className="w-3.5 h-3.5 text-[#7A3F1E] dark:text-[#E89260]" />
-              <span>Realtime Sync &bull; 120ms</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 p-2.5 rounded bg-[#DFD8C2]/40 dark:bg-[#1C1F26] border border-[#6F848F]/20 dark:border-[#8C9DA8]/15 text-[10px] text-[#6F848F] dark:text-[#8C9DA8]">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#6F848F] dark:text-[#8C9DA8]" />
-              <span>SHA-256 Ledger</span>
-            </div>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 }
