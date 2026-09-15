@@ -163,8 +163,8 @@ export default function RadialGauge({
           />
         </svg>
 
-        {/* Center Content: Score number + Trend Delta */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
+        {/* Center Content: Score number + optional Trend Delta */}
+        <div className={`absolute inset-0 flex flex-col items-center justify-center ${delta !== undefined ? "pt-2" : ""}`}>
           <motion.span
             className="text-2xl font-serif text-carbon-ink dark:text-[#FAF6EE] font-light tracking-tighter"
             initial={{ opacity: 0 }}

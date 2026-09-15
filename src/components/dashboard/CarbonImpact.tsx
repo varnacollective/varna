@@ -40,18 +40,13 @@ export default function CarbonImpact({
       className="p-8 relative overflow-hidden"
     >
       {/* Header */}
-      <div className="flex justify-between items-start mb-6 border-b border-[#6F848F]/20 dark:border-[#2F3C52]/70 pb-3 relative z-10">
-        <div>
-          <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8]">
-            Carbon Footprint Impact · Sequestration Array
-          </h3>
-          <p className="text-[11px] text-[#222326]/75 dark:text-[#8C9DA8] font-light mt-0.5">
-            Verified CO₂e emissions avoided through circular procurement
-          </p>
-        </div>
-        <span className="text-[9px] font-sans font-semibold uppercase tracking-widest text-[#738678] dark:text-[#8AA391] border border-[#738678]/30 dark:border-[#829888]/30 bg-[#738678]/10 dark:bg-[#829888]/15 px-2.5 py-0.5 rounded-full shadow-xs">
-          EPA Verified
-        </span>
+      <div className="mb-6 border-b border-[#6F848F]/20 dark:border-[#2F3C52]/70 pb-3 relative z-10">
+        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8]">
+          Carbon Footprint Impact · Sequestration Array
+        </h3>
+        <p className="text-[11px] text-[#222326]/75 dark:text-[#8C9DA8] font-light mt-0.5">
+          Verified CO₂e emissions avoided through circular procurement
+        </p>
       </div>
 
       {/* Main Metric Row */}

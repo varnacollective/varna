@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
@@ -40,40 +40,99 @@ export function getSDGIconPath(goalNumber: number): string {
 
 interface SDGBadgeProps {
   goalNumber?: number | string | null;
-  size?: number; // default 38px
+  size?: number; // default 46px
   isAwaitingVerification?: boolean;
   className?: string;
 }
 
 export default function SDGBadge({
   goalNumber,
-  size = 38,
+  size = 46,
   isAwaitingVerification = false,
   className = "",
 }: SDGBadgeProps) {
   const [hasError, setHasError] = useState(false);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const [placement, setPlacement] = useState<{
+    vertical: "top" | "bottom";
+    horizontal: "center" | "left" | "right";
+  }>({ vertical: "top", horizontal: "center" });
 
   const numericId = typeof goalNumber === "string" ? parseInt(goalNumber, 10) : goalNumber;
   const sdg = numericId && OFFICIAL_UN_SDGS[numericId] ? OFFICIAL_UN_SDGS[numericId] : null;
+
+  const updatePlacement = useCallback(() => {
+    if (!badgeRef.current) return;
+    const rect = badgeRef.current.getBoundingClientRect();
+
+    // Look for parent card boundary, falling back to viewport
+    const cardEl =
+      badgeRef.current.closest("[data-varna-card]") ||
+      badgeRef.current.closest(".relative") ||
+      badgeRef.current.parentElement;
+    const cardRect = cardEl ? cardEl.getBoundingClientRect() : null;
+
+    const boundLeft = Math.max(cardRect ? cardRect.left + 12 : 12, 12);
+    const boundRight = Math.min(cardRect ? cardRect.right - 12 : window.innerWidth - 12, window.innerWidth - 12);
+
+    const badgeCenter = rect.left + rect.width / 2;
+    // Estimated half width of tooltip (max-w is ~180px)
+    const approxHalfWidth = 90;
+
+    let horizontal: "center" | "left" | "right" = "center";
+    if (badgeCenter - approxHalfWidth < boundLeft) {
+      horizontal = "left"; // Shift right: align left edge of tooltip with badge
+    } else if (badgeCenter + approxHalfWidth > boundRight) {
+      horizontal = "right"; // Shift left: align right edge of tooltip with badge
+    }
+
+    const boundTop = Math.max(cardRect ? cardRect.top + 10 : 10, 10);
+    const spaceAbove = rect.top - boundTop;
+    const boundBottom = Math.min(cardRect ? cardRect.bottom - 10 : window.innerHeight - 10, window.innerHeight - 10);
+    const spaceBelow = boundBottom - rect.bottom;
+
+    const vertical: "top" | "bottom" = spaceAbove < 50 && spaceBelow > spaceAbove ? "bottom" : "top";
+
+    setPlacement({ vertical, horizontal });
+  }, []);
+
+  const horizontalClass =
+    placement.horizontal === "left"
+      ? "left-0 translate-x-0"
+      : placement.horizontal === "right"
+      ? "right-0 left-auto translate-x-0"
+      : "left-1/2 -translate-x-1/2";
+
+  const verticalClass =
+    placement.vertical === "bottom"
+      ? "top-full mt-2"
+      : "bottom-full mb-2";
 
   // If no valid SDG or explicitly marked as awaiting verification:
   if (!sdg || isAwaitingVerification || goalNumber === "?" || goalNumber === null) {
     return (
       <div
+        ref={badgeRef}
+        onMouseEnter={updatePlacement}
+        onFocus={updatePlacement}
         className={`relative group inline-flex flex-col items-center justify-center border border-slate-mist/35 bg-slate-mist/10 rounded-none cursor-help transition-all duration-200 hover:border-slate-mist/60 shrink-0 ${className}`}
         style={{ width: size, height: size }}
         title="SDG Alignment: Awaiting verification during assessment interval"
       >
-        <Clock className="w-3.5 h-3.5 text-slate-mist/70 mb-0.5" strokeWidth={1.5} />
-        <span className="text-[6.5px] uppercase font-semibold tracking-wider text-slate-mist/80 text-center leading-tight">
+        <Clock className="w-4 h-4 text-slate-mist/70 mb-0.5" strokeWidth={1.5} />
+        <span className="text-[7.5px] uppercase font-semibold tracking-wider text-slate-mist/80 text-center leading-tight">
           Awaiting
         </span>
 
         {/* Hover tooltip */}
-        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none z-50 whitespace-nowrap">
-          <span className="text-[9px] font-sans font-medium uppercase tracking-widest text-[#D8CFB8] bg-[#222326] px-2 py-1 shadow-md border border-slate-mist/30">
-            Awaiting Verification
-          </span>
+        <div
+          className={`absolute ${verticalClass} ${horizontalClass} opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50`}
+        >
+          <div className="w-max max-w-[180px] sm:max-w-[200px] text-center px-2.5 py-1.5 shadow-xl border border-[#6F848F]/40 dark:border-[#8C9DA8]/30 bg-[#222326] text-[#D8CFB8]">
+            <span className="text-[9.5px] font-sans font-medium uppercase tracking-wider leading-snug block whitespace-normal break-words">
+              Awaiting Verification
+            </span>
+          </div>
         </div>
       </div>
     );
@@ -84,7 +143,10 @@ export default function SDGBadge({
 
   return (
     <motion.div
-      whileHover={{ scale: 1.08, y: -2 }}
+      ref={badgeRef}
+      onMouseEnter={updatePlacement}
+      onFocus={updatePlacement}
+      whileHover={{ scale: 1.06, y: -2 }}
       transition={{ type: "spring", stiffness: 450, damping: 20 }}
       className={`relative group inline-flex items-center justify-center rounded-none shadow-sm cursor-help select-none shrink-0 ${className}`}
       style={{
@@ -99,10 +161,10 @@ export default function SDGBadge({
           className="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-[#222326] border border-slate-300 dark:border-[#6F848F]/40 text-slate-700 dark:text-[#D8CFB8] text-center p-0.5 select-none"
           style={{ width: size, height: size }}
         >
-          <span className="text-[7px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#6F848F] leading-none mb-0.5">
+          <span className="text-[8px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#6F848F] leading-none mb-0.5">
             SDG
           </span>
-          <span className="text-xs font-black leading-none font-sans">
+          <span className="text-sm font-black leading-none font-sans">
             {sdg.id}
           </span>
         </div>
@@ -117,10 +179,14 @@ export default function SDGBadge({
         />
       )}
 
-      {/* Hover tooltip showing full goal name */}
-      <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none z-50 whitespace-nowrap">
-        <div className="flex items-center gap-1.5 text-[9px] font-sans font-medium uppercase tracking-widest text-[#D8CFB8] bg-[#222326] px-2.5 py-1 shadow-xl border border-slate-mist/30">
-          <span>SDG {sdg.id}: {sdg.name}</span>
+      {/* Hover tooltip showing full goal name with text wrapping and boundary-aware positioning */}
+      <div
+        className={`absolute ${verticalClass} ${horizontalClass} opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50`}
+      >
+        <div className="w-max max-w-[180px] sm:max-w-[200px] text-center px-2.5 py-1.5 shadow-xl border border-[#6F848F]/40 dark:border-[#8C9DA8]/30 bg-[#222326] text-[#D8CFB8]">
+          <span className="text-[9.5px] font-sans font-medium uppercase tracking-wider leading-snug block whitespace-normal break-words">
+            SDG {sdg.id}: {sdg.name}
+          </span>
         </div>
       </div>
     </motion.div>

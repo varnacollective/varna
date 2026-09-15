@@ -19,10 +19,10 @@ interface ImpactPillarsProps {
 }
 
 const PILLAR_CONFIG = [
-  { key: "E" as const, label: "Environmental", delta: 3.2 },
-  { key: "S" as const, label: "Social", delta: 1.5 },
-  { key: "G" as const, label: "Governance", delta: 0.8 },
-  { key: "C" as const, label: "Cultural", delta: 2.0 },
+  { key: "E" as const, label: "Environmental" },
+  { key: "S" as const, label: "Social" },
+  { key: "G" as const, label: "Governance" },
+  { key: "C" as const, label: "Cultural" },
 ];
 
 export default function ImpactPillars({
@@ -79,7 +79,6 @@ export default function ImpactPillars({
                     size={124}
                     strokeWidth={10}
                     pillarKey={pillar.key}
-                    delta={pillar.delta}
                     delay={delay + 0.08 * originalIndex}
                   />
                 </div>

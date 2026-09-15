@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { ArrowRight, AlertCircle, Eye, EyeOff, Loader2, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, AlertCircle, Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
 import { useTheme } from "next-themes";
 import BrandWatermark from "@/components/ui/BrandWatermark";
 import BrandLogo from "@/components/ui/BrandLogo";
@@ -89,15 +89,11 @@ export default function LoginPage() {
         </div>
 
         {/* Center Philosophy Statement */}
-        <div className="relative z-10 max-w-lg space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7A3F1E]/40 border border-[#7A3F1E]/60 text-[#D8CFB8] text-[9px] font-semibold uppercase tracking-widest backdrop-blur-md shadow-xs">
-            <Sparkles className="w-3 h-3 text-[#D8CFB8]" />
-            Bespoke Hospitality Procurement
-          </div>
-          <h2 className="text-4xl xl:text-5xl font-serif text-[#FAF7F0] tracking-hero uppercase leading-none drop-shadow-md">
+        <div className="relative z-10 max-w-lg space-y-4 my-auto">
+          <h2 className="text-4xl xl:text-5xl font-serif text-[#FAF7F0] tracking-hero uppercase leading-tight drop-shadow-md">
             A Force for Good, Built into Every Purchase.
           </h2>
-          <p className="text-xs xl:text-sm text-[#D8CFB8]/85 font-light leading-relaxed">
+          <p className="text-xs xl:text-sm text-[#D8CFB8]/85 font-light leading-relaxed pt-1">
             Engineered specifically for small and micro producers that conventional ESG frameworks overlook—and for hospitality leaders who demand verifiable operational evidence.
           </p>
         </div>

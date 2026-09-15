@@ -51,6 +51,12 @@ export interface SupplierDetail {
   artisansEmployed: number;
   womenPercent: number;
   logoPath?: string;
+  isCraftLed?: boolean;
+  sdgIds?: number[];
+  badges?: string[];
+  roadmapAction1?: string;
+  action1UpliftPts?: number;
+  action1Effort?: string;
 }
 
 export interface CategorySpend {

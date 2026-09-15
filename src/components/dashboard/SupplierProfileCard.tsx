@@ -344,6 +344,7 @@ export default function SupplierProfileCard({
       variant={isVerified ? "verified" : "default"}
       className="p-6 sm:p-7 h-[560px] w-full flex flex-col justify-between transition-all duration-300 relative"
       hoverEffect={true}
+      data-varna-card="supplier-profile-card"
     >
       {/* Upper Content Container */}
       <div className="flex-1 flex flex-col min-h-0">
@@ -473,12 +474,12 @@ export default function SupplierProfileCard({
                 <SDGBadge
                   key={`${name}-sdg-${goalNum}-${idx}`}
                   goalNumber={goalNum}
-                  size={38}
+                  size={46}
                 />
               ))
             ) : (
               [1, 2, 3].map((i) => (
-                <SDGBadge key={i} isAwaitingVerification={true} size={38} />
+                <SDGBadge key={i} isAwaitingVerification={true} size={46} />
               ))
             )}
           </div>
