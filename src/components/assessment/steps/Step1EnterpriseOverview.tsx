@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField, DriveUploadField, SectionDivider } from "../FormFields";
+import { StepWrapper, Field, TextareaField, SelectField, SectionDivider } from "../FormFields";
 
 const LEGAL_STRUCTURE_OPTIONS = [
   { value: "sole_proprietorship", label: "Sole Proprietorship" },
@@ -42,19 +42,12 @@ export default function Step1EnterpriseOverview() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <Field
-          name="udyam_number"
-          label="Udyam Registration Number"
-          placeholder="UDYAM-XX-00-0000000"
-          hint="Leave blank if not registered under MSME."
-        />
-        <DriveUploadField
-          name="udyam_certificate_link"
-          label="Udyam Certificate (Drive Link)"
-          hint="Upload your Udyam certificate to Google Drive and paste the shareable link."
-        />
-      </div>
+      <Field
+        name="udyam_number"
+        label="Udyam Registration Number"
+        placeholder="UDYAM-XX-00-0000000"
+        hint="Leave blank if not registered under MSME."
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Field

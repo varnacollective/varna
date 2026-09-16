@@ -20,7 +20,7 @@ export default async function ClientSummaryPage() {
       <div className="border-b border-slate-mist/20 pb-4">
         <div className="flex items-center gap-2 mb-1">
           <Users className="w-5 h-5 text-sage-mineral" />
-          <h1 className="text-2xl font-serif font-light text-warm-stone tracking-tight">
+          <h1 className="text-2xl font-sans font-medium text-warm-stone tracking-tight">
             Client Summary KPI Metrics
           </h1>
         </div>

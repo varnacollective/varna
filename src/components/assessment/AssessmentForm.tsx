@@ -24,7 +24,6 @@ export const assessmentSchema = z.object({
   legal_name: z.string().min(2, "Legal name is required"),
   trade_name: z.string().optional(),
   udyam_number: z.string().optional(),
-  udyam_certificate_link: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   year_established: z.string().optional(),
   legal_structure: z.string().optional(),
   registered_address: z.string().optional(),
@@ -41,7 +40,6 @@ export const assessmentSchema = z.object({
   product_description: z.string().optional(),
   raw_materials: z.string().optional(),
   production_process: z.string().optional(),
-  production_video_link: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   // Step 3
   water_source: z.string().optional(),
   water_recycling: z.string().optional(),
@@ -49,14 +47,12 @@ export const assessmentSchema = z.object({
   energy_sources: z.string().optional(),
   chemical_usage: z.string().optional(),
   chemical_disposal: z.string().optional(),
-  environmental_certifications: z.string().optional(),
   // Step 4
   total_workers: z.string().optional(),
   women_workers_pct: z.string().optional(),
   artisan_workers_pct: z.string().optional(),
   minimum_wage_compliance: z.string().optional(),
   esi_pf_coverage: z.string().optional(),
-  esi_documents_link: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   health_safety_measures: z.string().optional(),
   community_programs: z.string().optional(),
   // Step 5
@@ -64,13 +60,11 @@ export const assessmentSchema = z.object({
   gst_number: z.string().optional(),
   legal_disputes: z.string().optional(),
   ethics_policy: z.string().optional(),
-  ethics_policy_document_link: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   // Step 6
   craft_traditions: z.string().optional(),
   gi_tags: z.string().optional(),
   pehchaan_card: z.string().optional(),
   artisan_training: z.string().optional(),
-  heritage_documentation_link: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   // Step 7
   sdg_alignment: z.string().optional(),
   sustainability_tracking: z.string().optional(),
@@ -167,7 +161,6 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
       legal_name: "",
       trade_name: "",
       udyam_number: "",
-      udyam_certificate_link: "",
       year_established: "",
       legal_structure: "",
       registered_address: "",
@@ -183,32 +176,27 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
       product_description: "",
       raw_materials: "",
       production_process: "",
-      production_video_link: "",
       water_source: "",
       water_recycling: "",
       carbon_footprint_tracked: "",
       energy_sources: "",
       chemical_usage: "",
       chemical_disposal: "",
-      environmental_certifications: "",
       total_workers: "",
       women_workers_pct: "",
       artisan_workers_pct: "",
       minimum_wage_compliance: "",
       esi_pf_coverage: "",
-      esi_documents_link: "",
       health_safety_measures: "",
       community_programs: "",
       gst_registered: "",
       gst_number: "",
       legal_disputes: "",
       ethics_policy: "",
-      ethics_policy_document_link: "",
       craft_traditions: "",
       gi_tags: "",
       pehchaan_card: "",
       artisan_training: "",
-      heritage_documentation_link: "",
       sdg_alignment: "",
       sustainability_tracking: "",
       sustainability_goals: "",
@@ -281,7 +269,7 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
             <CheckCircle2 className="w-8 h-8 text-sage-mineral" />
           </div>
           <VarnaBrandMark className="justify-center mb-6" />
-          <h1 className="text-3xl font-serif font-light text-warm-stone tracking-tight mb-4">
+          <h1 className="text-3xl font-sans font-medium text-warm-stone tracking-tight mb-4">
             Assessment Submitted
           </h1>
           <p className="text-sm text-slate-mist font-light leading-relaxed mb-2">
@@ -460,7 +448,7 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
             id="assessment-submit-btn"
             onClick={onSubmit}
             disabled={submitting}
-            className="flex items-center gap-2.5 px-6 py-2.5 bg-warm-stone text-carbon-ink text-xs font-serif tracking-[0.18em] uppercase transition-all duration-200 hover:bg-[#E4DEC9] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            className="flex items-center gap-2.5 px-6 py-2.5 bg-warm-stone text-carbon-ink text-xs font-sans tracking-[0.18em] uppercase transition-all duration-200 hover:bg-[#E4DEC9] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             style={{ boxShadow: "0 0 22px -4px rgba(216, 207, 184, 0.25)" }}
           >
             {submitting ? (
@@ -479,7 +467,7 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
           <button
             id="assessment-next-btn"
             onClick={goNext}
-            className="flex items-center gap-2.5 px-6 py-2.5 bg-warm-stone text-carbon-ink text-xs font-serif tracking-[0.18em] uppercase transition-all duration-200 hover:bg-[#E4DEC9] active:scale-[0.99] cursor-pointer group"
+            className="flex items-center gap-2.5 px-6 py-2.5 bg-warm-stone text-carbon-ink text-xs font-sans tracking-[0.18em] uppercase transition-all duration-200 hover:bg-[#E4DEC9] active:scale-[0.99] cursor-pointer group"
             style={{ boxShadow: "0 0 22px -4px rgba(216, 207, 184, 0.25)" }}
           >
             Next

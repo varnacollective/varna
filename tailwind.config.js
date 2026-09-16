@@ -56,16 +56,16 @@ module.exports = {
         "glow-sage": "0 0 24px -2px rgba(130, 152, 136, 0.45)",
       },
       fontFamily: {
-        // Premium Serif for Headings/H1 (Versailles / Cormorant Garamond / Playfair Display)
-        serif: ["Versailles", "var(--font-cormorant)", "var(--font-playfair)", "Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
-        // Clean Geometric Sans-Serif for Body/Sub-headings/UI (Avenir / Inter)
-        sans: ["Avenir", "var(--font-inter)", "Inter", "Futura PT", "sans-serif"],
+        // Universal Geometric Sans (Avenir on macOS/iOS, Jost on Windows/Android/Linux)
+        sans: ["Avenir", "Avenir Next", "var(--font-jost)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+        // Unified serif alias to prevent any unwanted serif rendering
+        serif: ["Avenir", "Avenir Next", "var(--font-jost)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
         // Authentic Handwriting Font for stylistic accents (<5% of UI)
         accent: ["var(--font-caveat)", "var(--font-cedarville)", "Caveat", "Cedarville Cursive", "cursive"],
       },
       letterSpacing: {
-        hero: "-0.07em",       // Tight negative tracking (-70) on Versailles hero titles
-        tighter: "-0.07em",
+        hero: "-0.04em",       // Tight tracking tuned for Avenir uppercase titles
+        tighter: "-0.04em",
         section: "0.18em",     // Wide tracking for section labels ("SECTION 1 · THE THREE PRINCIPLES")
         label: "0.08em",       // Subtle tracking on uppercase captions & microcopy
       },

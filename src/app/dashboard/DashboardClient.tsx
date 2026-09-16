@@ -251,7 +251,7 @@ function SuppliersSection({ data }: { data: DashboardData }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
-        <h2 className="text-3xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+        <h2 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
           Supplier Portfolio
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">
@@ -264,7 +264,7 @@ function SuppliersSection({ data }: { data: DashboardData }) {
           <Card key={supplier.enterpriseId} delay={idx * 0.05} variant="verified" hoverEffect={true}>
             <div className="flex items-start justify-between mb-4 pb-3 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/15">
               <div>
-                <h3 className="text-base font-serif uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
+                <h3 className="text-base font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
                   {supplier.enterpriseName}
                 </h3>
                 <p className="text-[11px] text-[#6F848F] dark:text-[#8C9DA8] font-light mt-0.5">
@@ -293,14 +293,14 @@ function SuppliersSection({ data }: { data: DashboardData }) {
                   cScore={supplier.cScore}
                   supplierName={supplier.enterpriseName}
                 >
-                  <p className="text-2xl font-serif text-[#7A3F1E] dark:text-[#FAF6EE] font-light mt-0.5 cursor-help">
+                  <p className="text-2xl font-sans font-medium text-[#7A3F1E] dark:text-[#FAF6EE] mt-0.5 cursor-help">
                     {supplier.varnaScore}
                   </p>
                 </VarnaScoreHoverCard>
               </div>
               <div>
                 <p className="text-[9px] uppercase text-[#6F848F] dark:text-[#8C9DA8] tracking-widest font-light">Total Spend</p>
-                <p className="text-2xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light mt-0.5">
+                <p className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mt-0.5">
                   ₹{Math.round(supplier.totalSpend / 1000)}K
                 </p>
               </div>
@@ -362,7 +362,7 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
   return (
     <div className="space-y-8">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
-        <h2 className="text-3xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+        <h2 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
           Orders Overview
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">
@@ -376,7 +376,7 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2">
               {stat.label}
             </p>
-            <div className="text-4xl sm:text-5xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
+            <div className="text-4xl sm:text-5xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE]">
               <AnimatedCounter
                 value={stat.value}
                 prefix={stat.prefix}
@@ -406,7 +406,7 @@ function ImpactSection({
   return (
     <div className="space-y-8">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
-        <h2 className="text-3xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+        <h2 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
           Sustainability Impact Intelligence
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">

@@ -314,7 +314,7 @@ export default function DataGrid({
         <div>
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 bg-deep-clay dark:bg-warm-stone rotate-45" />
-            <h2 className="text-lg font-serif font-light text-carbon-ink dark:text-warm-stone tracking-tight">
+            <h2 className="text-lg font-sans font-medium text-carbon-ink dark:text-warm-stone tracking-tight">
               {title || tableName}
             </h2>
             <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 bg-warm-stone/20 dark:bg-black/30 border border-slate-mist/20 text-slate-mist dark:text-warm-stone/60">
@@ -427,7 +427,7 @@ export default function DataGrid({
                   >
                     <div className="flex flex-col items-center gap-2">
                       <Database className="w-8 h-8 opacity-40 text-deep-clay dark:text-warm-stone mb-1" />
-                      <p className="text-sm font-serif">No records found in {tableName}</p>
+                      <p className="text-sm font-sans font-medium">No records found in {tableName}</p>
                       <p className="text-xs text-slate-mist/70">
                         {searchQuery ? "Try refining your search filter." : "This table does not have any active records."}
                       </p>

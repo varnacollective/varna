@@ -166,7 +166,7 @@ export default function RadialGauge({
         {/* Center Content: Score number + optional Trend Delta */}
         <div className={`absolute inset-0 flex flex-col items-center justify-center ${delta !== undefined ? "pt-2" : ""}`}>
           <motion.span
-            className="text-2xl font-serif text-carbon-ink dark:text-[#FAF6EE] font-light tracking-tighter"
+            className="text-2xl font-sans text-carbon-ink dark:text-[#FAF6EE] font-medium tracking-tighter"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: delay + 0.4, duration: 0.4 }}

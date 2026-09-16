@@ -3,8 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Avenir", var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-serif: "Versailles", var(--font-cormorant), var(--font-playfair), "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-sans: "Avenir", "Avenir Next", var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Avenir", "Avenir Next", var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-accent: var(--font-caveat), var(--font-cedarville), "Caveat", "Cedarville Cursive", cursive;
   
   --color-warm-stone: #D8CFB8;
@@ -34,7 +34,7 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
-  --letter-spacing-hero: -0.07em;
+  --letter-spacing-hero: -0.04em;
   --letter-spacing-section: 0.18em;
   --letter-spacing-label: 0.08em;
 }
@@ -102,10 +102,12 @@
     line-height: 1.4;
   }
 
-  /* Hero Headings: Versailles tight negative tracking and line-height 1 */
+  /* Hero Headings: Avenir tight negative tracking and line-height 1 */
+  h1,
   h1.font-serif,
+  h1.font-sans,
   .hero-heading {
-    letter-spacing: -0.07em;
+    letter-spacing: -0.04em;
     line-height: 1;
     text-transform: uppercase;
   }

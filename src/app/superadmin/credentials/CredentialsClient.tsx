@@ -110,7 +110,7 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
       <div className="border-b border-slate-mist/20 pb-4">
         <div className="flex items-center gap-2 mb-1">
           <KeyRound className="w-5 h-5 text-deep-clay dark:text-warm-stone" />
-          <h1 className="text-2xl font-serif font-light text-warm-stone tracking-tight">
+          <h1 className="text-2xl font-sans font-medium text-warm-stone tracking-tight">
             Hotel Client Access & Credentials
           </h1>
         </div>
@@ -126,7 +126,7 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
           <div className="flex items-center justify-between border-b border-slate-mist/15 pb-4 mb-6">
             <div className="flex items-center gap-2.5">
               <ShieldPlus className="w-4 h-4 text-warm-stone" />
-              <h2 className="text-base font-serif font-light text-warm-stone tracking-tight">
+              <h2 className="text-base font-sans font-medium text-warm-stone tracking-tight">
                 Generate New Client Login
               </h2>
             </div>
@@ -229,7 +229,7 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
             <button
               type="submit"
               disabled={loading || !clientId || !password}
-              className="px-6 py-3 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] active:scale-[0.99] font-serif uppercase tracking-widest text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2 shadow-sm"
+              className="px-6 py-3 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] active:scale-[0.99] font-sans font-medium uppercase tracking-widest text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2 shadow-sm"
             >
               {loading ? (
                 <span>Generating and Storing...</span>
@@ -249,7 +249,7 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
             <span className="text-[9px] font-mono tracking-widest text-slate-mist uppercase block mb-1">
               Access Governance
             </span>
-            <h3 className="text-base font-serif font-light text-warm-stone tracking-tight mb-3">
+            <h3 className="text-base font-sans font-medium text-warm-stone tracking-tight mb-3">
               Authentication Architecture
             </h3>
             <p className="text-xs text-slate-mist font-light leading-relaxed mb-4">
@@ -280,7 +280,7 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
       {/* Active Client Credentials Spreadsheet Grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-serif font-light text-warm-stone tracking-tight">
+          <h2 className="text-lg font-sans font-medium text-warm-stone tracking-tight">
             Active Client Access Tokens & Passwords
           </h2>
           <span className="text-[10px] text-slate-mist font-mono">

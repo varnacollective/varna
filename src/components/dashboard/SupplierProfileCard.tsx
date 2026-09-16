@@ -360,7 +360,7 @@ export default function SupplierProfileCard({
                 entityType="supplier"
                 details={supplierDetails}
               />
-              <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tight truncate max-w-[220px] sm:max-w-[250px]">
+              <h4 className="text-xl font-sans text-[#222326] dark:text-[#FAF6EE] font-medium tracking-tight truncate max-w-[220px] sm:max-w-[250px]">
                 {name}
               </h4>
             </div>
@@ -384,7 +384,7 @@ export default function SupplierProfileCard({
               whileHover={{ scale: 1.08 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
             >
-              <span className="text-2xl font-serif font-light tracking-tighter text-[#7A3F1E] dark:text-[#FAF6EE]">
+              <span className="text-2xl font-sans font-medium tracking-tighter text-[#7A3F1E] dark:text-[#FAF6EE]">
                 {varnaScore}
               </span>
               <span className="text-[7px] font-sans font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] mt-0.5">
@@ -449,7 +449,7 @@ export default function SupplierProfileCard({
 
         {/* 6. Testimonial Quote Callout Block */}
         <div className="bg-[#6F848F]/10 dark:bg-[#1A1D23] border-l-2 border-[#7A3F1E] dark:border-[#9E5528] px-3 py-2 rounded-r my-2 shrink-0">
-          <p className="text-[11px] italic text-[#222326]/85 dark:text-[#FAF6EE]/90 line-clamp-2 max-h-[36px] overflow-hidden leading-tight font-serif">
+          <p className="text-[11px] italic text-[#222326]/85 dark:text-[#FAF6EE]/90 line-clamp-2 max-h-[36px] overflow-hidden leading-tight font-sans">
             "{quoteText}"
           </p>
         </div>

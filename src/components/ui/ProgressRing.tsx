@@ -69,7 +69,7 @@ export default function ProgressRing({
         {/* Center value */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.span
-            className="text-2xl font-serif text-carbon-ink dark:text-warm-stone font-light tracking-tighter"
+            className="text-2xl font-sans text-carbon-ink dark:text-warm-stone font-medium tracking-tighter"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: delay + 0.6, duration: 0.4 }}

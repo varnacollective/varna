@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField, DriveUploadField } from "../FormFields";
+import { StepWrapper, Field, TextareaField, SelectField } from "../FormFields";
 
 const YES_NO_PARTIAL = [
   { value: "yes", label: "Yes" },
@@ -53,19 +53,12 @@ export default function Step4People() {
         hint="Select the wage level relative to the applicable state minimum wage."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <SelectField
-          name="esi_pf_coverage"
-          label="ESI / PF Coverage for Workers"
-          options={YES_NO_PARTIAL}
-          hint="Are workers enrolled under Employees' State Insurance and Provident Fund schemes?"
-        />
-        <DriveUploadField
-          name="esi_documents_link"
-          label="ESI / PF Documents (Drive Link)"
-          hint="Upload latest ESI/PF challan or registration certificate to Google Drive and paste link."
-        />
-      </div>
+      <SelectField
+        name="esi_pf_coverage"
+        label="ESI / PF Coverage for Workers"
+        options={YES_NO_PARTIAL}
+        hint="Are workers enrolled under Employees' State Insurance and Provident Fund schemes?"
+      />
 
       <TextareaField
         name="health_safety_measures"

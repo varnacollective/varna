@@ -133,7 +133,7 @@ export default function SuperAdminLayout({
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <h1 className="text-xl font-serif font-light text-warm-stone tracking-tight mt-2">
+            <h1 className="text-xl font-sans font-medium text-warm-stone tracking-tight mt-2">
               Super Admin
             </h1>
             <p className="text-[10px] font-mono text-slate-mist uppercase tracking-widest mt-0.5">
@@ -206,7 +206,7 @@ export default function SuperAdminLayout({
             onClick={handleLogout}
             className="w-full flex items-center justify-between px-3 py-2.5 text-xs text-red-300 hover:text-red-200 bg-red-950/20 hover:bg-red-950/40 border border-red-900/30 transition-colors cursor-pointer"
           >
-            <span className="font-serif tracking-wider uppercase text-[10px]">Logout Superadmin</span>
+            <span className="font-sans font-medium tracking-wider uppercase text-[10px]">Logout Superadmin</span>
             <LogOut className="w-3.5 h-3.5" />
           </button>
         </div>

@@ -70,7 +70,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
             entityType="client"
             details={defaultDetails}
           />
-          <h1 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+          <h1 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
             {clientName}
           </h1>
         </div>
@@ -106,7 +106,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
         ) : (
           <button
             disabled
-            className="flex items-center gap-2.5 px-5 py-3 rounded-none bg-[#7A3F1E]/50 text-[#D8CFB8]/60 dark:bg-[#FAF6EE]/30 dark:text-[#18191D]/50 text-xs font-serif uppercase tracking-widest cursor-not-allowed"
+            className="flex items-center gap-2.5 px-5 py-3 rounded-none bg-[#7A3F1E]/50 text-[#D8CFB8]/60 dark:bg-[#FAF6EE]/30 dark:text-[#18191D]/50 text-xs font-sans uppercase tracking-widest cursor-not-allowed"
           >
             Export Report
           </button>

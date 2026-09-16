@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField, SectionDivider } from "../FormFields";
+import { StepWrapper, TextareaField, SelectField, SectionDivider } from "../FormFields";
 
 const YES_NO_PARTIAL = [
   { value: "yes", label: "Yes" },
@@ -78,14 +78,6 @@ export default function Step3Environment() {
             rows={3}
           />
       </div>
-
-      <TextareaField
-        name="environmental_certifications"
-        label="Environmental Certifications & Standards"
-        placeholder="e.g. GOTS, OEKO-TEX Standard 100, ISO 14001, BCI, ZLD compliant, Fair Trade…"
-        hint="List any environmental, organic, or sustainability certifications your enterprise holds. Include the certifying body and year of issue if known."
-        rows={3}
-      />
     </StepWrapper>
   );
 }

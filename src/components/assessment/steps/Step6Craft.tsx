@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField, DriveUploadField } from "../FormFields";
+import { StepWrapper, Field, TextareaField, SelectField } from "../FormFields";
 
 const YES_NO_NA = [
   { value: "yes", label: "Yes" },
@@ -46,12 +46,6 @@ export default function Step6Craft() {
           hint="Total artisans who have received structured craft training in the last 3 years."
         />
       </div>
-
-      <DriveUploadField
-        name="heritage_documentation_link"
-        label="Heritage Documentation / Portfolio (Drive Link)"
-        hint="Share a Google Drive folder with product photos, craft documentation, GI certificates, or artisan profiles. Helps us build your supplier showcase."
-      />
     </StepWrapper>
   );
 }

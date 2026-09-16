@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField, SelectField, DriveUploadField } from "../FormFields";
+import { StepWrapper, Field, TextareaField, SelectField } from "../FormFields";
 
 const YES_NO = [
   { value: "yes", label: "Yes" },
@@ -48,12 +48,6 @@ export default function Step5Legal() {
         label="Do you have a written Ethics / Code of Conduct Policy?"
         options={YES_NO_PARTIAL}
         hint="A formal policy covering anti-corruption, child labour prohibition, forced labour, and non-discrimination."
-      />
-
-      <DriveUploadField
-        name="ethics_policy_document_link"
-        label="Ethics / Code of Conduct Document (Drive Link)"
-        hint="If you have a written policy, upload it to Google Drive and paste the shareable link. Not mandatory but strongly recommended."
       />
     </StepWrapper>
   );

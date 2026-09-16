@@ -72,7 +72,7 @@ export default function LinkGenerator() {
               Supplier Onboarding
             </span>
           </div>
-          <h2 className="text-xl font-serif font-light text-warm-stone tracking-tight">
+          <h2 className="text-xl font-sans font-medium text-warm-stone tracking-tight">
             Assessment Link Generator
           </h2>
           <p className="text-[11px] text-slate-mist font-light mt-1 leading-relaxed max-w-sm">

@@ -121,7 +121,7 @@ export default function SpendByCategoryChart({
       <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/20 pb-3">
         Spend by Product Category
       </h3>
-      <p className="text-3xl sm:text-4xl font-serif font-light text-[#7A3F1E] dark:text-[#FAF6EE] tracking-hero mb-6 mt-2">
+      <p className="text-3xl sm:text-4xl font-sans font-medium text-[#7A3F1E] dark:text-[#FAF6EE] tracking-hero mb-6 mt-2">
         {formatCurrency(totalSpend)}{" "}
         <span className="text-[10px] font-sans font-light uppercase tracking-wider text-[#6F848F] dark:text-[#8C9DA8] ml-1.5">
           total spend

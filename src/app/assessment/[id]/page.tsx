@@ -32,7 +32,7 @@ export default async function AssessmentPage({ params }: PageProps) {
           <div className="w-12 h-12 border border-slate-mist/30 bg-white/5 flex items-center justify-center mx-auto mb-6">
             <span className="text-2xl text-slate-mist">✕</span>
           </div>
-          <h1 className="text-2xl font-serif font-light text-warm-stone mb-3">
+          <h1 className="text-2xl font-sans font-medium text-warm-stone mb-3">
             Link Invalid or Expired
           </h1>
           <p className="text-sm text-slate-mist font-light leading-relaxed">
@@ -52,7 +52,7 @@ export default async function AssessmentPage({ params }: PageProps) {
           <div className="w-12 h-12 border border-sage-mineral/40 bg-sage-mineral/10 flex items-center justify-center mx-auto mb-6">
             <span className="text-2xl text-sage-mineral">✓</span>
           </div>
-          <h1 className="text-2xl font-serif font-light text-warm-stone mb-3">
+          <h1 className="text-2xl font-sans font-medium text-warm-stone mb-3">
             Already Submitted
           </h1>
           <p className="text-sm text-slate-mist font-light leading-relaxed">

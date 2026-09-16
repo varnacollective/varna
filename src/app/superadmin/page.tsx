@@ -98,7 +98,7 @@ export default async function SuperAdminOverviewPage() {
               Varna Master Control Console
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-light text-warm-stone tracking-tight">
+          <h1 className="text-3xl font-sans font-medium text-warm-stone tracking-tight">
             Database Administration
           </h1>
           <p className="text-xs text-slate-mist font-light mt-1 max-w-2xl leading-relaxed">
@@ -123,7 +123,7 @@ export default async function SuperAdminOverviewPage() {
       {/* Grid of Tables */}
       <div className="space-y-3">
         <div className="flex justify-between items-end">
-          <h2 className="text-lg font-serif font-light text-warm-stone tracking-tight">
+          <h2 className="text-lg font-sans font-medium text-warm-stone tracking-tight">
             Supabase Core Tables
           </h2>
           <span className="text-[10px] font-mono text-slate-mist">
@@ -145,12 +145,12 @@ export default async function SuperAdminOverviewPage() {
                     <div className="w-10 h-10 border border-slate-mist/25 bg-black/20 flex items-center justify-center text-warm-stone group-hover:border-warm-stone/40 transition-colors">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-2xl font-serif font-light text-warm-stone group-hover:text-white transition-colors">
+                    <span className="text-2xl font-sans font-medium text-warm-stone group-hover:text-white transition-colors">
                       {t.count}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-serif font-light text-warm-stone mb-1 group-hover:text-white transition-colors">
+                  <h3 className="text-base font-sans font-medium text-warm-stone mb-1 group-hover:text-white transition-colors">
                     {t.title}
                   </h3>
                   <p className="text-[10px] font-mono uppercase tracking-wider text-slate-mist mb-2">
@@ -192,7 +192,7 @@ export default async function SuperAdminOverviewPage() {
 
         <Link
           href="/superadmin/credentials"
-          className="px-4 py-2 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] text-xs font-serif uppercase tracking-widest whitespace-nowrap transition-colors"
+          className="px-4 py-2 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] text-xs font-sans font-medium uppercase tracking-widest whitespace-nowrap transition-colors"
         >
           Manage Client Credentials &rarr;
         </Link>

@@ -24,7 +24,7 @@ export default async function EnterprisesPage() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Building2 className="w-5 h-5 text-deep-clay dark:text-warm-stone" />
-            <h1 className="text-2xl font-serif font-light text-warm-stone tracking-tight">
+            <h1 className="text-2xl font-sans font-medium text-warm-stone tracking-tight">
               Enterprise Master Directory
             </h1>
           </div>

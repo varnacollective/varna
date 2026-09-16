@@ -235,7 +235,7 @@ export function StepWrapper({
         <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-deep-clay mb-2.5">
           Section {stepNumber} of 7
         </p>
-        <h2 className="text-3xl sm:text-[2.25rem] font-serif font-light text-warm-stone tracking-tight leading-[1.05]">
+        <h2 className="text-3xl sm:text-[2.25rem] font-sans font-medium text-warm-stone tracking-tight leading-[1.05]">
           {title}
         </h2>
         {subtitle && (

@@ -61,7 +61,7 @@ export default function ExportButton({
     flex items-center gap-2.5 px-5 py-3 rounded-none
     bg-[#7A3F1E] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:hover:bg-[#E8E2D1]
     text-[#D8CFB8] dark:text-[#18191D]
-    text-xs font-serif uppercase tracking-widest
+    text-xs font-sans uppercase tracking-widest
     transition-all duration-200 shadow-sm cursor-pointer
     disabled:opacity-60 disabled:cursor-wait
     ${className}

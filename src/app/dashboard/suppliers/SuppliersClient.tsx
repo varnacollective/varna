@@ -130,7 +130,7 @@ export default function SuppliersClient({
               My Suppliers · Composite Verified Profiles
             </div>
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mb-2">
+            <h1 className="text-4xl sm:text-5xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mb-2">
               The Suppliers Behind Your Orders
             </h1>
             {/* Subtitle */}
@@ -149,7 +149,7 @@ export default function SuppliersClient({
             <button
               onClick={handleDownloadReport}
               disabled={isDownloading}
-              className={`flex items-center gap-2.5 px-5 py-3 bg-[#7A3F1E] text-[#D8CFB8] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:text-[#18191D] dark:hover:bg-[#E8E2D1] text-xs font-serif uppercase tracking-widest transition-colors cursor-pointer shadow-elevation-low ${
+              className={`flex items-center gap-2.5 px-5 py-3 bg-[#7A3F1E] text-[#D8CFB8] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:text-[#18191D] dark:hover:bg-[#E8E2D1] text-xs font-sans uppercase tracking-widest transition-colors cursor-pointer shadow-elevation-low ${
                 isDownloading ? "opacity-75 cursor-wait" : ""
               }`}
             >
@@ -180,7 +180,7 @@ export default function SuppliersClient({
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2">
               Total Orders
             </p>
-            <div className="text-4xl sm:text-5xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
+            <div className="text-4xl sm:text-5xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE]">
               <AnimatedCounter value={5} />
             </div>
             <p className="text-[11px] text-[#6F848F] dark:text-[#8C9DA8] mt-2 font-light">
@@ -193,7 +193,7 @@ export default function SuppliersClient({
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2">
               Total Spend
             </p>
-            <div className="text-4xl sm:text-5xl font-serif font-light tracking-hero text-[#7A3F1E] dark:text-[#FAF6EE]">
+            <div className="text-4xl sm:text-5xl font-sans font-medium tracking-hero text-[#7A3F1E] dark:text-[#FAF6EE]">
               $<AnimatedCounter value={40.0} decimals={1} />K
             </div>
             <p className="text-[11px] text-[#6F848F] dark:text-[#8C9DA8] mt-2 font-light">
@@ -217,7 +217,7 @@ export default function SuppliersClient({
               cScore={51}
               supplierName="Portfolio Average"
             >
-              <div className="text-4xl sm:text-5xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE] cursor-help">
+              <div className="text-4xl sm:text-5xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE] cursor-help">
                 <AnimatedCounter value={46} /><span className="text-xl font-light text-[#6F848F] dark:text-[#8C9DA8]">/100</span>
               </div>
             </VarnaScoreHoverCard>
@@ -243,7 +243,7 @@ export default function SuppliersClient({
         {/* 5. Spend by Product Category Section */}
         <Card variant="chart" className="mb-10 p-8 shadow-elevation-low">
           <div className="border-b border-[#6F848F]/15 dark:border-[#8C9DA8]/20 pb-4 mb-6">
-            <h3 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
+            <h3 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
               Spend by Product Category
             </h3>
             <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">
@@ -282,7 +282,7 @@ export default function SuppliersClient({
               </ResponsiveContainer>
               {/* Inner Hole Labels */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-3xl font-serif text-[#222326] dark:text-[#FAF6EE] font-light tracking-tighter">$40.0K</span>
+                <span className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-tighter">$40.0K</span>
                 <span className="text-[8px] uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#8C9DA8] mt-1">Total Spend</span>
               </div>
             </div>
@@ -316,7 +316,7 @@ export default function SuppliersClient({
         <section className="space-y-6 relative">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 gap-4">
             <div>
-              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
+              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
                 Active Supplier Profiles
               </h3>
               <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">

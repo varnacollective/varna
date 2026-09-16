@@ -171,7 +171,7 @@ export default function VarnaScoreHoverCard({
                     {/* ── Header ─────────────────────────────────── */}
                     <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-mist/20 dark:border-midnight-blue">
                       <div>
-                        <h4 className="text-sm font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone leading-tight">
+                        <h4 className="text-sm font-sans font-medium tracking-tight text-carbon-ink dark:text-warm-stone leading-tight">
                           Varna Score Breakdown
                         </h4>
                         {supplierName && (
@@ -183,7 +183,7 @@ export default function VarnaScoreHoverCard({
                       <div className="flex flex-col items-end gap-1.5">
                         <CountUpNumber
                           value={score}
-                          className="text-3xl font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone"
+                          className="text-3xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone"
                         />
                         <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${band.bg} ${band.text} ${band.border}`}>
                           {band.name}

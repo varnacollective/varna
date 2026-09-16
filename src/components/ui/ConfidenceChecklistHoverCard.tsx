@@ -110,7 +110,7 @@ function DrawerConfidenceRing({ score, size = 80 }: { score: number; size?: numb
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-xl font-serif font-light text-carbon-ink dark:text-warm-stone tracking-tighter leading-none">
+        <span className="text-xl font-sans font-medium text-carbon-ink dark:text-warm-stone tracking-tighter leading-none">
           {countStr}%
         </span>
         <span className="text-[7px] font-sans uppercase tracking-widest text-slate-mist dark:text-warm-stone/60 mt-0.5">
@@ -212,7 +212,7 @@ export default function ConfidenceChecklistHoverCard({
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <ShieldCheck className="w-4 h-4 text-slate-mist" strokeWidth={1.5} />
-                          <h3 className="text-sm font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone">
+                          <h3 className="text-sm font-sans font-medium tracking-tight text-carbon-ink dark:text-warm-stone">
                             Confidence Verification
                           </h3>
                         </div>
@@ -292,7 +292,7 @@ export default function ConfidenceChecklistHoverCard({
                       ) : (
                         <div className="py-16 px-4 text-center flex flex-col items-center justify-center">
                           <ShieldCheck className="w-10 h-10 text-slate-mist/40 mb-3" strokeWidth={1.5} />
-                          <p className="text-xs font-serif font-light text-carbon-ink dark:text-warm-stone">
+                          <p className="text-xs font-sans font-medium text-carbon-ink dark:text-warm-stone">
                             Verification Data Not Yet Submitted
                           </p>
                           <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 font-light mt-1 max-w-[240px]">

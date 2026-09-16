@@ -1,6 +1,6 @@
 "use client";
 
-import { StepWrapper, Field, TextareaField } from "../FormFields";
+import { StepWrapper, TextareaField } from "../FormFields";
 
 export default function Step2Products() {
   return (
@@ -40,23 +40,6 @@ export default function Step2Products() {
         hint="Describe the key steps, tools, and techniques involved. Highlight any traditional or handmade processes."
         rows={5}
       />
-
-      <div className="space-y-1.5">
-        <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-mist">
-          Production / Workshop Video Link
-        </label>
-        <p className="text-[11px] text-slate-mist/60 font-light leading-relaxed">
-          Share a short video (2–10 min) of your production process or workshop. Paste a Google
-          Drive, YouTube, or Vimeo link. Ensure the video is publicly viewable. This greatly
-          strengthens your profile.
-        </p>
-        <Field
-          name="production_video_link"
-          label=""
-          type="url"
-          placeholder="https://drive.google.com/... or https://youtube.com/watch?v=..."
-        />
-      </div>
     </StepWrapper>
   );
 }

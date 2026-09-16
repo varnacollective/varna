@@ -241,7 +241,7 @@ export default function BrandLogo({
             className={`w-auto object-contain transition-opacity duration-200 ${currentSize.img}`}
           />
         ) : (
-          <span className={`font-serif font-bold tracking-wider text-[#222326] ${currentSize.text}`}>
+          <span className={`font-sans font-bold tracking-wider text-[#222326] ${currentSize.text}`}>
             {initials}
           </span>
         )}
@@ -279,13 +279,13 @@ export default function BrandLogo({
                           className="h-8 max-w-[120px] w-auto object-contain"
                         />
                       ) : (
-                        <span className="font-serif font-bold text-sm text-[#222326]">
+                        <span className="font-sans font-bold text-sm text-[#222326]">
                           {initials}
                         </span>
                       )}
                     </div>
                     <div>
-                      <h4 className="text-sm font-serif font-medium text-[#FAF6EE] leading-snug tracking-wide">
+                      <h4 className="text-sm font-sans font-medium text-[#FAF6EE] leading-snug tracking-wide">
                         {displayName}
                       </h4>
                       <span className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-[#6F848F] mt-0.5">

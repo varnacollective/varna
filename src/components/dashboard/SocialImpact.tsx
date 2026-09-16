@@ -70,7 +70,7 @@ export default function SocialImpact({
                 <Users className="w-5 h-5 text-[#7A3F1E] dark:text-[#FAF6EE]" strokeWidth={1.5} />
               </div>
               <div>
-                <div className="text-2xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
+                <div className="text-2xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE]">
                   {Math.round(womenWorkforcePercent)}%
                 </div>
                 <p className="text-[9px] text-[#6F848F] dark:text-[#8C9DA8] font-light uppercase tracking-wider mt-0.5">
@@ -90,7 +90,7 @@ export default function SocialImpact({
                 <Scale className="w-5 h-5 text-[#738678] dark:text-[#8AA391]" strokeWidth={1.5} />
               </div>
               <div>
-                <div className="text-2xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
+                <div className="text-2xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE]">
                   {wageRatio.toFixed(2)}
                   <span className="text-[10px] font-sans font-light text-[#6F848F] dark:text-[#8C9DA8] ml-1">×</span>
                 </div>
@@ -112,7 +112,7 @@ export default function SocialImpact({
                   <Users className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <div className="text-2xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
+                  <div className="text-2xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE]">
                     <AnimatedCounter value={artisansSupported} delay={delay + 0.3} />
                   </div>
                   <p className="text-[9px] text-[#6F848F] dark:text-[#8C9DA8] font-light uppercase tracking-wider mt-0.5">

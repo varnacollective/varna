@@ -62,7 +62,7 @@ export default function CarbonImpact({
             <Leaf className="w-5 h-5 text-[#738678] dark:text-[#8AA391]" strokeWidth={1.5} />
           </motion.div>
           <div>
-            <div className="text-3xl font-serif font-light tracking-hero text-[#222326] dark:text-[#FAF6EE]">
+            <div className="text-3xl font-sans font-medium tracking-hero text-[#222326] dark:text-[#FAF6EE]">
               <AnimatedCounter
                 value={totalCO2eAvoidedKg}
                 delay={delay + 0.15}
@@ -86,7 +86,7 @@ export default function CarbonImpact({
             <TreePine className="w-5 h-5 text-[#738678] dark:text-[#8AA391]" strokeWidth={1.5} />
           </motion.div>
           <div>
-            <div className="text-3xl font-serif font-light tracking-hero text-[#738678] dark:text-[#8AA391]">
+            <div className="text-3xl font-sans font-medium tracking-hero text-[#738678] dark:text-[#8AA391]">
               <AnimatedCounter value={treesEquivalent} delay={delay + 0.3} />
               <span className="text-xs font-sans font-light uppercase tracking-wider text-[#6F848F] dark:text-[#8C9DA8] ml-1.5">
                 trees

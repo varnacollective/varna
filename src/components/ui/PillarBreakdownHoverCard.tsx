@@ -130,12 +130,12 @@ export default function PillarBreakdownHoverCard({
                           className="w-2.5 h-2.5 flex-shrink-0"
                           style={{ backgroundColor: color }}
                         />
-                        <h4 className="text-base font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone">
+                        <h4 className="text-base font-sans font-medium tracking-tight text-carbon-ink dark:text-warm-stone">
                           {pillarLabel}
                         </h4>
                       </div>
                       <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-serif font-light tracking-tighter text-carbon-ink dark:text-warm-stone">
+                        <span className="text-2xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone">
                           {pillarScore}
                         </span>
                         <span className="text-[9px] uppercase tracking-widest text-slate-mist dark:text-warm-stone/40">

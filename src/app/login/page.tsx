@@ -105,7 +105,7 @@ export default function LoginPage() {
               <span className="text-[9px] font-semibold tracking-[0.3em] text-warm-stone/50 uppercase block mb-1.5">
                 Varna Collective
               </span>
-              <h1 className="text-3xl font-serif font-light text-warm-stone tracking-tight leading-tight mb-2">
+              <h1 className="text-3xl font-sans font-medium text-warm-stone tracking-tight leading-tight mb-2">
                 Authentication
               </h1>
               <p className="text-xs text-slate-mist font-light leading-relaxed">
@@ -180,7 +180,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading || !clientId || !password}
-                className="w-full mt-2 py-3.5 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] active:scale-[0.99] font-serif tracking-[0.2em] uppercase text-xs flex items-center justify-between px-6 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed group cursor-pointer"
+                className="w-full mt-2 py-3.5 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] active:scale-[0.99] font-sans font-medium tracking-[0.2em] uppercase text-xs flex items-center justify-between px-6 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed group cursor-pointer"
               >
                 {loading ? (
                   <span className="flex items-center gap-2.5">

@@ -90,7 +90,7 @@ export default function LoginPage() {
 
         {/* Center Philosophy Statement */}
         <div className="relative z-10 max-w-lg space-y-4 my-auto">
-          <h2 className="text-4xl xl:text-5xl font-serif text-[#FAF7F0] tracking-hero uppercase leading-tight drop-shadow-md">
+          <h2 className="text-4xl xl:text-5xl font-sans font-medium text-[#FAF7F0] tracking-hero uppercase leading-tight drop-shadow-md">
             A Force for Good, Built into Every Purchase.
           </h2>
           <p className="text-xs xl:text-sm text-[#D8CFB8]/85 font-light leading-relaxed pt-1">
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 <span className="text-[10px] font-semibold tracking-[0.22em] text-[#7A3F1E] dark:text-[#E89260] uppercase mb-2">
                   The Varna Collective
                 </span>
-                <h1 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mb-2">
+                <h1 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mb-2">
                   Sustainability Portal
                 </h1>
                 <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] leading-relaxed font-light mt-1">
@@ -209,7 +209,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading || !clientId || !password}
-                  className="w-full py-3.5 mt-2 bg-gradient-to-r from-[#7A3F1E] to-[#5C2A0F] hover:from-[#6B3315] hover:to-[#4E220B] text-[#FAF7F0] font-serif tracking-widest uppercase text-xs flex items-center justify-between px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group shadow-elevation-mid hover:shadow-elevation-high dark:shadow-[0_0_24px_rgba(148,77,37,0.35)] cursor-pointer active:scale-[0.99]"
+                  className="w-full py-3.5 mt-2 bg-gradient-to-r from-[#7A3F1E] to-[#5C2A0F] hover:from-[#6B3315] hover:to-[#4E220B] text-[#FAF7F0] font-sans font-medium tracking-widest uppercase text-xs flex items-center justify-between px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group shadow-elevation-mid hover:shadow-elevation-high dark:shadow-[0_0_24px_rgba(148,77,37,0.35)] cursor-pointer active:scale-[0.99]"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2 mx-auto">

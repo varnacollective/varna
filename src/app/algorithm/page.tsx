@@ -71,7 +71,7 @@ export default function AlgorithmPage() {
               <span className="w-8 h-px bg-[#7A3F1E]/40 dark:bg-[#FAF6EE]/30" />
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-hero leading-tight mb-4 uppercase">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero leading-tight mb-4 uppercase">
               The Varna Framework
             </h1>
 
@@ -90,7 +90,7 @@ export default function AlgorithmPage() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#FAF6EE]/70">
                 Core Scoring Model · Convergent Diamond Architecture
               </p>
-              <h3 className="text-2xl font-serif tracking-tight text-[#222326] dark:text-[#FAF6EE] mt-1 uppercase">
+              <h3 className="text-2xl font-sans font-medium tracking-tight text-[#222326] dark:text-[#FAF6EE] mt-1 uppercase">
                 Weight Distribution &amp; Synthesis
               </h3>
             </div>
@@ -110,11 +110,11 @@ export default function AlgorithmPage() {
                     <span className="text-[9px] font-semibold uppercase tracking-widest text-[#738678] dark:text-[#829888]">
                       Pillar 01
                     </span>
-                    <span className="text-3xl font-serif text-[#738678] dark:text-[#829888] font-light">
+                    <span className="text-3xl font-sans font-medium text-[#738678] dark:text-[#829888]">
                       50%
                     </span>
                   </div>
-                  <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
+                  <h4 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
                     Impact
                   </h4>
                   <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
@@ -143,11 +143,11 @@ export default function AlgorithmPage() {
                     <span className="text-[9px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8]">
                       Pillar 02
                     </span>
-                    <span className="text-3xl font-serif text-[#6F848F] dark:text-[#8C9DA8] font-light">
+                    <span className="text-3xl font-sans font-medium text-[#6F848F] dark:text-[#8C9DA8]">
                       30%
                     </span>
                   </div>
-                  <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
+                  <h4 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
                     Readiness
                   </h4>
                   <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
@@ -176,11 +176,11 @@ export default function AlgorithmPage() {
                     <span className="text-[9px] font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#944D25]">
                       Pillar 03
                     </span>
-                    <span className="text-3xl font-serif text-[#7A3F1E] dark:text-[#944D25] font-light">
+                    <span className="text-3xl font-sans font-medium text-[#7A3F1E] dark:text-[#944D25]">
                       20%
                     </span>
                   </div>
-                  <h4 className="text-xl font-serif text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
+                  <h4 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
                     Risk
                   </h4>
                   <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
@@ -212,7 +212,7 @@ export default function AlgorithmPage() {
                 <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#7A3F1E] dark:text-[#FAF6EE]/90">
                   Weighted Mathematical Synthesis
                 </span>
-                <h3 className="text-3xl font-serif text-[#222326] dark:text-[#FAF6EE] tracking-tight uppercase my-1.5">
+                <h3 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-tight uppercase my-1.5">
                   Final Varna Score (100)
                 </h3>
                 <p className="text-[11px] text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light">
@@ -233,7 +233,7 @@ export default function AlgorithmPage() {
             <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
               Section 1 · Foundational Philosophy
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
               The Three Principles
             </h2>
           </div>
@@ -243,7 +243,7 @@ export default function AlgorithmPage() {
               <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#FAF6EE]/70 mb-3 block">
                 Principle 01
               </span>
-              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
+              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
                 Objective
               </h3>
               <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
@@ -255,7 +255,7 @@ export default function AlgorithmPage() {
               <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#FAF6EE]/70 mb-3 block">
                 Principle 02
               </span>
-              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
+              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
                 Calibrated
               </h3>
               <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
@@ -267,7 +267,7 @@ export default function AlgorithmPage() {
               <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#FAF6EE]/70 mb-3 block">
                 Principle 03
               </span>
-              <h3 className="text-2xl font-serif text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
+              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
                 Developmental
               </h3>
               <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
@@ -286,7 +286,7 @@ export default function AlgorithmPage() {
             <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
               Section 2 · Mathematical Framework
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
               The Formula Breakdown
             </h2>
             <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl font-light mt-2">
@@ -298,11 +298,11 @@ export default function AlgorithmPage() {
             <Card variant="default" className="border-l-4 border-l-[#738678]">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 border border-[#738678]/40 bg-[#738678]/10 flex items-center justify-center text-xl font-serif text-[#738678] dark:text-[#829888] flex-shrink-0">
+                  <div className="w-12 h-12 border border-[#738678]/40 bg-[#738678]/10 flex items-center justify-center text-xl font-sans font-medium text-[#738678] dark:text-[#829888] flex-shrink-0">
                     50%
                   </div>
                   <div>
-                    <h4 className="text-lg font-serif uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
+                    <h4 className="text-lg font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
                       Impact Dimension
                     </h4>
                     <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-1">
@@ -319,11 +319,11 @@ export default function AlgorithmPage() {
             <Card variant="default" className="border-l-4 border-l-[#6F848F]">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 border border-[#6F848F]/40 bg-[#6F848F]/10 flex items-center justify-center text-xl font-serif text-[#6F848F] dark:text-[#8C9DA8] flex-shrink-0">
+                  <div className="w-12 h-12 border border-[#6F848F]/40 bg-[#6F848F]/10 flex items-center justify-center text-xl font-sans font-medium text-[#6F848F] dark:text-[#8C9DA8] flex-shrink-0">
                     30%
                   </div>
                   <div>
-                    <h4 className="text-lg font-serif uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
+                    <h4 className="text-lg font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
                       Readiness Dimension
                     </h4>
                     <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-1">
@@ -340,11 +340,11 @@ export default function AlgorithmPage() {
             <Card variant="default" className="border-l-4 border-l-[#7A3F1E]">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 border border-[#7A3F1E]/40 bg-[#7A3F1E]/10 flex items-center justify-center text-xl font-serif text-[#7A3F1E] dark:text-[#944D25] flex-shrink-0">
+                  <div className="w-12 h-12 border border-[#7A3F1E]/40 bg-[#7A3F1E]/10 flex items-center justify-center text-xl font-sans font-medium text-[#7A3F1E] dark:text-[#944D25] flex-shrink-0">
                     20%
                   </div>
                   <div>
-                    <h4 className="text-lg font-serif uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
+                    <h4 className="text-lg font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
                       Risk Dimension
                     </h4>
                     <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-1">
@@ -366,7 +366,7 @@ export default function AlgorithmPage() {
             <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
               Section 3 · Data Quality Multipliers
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
               The Evidence Multiplier Pipeline
             </h2>
             <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl mx-auto font-light mt-2">
@@ -385,7 +385,7 @@ export default function AlgorithmPage() {
               className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
             >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] block mb-1">Step 01</span>
-              <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#FAF6EE]">Actual Data</h5>
+              <h5 className="text-sm font-sans font-medium uppercase text-[#222326] dark:text-[#FAF6EE]">Actual Data</h5>
               <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">Metrics &amp; Invoices</p>
             </motion.div>
 
@@ -401,7 +401,7 @@ export default function AlgorithmPage() {
               className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
             >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] block mb-1">Step 02</span>
-              <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#FAF6EE]">Band Lookup</h5>
+              <h5 className="text-sm font-sans font-medium uppercase text-[#222326] dark:text-[#FAF6EE]">Band Lookup</h5>
               <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">MSME Thresholds</p>
             </motion.div>
 
@@ -417,7 +417,7 @@ export default function AlgorithmPage() {
               className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
             >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] block mb-1">Step 03</span>
-              <h5 className="text-sm font-serif uppercase text-[#222326] dark:text-[#FAF6EE]">Raw Score</h5>
+              <h5 className="text-sm font-sans font-medium uppercase text-[#222326] dark:text-[#FAF6EE]">Raw Score</h5>
               <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">Linear Map (0–100)</p>
             </motion.div>
 
@@ -433,7 +433,7 @@ export default function AlgorithmPage() {
               className="w-full md:w-auto flex-1 p-4 border border-[#7A3F1E]/60 dark:border-[#944D25]/40 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
             >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#944D25] block mb-1">Step 04</span>
-              <h5 className="text-sm font-serif uppercase text-[#7A3F1E] dark:text-[#FAF6EE]">Multiplier</h5>
+              <h5 className="text-sm font-sans font-medium uppercase text-[#7A3F1E] dark:text-[#FAF6EE]">Multiplier</h5>
               <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">0.50× · 0.75× · 1.00×</p>
             </motion.div>
 
@@ -449,7 +449,7 @@ export default function AlgorithmPage() {
               className="w-full md:w-auto flex-1 p-4 border-2 border-[#738678] dark:border-[#829888] bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-mid dark:shadow-elevation-dark-mid"
             >
               <span className="text-[8px] font-semibold uppercase tracking-widest text-[#738678] dark:text-[#829888] block mb-1">Step 05</span>
-              <h5 className="text-sm font-serif uppercase text-[#738678] dark:text-[#829888]">Effective</h5>
+              <h5 className="text-sm font-sans font-medium uppercase text-[#738678] dark:text-[#829888]">Effective</h5>
               <p className="text-[10px] text-[#738678] dark:text-[#829888] mt-1 font-light">Verified Score</p>
             </motion.div>
           </div>
@@ -457,7 +457,7 @@ export default function AlgorithmPage() {
           {/* Evidence Quality Tiers */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="p-6 border border-[#7A3F1E]/40 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-              <div className="text-3xl font-serif text-[#7A3F1E] dark:text-[#944D25] mb-2 font-light">0.50×</div>
+              <div className="text-3xl font-sans font-medium text-[#7A3F1E] dark:text-[#944D25] mb-2">0.50×</div>
               <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#FAF6EE] mb-1">
                 None / Proxy Data
               </h5>
@@ -467,7 +467,7 @@ export default function AlgorithmPage() {
             </div>
 
             <div className="p-6 border border-[#6F848F]/40 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-              <div className="text-3xl font-serif text-[#6F848F] dark:text-[#8C9DA8] mb-2 font-light">0.75×</div>
+              <div className="text-3xl font-sans font-medium text-[#6F848F] dark:text-[#8C9DA8] mb-2">0.75×</div>
               <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#FAF6EE] mb-1">
                 Self-Reported
               </h5>
@@ -477,7 +477,7 @@ export default function AlgorithmPage() {
             </div>
 
             <div className="p-6 border border-[#738678]/40 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-              <div className="text-3xl font-serif text-[#738678] dark:text-[#829888] mb-2 font-light">1.00×</div>
+              <div className="text-3xl font-sans font-medium text-[#738678] dark:text-[#829888] mb-2">1.00×</div>
               <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#FAF6EE] mb-1">
                 Third-Party Verified
               </h5>
@@ -500,7 +500,7 @@ export default function AlgorithmPage() {
             <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
               Section 4 · Classification Scale
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
               Performance Bands
             </h2>
           </div>
@@ -548,7 +548,7 @@ export default function AlgorithmPage() {
                 className={`flex flex-col sm:flex-row sm:items-center justify-between p-6 border-l-4 ${band.color} bg-[#E4DEC9] dark:bg-[#22252B] border border-[#6F848F]/25 dark:border-[#8C9DA8]/15 shadow-elevation-low dark:shadow-elevation-dark-low rounded-lg gap-2`}
               >
                 <div>
-                  <h4 className={`text-xl font-serif uppercase tracking-tight ${band.textColor}`}>
+                  <h4 className={`text-xl font-sans font-medium uppercase tracking-tight ${band.textColor}`}>
                     {band.title}
                   </h4>
                   <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-0.5">

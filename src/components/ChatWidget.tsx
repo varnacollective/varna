@@ -99,7 +99,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-[#D8CFB8] font-medium font-serif text-sm tracking-wide leading-tight">
+                  <h3 className="text-[#D8CFB8] font-medium font-sans text-sm tracking-wide leading-tight">
                     Varna Assistant
                   </h3>
                   <p className="text-[10px] text-[#6F848F] uppercase tracking-wider font-medium">

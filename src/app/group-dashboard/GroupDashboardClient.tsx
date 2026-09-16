@@ -142,10 +142,10 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
 
           {/* Group Logo Chip */}
           <div className="flex items-center gap-2.5 bg-[#22252B] border border-[#8C9DA8]/20 px-3 py-1.5 rounded-full shadow-xs">
-            <div className="w-5 h-5 rounded-full bg-[#944D25]/20 border border-[#944D25]/40 flex items-center justify-center text-[#944D25] text-xs font-serif font-bold">
+            <div className="w-5 h-5 rounded-full bg-[#944D25]/20 border border-[#944D25]/40 flex items-center justify-center text-[#944D25] text-xs font-sans font-bold">
               M
             </div>
-            <span className="text-xs font-serif tracking-tight font-light text-[#FAF6EE]">
+            <span className="text-xs font-sans tracking-tight font-medium text-[#FAF6EE]">
               {summary.parentGroup}
             </span>
             <span className="text-[9px] uppercase font-sans font-semibold tracking-wider px-2 py-0.5 rounded-full bg-[#738678]/20 text-[#829888] border border-[#738678]/30">
@@ -194,7 +194,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 <span>&bull;</span>
                 <span className="text-[#944D25]">Account GRP-001</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-serif font-light text-[#FAF6EE] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-sans font-medium text-[#FAF6EE] tracking-tight">
                 {summary.parentGroup}
               </h1>
               <p className="text-xs text-[#8C9DA8] font-light mt-1 max-w-2xl">
@@ -276,7 +276,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                   <p className="text-[10px] font-sans font-semibold uppercase tracking-[0.16em] text-[#8C9DA8]">
                     Car Kilometers Avoided
                   </p>
-                  <p className="text-2xl font-serif text-[#FAF6EE] font-light">
+                  <p className="text-2xl font-sans text-[#FAF6EE] font-medium">
                     {formatNumber(summary.carKmAvoided)} <span className="text-xs font-sans text-[#8C9DA8]">km</span>
                   </p>
                 </div>
@@ -295,7 +295,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                   <p className="text-[10px] font-sans font-semibold uppercase tracking-[0.16em] text-[#8C9DA8]">
                     Trees Equivalent
                   </p>
-                  <p className="text-2xl font-serif text-[#FAF6EE] font-light">
+                  <p className="text-2xl font-sans text-[#FAF6EE] font-medium">
                     {formatNumber(summary.treesEquivalent)} <span className="text-xs font-sans text-[#8C9DA8]">trees</span>
                   </p>
                 </div>
@@ -314,7 +314,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                   <p className="text-[10px] font-sans font-semibold uppercase tracking-[0.16em] text-[#8C9DA8]">
                     CO2 Reduction Ratio
                   </p>
-                  <p className="text-2xl font-serif text-[#FAF6EE] font-light">
+                  <p className="text-2xl font-sans text-[#FAF6EE] font-medium">
                     {((summary.totalCo2eAvoidedKg / (summary.totalCo2eKg + summary.totalCo2eAvoidedKg)) * 100).toFixed(1)}%
                   </p>
                 </div>
@@ -330,7 +330,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-[#8C9DA8]/15 pb-3">
             <div>
-              <h2 className="text-xl font-serif font-light text-[#FAF6EE] tracking-tight">
+              <h2 className="text-xl font-sans font-medium text-[#FAF6EE] tracking-tight">
                 Group ESG Pillar Averages & Sub-Criteria Breakdowns
               </h2>
               <p className="text-xs text-[#8C9DA8]">
@@ -346,7 +346,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#829888]">
                   Environmental Pillar
                 </span>
-                <span className="text-xs font-serif font-light text-[#FAF6EE] bg-[#829888]/20 px-2 py-0.5 border border-[#829888]/30">
+                <span className="text-xs font-sans font-medium text-[#FAF6EE] bg-[#829888]/20 px-2 py-0.5 border border-[#829888]/30">
                   {summary.avgE} / 100
                 </span>
               </div>
@@ -383,7 +383,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#944D25]">
                   Social Pillar
                 </span>
-                <span className="text-xs font-serif font-light text-[#FAF6EE] bg-[#944D25]/20 px-2 py-0.5 border border-[#944D25]/30">
+                <span className="text-xs font-sans font-medium text-[#FAF6EE] bg-[#944D25]/20 px-2 py-0.5 border border-[#944D25]/30">
                   {summary.avgS} / 100
                 </span>
               </div>
@@ -420,7 +420,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#8298A5]">
                   Governance Pillar
                 </span>
-                <span className="text-xs font-serif font-light text-[#FAF6EE] bg-[#8298A5]/20 px-2 py-0.5 border border-[#8298A5]/30">
+                <span className="text-xs font-sans font-medium text-[#FAF6EE] bg-[#8298A5]/20 px-2 py-0.5 border border-[#8298A5]/30">
                   {summary.avgG} / 100
                 </span>
               </div>
@@ -464,7 +464,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
 
               <div className="py-2 flex flex-col items-center justify-center text-center">
                 <div className="w-24 h-24 rounded-full border border-dashed border-[#8C9DA8]/30 flex flex-col items-center justify-center p-2 bg-[#18191D]/50 mb-2">
-                  <span className="text-xl font-serif text-[#8C9DA8]">N/A</span>
+                  <span className="text-xl font-sans font-medium text-[#8C9DA8]">N/A</span>
                   <span className="text-[9px] text-[#8C9DA8]/70 uppercase tracking-wider">Non-Craft Group</span>
                 </div>
                 <span className="text-[10px] uppercase font-semibold text-[#8C9DA8] tracking-widest mt-1">
@@ -565,7 +565,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                       Spend at Risk: {summary.spendAtRiskPct}%
                     </span>
                   </div>
-                  <span className="text-xs font-serif font-light text-[#944D25]">
+                  <span className="text-xs font-sans font-medium text-[#944D25]">
                     {formatCurrency(summary.spendAtRisk)}
                   </span>
                 </div>
@@ -611,7 +611,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-lg font-serif font-light text-[#FAF6EE]">
+                <span className="text-lg font-sans font-medium text-[#FAF6EE]">
                   {spendByBand.length}
                 </span>
                 <span className="text-[9px] uppercase tracking-wider text-[#8C9DA8]">Bands</span>
@@ -689,7 +689,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#8C9DA8]/15 pb-4">
             <div>
-              <h2 className="text-xl font-serif font-light text-[#FAF6EE] tracking-tight">
+              <h2 className="text-xl font-sans font-medium text-[#FAF6EE] tracking-tight">
                 Hotel-Level Leaderboard Table
               </h2>
               <p className="text-xs text-[#8C9DA8]">
@@ -769,7 +769,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                               {idx + 1}
                             </span>
                             <div>
-                              <p className="font-serif text-sm font-light text-[#FAF6EE] group-hover:text-[#944D25] transition-colors">
+                              <p className="font-sans text-sm font-medium text-[#FAF6EE] group-hover:text-[#944D25] transition-colors">
                                 {item.clientName}
                               </p>
                               <p className="text-[10px] text-[#8C9DA8] flex items-center gap-1.5 mt-0.5">
@@ -788,7 +788,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                           <div className="inline-flex flex-col items-center">
                             <span
                               className={`
-                                text-sm font-serif font-light px-2.5 py-0.5 rounded-full border
+                                text-sm font-sans font-medium px-2.5 py-0.5 rounded-full border
                                 ${
                                   item.varnaScore >= 80
                                     ? "bg-[#738678]/15 border-[#738678]/40 text-[#829888]"
