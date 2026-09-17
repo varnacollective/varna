@@ -15,14 +15,12 @@ import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 import SupplierProfileCard from "./SupplierProfileCard";
 import {
   Calendar,
-  Download,
   Star,
   Sun,
   Moon,
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
-  Loader2,
 } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -52,20 +50,11 @@ export default function SuppliersClient({
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const handleDownloadReport = () => {
-    setIsDownloading(true);
-    setTimeout(() => {
-      alert("Report compiled. Your verified audit export is downloading.");
-      setIsDownloading(false);
-    }, 600);
-  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -137,27 +126,10 @@ export default function SuppliersClient({
             </p>
           </div>
 
-          {/* Right Action: Date Range Indicator & Report Download */}
-          <div className="flex flex-wrap items-center gap-3.5">
-            <div className="flex items-center gap-2 border border-[#6F848F]/30 dark:border-[#8C9DA8]/25 px-4 py-3 bg-[#E4DEC9] dark:bg-[#22252B] text-xs text-[#6F848F] dark:text-[#FAF6EE]/70 rounded-none shadow-xs">
-              <Calendar className="w-3.5 h-3.5 text-[#6F848F] dark:text-[#8C9DA8]" strokeWidth={1.5} />
-              <span className="font-light tracking-wide uppercase text-[10px]">Apr 1 – Jun 30, 2026</span>
-            </div>
-
-            <button
-              onClick={handleDownloadReport}
-              disabled={isDownloading}
-              className={`flex items-center gap-2.5 px-5 py-3 bg-[#7A3F1E] text-[#D8CFB8] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:text-[#18191D] dark:hover:bg-[#E8E2D1] text-xs font-sans uppercase tracking-widest transition-colors cursor-pointer shadow-elevation-low ${
-                isDownloading ? "opacity-75 cursor-wait" : ""
-              }`}
-            >
-              {isDownloading ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
-              )}
-              <span>{isDownloading ? "Preparing..." : "Download Report"}</span>
-            </button>
+          {/* Right Action: Date Range Indicator */}
+          <div className="flex items-center gap-2 border border-[#6F848F]/30 dark:border-[#8C9DA8]/25 px-4 py-3 bg-[#E4DEC9] dark:bg-[#22252B] text-xs text-[#6F848F] dark:text-[#FAF6EE]/70 rounded-none shadow-xs shrink-0">
+            <Calendar className="w-3.5 h-3.5 text-[#6F848F] dark:text-[#8C9DA8]" strokeWidth={1.5} />
+            <span className="font-light tracking-wide uppercase text-[10px]">Apr 1 – Jun 30, 2026</span>
           </div>
         </section>
 
