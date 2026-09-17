@@ -58,7 +58,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#D8CFB8] dark:bg-[#18191D] transition-colors duration-300">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5] dark:bg-[#121316] transition-colors duration-300">
         <motion.div
           className="flex flex-col items-center gap-6 w-full max-w-sm px-6"
           initial={{ opacity: 0 }}
@@ -85,7 +85,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
   const { client, summary, categorySpend, tierDistribution } = data;
 
   return (
-    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#222326] dark:text-[#FAF6EE] transition-colors duration-300 relative selection:bg-[#7A3F1E] selection:text-[#D8CFB8] overflow-x-hidden">
+    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 relative selection:bg-[#B85333] selection:text-white overflow-x-hidden">
       {/* Subtle brand crystal mark in page corner */}
       <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
 

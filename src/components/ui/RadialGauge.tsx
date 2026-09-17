@@ -19,42 +19,42 @@ export const PERFORMANCE_BANDS: Record<PerformanceBand, BandConfig> = {
   Leader: {
     name: "Varna Leader",
     range: "85–100",
-    color: "#738678", // Sage Mineral
-    badgeBg: "bg-sage-mineral/15",
-    badgeText: "text-sage-mineral dark:text-[#8AA391]",
-    badgeBorder: "border-sage-mineral/30",
+    color: "#556B55",  // Sage Olive
+    badgeBg: "bg-[#556B55]/12 dark:bg-[#7B9B7B]/20",
+    badgeText: "text-[#556B55] dark:text-[#8AAE8A]",
+    badgeBorder: "border-[#556B55]/30 dark:border-[#7B9B7B]/35",
   },
   Advanced: {
     name: "Advanced",
     range: "70–84",
-    color: "#6F848F", // Slate Mist
-    badgeBg: "bg-slate-mist/15",
-    badgeText: "text-slate-mist dark:text-[#8CA2AE]",
-    badgeBorder: "border-slate-mist/30",
+    color: "#5B7594",  // Slate Navy
+    badgeBg: "bg-[#5B7594]/12 dark:bg-[#5B7594]/20",
+    badgeText: "text-[#2A3644] dark:text-[#8AAEC6]",
+    badgeBorder: "border-[#5B7594]/30",
   },
   Emerging: {
     name: "Emerging",
     range: "55–69",
-    color: "#A89C82", // Deep Warm Stone tint for contrast
-    badgeBg: "bg-warm-stone/25 dark:bg-warm-stone/15",
-    badgeText: "text-[#5C5238] dark:text-warm-stone",
-    badgeBorder: "border-warm-stone/40",
+    color: "#6E7781",  // Warm Slate
+    badgeBg: "bg-[#6E7781]/10 dark:bg-[#6E7781]/15",
+    badgeText: "text-[#4A5560] dark:text-[#9BA9B4]",
+    badgeBorder: "border-[#6E7781]/30",
   },
   Foundational: {
     name: "Foundational",
     range: "40–54",
-    color: "#7A3F1E", // Deep Clay
-    badgeBg: "bg-deep-clay/15",
-    badgeText: "text-deep-clay dark:text-[#C5774E]",
-    badgeBorder: "border-deep-clay/30",
+    color: "#B85333",  // Terracotta
+    badgeBg: "bg-[#B85333]/10 dark:bg-[#C85D3B]/20",
+    badgeText: "text-[#B85333] dark:text-[#E07555]",
+    badgeBorder: "border-[#B85333]/30",
   },
   "Not Ready": {
     name: "Not Ready",
     range: "<40",
-    color: "#7A3F1E", // Deep Clay alert
-    badgeBg: "bg-deep-clay/20",
-    badgeText: "text-deep-clay dark:text-[#E2895C]",
-    badgeBorder: "border-deep-clay/40",
+    color: "#B85333",  // Terracotta alert
+    badgeBg: "bg-[#B85333]/15 dark:bg-[#C85D3B]/25",
+    badgeText: "text-[#B85333] dark:text-[#E8856A]",
+    badgeBorder: "border-[#B85333]/40",
   },
 };
 
@@ -89,13 +89,14 @@ export default function RadialGauge({
   const bandKey = getPerformanceBand(value);
   const band = PERFORMANCE_BANDS[bandKey];
 
-  // Pillar-specific two-tone color gradient pairs from brand palette (brightened for dark mode vibrancy)
+  // Signature ESG Pillar color triads (light → dark gradient per pillar)
+  // Environmental: Sage Olive  |  Social: Terracotta  |  Governance: Slate Navy  |  Cultural: Midnight + Terracotta
   const pillarGradients: Record<string, [string, string]> = {
-    E: value >= 75 ? ["#829888", "#7D929E"] : ["#944D25", "#829888"], // Sage Mineral ↔ Deep Clay
-    S: value >= 75 ? ["#944D25", "#7D929E"] : ["#944D25", "#3D4D68"], // Deep Clay ↔ Slate Mist
-    G: ["#7D929E", "#3D4D68"],                                        // Slate Mist ↔ Midnight Blue
-    C: ["#3D4D68", "#944D25"],                                        // Midnight Blue ↔ Deep Clay
-    Overall: value >= 80 ? ["#829888", "#7D929E"] : ["#944D25", "#7D929E"],
+    E: value >= 70 ? ["#556B55", "#7B9B7B"] : ["#7B9B7B", "#556B55"],   // Sage Olive — Environmental
+    S: value >= 70 ? ["#B85333", "#D96D4C"] : ["#D96D4C", "#B85333"],   // Terracotta — Social
+    G: ["#2A3644", "#5B7594"],                                            // Deep Slate Navy — Governance
+    C: ["#2F3C52", "#B85333"],                                            // Midnight + Terracotta — Cultural
+    Overall: value >= 80 ? ["#556B55", "#7B9B7B"] : ["#B85333", "#5B7594"],
   };
 
   const [colorStart, colorEnd] = pillarGradients[pillarKey] || ["#829888", "#944D25"];
@@ -136,7 +137,7 @@ export default function RadialGauge({
             cy={size / 2}
             r={radius}
             fill="none"
-            className="stroke-slate-mist/15 dark:stroke-[#8C9DA8]/15"
+            className="stroke-[#EAE5DC] dark:stroke-[#9BA9B4]/15"
             strokeWidth={strokeWidth}
             strokeDasharray={`${totalArc} ${circumference}`}
             strokeLinecap="round"
@@ -166,7 +167,7 @@ export default function RadialGauge({
         {/* Center Content: Score number + optional Trend Delta */}
         <div className={`absolute inset-0 flex flex-col items-center justify-center ${delta !== undefined ? "pt-2" : ""}`}>
           <motion.span
-            className="text-2xl font-sans text-carbon-ink dark:text-[#FAF6EE] font-medium tracking-tighter"
+            className="text-2xl font-sans text-[#1A1F26] dark:text-[#FAF8F5] font-medium tracking-tighter"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: delay + 0.4, duration: 0.4 }}

@@ -48,11 +48,11 @@ export default function ImpactPillars({
 
   return (
     <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
-      <div className="flex justify-between items-center mb-8 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/20 pb-3">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8]">
+      <div className="flex justify-between items-center mb-8 border-b border-[#EAE5DC] dark:border-[#9BA9B4]/18 pb-3">
+        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6E7781] dark:text-[#9BA9B4]">
           ESG Performance Pillars · Real-time Gauges
         </h3>
-        <span className="text-[9px] font-sans font-semibold uppercase tracking-widest text-[#738678] dark:text-[#8AA391] bg-[#738678]/10 dark:bg-[#829888]/15 px-2.5 py-0.5 rounded-full border border-[#738678]/25 dark:border-[#829888]/30">
+        <span className="text-[9px] font-sans font-semibold uppercase tracking-widest text-[#556B55] dark:text-[#8AAE8A] bg-[#556B55]/10 dark:bg-[#7B9B7B]/15 px-2.5 py-0.5 rounded-full border border-[#556B55]/25 dark:border-[#7B9B7B]/30">
           Framework Calibrated
         </span>
       </div>
@@ -86,7 +86,7 @@ export default function ImpactPillars({
 
               {/* Label: hover shows educational tooltip */}
               <PillarTooltip content={definition ?? pillar.label}>
-                <span className="text-[11px] font-semibold text-[#222326] dark:text-[#FAF6EE] uppercase tracking-[0.18em] text-center cursor-help hover:text-[#7A3F1E] dark:hover:text-[#E89260] transition-colors duration-200 mt-1">
+                <span className="text-[11px] font-semibold text-[#1A1F26] dark:text-[#FAF8F5] uppercase tracking-[0.18em] text-center cursor-help hover:text-[#B85333] dark:hover:text-[#E07555] transition-colors duration-200 mt-1">
                   {pillar.label}
                 </span>
               </PillarTooltip>

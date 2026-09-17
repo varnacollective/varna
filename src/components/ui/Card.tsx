@@ -27,33 +27,33 @@ export default function Card({
 }: CardProps) {
   // Treatment styles matching luxury boutique hospitality and fintech-grade elevation
   const variantStyles: Record<CardVariant, string> = {
-    // 1. Default: Elevated resting card with soft carbon-ink tinted shadow
+    // 1. Default: Crisp white in light, Carbon Ink in dark
     default:
-      "bg-[#E4DEC9] dark:bg-[#22252B] border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shadow-elevation-low dark:shadow-elevation-dark-low",
+      "bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#9BA9B4]/18 shadow-card-light dark:shadow-elevation-dark-low",
 
-    // 2. Hero: Monumental card with subtle gradient background and higher elevation
+    // 2. Hero: Elevated monumental card — white with warm shadow in light
     hero:
-      "bg-gradient-to-br from-[#E8E2D1] to-[#DFD8C2] dark:from-[#262B34] dark:to-[#1F2329] border border-[#6F848F]/25 dark:border-[#8C9DA8]/25 shadow-elevation-mid dark:shadow-elevation-dark-mid",
+      "bg-gradient-to-br from-white to-[#FDFAF5] dark:from-[#242830] dark:to-[#1B1E26] border border-[#EAE5DC] dark:border-[#9BA9B4]/22 shadow-elevation-mid dark:shadow-elevation-dark-mid",
 
-    // 3. Verified: Inset luxury look referencing fine leather craft
+    // 3. Verified: Premium craft-quality inset feel
     verified:
-      "bg-[#DFD8C2] dark:bg-[#22262D] border border-[#738678]/40 dark:border-[#829888]/35 shadow-[inset_0_1px_3px_rgba(34,35,38,0.06),0_4px_16px_rgba(115,134,120,0.12)] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.4),0_4px_20px_rgba(0,0,0,0.5)] relative before:absolute before:inset-[3px] before:border before:border-[#738678]/20 dark:before:border-[#829888]/20 before:pointer-events-none",
+      "bg-[#FEFCF9] dark:bg-[#1E2228] border border-[#556B55]/30 dark:border-[#7B9B7B]/30 shadow-[inset_0_1px_3px_rgba(26,31,38,0.04),0_4px_16px_rgba(85,107,85,0.10)] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.4),0_4px_20px_rgba(0,0,0,0.5)] relative before:absolute before:inset-[3px] before:border before:border-[#556B55]/15 dark:before:border-[#7B9B7B]/20 before:pointer-events-none",
 
-    // 4. Chart: Elevated data card with polished container
+    // 4. Chart: Data card with polished white container
     chart:
-      "bg-[#E4DEC9]/95 dark:bg-[#22252B] border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shadow-elevation-mid dark:shadow-elevation-dark-mid",
+      "bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#9BA9B4]/18 shadow-elevation-mid dark:shadow-elevation-dark-mid",
 
-    // 5. Editorial: Warm Stone base for Framework and brand-forward pages
+    // 5. Editorial: Warm Alabaster for brand-forward pages
     editorial:
-      "bg-[#E8E2D1] dark:bg-[#202329] border border-[#6F848F]/25 dark:border-[#8C9DA8]/20 shadow-elevation-mid dark:shadow-elevation-dark-mid",
+      "bg-[#FAF8F4] dark:bg-[#1C2027] border border-[#EAE5DC] dark:border-[#9BA9B4]/18 shadow-elevation-mid dark:shadow-elevation-dark-mid",
 
-    // 6. Dense: High-density data table style
+    // 6. Dense: High-density data surface
     dense:
-      "bg-[#E4DEC9]/90 dark:bg-[#22252B]/95 border border-[#6F848F]/25 dark:border-[#8C9DA8]/20 shadow-elevation-low dark:shadow-elevation-dark-low",
+      "bg-white/90 dark:bg-[#1E2028]/95 border border-[#EAE5DC] dark:border-[#9BA9B4]/15 shadow-card-light dark:shadow-elevation-dark-low",
 
-    // 7. Callout: Accentuated callout container
+    // 7. Callout: Accentuated callout with terracotta left rule
     callout:
-      "bg-[#DFD8C2]/60 dark:bg-[#202329] border-l-4 border-[#7A3F1E] dark:border-[#FAF6EE] border-y border-r border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shadow-elevation-low dark:shadow-elevation-dark-low",
+      "bg-[#FAF8F4] dark:bg-[#1C2027] border-l-4 border-[#B85333] dark:border-[#C85D3B] border-y border-r border-[#EAE5DC] dark:border-[#9BA9B4]/18 shadow-card-light dark:shadow-elevation-dark-low",
   };
 
   const paddingStyle = noPadding
@@ -84,8 +84,8 @@ export default function Card({
         ${
           hoverEffect
             ? variant === "verified"
-              ? "hover:border-[#738678]/70 dark:hover:border-[#738678]/60 hover:shadow-[0_12px_32px_rgba(115,134,120,0.22)]"
-              : "hover:border-[#6F848F]/50 dark:hover:border-[#D8CFB8]/30 hover:shadow-elevation-mid dark:hover:shadow-elevation-dark-mid"
+              ? "hover:border-[#556B55]/60 dark:hover:border-[#7B9B7B]/60 hover:shadow-[0_12px_32px_rgba(85,107,85,0.18)]"
+              : "hover:border-[#B85333]/30 dark:hover:border-[#FAF8F5]/20 hover:shadow-elevation-mid dark:hover:shadow-elevation-dark-mid"
             : ""
         }
         ${className}

@@ -5,14 +5,15 @@
 @theme {
   --font-sans: "Avenir", "Avenir Next", var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-serif: "Avenir", "Avenir Next", var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-cormorant), var(--font-playfair), "Cormorant Garamond", "Playfair Display", Georgia, serif;
   --font-accent: var(--font-caveat), var(--font-cedarville), "Caveat", "Cedarville Cursive", cursive;
   
-  --color-warm-stone: #D8CFB8;
-  --color-deep-clay: #7A3F1E;
+  --color-warm-stone: #FAF8F5;
+  --color-deep-clay: #B44C22;
   --color-slate-mist: #6F848F;
   --color-midnight-blue: #2F3C52;
-  --color-sage-mineral: #738678;
-  --color-carbon-ink: #222326;
+  --color-sage-mineral: #6B7D70;
+  --color-carbon-ink: #1C1D21;
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -42,48 +43,48 @@
 @layer base {
   /* ── Light / Editorial Theme (Framework, Brand-forward surfaces) ───────────────── */
   :root {
-    --background: #D8CFB8;          /* Warm Stone base */
-    --foreground: #222326;          /* Carbon Ink text */
-    --card: #E4DEC9;                /* Clean warm card surface */
-    --card-foreground: #222326;
-    --popover: #E4DEC9;
-    --popover-foreground: #222326;
-    --primary: #7A3F1E;             /* Deep Clay highlight */
-    --primary-foreground: #D8CFB8;
+    --background: #FAF8F5;          /* Warm Alabaster base */
+    --foreground: #1C1D21;          /* Carbon Ink text */
+    --card: #F4F1EA;                /* Clean warm alabaster card surface */
+    --card-foreground: #1C1D21;
+    --popover: #F4F1EA;
+    --popover-foreground: #1C1D21;
+    --primary: #B44C22;             /* Refined Terracotta highlight */
+    --primary-foreground: #FAF8F5;
     --secondary: #6F848F;           /* Slate Mist panels/dividers */
-    --secondary-foreground: #222326;
+    --secondary-foreground: #1C1D21;
     --muted: #6F848F;
-    --muted-foreground: #2F3C52;     /* Midnight Blue structured label */
-    --accent: #738678;              /* Sage Mineral sustainability */
-    --accent-foreground: #D8CFB8;
-    --destructive: #7A3F1E;         /* Deep Clay alert-as-brand (no raw red) */
-    --destructive-foreground: #D8CFB8;
-    --border: rgba(111, 132, 143, 0.35); /* Slate Mist 35% */
-    --input: rgba(111, 132, 143, 0.25);
-    --ring: #7A3F1E;
+    --muted-foreground: #2C3542;     /* Midnight Blue structured label */
+    --accent: #6B7D70;              /* Sage Mineral sustainability */
+    --accent-foreground: #FAF8F5;
+    --destructive: #B44C22;         /* Refined Terracotta alert-as-brand */
+    --destructive-foreground: #FAF8F5;
+    --border: rgba(111, 132, 143, 0.3); /* Slate Mist border */
+    --input: rgba(111, 132, 143, 0.2);
+    --ring: #B44C22;
   }
 
   /* ── Dark / Technical Theme (Overview, Suppliers, Orders) ─────────────────────── */
   .dark {
-    --background: #18191D;          /* Deep Carbon Ink base (dark boutique-hotel-bar canvas) */
-    --foreground: #FAF6EE;          /* Crisp Warm Stone / near-white high contrast */
-    --card: #22252B;                /* Midnight-tinted Carbon Ink elevated card surface */
-    --card-foreground: #FAF6EE;
-    --popover: #24272E;
-    --popover-foreground: #FAF6EE;
-    --primary: #944D25;             /* Luminous Deep Clay accent */
-    --primary-foreground: #FAF6EE;
+    --background: #121316;          /* Carbon Ink base canvas */
+    --foreground: #FAF8F5;          /* Crisp Warm Alabaster high contrast */
+    --card: #1B1D24;                /* Carbon Ink elevated card surface */
+    --card-foreground: #FAF8F5;
+    --popover: #21242C;
+    --popover-foreground: #FAF8F5;
+    --primary: #D1643B;             /* Luminous Refined Terracotta accent */
+    --primary-foreground: #FAF8F5;
     --secondary: #8298A5;           /* Brightened Slate Mist panels */
-    --secondary-foreground: #FAF6EE;
-    --muted: #252A34;               /* Deep Midnight Blue surface */
-    --muted-foreground: #8C9DA8;     /* Legible mid-tone secondary caption */
+    --secondary-foreground: #FAF8F5;
+    --muted: #1E2028;               /* Deep Midnight Blue surface */
+    --muted-foreground: #9BA9B4;     /* Legible mid-tone secondary caption */
     --accent: #829888;              /* Brightened Sage Mineral */
-    --accent-foreground: #FAF6EE;
-    --destructive: rgba(148, 77, 37, 0.9); /* Luminous Deep Clay alert */
-    --destructive-foreground: #FAF6EE;
-    --border: rgba(140, 157, 168, 0.18); /* Soft luminous border highlight */
-    --input: rgba(140, 157, 168, 0.15);
-    --ring: #FAF6EE;
+    --accent-foreground: #FAF8F5;
+    --destructive: rgba(209, 100, 59, 0.9); /* Luminous Terracotta alert */
+    --destructive-foreground: #FAF8F5;
+    --border: rgba(155, 169, 180, 0.16); /* Soft luminous border highlight */
+    --input: rgba(155, 169, 180, 0.12);
+    --ring: #FAF8F5;
   }
 }
 
@@ -120,6 +121,11 @@
     font-size: 0.75rem;
     font-weight: 600;
   }
+
+  /* Editorial Display font — Cormorant Garamond for hero headings */
+  .font-display {
+    font-family: var(--font-display);
+  }
 }
 
 /* ── Custom Scrollbar ───────────────────────────────────────────────────── */
@@ -154,7 +160,7 @@
   border: 1px solid var(--border) !important;
   border-radius: 0px !important;
   padding: 10px 14px !important;
-  box-shadow: 0 4px 12px rgba(34, 35, 38, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(28, 29, 33, 0.25) !important;
 }
 .recharts-tooltip-label {
   color: var(--muted-foreground) !important;
@@ -174,8 +180,8 @@
 
 /* ── Selection ──────────────────────────────────────────────────────────── */
 ::selection {
-  background: #7A3F1E;
-  color: #D8CFB8;
+  background: #B44C22;
+  color: #FAF8F5;
 }
 
 /* ── Motion & Animation Utilities ────────────────────────────────────────── */
@@ -194,11 +200,11 @@
 }
 .btn-interactive:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 16px rgba(122, 63, 30, 0.15);
+  box-shadow: 0 4px 16px rgba(180, 76, 34, 0.15);
 }
 .btn-interactive:active {
   transform: scale(0.98);
-  box-shadow: 0 1px 4px rgba(122, 63, 30, 0.1);
+  box-shadow: 0 1px 4px rgba(180, 76, 34, 0.1);
 }
 
 @keyframes shimmer {
@@ -213,9 +219,9 @@
 .animate-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(216, 207, 184, 0.1) 0%,
-    rgba(122, 63, 30, 0.15) 50%,
-    rgba(216, 207, 184, 0.1) 100%
+    rgba(250, 248, 245, 0.1) 0%,
+    rgba(180, 76, 34, 0.15) 50%,
+    rgba(250, 248, 245, 0.1) 100%
   );
   background-size: 200% 100%;
   animation: shimmer 2s infinite linear;
@@ -223,19 +229,19 @@
 
 /* ── Luxury Gradient & Texture Utilities ────────────────────────────────── */
 .text-gradient-clay {
-  background: linear-gradient(135deg, #7A3F1E 0%, #A85422 50%, #4E230B 100%);
+  background: linear-gradient(135deg, #B44C22 0%, #D1643B 50%, #8A3716 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-sage {
-  background: linear-gradient(135deg, #738678 0%, #8EA593 50%, #47574B 100%);
+  background: linear-gradient(135deg, #6B7D70 0%, #8DA295 50%, #455249 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #C5A059 0%, #D8CFB8 60%, #9B783E 100%);
+  background: linear-gradient(135deg, #C5A059 0%, #FAF8F5 60%, #9B783E 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -246,59 +252,59 @@
 }
 
 @utility bg-ambient-mesh-light {
-  background-color: #D8CFB8;
+  background-color: #FAF8F5;
   background-image: 
-    radial-gradient(at 10% 15%, rgba(228, 222, 201, 0.7) 0px, transparent 50%),
+    radial-gradient(at 10% 15%, rgba(244, 241, 234, 0.7) 0px, transparent 50%),
     radial-gradient(at 90% 10%, rgba(115, 134, 120, 0.08) 0px, transparent 50%),
-    radial-gradient(at 85% 85%, rgba(122, 63, 30, 0.06) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(180, 76, 34, 0.06) 0px, transparent 50%),
     radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.08) 0px, transparent 50%);
 }
 
 @utility bg-ambient-mesh-dark {
-  background-color: #18191D;
+  background-color: #121316;
   background-image: 
-    radial-gradient(at 15% 15%, rgba(37, 42, 52, 0.7) 0px, transparent 55%),
+    radial-gradient(at 15% 15%, rgba(27, 29, 36, 0.7) 0px, transparent 55%),
     radial-gradient(at 85% 15%, rgba(47, 60, 82, 0.35) 0px, transparent 50%),
-    radial-gradient(at 80% 85%, rgba(148, 77, 37, 0.10) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(209, 100, 59, 0.10) 0px, transparent 50%),
     radial-gradient(at 20% 85%, rgba(130, 152, 136, 0.08) 0px, transparent 50%);
 }
 
 /* Fail-safe theme override: when .dark is active, any container with bg-ambient-mesh-light flips to deep Carbon Ink */
 :is(.dark, .dark *) .bg-ambient-mesh-light,
 .dark .bg-ambient-mesh-light {
-  background-color: #18191D !important;
+  background-color: #121316 !important;
   background-image: 
-    radial-gradient(at 15% 15%, rgba(37, 42, 52, 0.7) 0px, transparent 55%),
+    radial-gradient(at 15% 15%, rgba(27, 29, 36, 0.7) 0px, transparent 55%),
     radial-gradient(at 85% 15%, rgba(47, 60, 82, 0.35) 0px, transparent 50%),
-    radial-gradient(at 80% 85%, rgba(148, 77, 37, 0.10) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(209, 100, 59, 0.10) 0px, transparent 50%),
     radial-gradient(at 20% 85%, rgba(130, 152, 136, 0.08) 0px, transparent 50%) !important;
 }
 
 .bg-ambient-mesh {
   background-color: var(--background);
   background-image: 
-    radial-gradient(at 10% 15%, rgba(228, 222, 201, 0.7) 0px, transparent 50%),
+    radial-gradient(at 10% 15%, rgba(244, 241, 234, 0.7) 0px, transparent 50%),
     radial-gradient(at 90% 10%, rgba(115, 134, 120, 0.08) 0px, transparent 50%),
-    radial-gradient(at 85% 85%, rgba(122, 63, 30, 0.06) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(180, 76, 34, 0.06) 0px, transparent 50%),
     radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.08) 0px, transparent 50%);
 }
 
 :is(.dark, .dark *) .bg-ambient-mesh,
 .dark .bg-ambient-mesh {
-  background-color: #18191D !important;
+  background-color: #121316 !important;
   background-image: 
-    radial-gradient(at 15% 15%, rgba(37, 42, 52, 0.7) 0px, transparent 55%),
+    radial-gradient(at 15% 15%, rgba(27, 29, 36, 0.7) 0px, transparent 55%),
     radial-gradient(at 85% 15%, rgba(47, 60, 82, 0.35) 0px, transparent 50%),
-    radial-gradient(at 80% 85%, rgba(148, 77, 37, 0.10) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(209, 100, 59, 0.10) 0px, transparent 50%),
     radial-gradient(at 20% 85%, rgba(130, 152, 136, 0.08) 0px, transparent 50%) !important;
 }
 
 /* Elevation shadows */
 .elevation-low {
-  box-shadow: 0 2px 10px -2px rgba(34, 35, 38, 0.06), 0 1px 3px rgba(34, 35, 38, 0.04);
+  box-shadow: 0 2px 10px -2px rgba(28, 29, 33, 0.06), 0 1px 3px rgba(28, 29, 33, 0.04);
 }
 .dark .elevation-low {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(140, 157, 168, 0.12);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(155, 169, 180, 0.12);
 }
 
 .elevation-mid {

@@ -5,14 +5,15 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        // Strict Varna Collective Brand Colors with full tonal range
+        // ── Varna Collective Brand Colors ──────────────────────────────────
         "warm-stone": {
           DEFAULT: "#D8CFB8",
-          tint: "#FAF7F0",
-          light: "#E4DEC9",
+          tint: "#FAF8F5",
+          light: "#EAE5DC",
           deep: "#B5AB94",
         },
         "deep-clay": {
@@ -40,41 +41,68 @@ module.exports = {
           deep: "#47574B",
         },
         "carbon-ink": {
-          DEFAULT: "#222326",
-          panel: "#272A30",
-          deep: "#181A1D",
+          DEFAULT: "#1C1D21",
+          panel: "#22252B",
+          deep: "#121316",
+        },
+        // ── New Design System Tokens (varnacollective.com alignment) ────────
+        "terracotta": {
+          DEFAULT: "#B85333",   // Rich Terracotta — primary accent
+          light: "#D4705A",     // Hover / lighter tint
+          deep: "#8B3A21",      // Pressed / darker
+          dark: "#C85D3B",      // Dark mode vibrant variant
+          muted: "#B85333",
+        },
+        "sage-olive": {
+          DEFAULT: "#556B55",   // Environmental pillar — Sage Olive
+          light: "#7B9B7B",     // Dark mode / hover
+          deep: "#3E5040",      // Pressed
+        },
+        "alabaster": {
+          DEFAULT: "#F8F5EF",   // Warm Alabaster canvas
+          warm: "#FAF8F4",      // Lightest page background
+          deep: "#EAE5DC",      // Card border / subtle tint
+          card: "#FFFFFF",      // Card surface (crisp white)
+        },
+        "obsidian": {
+          DEFAULT: "#1A1F26",   // Deep Obsidian Slate text
+          light: "#2A3644",     // Secondary / Midnight Slate
         },
       },
       boxShadow: {
-        "elevation-low": "0 2px 10px -2px rgba(34, 35, 38, 0.07), 0 1px 3px rgba(34, 35, 38, 0.04)",
-        "elevation-mid": "0 10px 30px -4px rgba(34, 35, 38, 0.12), 0 4px 8px -2px rgba(34, 35, 38, 0.06)",
-        "elevation-high": "0 20px 50px -8px rgba(34, 35, 38, 0.22), 0 8px 16px -4px rgba(34, 35, 38, 0.12)",
-        "elevation-dark-low": "0 4px 20px -2px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(140, 157, 168, 0.12)",
-        "elevation-dark-mid": "0 14px 44px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(140, 157, 168, 0.16)",
-        "elevation-dark-high": "0 28px 70px -8px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(140, 157, 168, 0.2)",
-        "glow-clay": "0 0 24px -2px rgba(148, 77, 37, 0.45)",
-        "glow-sage": "0 0 24px -2px rgba(130, 152, 136, 0.45)",
+        "elevation-low":      "0 1px 4px rgba(26, 31, 38, 0.04), 0 2px 12px rgba(26, 31, 38, 0.06)",
+        "elevation-mid":      "0 4px 16px rgba(26, 31, 38, 0.06), 0 8px 32px rgba(26, 31, 38, 0.08)",
+        "elevation-high":     "0 8px 32px rgba(26, 31, 38, 0.10), 0 20px 52px rgba(26, 31, 38, 0.12)",
+        "elevation-dark-low": "0 4px 20px -2px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(155, 169, 180, 0.12)",
+        "elevation-dark-mid": "0 14px 44px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(155, 169, 180, 0.16)",
+        "elevation-dark-high":"0 28px 70px -8px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(155, 169, 180, 0.2)",
+        "glow-terracotta":    "0 0 24px -2px rgba(184, 83, 51, 0.35)",
+        "glow-sage":          "0 0 24px -2px rgba(85, 107, 85, 0.35)",
+        "card-light":         "0 1px 3px rgba(26, 31, 38, 0.04), 0 4px 16px rgba(26, 31, 38, 0.05)",
+        // Legacy aliases
+        "glow-clay":          "0 0 24px -2px rgba(148, 77, 37, 0.45)",
       },
       fontFamily: {
-        // Universal Geometric Sans (Avenir on macOS/iOS, Jost on Windows/Android/Linux)
+        // Universal Geometric Sans
         sans: ["Avenir", "Avenir Next", "var(--font-jost)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
-        // Unified serif alias to prevent any unwanted serif rendering
+        // Serif alias (also Jost to preserve existing behaviour)
         serif: ["Avenir", "Avenir Next", "var(--font-jost)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
-        // Authentic Handwriting Font for stylistic accents (<5% of UI)
+        // Editorial Display — Cormorant Garamond / Playfair for luxury hero headings
+        display: ["var(--font-cormorant)", "var(--font-playfair)", "Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
+        // Handwriting accents (<5% of UI)
         accent: ["var(--font-caveat)", "var(--font-cedarville)", "Caveat", "Cedarville Cursive", "cursive"],
       },
       letterSpacing: {
-        hero: "-0.04em",       // Tight tracking tuned for Avenir uppercase titles
+        hero:    "-0.04em",
         tighter: "-0.04em",
-        section: "0.18em",     // Wide tracking for section labels ("SECTION 1 · THE THREE PRINCIPLES")
-        label: "0.08em",       // Subtle tracking on uppercase captions & microcopy
+        section: "0.18em",
+        label:   "0.08em",
       },
       lineHeight: {
-        tight: "1",            // Headings line-height: 1
-        relaxed: "1.4",        // Avenir body line-height: 1.4
+        tight:   "1",
+        relaxed: "1.4",
       },
     },
   },
   plugins: [],
 };
-

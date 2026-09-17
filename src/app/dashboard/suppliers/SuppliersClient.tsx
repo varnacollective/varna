@@ -85,7 +85,7 @@ export default function SuppliersClient({
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#222326] dark:text-[#FAF6EE] transition-colors duration-300 selection:bg-[#7A3F1E] selection:text-[#D8CFB8] font-sans relative overflow-x-hidden">
+    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#B85333] selection:text-white font-sans relative overflow-x-hidden">
       {/* Subtle brand crystal mark in page corner */}
       <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
 
@@ -102,7 +102,7 @@ export default function SuppliersClient({
         <div className="flex justify-end items-center mb-6 gap-4">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2.5 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 text-[#6F848F] dark:text-[#8C9DA8] hover:text-[#222326] dark:hover:text-[#FAF6EE] bg-[#E4DEC9] dark:bg-[#22252B] transition-colors cursor-pointer"
+            className="p-2.5 border border-[#EAE5DC] dark:border-[#9BA9B4]/20 hover:border-[#B85333]/40 dark:hover:border-[#C85D3B]/40 text-[#6E7781] dark:text-[#9BA9B4] hover:text-[#B85333] dark:hover:text-[#C85D3B] bg-white dark:bg-[#1E2028] transition-colors cursor-pointer"
             title="Toggle theme"
           >
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -113,21 +113,21 @@ export default function SuppliersClient({
         <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div className="flex flex-col items-start">
             {/* Breadcrumbs */}
-            <div className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#FAF6EE]/80 mb-2">
+            <div className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#B85333] dark:text-[#C85D3B] mb-2">
               My Suppliers · Composite Verified Profiles
             </div>
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none mb-2">
+            <h1 className="text-4xl sm:text-5xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-hero uppercase leading-none mb-2">
               The Suppliers Behind Your Orders
             </h1>
             {/* Subtitle */}
-            <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl font-light leading-relaxed">
+            <p className="text-sm text-[#6E7781] dark:text-[#9BA9B4] max-w-2xl font-light leading-relaxed">
               Every audited metric across environmental footprint, living wages, and evidence quality: scan in five seconds, or inspect every line.
             </p>
           </div>
 
           {/* Right Action: Date Range Indicator */}
-          <div className="flex items-center gap-2 border border-[#6F848F]/30 dark:border-[#8C9DA8]/25 px-4 py-3 bg-[#E4DEC9] dark:bg-[#22252B] text-xs text-[#6F848F] dark:text-[#FAF6EE]/70 rounded-none shadow-xs shrink-0">
+          <div className="flex items-center gap-2 border border-[#EAE5DC] dark:border-[#9BA9B4]/22 px-4 py-3 bg-white dark:bg-[#1E2028] text-xs text-[#6E7781] dark:text-[#9BA9B4] rounded-none shadow-card-light shrink-0">
             <Calendar className="w-3.5 h-3.5 text-[#6F848F] dark:text-[#8C9DA8]" strokeWidth={1.5} />
             <span className="font-light tracking-wide uppercase text-[10px]">Apr 1 – Jun 30, 2026</span>
           </div>

@@ -69,7 +69,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${jost.variable} ${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#D8CFB8] dark:bg-[#18191D] text-[#222326] dark:text-[#FAF6EE] transition-colors duration-300 selection:bg-[#7A3F1E] selection:text-[#D8CFB8]`}>
+      <body className={`${jost.variable} ${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#FAF8F5] dark:bg-[#121316] text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#B85333] selection:text-white`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

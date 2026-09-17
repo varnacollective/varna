@@ -59,11 +59,12 @@ export default function ExportButton({
 
   const topbarClass = `
     flex items-center gap-2.5 px-5 py-3 rounded-none
-    bg-[#7A3F1E] hover:bg-[#683315] dark:bg-[#FAF6EE] dark:hover:bg-[#E8E2D1]
-    text-[#D8CFB8] dark:text-[#18191D]
+    bg-[#B85333] hover:bg-[#A24629] dark:bg-[#C85D3B] dark:hover:bg-[#B04E2C]
+    text-white dark:text-white
     text-xs font-sans uppercase tracking-widest
-    transition-all duration-200 shadow-sm cursor-pointer
+    transition-all duration-200 shadow-[0_2px_8px_rgba(184,83,51,0.30)] cursor-pointer
     disabled:opacity-60 disabled:cursor-wait
+    active:scale-[0.98]
     ${className}
   `;
 
