@@ -181,7 +181,7 @@ export default function LinkGenerator() {
       {/* Helper note */}
       <p className="mt-4 text-[10px] text-slate-mist/60 font-light">
         Each link is unique, one-time use, and tied to the enterprise name above. Share it
-        directly with the supplier — no login required.
+        directly with the supplier, with no login required.
       </p>
     </div>
   );

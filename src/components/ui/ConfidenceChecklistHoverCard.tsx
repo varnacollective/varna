@@ -159,7 +159,7 @@ export default function ConfidenceChecklistHoverCard({
 
   return (
     <>
-      {/* Trigger — hover or click to open drawer */}
+      {/* Trigger: hover or click to open drawer */}
       <div
         onClick={(e) => {
           e.stopPropagation();
@@ -240,7 +240,7 @@ export default function ConfidenceChecklistHoverCard({
                     </div>
                   </div>
 
-                  {/* Checklist — scrollable with fade masks */}
+                  {/* Checklist: scrollable with fade masks */}
                   <div className="flex-1 overflow-hidden relative">
                     {/* Top fade mask */}
                     <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-white dark:from-carbon-ink to-transparent z-10 pointer-events-none" />

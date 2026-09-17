@@ -8,10 +8,10 @@ const pool = new Pool({
 async function main() {
   try {
     const res = await pool.query(`
-      SELECT table_name, column_name 
+      SELECT table_name, column_name, data_type 
       FROM information_schema.columns 
       WHERE table_schema = 'public' 
-      AND table_name IN ('client_master', 'supplier_detail_by_client');
+      ORDER BY table_name, ordinal_position;
     `);
     
     const columnsByTable = {};
@@ -19,7 +19,7 @@ async function main() {
       if (!columnsByTable[row.table_name]) {
         columnsByTable[row.table_name] = [];
       }
-      columnsByTable[row.table_name].push(row.column_name);
+      columnsByTable[row.table_name].push(`${row.column_name} (${row.data_type})`);
     }
     
     console.log(JSON.stringify(columnsByTable, null, 2));
@@ -31,3 +31,4 @@ async function main() {
 }
 
 main();
+

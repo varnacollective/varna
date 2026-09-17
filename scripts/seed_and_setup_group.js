@@ -48,14 +48,14 @@ async function main() {
 
   // 2. Data for 9_CLIENT_MASTER
   const clientMasterRows = [
-    ['CLT-004', 'Meridian Grand Palm', 'Luxury Hotel', 'Dubai', 'UAE', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'Yes', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-005', 'Meridian Oceanview Resort', 'Resort', 'Abu Dhabi', 'UAE', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'Yes', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-006', 'Meridian Heritage Suites', 'Boutique Hotel', 'Jaipur', 'India', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-007', 'Meridian Urban Loft', 'Business Hotel', 'Mumbai', 'India', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-008', 'Meridian Coastal Retreat', 'Resort', 'Goa', 'India', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-009', 'Meridian Business Tower', 'Business Hotel', 'Bengaluru', 'India', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-010', 'Meridian Desert Oasis', 'Resort', 'Ras Al Khaimah', 'UAE', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
-    ['CLT-011', 'Meridian Riverside Lodge', 'Boutique Hotel', 'Kochi', 'India', 'DUMMY — Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-004', 'Meridian Grand Palm', 'Luxury Hotel', 'Dubai', 'UAE', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'Yes', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-005', 'Meridian Oceanview Resort', 'Resort', 'Abu Dhabi', 'UAE', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'Yes', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-006', 'Meridian Heritage Suites', 'Boutique Hotel', 'Jaipur', 'India', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-007', 'Meridian Urban Loft', 'Business Hotel', 'Mumbai', 'India', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-008', 'Meridian Coastal Retreat', 'Resort', 'Goa', 'India', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-009', 'Meridian Business Tower', 'Business Hotel', 'Bengaluru', 'India', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-010', 'Meridian Desert Oasis', 'Resort', 'Ras Al Khaimah', 'UAE', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
+    ['CLT-011', 'Meridian Riverside Lodge', 'Boutique Hotel', 'Kochi', 'India', 'DUMMY: Illustrative Contact', 'dummy@meridiandemo.com', '2026-01-01', 'No', 'Active', 'Meridian Hospitality Group (DEMO)'],
   ];
 
   for (const row of clientMasterRows) {

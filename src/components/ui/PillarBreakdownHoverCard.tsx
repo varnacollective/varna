@@ -15,9 +15,9 @@ interface PillarBreakdownHoverCardProps {
 }
 
 function getBarColor(value: number): string {
-  if (value >= 70) return "#738678"; // sage-mineral — strong
-  if (value >= 40) return "#6F848F"; // slate-mist — moderate
-  return "#7A3F1E";                  // deep-clay — weak
+  if (value >= 70) return "#738678"; // sage-mineral: strong
+  if (value >= 40) return "#6F848F"; // slate-mist: moderate
+  return "#7A3F1E";                  // deep-clay: weak
 }
 
 function getBarBadge(value: number) {

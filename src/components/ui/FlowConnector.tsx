@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * FlowConnector — Animated SVG connector with traveling dash pulse.
+ * FlowConnector: Animated SVG connector with traveling dash pulse.
  *
  * Renders a horizontal or vertical SVG line/path between flow nodes
  * with a looping dash animation that communicates "live calculation."

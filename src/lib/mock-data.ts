@@ -1,5 +1,5 @@
 // ============================================================================
-// Mock Data — Varna Collective Sustainability Dashboard
+// Mock Data: Varna Collective Sustainability Dashboard
 // Mirrors the Google Sheets: 9_CLIENT_MASTER, 6_CLIENT_SUMMARY,
 // 7_SUPPLIER_DETAIL_BY_CLIENT, 8_CATEGORY_SPEND_BY_CLIENT
 // ============================================================================
@@ -189,7 +189,7 @@ export const MOCK_CLIENT_SUMMARIES: ClientSummary[] = [
 // ──────────────── 7_SUPPLIER_DETAIL_BY_CLIENT ────────────────
 
 export const MOCK_SUPPLIER_DETAILS: SupplierDetail[] = [
-  // CLT001 — The Oberoi Group suppliers
+  // CLT001: The Oberoi Group suppliers
   { clientId: "CLT001", enterpriseId: "ENT001", enterpriseName: "Khadi Naturals", tier: "Platinum", varnaScore: 92, eScore: 95, sScore: 90, gScore: 88, cScore: 94, totalSpend: 520000, totalOrders: 45, city: "Jaipur", state: "Rajasthan", artisansEmployed: 120, womenPercent: 78 },
   { clientId: "CLT001", enterpriseId: "ENT002", enterpriseName: "Anokhi Textiles", tier: "Platinum", varnaScore: 89, eScore: 85, sScore: 92, gScore: 87, cScore: 91, totalSpend: 480000, totalOrders: 38, city: "Jaipur", state: "Rajasthan", artisansEmployed: 95, womenPercent: 82 },
   { clientId: "CLT001", enterpriseId: "ENT003", enterpriseName: "GreenWeave Co.", tier: "Gold", varnaScore: 84, eScore: 88, sScore: 80, gScore: 82, cScore: 86, totalSpend: 350000, totalOrders: 32, city: "Varanasi", state: "Uttar Pradesh", artisansEmployed: 75, womenPercent: 65 },

@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Invalid session." }, { status: 401 });
     }
   } else if (queryClientId) {
-    // dev fallback — not used in production
+    // dev fallback: not used in production
     clientId = queryClientId;
     clientName = queryClientId;
   } else {

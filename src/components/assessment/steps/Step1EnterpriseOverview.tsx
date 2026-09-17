@@ -104,7 +104,7 @@ export default function Step1EnterpriseOverview() {
           label="Founder's Story"
           placeholder="Tell us about your journey, what drives your enterprise, and why craft / sustainability matters to you."
           rows={5}
-          hint="This narrative may appear in our supplier profiles. Write authentically — 150–400 words."
+          hint="This narrative may appear in our supplier profiles. Write authentically (150-400 words)."
         />
       </div>
 

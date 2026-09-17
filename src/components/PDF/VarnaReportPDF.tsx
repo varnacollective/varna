@@ -620,13 +620,13 @@ export default function VarnaReportPDF({ data, logoSrc }: VarnaReportPDFProps) {
 
   return (
     <Document
-      title={`Varna ESG Report — ${client.clientName} — ${reportDate}`}
+      title={`Varna ESG Report: ${client.clientName}: ${reportDate}`}
       author="Varna Collective"
       subject="Enterprise Sustainability Intelligence Report"
       creator="Varna Collective Dashboard"
     >
       {/* ══════════════════════════════════════════════════════════
-          PAGE 1 — EXECUTIVE OVERVIEW & PORTFOLIO SPEND
+          PAGE 1: EXECUTIVE OVERVIEW & PORTFOLIO SPEND
       ══════════════════════════════════════════════════════════ */}
       <Page size="A4" style={S.page}>
         {/* Cover Header */}
@@ -710,11 +710,11 @@ export default function VarnaReportPDF({ data, logoSrc }: VarnaReportPDFProps) {
       </Page>
 
       {/* ══════════════════════════════════════════════════════════
-          PAGE 2 — ESG PILLARS & VARNA DIAMOND SYNTHESIS
+          PAGE 2: ESG PILLARS & VARNA DIAMOND SYNTHESIS
       ══════════════════════════════════════════════════════════ */}
       <Page size="A4" style={S.page}>
         <PageHeaderBlock
-          tag="Section 02 — ESG Performance"
+          tag="Section 02: ESG Performance"
           title="Pillar Score Analysis &amp; Diamond Synthesis"
           subtitle="Portfolio-weighted Environmental, Social, Governance &amp; Cultural evaluations"
         />
@@ -891,11 +891,11 @@ export default function VarnaReportPDF({ data, logoSrc }: VarnaReportPDFProps) {
       </Page>
 
       {/* ══════════════════════════════════════════════════════════
-          PAGE 3 — ACTIVE ENTERPRISE REGISTRY & ACTION ROADMAP
+          PAGE 3: ACTIVE ENTERPRISE REGISTRY & ACTION ROADMAP
       ══════════════════════════════════════════════════════════ */}
       <Page size="A4" style={S.page}>
         <PageHeaderBlock
-          tag="Section 03 — Supplier Portfolio"
+          tag="Section 03: Supplier Portfolio"
           title="Active Enterprise Registry"
           subtitle={`${suppliers.length} active verified enterprises · ranked by Varna Score`}
         />

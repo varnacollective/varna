@@ -94,7 +94,7 @@ export default function LoginPage() {
             A Force for Good, Built into Every Purchase.
           </h2>
           <p className="text-xs xl:text-sm text-[#D8CFB8]/85 font-light leading-relaxed pt-1">
-            Engineered specifically for small and micro producers that conventional ESG frameworks overlook—and for hospitality leaders who demand verifiable operational evidence.
+            Engineered specifically for small and micro producers that conventional ESG frameworks overlook, and for hospitality leaders who demand verifiable operational evidence.
           </p>
         </div>
 

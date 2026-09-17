@@ -47,7 +47,7 @@ const cedarville = Cedarville_Cursive({
 });
 
 export const metadata: Metadata = {
-  title: "Varna Collective — Sustainability Dashboard",
+  title: "Varna Collective: Sustainability Dashboard",
   description:
     "Enterprise sustainability intelligence for ethical procurement. Track ESG impact, supplier scores, and carbon metrics.",
   keywords: [

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import AssessmentForm from "@/components/assessment/AssessmentForm";
 
 export const metadata: Metadata = {
-  title: "Enterprise Assessment — Varna Collective",
+  title: "Enterprise Assessment: Varna Collective",
   description:
     "Complete your enterprise sustainability assessment for Varna Collective's ethical sourcing programme.",
   robots: { index: false, follow: false }, // Keep assessment links private

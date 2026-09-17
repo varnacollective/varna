@@ -4,7 +4,7 @@
  * ExportButton.tsx
  * Triggers PDF generation by calling the /api/export-report route handler,
  * which server-renders the PDF via @react-pdf/renderer and streams it back.
- * Zero @react-pdf imports on the client — avoids the Turbopack ESM issue.
+ * Zero @react-pdf imports on the client, which avoids the Turbopack ESM issue.
  */
 
 import { useState } from "react";

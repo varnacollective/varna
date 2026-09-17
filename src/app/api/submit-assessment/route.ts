@@ -8,7 +8,7 @@ import { createClient } from "@/utils/supabase/server";
 export interface AssessmentPayload {
   uuid: string;
   enterprise_name: string;
-  // Step 1 — Enterprise Overview
+  // Step 1: Enterprise Overview
   legal_name: string;
   trade_name?: string;
   udyam_number?: string;
@@ -23,19 +23,19 @@ export interface AssessmentPayload {
   primary_contact_name?: string;
   primary_contact_email?: string;
   primary_contact_phone?: string;
-  // Step 2 — Products Overview
+  // Step 2: Products Overview
   primary_product_categories?: string;
   product_description?: string;
   raw_materials?: string;
   production_process?: string;
-  // Step 3 — Environment
+  // Step 3: Environment
   water_source?: string;
   water_recycling?: string;
   carbon_footprint_tracked?: string;
   energy_sources?: string;
   chemical_usage?: string;
   chemical_disposal?: string;
-  // Step 4 — People & Community
+  // Step 4: People & Community
   total_workers?: string;
   women_workers_pct?: string;
   artisan_workers_pct?: string;
@@ -43,17 +43,17 @@ export interface AssessmentPayload {
   esi_pf_coverage?: string;
   health_safety_measures?: string;
   community_programs?: string;
-  // Step 5 — Legal & Compliance
+  // Step 5: Legal & Compliance
   gst_registered?: string;
   gst_number?: string;
   legal_disputes?: string;
   ethics_policy?: string;
-  // Step 6 — Craft & Cultural Heritage
+  // Step 6: Craft & Cultural Heritage
   craft_traditions?: string;
   gi_tags?: string;
   pehchaan_card?: string;
   artisan_training?: string;
-  // Step 7 — Sustainability Management
+  // Step 7: Sustainability Management
   sdg_alignment?: string;
   sustainability_tracking?: string;
   sustainability_goals?: string;
@@ -87,23 +87,23 @@ const WAGE_LABELS: Record<string, string> = {
 };
 
 const SDG_LABELS: Record<string, string> = {
-  sdg1: "SDG 1 — No Poverty",
-  sdg2: "SDG 2 — Zero Hunger",
-  sdg3: "SDG 3 — Good Health & Well-being",
-  sdg4: "SDG 4 — Quality Education",
-  sdg5: "SDG 5 — Gender Equality",
-  sdg6: "SDG 6 — Clean Water & Sanitation",
-  sdg7: "SDG 7 — Affordable & Clean Energy",
-  sdg8: "SDG 8 — Decent Work & Economic Growth",
-  sdg9: "SDG 9 — Industry, Innovation & Infrastructure",
-  sdg10: "SDG 10 — Reduced Inequalities",
-  sdg11: "SDG 11 — Sustainable Cities & Communities",
-  sdg12: "SDG 12 — Responsible Consumption & Production",
-  sdg13: "SDG 13 — Climate Action",
-  sdg14: "SDG 14 — Life Below Water",
-  sdg15: "SDG 15 — Life on Land",
-  sdg16: "SDG 16 — Peace, Justice & Strong Institutions",
-  sdg17: "SDG 17 — Partnerships for the Goals",
+  sdg1: "SDG 1: No Poverty",
+  sdg2: "SDG 2: Zero Hunger",
+  sdg3: "SDG 3: Good Health & Well-being",
+  sdg4: "SDG 4: Quality Education",
+  sdg5: "SDG 5: Gender Equality",
+  sdg6: "SDG 6: Clean Water & Sanitation",
+  sdg7: "SDG 7: Affordable & Clean Energy",
+  sdg8: "SDG 8: Decent Work & Economic Growth",
+  sdg9: "SDG 9: Industry, Innovation & Infrastructure",
+  sdg10: "SDG 10: Reduced Inequalities",
+  sdg11: "SDG 11: Sustainable Cities & Communities",
+  sdg12: "SDG 12: Responsible Consumption & Production",
+  sdg13: "SDG 13: Climate Action",
+  sdg14: "SDG 14: Life Below Water",
+  sdg15: "SDG 15: Life on Land",
+  sdg16: "SDG 16: Peace, Justice & Strong Institutions",
+  sdg17: "SDG 17: Partnerships for the Goals",
 };
 
 // ─── Google Sheets JWT Authentication ───────────────────────────────────────

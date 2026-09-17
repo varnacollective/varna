@@ -193,14 +193,14 @@ export default function RadialGauge({
                     : "text-slate-mist"
                 }`}
               >
-                {delta > 0 ? `+${delta.toFixed(1)}` : delta < 0 ? `${delta.toFixed(1)}` : "—"}
+                {delta > 0 ? `+${delta.toFixed(1)}` : delta < 0 ? `${delta.toFixed(1)}` : "N/A"}
               </span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Performance Band Pill — Refined rounded-full chip with soft fill */}
+      {/* Performance Band Pill: Refined rounded-full chip with soft fill */}
       <div className="flex flex-col items-center gap-1">
         <span
           className={`

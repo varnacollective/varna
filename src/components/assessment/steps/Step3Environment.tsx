@@ -67,7 +67,7 @@ export default function Step3Environment() {
             name="chemical_usage"
             label="Chemicals & Dyes Used in Production"
             placeholder="List any dyes, fixatives, finishing agents, or other chemicals used. Note 'None' if not applicable."
-            hint="Include both natural and synthetic inputs. Be specific — e.g. 'Azo-free reactive dyes', 'natural indigo, pomegranate rind tannin'."
+            hint="Include both natural and synthetic inputs. Be specific, for example: 'Azo-free reactive dyes', 'natural indigo, pomegranate rind tannin'."
             rows={3}
           />
           <TextareaField

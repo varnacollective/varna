@@ -42,6 +42,8 @@ interface SDGBadgeProps {
   goalNumber?: number | string | null;
   size?: number; // default 46px
   isAwaitingVerification?: boolean;
+  isPrimary?: boolean;
+  primaryNarrative?: string | null;
   className?: string;
 }
 
@@ -49,6 +51,8 @@ export default function SDGBadge({
   goalNumber,
   size = 46,
   isAwaitingVerification = false,
+  isPrimary = false,
+  primaryNarrative,
   className = "",
 }: SDGBadgeProps) {
   const [hasError, setHasError] = useState(false);
@@ -76,8 +80,8 @@ export default function SDGBadge({
     const boundRight = Math.min(cardRect ? cardRect.right - 12 : window.innerWidth - 12, window.innerWidth - 12);
 
     const badgeCenter = rect.left + rect.width / 2;
-    // Estimated half width of tooltip (max-w is ~180px)
-    const approxHalfWidth = 90;
+    // Estimated half width of tooltip (max-w is ~220px)
+    const approxHalfWidth = 110;
 
     let horizontal: "center" | "left" | "right" = "center";
     if (badgeCenter - approxHalfWidth < boundLeft) {
@@ -91,7 +95,7 @@ export default function SDGBadge({
     const boundBottom = Math.min(cardRect ? cardRect.bottom - 10 : window.innerHeight - 10, window.innerHeight - 10);
     const spaceBelow = boundBottom - rect.bottom;
 
-    const vertical: "top" | "bottom" = spaceAbove < 50 && spaceBelow > spaceAbove ? "bottom" : "top";
+    const vertical: "top" | "bottom" = spaceAbove < 60 && spaceBelow > spaceAbove ? "bottom" : "top";
 
     setPlacement({ vertical, horizontal });
   }, []);
@@ -139,22 +143,34 @@ export default function SDGBadge({
   }
 
   const iconSrc = getSDGIconPath(sdg.id);
-  const altText = `SDG ${sdg.id}: ${sdg.name}`;
+  const altText = `SDG ${sdg.id}: ${sdg.name}${isPrimary ? " (Primary Goal)" : ""}`;
 
   return (
     <motion.div
       ref={badgeRef}
       onMouseEnter={updatePlacement}
       onFocus={updatePlacement}
-      whileHover={{ scale: 1.06, y: -2 }}
+      whileHover={{ scale: 1.08, y: -2 }}
       transition={{ type: "spring", stiffness: 450, damping: 20 }}
-      className={`relative group inline-flex items-center justify-center rounded-none shadow-sm cursor-help select-none shrink-0 ${className}`}
+      className={`relative group inline-flex items-center justify-center rounded-none shadow-sm cursor-help select-none shrink-0 ${
+        isPrimary ? "ring-2 ring-[#7A3F1E] dark:ring-[#D8CFB8] ring-offset-1 ring-offset-transparent" : ""
+      } ${className}`}
       style={{
         width: size,
         height: size,
       }}
       title={altText}
     >
+      {/* Primary indicator star badge */}
+      {isPrimary && (
+        <span
+          className="absolute -top-1 -right-1 z-10 w-3.5 h-3.5 bg-[#7A3F1E] dark:bg-[#D8CFB8] text-[#D8CFB8] dark:text-[#18191D] rounded-full flex items-center justify-center text-[8px] font-bold shadow-xs"
+          title="Primary SDG"
+        >
+          ★
+        </span>
+      )}
+
       {hasError ? (
         /* Graceful fallback if image fails to load */
         <div
@@ -179,14 +195,19 @@ export default function SDGBadge({
         />
       )}
 
-      {/* Hover tooltip showing full goal name with text wrapping and boundary-aware positioning */}
+      {/* Hover tooltip showing full goal name and narrative */}
       <div
         className={`absolute ${verticalClass} ${horizontalClass} opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50`}
       >
-        <div className="w-max max-w-[180px] sm:max-w-[200px] text-center px-2.5 py-1.5 shadow-xl border border-[#6F848F]/40 dark:border-[#8C9DA8]/30 bg-[#222326] text-[#D8CFB8]">
-          <span className="text-[9.5px] font-sans font-medium uppercase tracking-wider leading-snug block whitespace-normal break-words">
-            SDG {sdg.id}: {sdg.name}
+        <div className="w-max max-w-[220px] sm:max-w-[260px] text-center px-3 py-2 shadow-xl border border-[#6F848F]/40 dark:border-[#8C9DA8]/30 bg-[#222326] text-[#D8CFB8] rounded-sm">
+          <span className="text-[10px] font-sans font-semibold uppercase tracking-wider leading-snug block text-[#FAF6EE]">
+            SDG {sdg.id}: {sdg.name} {isPrimary ? "(Primary)" : ""}
           </span>
+          {primaryNarrative && (
+            <span className="text-[9px] font-sans font-light italic leading-tight block mt-1 text-[#D8CFB8]/80 text-left">
+              "{primaryNarrative}"
+            </span>
+          )}
         </div>
       </div>
     </motion.div>

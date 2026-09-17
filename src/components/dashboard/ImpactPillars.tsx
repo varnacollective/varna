@@ -66,7 +66,7 @@ export default function ImpactPillars({
 
           return (
             <div key={pillar.key} className="flex flex-col items-center gap-2">
-              {/* Radial Gauge — hover shows sub-pillar breakdown */}
+              {/* Radial Gauge: hover shows sub-pillar breakdown */}
               <PillarBreakdownHoverCard
                 pillarLabel={pillar.label}
                 pillarScore={breakdown?.pillarScore ?? Math.round(score)}
@@ -84,7 +84,7 @@ export default function ImpactPillars({
                 </div>
               </PillarBreakdownHoverCard>
 
-              {/* Label — hover shows educational tooltip */}
+              {/* Label: hover shows educational tooltip */}
               <PillarTooltip content={definition ?? pillar.label}>
                 <span className="text-[11px] font-semibold text-[#222326] dark:text-[#FAF6EE] uppercase tracking-[0.18em] text-center cursor-help hover:text-[#7A3F1E] dark:hover:text-[#E89260] transition-colors duration-200 mt-1">
                   {pillar.label}

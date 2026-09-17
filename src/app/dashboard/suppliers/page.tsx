@@ -61,10 +61,46 @@ export default async function SuppliersServerPage() {
       console.error("Supabase enterprise_master error:", enterpriseMasterError);
     }
 
-    // Helper: Map confidence_scoring & enterprise_master attributes to badge tags
+    // 5. Fetch supplier_sustainability
+    const { data: supplierSustainabilityData, error: sustError } = await supabase
+      .from("supplier_sustainability")
+      .select("enterprise_id, environmental_certifications, has_lca, has_sustainability_report");
+
+    if (sustError) {
+      console.error("Supabase supplier_sustainability error:", sustError);
+    }
+
+    // 6. Fetch supplier_social
+    const { data: supplierSocialData, error: socialError } = await supabase
+      .from("supplier_social")
+      .select("enterprise_id, social_certifications, health_safety_description");
+
+    if (socialError) {
+      console.error("Supabase supplier_social error:", socialError);
+    }
+
+    // Helper: Map confidence_scoring, enterprise_master, supplier_sustainability & supplier_social attributes to badge tags
     const extractSupplierBadges = (name: string, enterpriseId?: string): string[] => {
       const badges: string[] = [];
       const lowerName = name.trim().toLowerCase();
+
+      // Match supplier_sustainability record
+      const sustRow = (supplierSustainabilityData || []).find((s: any) => s.enterprise_id === enterpriseId);
+      if (sustRow?.environmental_certifications) {
+        const envCerts = sustRow.environmental_certifications.split(",").map((c: string) => c.trim());
+        envCerts.forEach((cert: string) => {
+          if (cert && !badges.includes(cert)) badges.push(cert);
+        });
+      }
+
+      // Match supplier_social record
+      const socialRow = (supplierSocialData || []).find((s: any) => s.enterprise_id === enterpriseId);
+      if (socialRow?.social_certifications) {
+        const socCerts = socialRow.social_certifications.split(",").map((c: string) => c.trim());
+        socCerts.forEach((cert: string) => {
+          if (cert && !badges.includes(cert)) badges.push(cert);
+        });
+      }
 
       // Filter confidence_scoring rows for this supplier where score > 0
       const scoringRows = (confidenceScoringData || []).filter((c: any) => {
@@ -77,16 +113,16 @@ export default async function SuppliersServerPage() {
 
       positiveScores.forEach((r: any) => {
         const item = (r.item || "").toLowerCase();
-        if (item.includes("cruelty") || item.includes("peta") || item.includes("vegan")) {
+        if ((item.includes("cruelty") || item.includes("peta") || item.includes("vegan")) && !badges.some(b => b.toLowerCase().includes("cruelty") || b.toLowerCase().includes("peta"))) {
           badges.push("Cruelty-Free (PETA)");
         }
-        if (item.includes("msme") || item.includes("udyam") || item.includes("dpiit")) {
+        if ((item.includes("msme") || item.includes("udyam") || item.includes("dpiit")) && !badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) {
           badges.push("DPIIT Startup");
         }
-        if (item.includes("packaging") || item.includes("refill") || item.includes("waste") || item.includes("circular")) {
+        if ((item.includes("packaging") || item.includes("refill") || item.includes("waste") || item.includes("circular")) && !badges.some(b => b.toLowerCase().includes("refill"))) {
           badges.push("Refillable Format");
         }
-        if (item.includes("environmental mgmt") || item.includes("iso")) {
+        if (item.includes("environmental mgmt") || (item.includes("iso") && !badges.some(b => b.includes("ISO")))) {
           badges.push("ISO 14001");
         }
       });
@@ -100,7 +136,7 @@ export default async function SuppliersServerPage() {
       });
 
       if (masterRow) {
-        if (masterRow.udyam_number && !badges.includes("DPIIT Startup")) {
+        if (masterRow.udyam_number && !badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) {
           badges.push("DPIIT Startup");
         }
         if (masterRow.is_material_innovation_yn === "Y" && !badges.includes("Material Innovation")) {
@@ -116,21 +152,31 @@ export default async function SuppliersServerPage() {
 
       // Guarantee signature badges for standard suppliers
       if (lowerName.includes("bare")) {
-        if (!badges.includes("Cruelty-Free (PETA)")) badges.unshift("Cruelty-Free (PETA)");
-        if (!badges.includes("DPIIT Startup")) badges.push("DPIIT Startup");
-        if (!badges.includes("Refillable Format")) badges.push("Refillable Format");
+        if (!badges.some(b => b.toLowerCase().includes("cruelty") || b.toLowerCase().includes("peta"))) badges.unshift("Cruelty-Free (PETA)");
+        if (!badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) badges.push("DPIIT Startup");
+        if (!badges.some(b => b.toLowerCase().includes("refill"))) badges.push("Refillable Format");
       } else if (lowerName.includes("ukhi")) {
-        if (!badges.includes("DPIIT Startup")) badges.push("DPIIT Startup");
-        if (!badges.includes("Refillable Format")) badges.push("Refillable Format");
+        if (!badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) badges.push("DPIIT Startup");
+        if (!badges.some(b => b.toLowerCase().includes("refill"))) badges.push("Refillable Format");
       } else if (lowerName.includes("kheoni")) {
-        if (!badges.includes("DPIIT Startup")) badges.push("DPIIT Startup");
+        if (!badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) badges.push("DPIIT Startup");
       }
 
       // Return unique array preserving order
       return Array.from(new Set(badges));
     };
 
-    // 5. Merge scores_summary and confidence_summary in JS/TS by matching enterprise_name to supplier
+    // 7. Fetch supplier_sdgs
+    const { data: supplierSdgsData, error: sdgsError } = await supabase
+      .from("supplier_sdgs")
+      .select("*")
+      .order("sdg_number", { ascending: true });
+
+    if (sdgsError) {
+      console.error("Supabase supplier_sdgs error:", sdgsError);
+    }
+
+    // 6. Merge scores_summary, confidence_summary, enterprise_master, and supplier_sdgs
     const mergedSuppliers = (scoresData || []).map((scoreRow: any) => {
       const name = scoreRow.enterprise_name || "";
 
@@ -151,6 +197,11 @@ export default async function SuppliersServerPage() {
       });
       const logoPath = scoreRow.logo_path || masterRow?.logo_path || getSupplierLogoFallback(name);
 
+      const supplierSdgs = (supplierSdgsData || []).filter((s: any) => {
+        if (scoreRow.enterprise_id && s.enterprise_id === scoreRow.enterprise_id) return true;
+        return false;
+      });
+
       return {
         enterprise_id: scoreRow.enterprise_id,
         enterprise_name: name,
@@ -162,6 +213,7 @@ export default async function SuppliersServerPage() {
         c_pillar_score: scoreRow.c_pillar_score ?? 0,
         overall_assessor_summary: scoreRow.overall_assessor_summary || "",
         sdg_alignments: scoreRow.sdg_alignments || [],
+        sdg_objects: supplierSdgs,
         confidence_pct: confidenceRow?.confidence_pct ?? 0,
         confidence_summary: confidenceRow || null,
         badges: extractSupplierBadges(name, scoreRow.enterprise_id),

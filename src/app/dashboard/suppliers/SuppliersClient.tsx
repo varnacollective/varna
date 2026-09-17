@@ -16,8 +16,6 @@ import SupplierProfileCard from "./SupplierProfileCard";
 import {
   Calendar,
   Download,
-  AlertTriangle,
-  Info,
   Star,
   Sun,
   Moon,
@@ -135,7 +133,7 @@ export default function SuppliersClient({
             </h1>
             {/* Subtitle */}
             <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl font-light leading-relaxed">
-              Every audited metric across environmental footprint, living wages, and evidence quality—scan in five seconds, or inspect every line.
+              Every audited metric across environmental footprint, living wages, and evidence quality: scan in five seconds, or inspect every line.
             </p>
           </div>
 
@@ -163,17 +161,7 @@ export default function SuppliersClient({
           </div>
         </section>
 
-        {/* 2. Primary Information Banner */}
-        <section className="mb-8">
-          <div className="flex items-start gap-3 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] p-5 rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-            <Info className="w-5 h-5 text-[#6F848F] dark:text-[#8C9DA8] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
-            <p className="text-xs text-[#222326]/80 dark:text-[#FAF6EE]/80 font-light leading-relaxed">
-              Recent orders were fulfilled using vetted artisanal products sourced from <span className="font-semibold text-[#222326] dark:text-[#FAF6EE]">Bare Necessities</span>, <span className="font-semibold text-[#222326] dark:text-[#FAF6EE]">Kheoni Ventures</span>, and <span className="font-semibold text-[#222326] dark:text-[#FAF6EE]">UKHI India</span>. Metrics represent verified operational audits and evidence multipliers.
-            </p>
-          </div>
-        </section>
-
-        {/* 3. Top KPI Cards (3 Columns) */}
+        {/* 2. Top KPI Cards (3 Columns) */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* KPI 1: Total Orders */}
           <Card variant="hero" className="relative overflow-hidden">
@@ -227,20 +215,7 @@ export default function SuppliersClient({
           </Card>
         </section>
 
-        {/* 4. Secondary Warning Banner */}
-        <section className="mb-8">
-          <div className="flex items-start gap-3.5 border-l-3 border-[#7A3F1E] bg-[#7A3F1E]/8 dark:bg-[#7A3F1E]/15 p-5 shadow-elevation-low rounded-r">
-            <AlertTriangle className="w-5 h-5 text-[#7A3F1E] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
-            <p className="text-xs text-[#7A3F1E] dark:text-[#FAF6EE]/90 font-light leading-relaxed">
-              <span className="font-medium uppercase tracking-wider text-[10px] block mb-1">
-                Audit Verification Note
-              </span>
-              Bare Necessities has disclosed company operations; product formulation transparency in orders #4 and #5 is awaiting laboratory batch certificate. Evidence multiplier calibrated to Self-Reported (0.75×).
-            </p>
-          </div>
-        </section>
-
-        {/* 5. Spend by Product Category Section */}
+        {/* 3. Spend by Product Category Section */}
         <Card variant="chart" className="mb-10 p-8 shadow-elevation-low">
           <div className="border-b border-[#6F848F]/15 dark:border-[#8C9DA8]/20 pb-4 mb-6">
             <h3 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
@@ -312,7 +287,7 @@ export default function SuppliersClient({
           </div>
         </Card>
 
-        {/* 6. Active Supplier Profiles (Horizontal Carousel Layout) */}
+        {/* 4. Active Supplier Profiles (Horizontal Carousel Layout) */}
         <section className="space-y-6 relative">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 gap-4">
             <div>
@@ -354,18 +329,6 @@ export default function SuppliersClient({
               const isBare = name.toLowerCase().includes("bare");
               const isKheoni = name.toLowerCase().includes("kheoni");
 
-              // Specific SDG mapping per supplier to replace any placeholder '?'
-              let sdgIds: number[] = supplier.sdg_alignments || [];
-              if (sdgIds.length === 0) {
-                if (isUKHI) {
-                  sdgIds = [8, 9, 12, 16]; // Goal 8 Decent Work, 9 Innovation, 12 Responsible Consumption, 16 Peace & Justice
-                } else if (isBare) {
-                  sdgIds = [12, 13, 14, 15]; // Responsible consumption, Climate action, Life in water, Life on land
-                } else if (isKheoni) {
-                  sdgIds = [3, 8, 12, 15]; // Good health, Decent work, Consumption, Terrestrial ecology
-                }
-              }
-
               const confidenceEntry =
                 (liveConfidenceData && liveConfidenceData[name]) ||
                 SUPPLIER_CONFIDENCE_CHECKLISTS[name] ||
@@ -405,7 +368,7 @@ export default function SuppliersClient({
                       { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
                     ]}
                     barColorClass={isVerified ? "bg-[#738678]" : "bg-[#7A3F1E]"}
-                    sdgIds={sdgIds}
+                    sdgObjects={supplier.sdg_objects || []}
                     liveConfidenceData={liveConfidenceData}
                   />
                 </div>

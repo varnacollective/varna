@@ -3,7 +3,7 @@
 import { useFormContext } from "react-hook-form";
 import type { AssessmentFormData } from "@/components/assessment/AssessmentForm";
 
-// ─── Shared input class — matches the login page's filled-input treatment ─────
+// --- Shared input class: matches the login page's filled-input treatment ---
 // bg: subtle dark fill | border: slate-mist bottom-only on idle, full ring on focus
 const INPUT_BASE =
   "w-full px-4 py-3 bg-[#141517] border border-slate-mist/20 text-warm-stone " +
@@ -151,7 +151,7 @@ export function SelectField({ name, label, hint, required, options }: SelectFiel
           className={`${INPUT_BASE} cursor-pointer appearance-none pr-10 ${error ? INPUT_ERROR : ""}`}
         >
           <option value="" className="bg-[#141517] text-slate-mist">
-            — Select —
+            Select an option
           </option>
           {options.map((o) => (
             <option key={o.value} value={o.value} className="bg-[#141517] text-warm-stone">
@@ -216,7 +216,7 @@ function SectionDivider({ label }: { label: string }) {
   );
 }
 
-// ─── Step wrapper — elevated card surface matching app elevation system ───────
+// --- Step wrapper: elevated card surface matching app elevation system ---
 export function StepWrapper({
   stepNumber,
   title,
@@ -230,7 +230,7 @@ export function StepWrapper({
 }) {
   return (
     <div className="pb-4">
-      {/* ── Step section header (above the card) ── */}
+      {/* Step section header (above the card) */}
       <div className="mb-5">
         <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-deep-clay mb-2.5">
           Section {stepNumber} of 7
@@ -246,7 +246,7 @@ export function StepWrapper({
         <div className="mt-4 w-10 h-px bg-deep-clay/50" />
       </div>
 
-      {/* ── Elevated card surface — matches elevation-dark-mid from globals.css ── */}
+      {/* Elevated card surface: matches elevation-dark-mid from globals.css */}
       <div
         className="bg-[#1D1F24] border border-slate-mist/12 p-6 sm:p-8"
         style={{

@@ -7,7 +7,7 @@ export default function Step2Products() {
     <StepWrapper
       stepNumber={2}
       title="Products Overview"
-      subtitle="Describe what your enterprise makes — the materials, the process, and the craft behind your products."
+      subtitle="Describe what your enterprise makes: the materials, the process, and the craft behind your products."
     >
       <TextareaField
         name="primary_product_categories"
@@ -36,7 +36,7 @@ export default function Step2Products() {
       <TextareaField
         name="production_process"
         label="Production Process"
-        placeholder="Walk us through how a product is made — from raw material to finished good."
+        placeholder="Walk us through how a product is made, from raw material to finished good."
         hint="Describe the key steps, tools, and techniques involved. Highlight any traditional or handmade processes."
         rows={5}
       />

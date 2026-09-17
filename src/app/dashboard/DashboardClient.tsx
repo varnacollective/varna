@@ -307,13 +307,13 @@ function SuppliersSection({ data }: { data: DashboardData }) {
               <div>
                 <p className="text-[9px] uppercase text-[#6F848F] dark:text-[#8C9DA8] tracking-widest font-light">Artisans Employed</p>
                 <p className="text-xs font-semibold text-[#222326] dark:text-[#FAF6EE] mt-1">
-                  {supplier.artisansEmployed || "—"}
+                  {supplier.artisansEmployed || "N/A"}
                 </p>
               </div>
               <div>
                 <p className="text-[9px] uppercase text-[#6F848F] dark:text-[#8C9DA8] tracking-widest font-light">Women Workforce</p>
                 <p className="text-xs font-semibold text-[#222326] dark:text-[#FAF6EE] mt-1">
-                  {supplier.womenPercent ? `${supplier.womenPercent}%` : "—"}
+                  {supplier.womenPercent ? `${supplier.womenPercent}%` : "N/A"}
                 </p>
               </div>
             </div>

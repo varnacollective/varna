@@ -264,7 +264,8 @@ export interface SupplierProfileCardProps {
   quote?: string;
   description?: string;
   summary?: string;
-  sdgIds: number[];
+  sdgIds?: number[];
+  sdgObjects?: Array<{ sdg_number: number; is_primary?: boolean; primary_narrative?: string | null }>;
   liveConfidenceData?: Record<string, SupplierConfidenceData>;
 }
 
@@ -290,6 +291,7 @@ export default function SupplierProfileCard({
   quote,
   summary,
   sdgIds = [],
+  sdgObjects = [],
   liveConfidenceData,
 }: SupplierProfileCardProps) {
   const carbonScore = carbonScoreProp ?? cScore ?? 0;
@@ -469,7 +471,17 @@ export default function SupplierProfileCard({
         <div className="flex items-center justify-between gap-4">
           {/* SDG official UN colored badges */}
           <div className="flex flex-wrap gap-1.5 items-center">
-            {sdgIds && sdgIds.length > 0 ? (
+            {sdgObjects && sdgObjects.length > 0 ? (
+              sdgObjects.map((sdg, idx) => (
+                <SDGBadge
+                  key={`${name}-sdg-${sdg.sdg_number}-${idx}`}
+                  goalNumber={sdg.sdg_number}
+                  isPrimary={sdg.is_primary}
+                  primaryNarrative={sdg.primary_narrative}
+                  size={46}
+                />
+              ))
+            ) : sdgIds && sdgIds.length > 0 ? (
               sdgIds.map((goalNum, idx) => (
                 <SDGBadge
                   key={`${name}-sdg-${goalNum}-${idx}`}
@@ -484,7 +496,7 @@ export default function SupplierProfileCard({
             )}
           </div>
 
-          {/* Dynamic Evidence Confidence Ring Component — Always wrapped to guarantee hover/click interaction */}
+          {/* Dynamic Evidence Confidence Ring Component: Always wrapped to guarantee hover/click interaction */}
           <ConfidenceChecklistHoverCard
             supplierName={name}
             score={effectiveConfidence}

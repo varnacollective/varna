@@ -105,7 +105,7 @@ const STEP_COMPONENTS = [
   Step7Management,
 ];
 
-// ─── Step transition — fade + directional slide using app EASE_SMOOTH ────────
+// --- Step transition: fade + directional slide using app EASE_SMOOTH ---
 const slideVariants = {
   enter: (dir: number) => ({
     x: dir > 0 ? 40 : -40,
@@ -123,7 +123,7 @@ interface AssessmentFormProps {
   enterpriseName: string;
 }
 
-// ─── Varna brand mark — official logo + wordmark, matching the app header ──
+// --- Varna brand mark: official logo + wordmark, matching the app header ---
 function VarnaBrandMark({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center gap-3 select-none ${className}`}>
@@ -296,7 +296,7 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-midnight-blue/10 rounded-full blur-[140px]" />
       </div>
 
-      {/* ── Top progress bar — glowing clay fill ─────────────────────────── */}
+      {/* Top progress bar: glowing clay fill */}
       <div className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-slate-mist/10">
         <motion.div
           className="h-full bg-deep-clay"
@@ -316,7 +316,7 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
             {enterpriseName}
           </p>
           <p className="text-[9px] font-mono text-slate-mist/60 mt-0.5 leading-none">
-            Step {currentStep + 1} of {STEPS.length} — {STEPS[currentStep].label}
+            Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].label}
           </p>
         </div>
       </header>
@@ -421,7 +421,7 @@ export default function AssessmentForm({ uuid, enterpriseName }: AssessmentFormP
             {currentStep + 1} / {STEPS.length}
           </span>
 
-          {/* Dot indicators — same system as top stepper, visually unified */}
+          {/* Dot indicators: same system as top stepper, visually unified */}
           <div className="hidden sm:flex items-center gap-1.5">
             {STEPS.map((_, idx) => (
               <motion.div

@@ -39,7 +39,7 @@ export default function Step5Legal() {
         name="legal_disputes"
         label="Pending Legal Disputes or Non-Compliances"
         placeholder="Disclose any pending civil, criminal, or regulatory proceedings relevant to your business operations."
-        hint="If none, write 'None'. Honesty here builds trust — undisclosed disputes identified later may disqualify your enterprise."
+        hint="If none, write 'None'. Honesty here builds trust, as undisclosed disputes identified later may disqualify your enterprise."
         rows={3}
       />
 

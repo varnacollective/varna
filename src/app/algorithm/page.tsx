@@ -76,7 +76,7 @@ export default function AlgorithmPage() {
             </h1>
 
             <p className="text-sm sm:text-base text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-3xl font-light leading-relaxed">
-              India's first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook—and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
+              India's first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook, and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
             </p>
 
             <span className="font-accent text-xl text-[#7A3F1E] dark:text-[#FAF6EE]/90 mt-2 select-none">
@@ -247,7 +247,7 @@ export default function AlgorithmPage() {
                 Objective
               </h3>
               <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
-                Every score is rooted in empirical, verifiable operational inputs mapped to transparent scoring rubrics—never subjective assessor impressions or vanity narratives.
+                Every score is rooted in empirical, verifiable operational inputs mapped to transparent scoring rubrics: never subjective assessor impressions or vanity narratives.
               </p>
             </Card>
 
@@ -271,7 +271,7 @@ export default function AlgorithmPage() {
                 Developmental
               </h3>
               <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
-                A Varna rating is a baseline trajectory, not a static verdict. Every assessment automatically yields an prioritized improvement roadmap guiding suppliers toward the Leader tier.
+                A Varna rating is a baseline trajectory, not a static verdict. Every assessment automatically yields a prioritized improvement roadmap guiding suppliers toward the Leader tier.
               </p>
             </Card>
           </div>
@@ -370,7 +370,7 @@ export default function AlgorithmPage() {
               The Evidence Multiplier Pipeline
             </h2>
             <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl mx-auto font-light mt-2">
-              How evidentiary confidence scales raw scores down—incentivizing verified audits over unverified claims.
+              How evidentiary confidence scales raw scores down, incentivizing verified audits over unverified claims.
             </p>
           </div>
 

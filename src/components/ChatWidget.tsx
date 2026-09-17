@@ -173,7 +173,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
               {error && (
                 <div className="flex justify-start">
                   <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl rounded-tl-xs px-4 py-2.5 text-xs leading-relaxed">
-                    Something went wrong — please try again.
+                    Something went wrong: please try again.
                   </div>
                 </div>
               )}

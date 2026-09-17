@@ -825,7 +825,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
 
                         {/* C Score */}
                         <td className="py-3.5 px-3 text-center font-mono text-[#8C9DA8]">
-                          {item.cScore !== null ? item.cScore.toFixed(1) : "—"}
+                          {item.cScore !== null ? item.cScore.toFixed(1) : "N/A"}
                         </td>
 
                         {/* Total Spend */}
@@ -845,12 +845,12 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
 
                         {/* Car Km */}
                         <td className="py-3.5 px-3 text-right font-mono text-[#8C9DA8]">
-                          {item.carKmAvoided !== null ? formatNumber(item.carKmAvoided) : "—"}
+                          {item.carKmAvoided !== null ? formatNumber(item.carKmAvoided) : "N/A"}
                         </td>
 
                         {/* Trees */}
                         <td className="py-3.5 px-3 text-right font-mono text-[#8C9DA8]">
-                          {item.treesEquivalent !== null ? formatNumber(item.treesEquivalent) : "—"}
+                          {item.treesEquivalent !== null ? formatNumber(item.treesEquivalent) : "N/A"}
                         </td>
 
                         {/* Active Suppliers */}
