@@ -1,7 +1,8 @@
 import React from "react";
 import { createClient } from "@/utils/supabase/server";
-import SuppliersClient from "@/app/dashboard/suppliers/SuppliersClient";
+import SuppliersCarousel from "@/components/dashboard/SuppliersCarousel";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS, getSupplierLogoFallback } from "@/lib/mock-data";
+import { Users, ShieldCheck } from "lucide-react";
 
 export default async function GroupSuppliersPage() {
   try {
@@ -107,7 +108,7 @@ export default async function GroupSuppliersPage() {
       };
     });
 
-    // Build liveConfidenceData dictionary
+    // Build liveConfidenceData dictionary for hover cards
     const liveConfidenceData: Record<string, any> = {};
 
     mergedSuppliers.forEach((supplierRow: any) => {
@@ -131,7 +132,6 @@ export default async function GroupSuppliersPage() {
         return { item: c.item, status, score: numericScore };
       });
 
-      // Fallback to local mock checklist if scoringRows in DB is empty
       if (checklist.length === 0) {
         const fallbackKey = Object.keys(SUPPLIER_CONFIDENCE_CHECKLISTS).find(
           (k) => k.toLowerCase().includes(lowerName) || lowerName.includes(k.toLowerCase())
@@ -160,9 +160,44 @@ export default async function GroupSuppliersPage() {
       };
     });
 
-    return <SuppliersClient suppliersData={mergedSuppliers} liveConfidenceData={liveConfidenceData} />;
+    return (
+      <div className="w-full flex-1 p-6 md:p-8 space-y-6 max-w-[1400px] mx-auto font-sans">
+        {/* Clean Refined Page Header */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-5">
+          <div>
+            <div className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#B85333] dark:text-[#D4705A] mb-1 flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5" />
+              <span>ETHICAL PROCUREMENT &amp; SUPPLIER REGISTRY</span>
+            </div>
+            <h1 className="font-sans text-3xl sm:text-4xl font-medium tracking-tight text-[#1A1F26] dark:text-[#FAF8F5] uppercase">
+              Group Supplier Portfolio
+            </h1>
+            <p className="text-xs text-[#6E7781] dark:text-[#8C9DA8] mt-1 font-light max-w-2xl leading-relaxed">
+              Top verified enterprise suppliers across micro, small, and medium tiers with audited sustainability credentials, living wage affidavits, and confidence verification gauges.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 border border-[#EAE5DC] dark:border-[#8C9DA8]/20 px-3.5 py-2 bg-white dark:bg-[#1E2028] rounded-lg text-xs text-[#6E7781] dark:text-[#8C9DA8] shadow-xs">
+            <ShieldCheck className="w-4 h-4 text-[#556B55]" />
+            <span className="font-mono text-[11px]">5 Verified Group Suppliers</span>
+          </div>
+        </header>
+
+        {/* Standalone Horizontal Swipe Carousel Container */}
+        <SuppliersCarousel
+          suppliersData={mergedSuppliers}
+          liveConfidenceData={liveConfidenceData}
+          title="Active Group Supplier Profiles"
+          subtitle="Detailed sustainability audits, official UN SDG badges, and evidence confidence gauges."
+        />
+      </div>
+    );
   } catch (error) {
     console.error("Group Suppliers Page Error:", error);
-    return <SuppliersClient suppliersData={[]} liveConfidenceData={{}} />;
+    return (
+      <div className="p-8 text-center text-xs text-red-500 font-mono">
+        Error loading Group Suppliers. Please check database connection.
+      </div>
+    );
   }
 }
