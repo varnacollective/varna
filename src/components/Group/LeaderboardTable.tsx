@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { type HotelLeaderboardItem } from "@/app/group-dashboard/page";
+import { type HotelLeaderboardItem } from "@/types/group-dashboard";
 
 interface LeaderboardTableProps {
   hotels: HotelLeaderboardItem[];
@@ -14,7 +14,6 @@ export default function LeaderboardTable({
   groupAvgScore,
   onSelectProperty,
 }: LeaderboardTableProps) {
-  // Format currency helpers e.g. 420000 -> ₹4.2L
   const formatLakhs = (amount: number) => {
     if (!amount && amount !== 0) return "₹0";
     if (amount >= 100000) {
@@ -55,21 +54,16 @@ export default function LeaderboardTable({
         </thead>
         <tbody className="divide-y divide-[#EAE5DC] dark:divide-[#8C9DA8]/15 text-xs">
           {hotels.map((item, idx) => {
-            const isAboveAvg = item.varnaScore > groupAvgScore;
-            const isLowScore = item.varnaScore < 50;
-
             return (
               <tr
                 key={item.clientId || idx}
                 onClick={() => onSelectProperty?.(item)}
                 className="hover:bg-[#FAF8F5] dark:hover:bg-[#22252B]/60 transition-colors cursor-pointer group"
               >
-                {/* Rank # */}
                 <td className="py-3.5 px-3 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {idx + 1}
                 </td>
 
-                {/* Property Name */}
                 <td className="py-3.5 px-4">
                   <div className="flex flex-col">
                     <span className="font-sans text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5] group-hover:text-[#B85333] dark:group-hover:text-[#D4705A] transition-colors">
@@ -81,7 +75,6 @@ export default function LeaderboardTable({
                   </div>
                 </td>
 
-                {/* Varna Score (Highlighted Pill) */}
                 <td className="py-3.5 px-3 text-center">
                   <span
                     className={`
@@ -99,52 +92,42 @@ export default function LeaderboardTable({
                   </span>
                 </td>
 
-                {/* E Score */}
                 <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {item.eScore}
                 </td>
 
-                {/* S Score */}
                 <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {item.sScore}
                 </td>
 
-                {/* G Score */}
                 <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {item.gScore}
                 </td>
 
-                {/* C Score */}
                 <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {item.cScore !== null && item.cScore !== undefined ? item.cScore : "-"}
                 </td>
 
-                {/* Total Spend */}
                 <td className="py-3.5 px-3 text-right font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
                   {formatLakhs(item.totalSpend)}
                 </td>
 
-                {/* CO2e (kg) */}
                 <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {formatNum(item.co2eKg)}
                 </td>
 
-                {/* CO2e Avoided (kg) */}
                 <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#556B55] dark:text-[#7B9B7B] font-medium">
                   {formatNum(item.co2eAvoidedKg)}
                 </td>
 
-                {/* Car Km Avoided */}
                 <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {formatNum(item.carKmAvoided)}
                 </td>
 
-                {/* Trees Equivalent */}
                 <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
                   {formatNum(item.treesEquivalent)}
                 </td>
 
-                {/* Active Suppliers */}
                 <td className="py-3.5 px-3 text-center font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
                   {item.activeSuppliers}
                 </td>

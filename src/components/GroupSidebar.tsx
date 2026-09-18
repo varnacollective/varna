@@ -12,29 +12,22 @@ import {
   FileText,
   LogOut,
   ChevronRight,
-  ShieldCheck,
   Building,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 
 interface GroupSidebarProps {
-  activeTab?: string;
-  onTabChange?: (tab: string) => void;
   userName?: string;
   userRole?: string;
   groupName?: string;
 }
 
 export default function GroupSidebar({
-  activeTab = "overview",
-  onTabChange,
   userName = "Yuvraj",
   userRole = "Group Chairperson",
   groupName = "Meridian Hotels & Resorts",
 }: GroupSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { theme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -46,29 +39,19 @@ export default function GroupSidebar({
   };
 
   const navItems = [
-    { id: "overview", label: "Group Overview", icon: LayoutDashboard, href: "/group-dashboard" },
-    { id: "properties", label: "Properties", icon: Building2, href: "#properties" },
-    { id: "suppliers", label: "Suppliers", icon: Users, href: "#suppliers" },
-    { id: "impact", label: "Impact", icon: Leaf, href: "#impact" },
-    { id: "reports", label: "Reports", icon: FileText, href: "#reports" },
+    { id: "overview", label: "Group Overview", icon: LayoutDashboard, href: "/group/dashboard" },
+    { id: "properties", label: "Properties", icon: Building2, href: "/group/properties" },
+    { id: "suppliers", label: "Suppliers", icon: Users, href: "/group/suppliers" },
+    { id: "impact", label: "Impact", icon: Leaf, href: "/group/impact" },
+    { id: "reports", label: "Reports", icon: FileText, href: "/group/reports" },
   ];
 
-  const handleNavClick = (id: string, href: string) => {
-    if (onTabChange) {
-      onTabChange(id);
-    }
-    if (href.startsWith("/")) {
-      router.push(href);
-    }
-  };
-
   return (
-    <aside className="w-64 h-screen sticky top-0 flex flex-col justify-between bg-white dark:bg-[#18191D] border-r border-[#EAE5DC] dark:border-[#8C9DA8]/15 text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 z-30 select-none shadow-xs">
+    <aside className="w-64 h-screen sticky top-0 flex flex-col justify-between bg-white dark:bg-[#18191D] border-r border-[#EAE5DC] dark:border-[#8C9DA8]/15 text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 z-30 select-none shadow-xs shrink-0">
       {/* ── Top Branding Area ──────────────────────────────────────────────── */}
       <div>
         <div className="p-6 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            {/* Varna Collective Logo image */}
             <div className="relative w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 p-1.5 shadow-xs">
               <Image
                 src="/varna-logo.svg"
@@ -89,7 +72,6 @@ export default function GroupSidebar({
             </div>
           </div>
 
-          {/* Group Portfolio Badge */}
           <div className="mt-1 px-3 py-1.5 rounded-md bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 flex items-center gap-2">
             <Building className="w-3.5 h-3.5 text-[#B85333]" />
             <div className="flex flex-col overflow-hidden">
@@ -110,11 +92,13 @@ export default function GroupSidebar({
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id;
+            const isActive =
+              pathname === item.href ||
+              (item.href === "/group/dashboard" && (pathname === "/group" || pathname === "/group-dashboard"));
             return (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => handleNavClick(item.id, item.href)}
+                href={item.href}
                 className={`
                   w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-sans transition-all duration-200 group
                   ${
@@ -137,7 +121,7 @@ export default function GroupSidebar({
                 {isActive && (
                   <ChevronRight className="w-3.5 h-3.5 text-[#B85333] dark:text-[#D4705A]" />
                 )}
-              </button>
+              </Link>
             );
           })}
         </nav>
