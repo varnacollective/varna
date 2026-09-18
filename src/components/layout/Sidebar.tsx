@@ -57,12 +57,32 @@ export default function Sidebar({
       initial={{ x: -80, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed left-0 top-0 bottom-0 w-24 flex flex-col items-center py-8 justify-between z-50 bg-[#1A1F26] dark:bg-[#141619] border-r border-[#2A3644]/60 dark:border-[#9BA9B4]/10 text-[#EAE5DC] shadow-2xl selection:bg-[#B85333] selection:text-white"
+      className="fixed left-0 top-0 bottom-0 w-24 flex flex-col items-center py-8 justify-between z-50 bg-white dark:bg-[#141619] border-r border-[#EAE5DC] dark:border-[#9BA9B4]/10 text-[#1A1F26] dark:text-[#EAE5DC] shadow-md dark:shadow-2xl transition-colors duration-300 selection:bg-[#B85333] selection:text-white"
     >
-      {/* Top Logo */}
-      <div className="flex flex-col items-center w-full px-2">
-        <img src="/logo-light.svg" alt="Varna Collective" className="block dark:hidden h-14 sm:h-16 w-auto object-contain filter drop-shadow-sm" />
-        <img src="/logo-dark.svg" alt="Varna Collective" className="hidden dark:block h-14 sm:h-16 w-auto object-contain filter drop-shadow-sm" />
+      {/* ── Branding: CSS-based logo swap (no JS, no hydration risk) ──────── */}
+      <div className="flex flex-col items-center w-full px-2 gap-1.5">
+        {/* Light Mode logo — black/carbon strokes on white sidebar */}
+        <img
+          src="/Varna 13 Carbon solid.svg"
+          alt="Varna Collective"
+          className="block dark:hidden h-12 sm:h-14 w-auto object-contain"
+        />
+        {/* Dark Mode logo — brand Deep Clay + Sandstone fills on dark sidebar */}
+        <img
+          src="/varna-logo.svg"
+          alt="Varna Collective"
+          className="hidden dark:block h-12 sm:h-14 w-auto object-contain"
+        />
+
+        {/* Brand typography — explicit hex overrides to defeat any inherited color */}
+        <div className="flex flex-col items-center leading-none">
+          <span className="text-[9px] font-sans font-bold tracking-[0.28em] uppercase text-[#1A1F26] dark:text-[#EFECE6] transition-colors duration-300">
+            VARNA
+          </span>
+          <span className="text-[7px] font-sans font-light tracking-[0.22em] uppercase text-[#6E7781] dark:text-[#9BA9B4] transition-colors duration-300">
+            COLLECTIVE
+          </span>
+        </div>
       </div>
 
       {/* Navigation items */}
@@ -88,8 +108,8 @@ export default function Sidebar({
                 group rounded-none border-y border-transparent cursor-pointer
                 ${
                   isActive
-                    ? "bg-[#EAE5DC]/12 text-[#EAE5DC] relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-gradient-to-b before:from-[#B85333] before:to-[#556B55] shadow-[0_0_12px_rgba(184,83,51,0.20)] font-medium"
-                    : "text-[#9BA9B4]/70 hover:text-[#EAE5DC] hover:bg-[#EAE5DC]/8"
+                    ? "bg-[#B85333]/10 dark:bg-[#EAE5DC]/12 text-[#B85333] dark:text-[#EAE5DC] relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-gradient-to-b before:from-[#B85333] before:to-[#556B55] shadow-[0_0_12px_rgba(184,83,51,0.15)] font-medium"
+                    : "text-[#6E7781] dark:text-[#9BA9B4]/70 hover:text-[#1A1F26] dark:hover:text-[#EAE5DC] hover:bg-[#F0EBE3] dark:hover:bg-[#EAE5DC]/8"
                 }
               `}
               title={item.label}
@@ -99,11 +119,12 @@ export default function Sidebar({
                 {item.label}
               </span>
 
-              {/* Tooltip */}
+              {/* Tooltip — adapts to light/dark */}
               <div className="
                 absolute left-full ml-3
                 px-3 py-1.5 rounded-none
-                bg-[#1A1F26] text-[#EAE5DC] border border-[#2A3644]/80
+                bg-white dark:bg-[#1A1F26] text-[#1A1F26] dark:text-[#EAE5DC]
+                border border-[#EAE5DC] dark:border-[#2A3644]/80
                 text-[10px] font-sans tracking-widest uppercase whitespace-nowrap
                 opacity-0 group-hover:opacity-100
                 -translate-x-1 group-hover:translate-x-0
@@ -125,7 +146,7 @@ export default function Sidebar({
           className={`
             flex flex-col items-center justify-center
             w-full py-4 transition-all duration-200 cursor-pointer
-            text-[#9BA9B4]/60 hover:text-[#B85333] hover:bg-[#B85333]/10
+            text-[#6E7781] dark:text-[#9BA9B4]/60 hover:text-[#B85333] dark:hover:text-[#B85333] hover:bg-[#B85333]/10
             ${isLoggingOut ? "opacity-50 cursor-wait" : ""}
           `}
           title="Exit Session"

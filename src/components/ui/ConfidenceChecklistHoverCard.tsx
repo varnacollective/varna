@@ -7,6 +7,85 @@ import { CheckCircle2, AlertTriangle, Minus, X, ShieldCheck } from "lucide-react
 import type { ConfidenceChecklistItem, ConfidenceStatus } from "@/lib/mock-data";
 import { DRAWER_TRANSITION, STAGGER_FAST, EASE_SMOOTH } from "@/lib/motion";
 
+// ─── Canonical Varna 18-Point Framework ─────────────────────────────────────
+// The ONLY items the panel is allowed to display. All other rows are discarded.
+const CANONICAL_18: readonly string[] = [
+  // Governance (5)
+  "Incorporation certificate",
+  "Tax registration",
+  "MSME / Udyam recognition",
+  "Signed, dated Code of Conduct",
+  "Docs internally consistent",
+  // Environment (5)
+  "Environmental mgmt. certificate",
+  "Packaging disclosed",
+  "Composition % disclosed",
+  "Energy data",
+  "Waste / circularity program",
+  // Social (4)
+  "OHS certificate",
+  "Labour welfare policy",
+  "Community / livelihood program",
+  "Cruelty-free / ethical certification",
+  // Carbon & Verification (4)
+  "Product safety certificate",
+  "Third-party audited report",
+  "Self-reported impact report",
+  "Verified carbon / LCA data",
+];
+
+/**
+ * Returns true if the incoming item label maps to one of the 18 canonical
+ * framework points (case-insensitive substring match).
+ */
+function isCanonical(itemLabel: string): boolean {
+  const lc = itemLabel.toLowerCase();
+  return CANONICAL_18.some((c) => {
+    const clc = c.toLowerCase();
+    return lc.includes(clc) || clc.includes(lc);
+  });
+}
+
+/**
+ * Deduplicate by canonical slot: keep only the first row that matches each
+ * canonical entry so we never display the same line twice.
+ */
+function deduplicateTo18(items: ConfidenceChecklistItem[]): ConfidenceChecklistItem[] {
+  const used = new Set<string>();
+  const result: ConfidenceChecklistItem[] = [];
+
+  // First pass — rows that match a canonical slot
+  for (const item of items) {
+    if (!isCanonical(item.item)) continue;
+    // Find the canonical key for this item
+    const key = CANONICAL_18.find((c) => {
+      const clc = c.toLowerCase();
+      const lc = item.item.toLowerCase();
+      return lc.includes(clc) || clc.includes(lc);
+    })!;
+    if (!used.has(key)) {
+      used.add(key);
+      result.push(item);
+    }
+  }
+
+  // Second pass — fill missing canonical slots as "missing" (score 0)
+  for (const canonical of CANONICAL_18) {
+    if (!used.has(canonical)) {
+      result.push({ item: canonical, status: "missing", score: 0 });
+    }
+  }
+
+  // Preserve framework order
+  return CANONICAL_18.map(
+    (c) => result.find((r) => {
+      const lc = r.item.toLowerCase();
+      const clc = c.toLowerCase();
+      return lc.includes(clc) || clc.includes(lc);
+    })!
+  ).filter(Boolean);
+}
+
 interface ConfidenceChecklistHoverCardProps {
   supplierName: string;
   score: number;
@@ -124,11 +203,18 @@ function DrawerConfidenceRing({ score, size = 80 }: { score: number; size?: numb
 export default function ConfidenceChecklistHoverCard({
   supplierName,
   score,
-  totalConfirmed,
+  totalConfirmed: _totalConfirmedProp,
   status: _status,
   checklist,
   children,
 }: ConfidenceChecklistHoverCardProps) {
+  // ── Strictly clamp to the 18-point framework ─────────────────────────────
+  const filteredChecklist = deduplicateTo18(checklist || []);
+
+  // Recompute the score sum from ONLY these 18 items (prevents >18 totals)
+  const scoreSum = filteredChecklist.reduce((acc, c) => acc + (c.score ?? 0), 0);
+  const scoreSumStr = scoreSum % 1 === 0 ? scoreSum.toFixed(0) : scoreSum.toFixed(2);
+  const totalConfirmed = `${scoreSumStr} of 18 tracked data points confirmed`;
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -248,8 +334,8 @@ export default function ConfidenceChecklistHoverCard({
                     <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white dark:from-carbon-ink to-transparent z-10 pointer-events-none" />
 
                     <div className="h-full overflow-y-auto px-6 py-4 space-y-1 scrollbar-thin">
-                      {checklist && checklist.length > 0 ? (
-                        checklist.map((item, idx) => {
+                      {filteredChecklist && filteredChecklist.length > 0 ? (
+                        filteredChecklist.map((item, idx) => {
                           const statusKey = (item.status || "missing").toLowerCase() as ConfidenceStatus;
                           const config = STATUS_CONFIG[statusKey] || STATUS_CONFIG.missing;
                           const Icon = config.icon;
@@ -307,7 +393,7 @@ export default function ConfidenceChecklistHoverCard({
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: (checklist?.length || 1) * STAGGER_FAST + 0.3, duration: 0.4 }}
+                    transition={{ delay: (filteredChecklist?.length || 1) * STAGGER_FAST + 0.3, duration: 0.4 }}
                     className="px-6 py-4 border-t border-slate-mist/15 dark:border-midnight-blue/60 flex-shrink-0"
                   >
                     <p className="text-[9px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
