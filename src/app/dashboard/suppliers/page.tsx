@@ -254,14 +254,14 @@ export default async function SuppliersServerPage() {
         };
       });
 
-      const passedCount = checklist.filter((c: any) => c.score === 1).length;
-      const totalChecks = checklist.length;
-      
+      const totalScoreSum = scoringRows.reduce((acc: number, c: any) => acc + (parseFloat(c.score) || 0), 0);
+      const scorePointsStr = totalScoreSum > 0 ? (totalScoreSum % 1 === 0 ? totalScoreSum.toString() : totalScoreSum.toFixed(2)) : "0";
+
       liveConfidenceData[name] = {
         supplierName: name,
         score: confidencePct,
-        totalConfirmed: `${passedCount} of ${totalChecks} tracked data points confirmed`,
-        status: confidencePct >= 60 ? "Verified" : "Lapsed",
+        totalConfirmed: `${scorePointsStr} of 18 tracked data points confirmed`,
+        status: confidencePct >= 60 ? "Verified" : "Self-Reported",
         eScore: supplierRow.e_pillar_score,
         sScore: supplierRow.s_pillar_score,
         gScore: supplierRow.g_pillar_score,

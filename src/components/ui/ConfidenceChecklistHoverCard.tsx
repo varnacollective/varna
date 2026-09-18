@@ -253,7 +253,7 @@ export default function ConfidenceChecklistHoverCard({
                           const statusKey = (item.status || "missing").toLowerCase() as ConfidenceStatus;
                           const config = STATUS_CONFIG[statusKey] || STATUS_CONFIG.missing;
                           const Icon = config.icon;
-                          const scorePoints = Math.round((item.score ?? 0) * 100);
+                          const scoreFormatted = (item.score ?? 0).toFixed(2);
 
                           return (
                             <motion.div
@@ -276,10 +276,10 @@ export default function ConfidenceChecklistHoverCard({
                                 {item.item}
                               </span>
                               <span
-                                className="text-[10px] font-semibold tabular-nums font-mono flex-shrink-0 min-w-[28px] text-right"
+                                className="text-[10px] font-semibold tabular-nums font-mono flex-shrink-0 min-w-[34px] text-right"
                                 style={{ color: config.color }}
                               >
-                                {scorePoints}
+                                {scoreFormatted}
                               </span>
                               <span
                                 className={`text-[8px] font-semibold uppercase tracking-widest flex-shrink-0 px-1.5 py-0.5 border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}

@@ -306,7 +306,7 @@ export default function SuppliersClient({
                 SUPPLIER_CONFIDENCE_CHECKLISTS[name] ||
                 (isUKHI ? SUPPLIER_CONFIDENCE_CHECKLISTS["UKHI India Private Limited"] : null);
 
-              const confidencePct = confidenceEntry?.score ?? supplier.confidence_pct ?? (isUKHI ? 52 : isBare ? 61 : 11);
+              const confidencePct = confidenceEntry?.score ?? supplier.confidence_pct ?? (isUKHI ? 63 : isBare ? 47 : isKheoni ? 24 : 50);
               const isVerified = confidencePct >= 60;
 
               return (
