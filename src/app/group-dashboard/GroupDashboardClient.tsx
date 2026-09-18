@@ -33,6 +33,7 @@ import {
 
 import LeaderboardTable from "@/components/Group/LeaderboardTable";
 import RadialGauge from "@/components/ui/RadialGauge";
+import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
 import {
   type FullGroupDashboardData,
   type HotelLeaderboardItem,
@@ -453,11 +454,11 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
             </div>
             <div className="mt-1 space-y-0.5 text-xs font-mono">
               <div className="flex justify-between text-[11px]">
-                <span className="text-[#6E7781] dark:text-[#8C9DA8]">Car Km:</span>
+                <span className="text-[#6E7781] dark:text-[#8C9DA8]">Car Kms:</span>
                 <span className="font-bold text-[#1A1F26] dark:text-[#FAF8F5]">{formatNum(summary.carKmAvoided)} km</span>
               </div>
               <div className="flex justify-between text-[11px]">
-                <span className="text-[#6E7781] dark:text-[#8C9DA8]">Trees:</span>
+                <span className="text-[#6E7781] dark:text-[#8C9DA8]">Trees Planted:</span>
                 <span className="font-bold text-[#556B55] dark:text-[#7B9B7B]">{formatNum(summary.treesEquivalent)} trees</span>
               </div>
             </div>
@@ -466,104 +467,80 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
 
         {/* ── ESG Pillar Dials & Sub-Criteria Micro-Charts ───────────────── */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+          <div className="lg:col-span-12 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
             <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3">
               <h3 className="text-xs font-sans font-semibold uppercase tracking-[0.14em] text-[#6E7781] dark:text-[#8C9DA8]">
                 GROUP ESG PILLAR AVERAGES
               </h3>
+              <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8] font-mono">
+                Hover or focus any pillar for sub-criteria breakdown (E1–E6, S1–S4, G1–G3, C1–C3)
+              </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 text-center">
-              <div className="flex flex-col items-center space-y-2">
-                <RadialGauge value={summary.avgE} label="" pillarKey="E" size={85} strokeWidth={8} />
-                <span className="text-xs font-sans font-semibold text-[#556B55] dark:text-[#7B9B7B]">
-                  Environmental
-                </span>
-              </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 text-center">
+              <PillarBreakdownHoverCard
+                pillarLabel="Environmental"
+                pillarScore={summary.avgE}
+                pillarKey="E"
+                color="#556B55"
+                scores={summary.subCriteria}
+              >
+                <div className="flex flex-col items-center space-y-2 p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                  <RadialGauge value={summary.avgE} label="" pillarKey="E" size={90} strokeWidth={8} />
+                  <span className="text-xs font-sans font-semibold text-[#556B55] dark:text-[#7B9B7B]">
+                    Environmental (E1–E6)
+                  </span>
+                </div>
+              </PillarBreakdownHoverCard>
 
-              <div className="flex flex-col items-center space-y-2">
-                <RadialGauge value={summary.avgS} label="" pillarKey="S" size={85} strokeWidth={8} />
-                <span className="text-xs font-sans font-semibold text-[#B85333] dark:text-[#D4705A]">
-                  Social
-                </span>
-              </div>
+              <PillarBreakdownHoverCard
+                pillarLabel="Social"
+                pillarScore={summary.avgS}
+                pillarKey="S"
+                color="#B85333"
+                scores={summary.subCriteria}
+              >
+                <div className="flex flex-col items-center space-y-2 p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                  <RadialGauge value={summary.avgS} label="" pillarKey="S" size={90} strokeWidth={8} />
+                  <span className="text-xs font-sans font-semibold text-[#B85333] dark:text-[#D4705A]">
+                    Social (S1–S4)
+                  </span>
+                </div>
+              </PillarBreakdownHoverCard>
 
-              <div className="flex flex-col items-center space-y-2">
-                <RadialGauge value={summary.avgG} label="" pillarKey="G" size={85} strokeWidth={8} />
-                <span className="text-xs font-sans font-semibold text-[#2A3644] dark:text-[#96AAB4]">
-                  Governance
-                </span>
-              </div>
+              <PillarBreakdownHoverCard
+                pillarLabel="Governance"
+                pillarScore={summary.avgG}
+                pillarKey="G"
+                color="#2A3644"
+                scores={summary.subCriteria}
+              >
+                <div className="flex flex-col items-center space-y-2 p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                  <RadialGauge value={summary.avgG} label="" pillarKey="G" size={90} strokeWidth={8} />
+                  <span className="text-xs font-sans font-semibold text-[#2A3644] dark:text-[#96AAB4]">
+                    Governance (G1–G3)
+                  </span>
+                </div>
+              </PillarBreakdownHoverCard>
 
-              <div className="flex flex-col items-center space-y-2">
-                <RadialGauge value={summary.avgC || 59} label="" pillarKey="C" size={85} strokeWidth={8} />
-                <span className="text-xs font-sans font-semibold text-[#A89C82] dark:text-[#C5A059]">
-                  Cultural
-                </span>
-              </div>
+              <PillarBreakdownHoverCard
+                pillarLabel="Cultural"
+                pillarScore={summary.avgC || 59}
+                pillarKey="C"
+                color="#A89C82"
+                scores={summary.subCriteria}
+              >
+                <div className="flex flex-col items-center space-y-2 p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                  <RadialGauge value={summary.avgC || 59} label="" pillarKey="C" size={90} strokeWidth={8} />
+                  <span className="text-xs font-sans font-semibold text-[#A89C82] dark:text-[#C5A059]">
+                    Cultural (C1–C3)
+                  </span>
+                </div>
+              </PillarBreakdownHoverCard>
             </div>
 
             <div className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8] text-center border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15 pt-3">
               Weighted composite score across all active supplier relationships
-            </div>
-          </div>
-
-          <div className="lg:col-span-7 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
-            <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3">
-              <h3 className="text-xs font-sans font-semibold uppercase tracking-[0.14em] text-[#6E7781] dark:text-[#8C9DA8]">
-                SUB-CRITERIA BREAKDOWN (GROUP AVERAGE)
-              </h3>
-              <div className="flex items-center gap-3 text-[10px] font-sans">
-                <span className="text-[#556B55] font-semibold">&bull; Environmental</span>
-                <span className="text-[#B85333] font-semibold">&bull; Social</span>
-                <span className="text-[#2A3644] dark:text-[#96AAB4] font-semibold">&bull; Governance</span>
-                <span className="text-[#A89C82] font-semibold">&bull; Cultural</span>
-              </div>
-            </div>
-
-            <div className="py-4">
-              <div className="h-40 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={subCriteria} margin={{ top: 15, right: 5, left: -25, bottom: 0 }}>
-                    <XAxis
-                      dataKey="key"
-                      stroke="#6E7781"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={{ stroke: "rgba(140, 157, 168, 0.2)" }}
-                    />
-                    <YAxis
-                      domain={[0, 100]}
-                      stroke="#6E7781"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={{ stroke: "rgba(140, 157, 168, 0.2)" }}
-                    />
-                    <RechartsTooltip
-                      formatter={(val: any) => [`${val} / 100`, "Group Average"]}
-                      contentStyle={{
-                        backgroundColor: "#1E2028",
-                        borderColor: "rgba(140, 157, 168, 0.2)",
-                        color: "#FAF8F5",
-                        fontSize: "12px",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <Bar dataKey="score" radius={[3, 3, 0, 0]}>
-                      {subCriteria.map((entry, index) => (
-                        <Cell key={`bar-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-4 text-center text-[10px] text-[#6E7781] dark:text-[#8C9DA8] pt-2 border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15">
-              <span>E1–E6 Carbon &amp; Water</span>
-              <span>S1–S4 Wages &amp; Inclusion</span>
-              <span>G1–G3 Compliance &amp; Ethics</span>
-              <span>C1–C3 Authenticity &amp; Heritage</span>
             </div>
           </div>
         </section>

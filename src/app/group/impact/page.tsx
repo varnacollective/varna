@@ -7,52 +7,15 @@ import {
   Car,
   Users,
   ShieldCheck,
-  TrendingUp,
-  Sparkles,
   Download,
   Award,
   Heart,
   Globe,
-  Building,
   CheckCircle2,
-  AlertCircle,
+  Sparkles,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import ProgressRing from "@/components/ui/ProgressRing";
-
-interface SubBarProps {
-  code: string;
-  label: string;
-  value: number;
-  color: string;
-}
-
-function SubBar({ code, label, value, color }: SubBarProps) {
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-xs font-sans">
-        <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5">
-          <span className="font-mono text-[10px] text-[#6E7781] dark:text-[#8C9DA8] font-bold uppercase">
-            {code}
-          </span>
-          <span>{label}</span>
-        </span>
-        <span className="font-mono font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
-          {value}%
-        </span>
-      </div>
-      <div className="h-2 w-full rounded-full bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 overflow-hidden">
-        <motion.div
-          className="h-full rounded-full"
-          style={{ backgroundColor: color }}
-          initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        />
-      </div>
-    </div>
-  );
-}
+import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
 
 export default function GroupImpactPage() {
   const pillarScores = {
@@ -118,7 +81,7 @@ export default function GroupImpactPage() {
         </div>
       </header>
 
-      {/* ── TOP ROW: 4 Signature SVG Circular Dials ─────────────────────────── */}
+      {/* ── TOP ROW: 4 Signature SVG Circular Dials with Hover Breakdown Popovers ─────────────────────────── */}
       <section className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low">
         <div className="border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -127,51 +90,94 @@ export default function GroupImpactPage() {
               Portfolio ESG &amp; Carbon Pillar Dials
             </h2>
           </div>
-          <span className="text-[10px] font-mono text-[#6E7781] dark:text-[#8C9DA8] uppercase tracking-widest">
-            Varna Trust Standard
+          <span className="text-[10px] font-mono text-[#6E7781] dark:text-[#8C9DA8]">
+            Hover or focus any dial for sub-criteria breakdown
           </span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-2">
-          <ProgressRing
-            value={pillarScores.e}
-            size={130}
-            strokeWidth={9}
+          <PillarBreakdownHoverCard
+            pillarLabel="Environmental"
+            pillarScore={pillarScores.e}
+            pillarKey="E"
             color="#738678"
-            label="Environmental (E)"
-            delay={0.1}
-          />
-          <ProgressRing
-            value={pillarScores.s}
-            size={130}
-            strokeWidth={9}
+            items={eSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
+          >
+            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+              <ProgressRing
+                value={pillarScores.e}
+                size={130}
+                strokeWidth={9}
+                color="#738678"
+                label="Environmental (E1–E6)"
+                delay={0.1}
+              />
+            </div>
+          </PillarBreakdownHoverCard>
+
+          <PillarBreakdownHoverCard
+            pillarLabel="Social"
+            pillarScore={pillarScores.s}
+            pillarKey="S"
             color="#B85333"
-            label="Social Livelihood (S)"
-            delay={0.2}
-          />
-          <ProgressRing
-            value={pillarScores.g}
-            size={130}
-            strokeWidth={9}
+            items={sSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
+          >
+            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+              <ProgressRing
+                value={pillarScores.s}
+                size={130}
+                strokeWidth={9}
+                color="#B85333"
+                label="Social Livelihood (S1–S4)"
+                delay={0.2}
+              />
+            </div>
+          </PillarBreakdownHoverCard>
+
+          <PillarBreakdownHoverCard
+            pillarLabel="Governance"
+            pillarScore={pillarScores.g}
+            pillarKey="G"
             color="#6F848F"
-            label="Governance (G)"
-            delay={0.3}
-          />
-          <ProgressRing
-            value={pillarScores.c}
-            size={130}
-            strokeWidth={9}
+            items={gSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
+          >
+            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+              <ProgressRing
+                value={pillarScores.g}
+                size={130}
+                strokeWidth={9}
+                color="#6F848F"
+                label="Governance (G1–G3)"
+                delay={0.3}
+              />
+            </div>
+          </PillarBreakdownHoverCard>
+
+          <PillarBreakdownHoverCard
+            pillarLabel="Cultural"
+            pillarScore={pillarScores.c}
+            pillarKey="C"
             color="#A89C82"
-            label="Carbon &amp; Culture (C)"
-            delay={0.4}
-          />
+            items={cSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
+          >
+            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+              <ProgressRing
+                value={pillarScores.c}
+                size={130}
+                strokeWidth={9}
+                color="#A89C82"
+                label="Carbon &amp; Culture (C1–C3)"
+                delay={0.4}
+              />
+            </div>
+          </PillarBreakdownHoverCard>
         </div>
       </section>
 
-      {/* ── MIDDLE ROW 1: Environmental & Carbon Impact ─────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Carbon Abatement Card (5 cols) */}
-        <div className="lg:col-span-5 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+      {/* ── MIDDLE ROW: Environmental Carbon Abatement & Social Livelihood ─────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Carbon Abatement Card */}
+        <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
               <Leaf className="w-4 h-4 text-[#738678]" />
@@ -202,7 +208,7 @@ export default function GroupImpactPage() {
                     <span className="text-base font-mono font-medium text-[#1A1F26] dark:text-[#FAF8F5] block leading-none">
                       731
                     </span>
-                    <span className="text-[10px] text-[#6E7781] font-light">Trees Planted Eq.</span>
+                    <span className="text-[10px] text-[#6E7781] font-light">Trees Planted</span>
                   </div>
                 </div>
 
@@ -214,7 +220,7 @@ export default function GroupImpactPage() {
                     <span className="text-base font-mono font-medium text-[#1A1F26] dark:text-[#FAF8F5] block leading-none">
                       65,980
                     </span>
-                    <span className="text-[10px] text-[#6E7781] font-light">Car Km Avoided</span>
+                    <span className="text-[10px] text-[#6E7781] font-light">Car Kms Avoided</span>
                   </div>
                 </div>
               </div>
@@ -229,30 +235,8 @@ export default function GroupImpactPage() {
           </div>
         </div>
 
-        {/* E1-E6 Sub-criteria Performance (7 cols) */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low">
-          <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-[#738678]" />
-              <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
-                Environmental Criteria Breakdown (E1–E6)
-              </h3>
-            </div>
-            <span className="text-[10px] font-mono text-[#6E7781]">Group Avg: 62.0</span>
-          </div>
-
-          <div className="space-y-4">
-            {eSub.map((item) => (
-              <SubBar key={item.code} code={item.code} label={item.label} value={item.value} color={item.color} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── MIDDLE ROW 2: Social Livelihood Impact ─────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Social Metrics Card (5 cols) */}
-        <div className="lg:col-span-5 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+        {/* Social Metrics Card */}
+        <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
               <Heart className="w-4 h-4 text-[#B85333]" />
@@ -312,45 +296,41 @@ export default function GroupImpactPage() {
             </span>
           </div>
         </div>
-
-        {/* S1-S4 Sub-criteria Performance (7 cols) */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low">
-          <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#B85333]" />
-              <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
-                Social Criteria Breakdown (S1–S4)
-              </h3>
-            </div>
-            <span className="text-[10px] font-mono text-[#6E7781]">Group Avg: 58.0</span>
-          </div>
-
-          <div className="space-y-4">
-            {sSub.map((item) => (
-              <SubBar key={item.code} code={item.code} label={item.label} value={item.value} color={item.color} />
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* ── BOTTOM ROW: Governance & Cultural Heritage ───────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Governance (G1-G3) Card */}
-        <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low">
-          <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#6F848F]" />
-              <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
-                Governance &amp; Transparency (G1–G3)
-              </h3>
+        {/* Governance Card */}
+        <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#6F848F]" />
+                <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
+                  Governance &amp; Transparency
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-[#6E7781]">Group Avg: 66.0</span>
             </div>
-            <span className="text-[10px] font-mono text-[#6E7781]">Group Avg: 66.0</span>
-          </div>
 
-          <div className="space-y-4">
-            {gSub.map((item) => (
-              <SubBar key={item.code} code={item.code} label={item.label} value={item.value} color={item.color} />
-            ))}
+            <p className="text-xs text-[#6E7781] dark:text-[#8C9DA8] font-light leading-relaxed mb-4">
+              Comprehensive regulatory compliance, ethical sourcing policies, and supply chain audit transparency across all properties.
+            </p>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-center">
+                <span className="text-[10px] font-mono uppercase text-[#6E7781] block">G1 Legal</span>
+                <span className="text-xl font-bold font-mono text-[#6F848F]">69</span>
+              </div>
+              <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-center">
+                <span className="text-[10px] font-mono uppercase text-[#6E7781] block">G2 Ethics</span>
+                <span className="text-xl font-bold font-mono text-[#6F848F]">63</span>
+              </div>
+              <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-center">
+                <span className="text-[10px] font-mono uppercase text-[#6E7781] block">G3 Audit</span>
+                <span className="text-xl font-bold font-mono text-[#6F848F]">58</span>
+              </div>
+            </div>
           </div>
 
           <div className="mt-6 pt-4 border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex items-center justify-between text-xs text-[#6E7781]">
@@ -364,22 +344,37 @@ export default function GroupImpactPage() {
           </div>
         </div>
 
-        {/* Cultural & Heritage (C1-C3) Card */}
-        <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low">
-          <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
-            <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-[#A89C82]" />
-              <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
-                Cultural &amp; Heritage Integrity (C1–C3)
-              </h3>
+        {/* Cultural & Heritage Card */}
+        <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-2xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 mb-5">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#A89C82]" />
+                <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
+                  Cultural &amp; Heritage Integrity
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-[#6E7781]">Group Avg: 59.0</span>
             </div>
-            <span className="text-[10px] font-mono text-[#6E7781]">Group Avg: 59.0</span>
-          </div>
 
-          <div className="space-y-4">
-            {cSub.map((item) => (
-              <SubBar key={item.code} code={item.code} label={item.label} value={item.value} color={item.color} />
-            ))}
+            <p className="text-xs text-[#6E7781] dark:text-[#8C9DA8] font-light leading-relaxed mb-4">
+              Safeguarding rare artisan skills, traditional handloom techniques, and climate-vulnerable craft communities.
+            </p>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-center">
+                <span className="text-[10px] font-mono uppercase text-[#6E7781] block">C1 Craft</span>
+                <span className="text-xl font-bold font-mono text-[#A89C82]">65</span>
+              </div>
+              <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-center">
+                <span className="text-[10px] font-mono uppercase text-[#6E7781] block">C2 Skills</span>
+                <span className="text-xl font-bold font-mono text-[#A89C82]">59</span>
+              </div>
+              <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-center">
+                <span className="text-[10px] font-mono uppercase text-[#6E7781] block">C3 Climate</span>
+                <span className="text-xl font-bold font-mono text-[#A89C82]">62</span>
+              </div>
+            </div>
           </div>
 
           <div className="mt-6 pt-4 border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex items-center justify-between text-xs text-[#6E7781]">

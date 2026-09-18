@@ -3,34 +3,27 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import type { PillarCriterion } from "@/lib/mock-data";
-import { POPOVER_ENTRANCE, EASE_SMOOTH, STAGGER_DELAY } from "@/lib/motion";
+import { getSubCriteriaForPillar, type SubCriterionItem } from "@/lib/sub-criteria-labels";
 
-interface PillarBreakdownHoverCardProps {
+export interface PillarBreakdownHoverCardProps {
   pillarLabel: string;
   pillarScore: number;
-  criteria: PillarCriterion[];
+  pillarKey?: "E" | "S" | "G" | "C";
   color: string;
+  items?: SubCriterionItem[];
+  criteria?: Array<{ name: string; score: number; weight?: string }>;
+  scores?: Record<string, number | undefined | null>;
   children: ReactNode;
-}
-
-function getBarColor(value: number): string {
-  if (value >= 70) return "#738678"; // sage-mineral: strong
-  if (value >= 40) return "#6F848F"; // slate-mist: moderate
-  return "#7A3F1E";                  // deep-clay: weak
-}
-
-function getBarBadge(value: number) {
-  if (value >= 70) return { label: "Strong", bg: "bg-sage-mineral/10", text: "text-sage-mineral", border: "border-sage-mineral/20" };
-  if (value >= 40) return { label: "Moderate", bg: "bg-slate-mist/10", text: "text-slate-mist", border: "border-slate-mist/20" };
-  return { label: "Weak", bg: "bg-deep-clay/10", text: "text-deep-clay", border: "border-deep-clay/20" };
 }
 
 export default function PillarBreakdownHoverCard({
   pillarLabel,
   pillarScore,
-  criteria,
+  pillarKey,
   color,
+  items: directItems,
+  criteria,
+  scores,
   children,
 }: PillarBreakdownHoverCardProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,8 +38,17 @@ export default function PillarBreakdownHoverCard({
     return () => setMounted(false);
   }, []);
 
+  const itemsToDisplay: SubCriterionItem[] = directItems ?? 
+    (pillarKey && scores ? getSubCriteriaForPillar(pillarKey, scores) : []) ??
+    (criteria ? criteria.map(c => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color })) : []);
+
+  // Fallback if criteria passed directly
+  const finalItems: SubCriterionItem[] = itemsToDisplay.length > 0
+    ? itemsToDisplay
+    : (criteria ? criteria.map((c) => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color })) : []);
+
   const CARD_WIDTH = 340;
-  const CARD_HEIGHT_ESTIMATE = Math.min(100 + criteria.length * 52, 500);
+  const CARD_HEIGHT_ESTIMATE = Math.min(100 + finalItems.length * 48, 480);
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current) return;
@@ -57,7 +59,7 @@ export default function PillarBreakdownHoverCard({
     const placement = spaceBelow < CARD_HEIGHT_ESTIMATE + 16 ? "above" : "below";
 
     let top = placement === "below" ? rect.bottom + 10 : rect.top - CARD_HEIGHT_ESTIMATE - 10;
-    top = Math.max(8, Math.min(top, viewportHeight - CARD_HEIGHT_ESTIMATE - 8));
+    top = Math.max(12, Math.min(top, viewportHeight - CARD_HEIGHT_ESTIMATE - 12));
 
     let left = rect.left + rect.width / 2 - CARD_WIDTH / 2;
     left = Math.max(16, Math.min(left, window.innerWidth - CARD_WIDTH - 16));
@@ -65,20 +67,34 @@ export default function PillarBreakdownHoverCard({
     setPosition({ top, left, placement });
   }, [CARD_HEIGHT_ESTIMATE]);
 
-  const handleMouseEnter = useCallback(() => {
-    if (leaveTimeout.current) { clearTimeout(leaveTimeout.current); leaveTimeout.current = null; }
-    enterTimeout.current = setTimeout(() => { calculatePosition(); setIsOpen(true); }, 300);
+  const handleOpen = useCallback(() => {
+    if (leaveTimeout.current) {
+      clearTimeout(leaveTimeout.current);
+      leaveTimeout.current = null;
+    }
+    enterTimeout.current = setTimeout(() => {
+      calculatePosition();
+      setIsOpen(true);
+    }, 150);
   }, [calculatePosition]);
 
-  const handleMouseLeave = useCallback(() => {
-    if (enterTimeout.current) { clearTimeout(enterTimeout.current); enterTimeout.current = null; }
-    leaveTimeout.current = setTimeout(() => { setIsOpen(false); }, 150);
+  const handleClose = useCallback(() => {
+    if (enterTimeout.current) {
+      clearTimeout(enterTimeout.current);
+      enterTimeout.current = null;
+    }
+    leaveTimeout.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 120);
   }, []);
 
   const handleClick = useCallback(() => {
-    if (isOpen) { setIsOpen(false); return; }
-    calculatePosition();
-    setIsOpen(true);
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      calculatePosition();
+      setIsOpen(true);
+    }
   }, [isOpen, calculatePosition]);
 
   useEffect(() => {
@@ -92,10 +108,23 @@ export default function PillarBreakdownHoverCard({
     <>
       <div
         ref={triggerRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        tabIndex={0}
+        role="button"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label={`${pillarLabel} pillar score ${pillarScore}, hover or focus for sub-criteria breakdown`}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
+        onFocus={handleOpen}
+        onBlur={handleClose}
         onClick={handleClick}
-        className="inline-block cursor-help"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        className="inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all duration-200 hover:scale-[1.02]"
       >
         {children}
       </div>
@@ -105,102 +134,88 @@ export default function PillarBreakdownHoverCard({
           <AnimatePresence>
             {isOpen && (
               <motion.div
-                {...POPOVER_ENTRANCE}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                initial={{ opacity: 0, scale: 0.95, y: position.placement === "above" ? -6 : 6 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: position.placement === "above" ? -4 : 4 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                onMouseEnter={handleOpen}
+                onMouseLeave={handleClose}
+                role="tooltip"
                 className="fixed z-[9999] pointer-events-auto"
                 style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
               >
                 <div
                   className="
-                    bg-white/95 dark:bg-carbon-ink/95 backdrop-blur-xl
-                    border border-slate-mist/30 dark:border-slate-mist/20
-                    shadow-[0_8px_40px_rgba(47,60,82,0.18)] dark:shadow-[0_12px_50px_rgba(0,0,0,0.55)]
-                    font-sans select-none overflow-hidden
+                    bg-white/95 dark:bg-[#1E2028]/95 backdrop-blur-xl
+                    border border-[#EAE5DC] dark:border-[#8C9DA8]/25
+                    shadow-[0_12px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)]
+                    rounded-xl overflow-hidden font-sans select-none
                   "
                 >
-                  {/* Colored top border */}
-                  <div className="h-1 w-full" style={{ backgroundColor: color }} />
+                  {/* Accent Top Border */}
+                  <div className="h-1.5 w-full" style={{ backgroundColor: color }} />
 
-                  <div className="p-5">
+                  <div className="p-4">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-mist/20 dark:border-midnight-blue">
-                      <div className="flex items-center gap-2.5">
+                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15">
+                      <div className="flex items-center gap-2">
                         <div
-                          className="w-2.5 h-2.5 flex-shrink-0"
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: color }}
                         />
-                        <h4 className="text-base font-sans font-medium tracking-tight text-carbon-ink dark:text-warm-stone">
-                          {pillarLabel}
+                        <h4 className="text-xs font-sans font-bold uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
+                          {pillarLabel} Breakdown
                         </h4>
                       </div>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone">
+                      <div className="flex items-baseline gap-1 font-mono">
+                        <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
                           {pillarScore}
                         </span>
-                        <span className="text-[9px] uppercase tracking-widest text-slate-mist dark:text-warm-stone/40">
+                        <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
                           /100
                         </span>
                       </div>
                     </div>
 
-                    {/* Criteria Rows */}
-                    <div className="space-y-3.5">
-                      {criteria.map((c, idx) => {
-                        const barBadge = getBarBadge(c.score);
-                        return (
-                          <motion.div
-                            key={c.name}
-                            initial={{ opacity: 0, x: -6 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{
-                              duration: 0.35,
-                              delay: idx * STAGGER_DELAY + 0.1,
-                              ease: EASE_SMOOTH,
-                            }}
-                          >
-                            <div className="flex items-center justify-between mb-1.5">
-                              <span className="text-[10px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide leading-tight flex-1 mr-2">
-                                {c.name}
+                    {/* Sub-Criteria Rows */}
+                    <div className="space-y-2.5">
+                      {finalItems.map((item, idx) => (
+                        <div key={item.code || idx} className="space-y-1">
+                          <div className="flex items-center justify-between text-xs font-sans">
+                            <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5 truncate max-w-[250px]">
+                              <span
+                                className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 shrink-0"
+                                style={{ color }}
+                              >
+                                {item.code}
                               </span>
-                              <div className="flex items-center gap-2 flex-shrink-0">
-                                <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono">
-                                  {c.score}
-                                </span>
-                                <span className={`text-[8px] font-semibold uppercase tracking-widest px-1.5 py-0.5 border ${barBadge.bg} ${barBadge.text} ${barBadge.border}`}>
-                                  {c.weight}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                              <motion.div
-                                className="h-full rounded-r-sm"
-                                style={{ backgroundColor: getBarColor(c.score) }}
-                                initial={{ width: 0 }}
-                                animate={{ width: `${c.score}%` }}
-                                transition={{
-                                  duration: 0.7,
-                                  delay: idx * STAGGER_DELAY + 0.15,
-                                  ease: EASE_SMOOTH,
-                                }}
-                              />
-                            </div>
-                          </motion.div>
-                        );
-                      })}
+                              <span className="text-[11px] text-[#6E7781] dark:text-[#8C9DA8] font-normal truncate">
+                                — {item.name}:
+                              </span>
+                            </span>
+                            <span className="font-mono font-bold text-xs text-[#1A1F26] dark:text-[#FAF8F5] shrink-0 ml-2">
+                              {item.score}
+                            </span>
+                          </div>
+                          {/* Micro Progress Bar */}
+                          <div className="h-1.5 w-full bg-[#FAF8F5] dark:bg-[#121316] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: color }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${Math.min(100, Math.max(0, item.score))}%` }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
 
                     {/* Footer */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: criteria.length * STAGGER_DELAY + 0.4, duration: 0.4 }}
-                      className="pt-3 mt-4 border-t border-slate-mist/15 dark:border-midnight-blue/60"
-                    >
-                      <p className="text-[8px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
-                        Weighted sub-pillar breakdown · Varna Framework 2.0
-                      </p>
-                    </motion.div>
+                    <div className="pt-2.5 mt-3 border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex items-center justify-between text-[9px] font-mono text-[#6E7781] dark:text-[#8C9DA8]">
+                      <span>Varna ESG Framework 2.0</span>
+                      <span>{finalItems.length} Sub-criteria</span>
+                    </div>
                   </div>
                 </div>
               </motion.div>

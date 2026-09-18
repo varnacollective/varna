@@ -47,8 +47,8 @@ export default function LeaderboardTable({
             <th className="py-3.5 px-3 text-right font-semibold">Total Spend</th>
             <th className="py-3.5 px-3 text-right font-semibold">CO₂e (kg)</th>
             <th className="py-3.5 px-3 text-right font-semibold">CO₂e Avoided</th>
-            <th className="py-3.5 px-3 text-right font-semibold">Car Km</th>
-            <th className="py-3.5 px-3 text-right font-semibold">Trees</th>
+            <th className="py-3.5 px-3 text-right font-semibold">Car Kms</th>
+            <th className="py-3.5 px-3 text-right font-semibold">Trees Planted</th>
             <th className="py-3.5 px-3 text-center font-semibold">Suppliers</th>
           </tr>
         </thead>

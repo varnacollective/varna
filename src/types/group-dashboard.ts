@@ -20,6 +20,7 @@ export type GroupSummaryData = {
     e1: number; e2: number; e3: number; e4: number; e5: number; e6: number;
     s1: number; s2: number; s3: number; s4: number;
     g1: number; g2: number; g3: number;
+    c1?: number; c2?: number; c3?: number;
   };
 };
 
