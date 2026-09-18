@@ -58,7 +58,8 @@ export const metadata: Metadata = {
     "Varna Collective",
   ],
   icons: {
-    icon: "/favicon.ico",
+    icon: "/Varna 13 Carbon solid.svg",
+    shortcut: "/Varna 13 Carbon solid.svg",
   },
 };
 
