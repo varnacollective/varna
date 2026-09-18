@@ -29,15 +29,6 @@ export interface BadgeConfig {
   textClass: string;
 }
 
-/**
- * Assigns solid filled-pill background/text colors and lucide-react icons based on badge text.
- * Using established app brand tokens:
- * - PETA / Cruelty / Ethical: Sage Mineral fill (bg-[#738678] text-[#E8E2D1])
- * - DPIIT / Startup / MSME: Deep Clay fill (bg-[#7A3F1E] text-[#F3EFE0])
- * - Refillable / Format / Circular: Midnight Blue fill (bg-[#2F3C52] text-[#D8CFB8])
- * - ISO / Environmental: Slate Mist fill (bg-[#6F848F] text-[#F3EFE0])
- * - Material Innovation / Women-Led: Midnight Blue / Deep Clay fill
- */
 export function getBadgeConfig(badgeText: string): BadgeConfig {
   const text = badgeText.toLowerCase();
 
@@ -98,10 +89,6 @@ export function getBadgeConfig(badgeText: string): BadgeConfig {
 
 export type SupplierBadgeItem = string | { label: string; [key: string]: any };
 
-/**
- * Portal-backed Badge Overflow Popover
- * Renders outside card container via createPortal to prevent overflow clipping.
- */
 function BadgeOverflowPopover({
   hiddenBadges,
 }: {
@@ -146,7 +133,6 @@ function BadgeOverflowPopover({
     }
   };
 
-  // Close on Outside Click, Escape key, Scroll & Resize
   useEffect(() => {
     if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent) => {
@@ -296,7 +282,6 @@ export default function SupplierProfileCard({
 }: SupplierProfileCardProps) {
   const carbonScore = carbonScoreProp ?? cScore ?? 0;
 
-  // Flexible resolution of confidence data from live feed or fallback mock dictionary
   const confidenceData =
     (liveConfidenceData && liveConfidenceData[name]) ||
     (liveConfidenceData &&
@@ -316,7 +301,6 @@ export default function SupplierProfileCard({
   const effectiveConfidence = confidenceData?.score ?? confidenceScore ?? 52;
   const isVerified = dataTier === "verified" || effectiveConfidence >= 60;
 
-  // Supplier default quote fallback
   const lowerName = name.toLowerCase();
   const quoteText =
     quote ||
@@ -327,7 +311,6 @@ export default function SupplierProfileCard({
       ? "Zero-chemical organic agricultural products supporting rural livelihoods and bio-diverse farming practices."
       : "High-impact handloom textiles produced under strict fair wage compliance and traditional artisan preservation.");
 
-  // Cap badge row to maximum 3 visible items + overflow pill
   const visibleBadges = badges.slice(0, 3);
   const hiddenBadges = badges.slice(3);
 
@@ -344,16 +327,16 @@ export default function SupplierProfileCard({
   return (
     <Card
       variant={isVerified ? "verified" : "default"}
-      className="p-6 sm:p-7 h-[560px] w-full flex flex-col justify-between transition-all duration-300 relative"
+      className="p-6 sm:p-7 h-[580px] w-full flex flex-col justify-between transition-all duration-300 relative font-sans"
       hoverEffect={true}
       data-varna-card="supplier-profile-card"
     >
       {/* Upper Content Container */}
       <div className="flex-1 flex flex-col min-h-0">
         {/* 1. Header Block: Supplier Name + Status Badge & Varna Score */}
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
+        <div className="flex justify-between items-start mb-2 gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2.5 mb-1 min-w-0">
               <BrandLogo
                 logoPath={logoPath}
                 alt={name}
@@ -362,12 +345,15 @@ export default function SupplierProfileCard({
                 entityType="supplier"
                 details={supplierDetails}
               />
-              <h4 className="text-xl font-sans text-[#222326] dark:text-[#FAF6EE] font-medium tracking-tight truncate max-w-[220px] sm:max-w-[250px]">
+              <h4 
+                className="text-lg sm:text-xl font-sans text-[#222326] dark:text-[#FAF6EE] font-bold tracking-tight truncate"
+                title={name}
+              >
                 {name}
               </h4>
             </div>
-            {/* 2. Subtitle: Legal Name • Location */}
-            <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] font-light truncate max-w-[280px]">
+            {/* Subtitle: Legal Name • Location (Clean Ellipsis Overflow) */}
+            <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] font-light truncate" title={`${legalName} • ${location}`}>
               {legalName} &bull; {location}
             </p>
           </div>
@@ -382,11 +368,11 @@ export default function SupplierProfileCard({
             supplierName={name}
           >
             <motion.div
-              className="flex flex-col items-center cursor-help select-none pl-2"
+              className="flex flex-col items-center cursor-help select-none pl-2 shrink-0"
               whileHover={{ scale: 1.08 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
             >
-              <span className="text-2xl font-sans font-medium tracking-tighter text-[#7A3F1E] dark:text-[#FAF6EE]">
+              <span className="text-2xl font-sans font-bold tracking-tighter text-[#7A3F1E] dark:text-[#FAF6EE]">
                 {varnaScore}
               </span>
               <span className="text-[7px] font-sans font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] mt-0.5">
@@ -396,12 +382,12 @@ export default function SupplierProfileCard({
           </VarnaScoreHoverCard>
         </div>
 
-        {/* 3. Sourced Summary Line */}
+        {/* 2. Sourced Summary Line */}
         <div className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#738678] dark:text-[#8AA391] mb-3">
-          Sourced {skuCount} SKUs | Units Ordered: {totalUnits}
+          Sourced {skuCount} SKUs | Units Ordered: {totalUnits.toLocaleString()}
         </div>
 
-        {/* 4. Certification Badge Row (Capped to 1 single row height with Portal overflow popover) */}
+        {/* 3. Certification Badges (Wrapped nicely with distinct icons) */}
         {badges && badges.length > 0 && (
           <div className="flex items-center gap-1.5 mb-4 h-7 shrink-0 relative">
             {visibleBadges.map((badge, idx) => {
@@ -412,36 +398,39 @@ export default function SupplierProfileCard({
                 <span
                   key={`${text}-${idx}`}
                   className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-xs inline-flex shrink-0 h-6.5 ${bgClass} ${textClass}`}
+                  title={text}
                 >
                   <Icon className="w-3 h-3 flex-shrink-0" />
-                  {text}
+                  <span className="truncate max-w-[110px]">{text}</span>
                 </span>
               );
             })}
 
-            {/* Overflow Chip with Portal Popover listing additional badges */}
             {hiddenBadges.length > 0 && (
               <BadgeOverflowPopover hiddenBadges={hiddenBadges} />
             )}
           </div>
         )}
 
-        {/* 5. Category Read Progress Bars (Thin rounded tracks) */}
+        {/* 4. Unified E/S/G/C Progress Bars with Standard height & pillar token colors */}
         <div className="space-y-3 mb-3">
-          {categoryBars.slice(0, 3).map((cat) => {
-            if (cat.label.toLowerCase().includes("carbon") && carbonScore <= 0) {
-              return null;
-            }
+          {categoryBars.slice(0, 4).map((cat) => {
+            const isEnv = cat.label.toLowerCase().includes("env");
+            const isSoc = cat.label.toLowerCase().includes("soc");
+            const isGov = cat.label.toLowerCase().includes("gov");
+
+            const barColor = isEnv ? "#738678" : isSoc ? "#B85333" : isGov ? "#6F848F" : "#A89C82";
+
             return (
-              <div key={cat.label} className="space-y-1">
-                <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-[#6F848F] dark:text-[#8C9DA8] font-light">
+              <div key={cat.label} className="space-y-1 font-sans">
+                <div className="flex justify-between items-center text-[10px] tracking-wider uppercase text-[#6F848F] dark:text-[#8C9DA8] font-medium">
                   <span>{cat.label}</span>
-                  <span className="font-semibold text-[#222326] dark:text-[#FAF6EE]">{cat.val}%</span>
+                  <span className="font-mono font-bold text-[#1A1F26] dark:text-[#FAF6EE]">{cat.val}%</span>
                 </div>
-                <div className="h-1.5 bg-[#6F848F]/20 dark:bg-[#18191D] rounded-full overflow-hidden">
+                <div className="h-2 bg-[#6F848F]/15 dark:bg-[#18191D] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15">
                   <div
-                    className={`h-full rounded-full ${barColorClass}`}
-                    style={{ width: `${cat.val}%` }}
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{ width: `${cat.val}%`, backgroundColor: barColor }}
                   />
                 </div>
               </div>
@@ -449,16 +438,19 @@ export default function SupplierProfileCard({
           })}
         </div>
 
-        {/* 6. Testimonial Quote Callout Block */}
-        <div className="bg-[#6F848F]/10 dark:bg-[#1A1D23] border-l-2 border-[#7A3F1E] dark:border-[#9E5528] px-3 py-2 rounded-r my-2 shrink-0">
-          <p className="text-[11px] italic text-[#222326]/85 dark:text-[#FAF6EE]/90 line-clamp-2 max-h-[36px] overflow-hidden leading-tight font-sans">
+        {/* 5. Testimonial Quote Callout (CSS line-clamp-2 with title for non-truncated view) */}
+        <div 
+          className="bg-[#6F848F]/10 dark:bg-[#1A1D23] border-l-2 border-[#7A3F1E] dark:border-[#9E5528] px-3 py-2 rounded-r my-2 shrink-0"
+          title={quoteText}
+        >
+          <p className="text-[11px] italic text-[#222326]/85 dark:text-[#FAF6EE]/90 line-clamp-2 leading-snug font-sans">
             "{quoteText}"
           </p>
         </div>
       </div>
 
-      {/* 7. Footer Row: SDG Alignment Badges + Evidence Quality Ring (Anchored to bottom) */}
-      <div className="mt-auto pt-3 border-t border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shrink-0">
+      {/* 6. Footer Row: SDG Alignment Index + Evidence Quality Confidence Ring */}
+      <div className="mt-auto pt-3 border-t border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shrink-0 font-sans">
         <div className="flex justify-between items-center mb-2">
           <p className="text-[9px] uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] font-semibold">
             SDG Alignment Index
@@ -469,7 +461,6 @@ export default function SupplierProfileCard({
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          {/* SDG official UN colored badges */}
           <div className="flex flex-wrap gap-1.5 items-center">
             {sdgObjects && sdgObjects.length > 0 ? (
               sdgObjects.map((sdg, idx) => (
@@ -496,7 +487,6 @@ export default function SupplierProfileCard({
             )}
           </div>
 
-          {/* Dynamic Evidence Confidence Ring Component: Always wrapped to guarantee hover/click interaction */}
           <ConfidenceChecklistHoverCard
             supplierName={name}
             score={effectiveConfidence}
@@ -521,5 +511,4 @@ export default function SupplierProfileCard({
   );
 }
 
-// Export SupplierCard alias to guarantee component compatibility
 export const SupplierCard = SupplierProfileCard;

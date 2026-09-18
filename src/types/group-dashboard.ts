@@ -57,6 +57,7 @@ export type SupplierBandSpend = {
 export type SupplierTierCount = {
   tier: string;
   count: number;
+  percentage?: number;
   color: string;
 };
 
