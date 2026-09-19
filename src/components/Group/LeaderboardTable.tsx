@@ -124,208 +124,284 @@ export default function LeaderboardTable({
   };
 
   return (
-    <div className="w-full overflow-x-auto bg-white dark:bg-[#1E2028] rounded-xl border border-[#EAE5DC] dark:border-[#8C9DA8]/20 shadow-card-light dark:shadow-elevation-dark-low font-sans">
-      <table className="w-full text-left border-collapse min-w-[950px]">
-        <thead>
-          <tr className="bg-[#FAF8F5] dark:bg-[#18191D] border-b border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-[10px] uppercase font-semibold tracking-[0.14em] text-[#6E7781] dark:text-[#8C9DA8]">
-            <th className="py-3.5 px-3 text-center w-12">#</th>
-            <th
-              onClick={() => handleSort("clientName")}
-              className="py-3.5 px-4 font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center gap-1.5">
-                <span>Property</span>
-                {renderSortIndicator("clientName")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("varnaScore")}
-              className="py-3.5 px-3 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1.5">
-                <span>Varna Score</span>
-                {renderSortIndicator("varnaScore")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("eScore")}
-              className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1">
-                <span>E</span>
-                {renderSortIndicator("eScore")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("sScore")}
-              className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1">
-                <span>S</span>
-                {renderSortIndicator("sScore")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("gScore")}
-              className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1">
-                <span>G</span>
-                {renderSortIndicator("gScore")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("cScore")}
-              className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1">
-                <span>C</span>
-                {renderSortIndicator("cScore")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("totalSpend")}
-              className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-end gap-1.5">
-                <span>Total Spend</span>
-                {renderSortIndicator("totalSpend")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("co2eKg")}
-              className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-end gap-1.5">
-                <span>CO₂e (kg)</span>
-                {renderSortIndicator("co2eKg")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("co2eAvoidedKg")}
-              className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-end gap-1.5">
-                <span>CO₂e Avoided</span>
-                {renderSortIndicator("co2eAvoidedKg")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("carKmAvoided")}
-              className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-end gap-1.5">
-                <span>Car Kms</span>
-                {renderSortIndicator("carKmAvoided")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("treesEquivalent")}
-              className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-end gap-1.5">
-                <span>Trees Planted</span>
-                {renderSortIndicator("treesEquivalent")}
-              </div>
-            </th>
-            <th
-              onClick={() => handleSort("activeSuppliers")}
-              className="py-3.5 px-3 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1.5">
-                <span>Suppliers</span>
-                {renderSortIndicator("activeSuppliers")}
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-[#EAE5DC] dark:divide-[#8C9DA8]/15 text-xs">
-          {sortedHotels.map((item, idx) => {
-            const tierBadge = getTierBadge(item.varnaScore);
-
-            return (
-              <tr
-                key={item.clientId || idx}
-                onClick={() => onSelectProperty?.(item)}
-                className="
-                  even:bg-[#FAF8F5]/40 dark:even:bg-[#1C1E24]/30
-                  hover:bg-[#B85333]/5 dark:hover:bg-[#B85333]/10
-                  transition-colors cursor-pointer group
-                "
+    <>
+      {/* ── Table View (Desktop & Tablet) ─────────────────────────────────── */}
+      <div className="varna-grp-leaderboard-table w-full overflow-x-auto bg-white dark:bg-[#1E2028] rounded-xl border border-[#EAE5DC] dark:border-[#8C9DA8]/20 shadow-card-light dark:shadow-elevation-dark-low font-sans">
+        <table className="w-full text-left border-collapse min-w-[950px]">
+          <thead>
+            <tr className="bg-[#FAF8F5] dark:bg-[#18191D] border-b border-[#EAE5DC] dark:border-[#8C9DA8]/20 text-[10px] uppercase font-semibold tracking-[0.14em] text-[#6E7781] dark:text-[#8C9DA8]">
+              <th className="py-3.5 px-3 text-center w-12">#</th>
+              <th
+                onClick={() => handleSort("clientName")}
+                className="py-3.5 px-4 font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
               >
-                <td className="py-3.5 px-3 text-center font-mono text-[11px] font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
-                  {idx + 1}
-                </td>
+                <div className="flex items-center gap-1.5">
+                  <span>Property</span>
+                  {renderSortIndicator("clientName")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("varnaScore")}
+                className="py-3.5 px-3 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1.5">
+                  <span>Varna Score</span>
+                  {renderSortIndicator("varnaScore")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("eScore")}
+                className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1">
+                  <span>E</span>
+                  {renderSortIndicator("eScore")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("sScore")}
+                className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1">
+                  <span>S</span>
+                  {renderSortIndicator("sScore")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("gScore")}
+                className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1">
+                  <span>G</span>
+                  {renderSortIndicator("gScore")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("cScore")}
+                className="py-3.5 px-2 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1">
+                  <span>C</span>
+                  {renderSortIndicator("cScore")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("totalSpend")}
+                className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-end gap-1.5">
+                  <span>Total Spend</span>
+                  {renderSortIndicator("totalSpend")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("co2eKg")}
+                className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-end gap-1.5">
+                  <span>CO₂e (kg)</span>
+                  {renderSortIndicator("co2eKg")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("co2eAvoidedKg")}
+                className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-end gap-1.5">
+                  <span>CO₂e Avoided</span>
+                  {renderSortIndicator("co2eAvoidedKg")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("carKmAvoided")}
+                className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-end gap-1.5">
+                  <span>Car Kms</span>
+                  {renderSortIndicator("carKmAvoided")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("treesEquivalent")}
+                className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-end gap-1.5">
+                  <span>Trees Planted</span>
+                  {renderSortIndicator("treesEquivalent")}
+                </div>
+              </th>
+              <th
+                onClick={() => handleSort("activeSuppliers")}
+                className="py-3.5 px-3 text-center font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1.5">
+                  <span>Suppliers</span>
+                  {renderSortIndicator("activeSuppliers")}
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#EAE5DC] dark:divide-[#8C9DA8]/15 text-xs">
+            {sortedHotels.map((item, idx) => {
+              const tierBadge = getTierBadge(item.varnaScore);
 
-                <td className="py-3.5 px-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="font-sans text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5] group-hover:text-[#B85333] dark:group-hover:text-[#D4705A] transition-colors">
-                        {item.clientName}
-                      </span>
-                      <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8] font-sans">
-                        {item.city ? `${item.city}, ${item.country || ""}` : item.propertyType || "Hotel Property"}
-                      </span>
+              return (
+                <tr
+                  key={item.clientId || idx}
+                  onClick={() => onSelectProperty?.(item)}
+                  className="
+                    even:bg-[#FAF8F5]/40 dark:even:bg-[#1C1E24]/30
+                    hover:bg-[#B85333]/5 dark:hover:bg-[#B85333]/10
+                    transition-colors cursor-pointer group
+                  "
+                >
+                  <td className="py-3.5 px-3 text-center font-mono text-[11px] font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
+                    {idx + 1}
+                  </td>
+
+                  <td className="py-3.5 px-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="font-sans text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5] group-hover:text-[#B85333] dark:group-hover:text-[#D4705A] transition-colors">
+                          {item.clientName}
+                        </span>
+                        <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8] font-sans">
+                          {item.city ? `${item.city}, ${item.country || ""}` : item.propertyType || "Hotel Property"}
+                        </span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-[#6E7781]/0 group-hover:text-[#B85333] group-hover:translate-x-0.5 transition-all" />
                     </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#6E7781]/0 group-hover:text-[#B85333] group-hover:translate-x-0.5 transition-all" />
-                  </div>
-                </td>
+                  </td>
 
-                <td className="py-3.5 px-3 text-center">
-                  <span
-                    className={`
-                      inline-block px-2.5 py-1 rounded-full text-xs font-sans font-bold shadow-xs border ${tierBadge.bg}
-                    `}
-                    title={`Score: ${item.varnaScore.toFixed(1)} (${tierBadge.label} Tier)`}
-                  >
-                    {item.varnaScore.toFixed(1)}
+                  <td className="py-3.5 px-3 text-center">
+                    <span
+                      className={`
+                        inline-block px-2.5 py-1 rounded-full text-xs font-sans font-bold shadow-xs border ${tierBadge.bg}
+                      `}
+                      title={`Score: ${item.varnaScore.toFixed(1)} (${tierBadge.label} Tier)`}
+                    >
+                      {item.varnaScore.toFixed(1)}
+                    </span>
+                  </td>
+
+                  <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {item.eScore}
+                  </td>
+
+                  <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {item.sScore}
+                  </td>
+
+                  <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {item.gScore}
+                  </td>
+
+                  <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {item.cScore !== null && item.cScore !== undefined ? item.cScore : "-"}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-right font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
+                    {formatLakhs(item.totalSpend)}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {formatNum(item.co2eKg)}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#556B55] dark:text-[#7B9B7B] font-medium">
+                    {formatNum(item.co2eAvoidedKg)}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {formatNum(item.carKmAvoided)}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
+                    {formatNum(item.treesEquivalent)}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-center font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
+                    {item.activeSuppliers}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Mobile Card View (shown only on small screens via CSS) ───────── */}
+      <div className="varna-grp-leaderboard-cards space-y-3 font-sans">
+        {sortedHotels.map((item, idx) => {
+          const tierBadge = getTierBadge(item.varnaScore);
+
+          return (
+            <div
+              key={item.clientId || idx}
+              onClick={() => onSelectProperty?.(item)}
+              className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low space-y-3 cursor-pointer hover:border-[#B85333]/40 transition-all"
+            >
+              {/* Card Header: Rank, Name, Tier Badge */}
+              <div className="flex items-start justify-between gap-3 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="font-mono text-xs font-bold text-[#6E7781] dark:text-[#8C9DA8] bg-[#FAF8F5] dark:bg-[#22252B] w-6 h-6 rounded-full flex items-center justify-center shrink-0">
+                    #{idx + 1}
                   </span>
-                </td>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-sans text-xs font-bold text-[#1A1F26] dark:text-[#FAF8F5] truncate">
+                      {item.clientName}
+                    </span>
+                    <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
+                      {item.city ? `${item.city}, ${item.country || ""}` : item.propertyType || "Hotel Property"}
+                    </span>
+                  </div>
+                </div>
+                <span
+                  className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-sans font-bold border ${tierBadge.bg}`}
+                >
+                  {item.varnaScore.toFixed(1)} &bull; {tierBadge.label}
+                </span>
+              </div>
 
-                <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {item.eScore}
-                </td>
+              {/* Card Metrics Grid */}
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-[#FAF8F5] dark:bg-[#18191D] p-2 rounded-lg flex items-center justify-between">
+                  <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">Total Spend</span>
+                  <span className="font-mono font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
+                    {formatLakhs(item.totalSpend)}
+                  </span>
+                </div>
+                <div className="bg-[#FAF8F5] dark:bg-[#18191D] p-2 rounded-lg flex items-center justify-between">
+                  <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">CO₂e</span>
+                  <span className="font-mono text-[#6E7781] dark:text-[#8C9DA8]">
+                    {formatNum(item.co2eKg)} kg
+                  </span>
+                </div>
+                <div className="bg-[#FAF8F5] dark:bg-[#18191D] p-2 rounded-lg flex items-center justify-between">
+                  <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">CO₂e Avoided</span>
+                  <span className="font-mono text-[#556B55] dark:text-[#7B9B7B] font-bold">
+                    {formatNum(item.co2eAvoidedKg)} kg
+                  </span>
+                </div>
+                <div className="bg-[#FAF8F5] dark:bg-[#18191D] p-2 rounded-lg flex items-center justify-between">
+                  <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">Suppliers</span>
+                  <span className="font-mono font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
+                    {item.activeSuppliers}
+                  </span>
+                </div>
+              </div>
 
-                <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {item.sScore}
-                </td>
-
-                <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {item.gScore}
-                </td>
-
-                <td className="py-3.5 px-2 text-center font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {item.cScore !== null && item.cScore !== undefined ? item.cScore : "-"}
-                </td>
-
-                <td className="py-3.5 px-3 text-right font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
-                  {formatLakhs(item.totalSpend)}
-                </td>
-
-                <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {formatNum(item.co2eKg)}
-                </td>
-
-                <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#556B55] dark:text-[#7B9B7B] font-medium">
-                  {formatNum(item.co2eAvoidedKg)}
-                </td>
-
-                <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {formatNum(item.carKmAvoided)}
-                </td>
-
-                <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#6E7781] dark:text-[#8C9DA8]">
-                  {formatNum(item.treesEquivalent)}
-                </td>
-
-                <td className="py-3.5 px-3 text-center font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
-                  {item.activeSuppliers}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+              {/* Card Pillars Sub-scores */}
+              <div className="pt-2 border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex items-center justify-between text-[11px] font-mono text-[#6E7781] dark:text-[#8C9DA8]">
+                <span>E: <strong className="text-[#556B55]">{item.eScore}</strong></span>
+                <span>S: <strong className="text-[#B85333]">{item.sScore}</strong></span>
+                <span>G: <strong className="text-[#2A3644] dark:text-[#96AAB4]">{item.gScore}</strong></span>
+                <span>C: <strong>{item.cScore ?? "-"}</strong></span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }

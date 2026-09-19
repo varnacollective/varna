@@ -12,7 +12,7 @@ export default function GroupLayout({
       <GroupSidebar />
 
       {/* ── Dynamic Child Route Content Area ─────────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="varna-grp-main flex-1 flex flex-col min-w-0">
         <main className="flex-1">{children}</main>
       </div>
     </div>

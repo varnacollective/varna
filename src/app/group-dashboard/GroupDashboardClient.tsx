@@ -306,14 +306,14 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
   return (
     <div className="w-full font-sans">
       {/* ── Top Header Bar / Hero Band ──────────────────────────────────────────────────── */}
-      <header className="px-6 md:px-8 py-8 bg-gradient-to-r from-[#FAF8F5] via-[#F4EFEA] to-[#FAF8F5] dark:from-[#18191D] dark:via-[#22252B] dark:to-[#18191D] border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 shadow-xs">
+      <header className="varna-grp-header px-6 md:px-8 py-8 bg-gradient-to-r from-[#FAF8F5] via-[#F4EFEA] to-[#FAF8F5] dark:from-[#18191D] dark:via-[#22252B] dark:to-[#18191D] border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 shadow-xs">
         <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="space-y-2">
             <div className="text-[10px] uppercase font-sans font-semibold tracking-[0.22em] text-[#B85333] dark:text-[#D4705A] flex items-center gap-2">
               <Sparkles className="w-3.5 h-3.5 text-[#556B55]" />
               <span>GROUP SUSTAINABILITY DASHBOARD</span>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight font-normal leading-tight">
+            <h1 className="varna-grp-hero-h1 font-serif text-3xl sm:text-4xl lg:text-5xl text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight font-normal leading-tight">
               A more responsible hospitality, together.
             </h1>
             <p className="text-xs font-sans text-[#6E7781] dark:text-[#8C9DA8] flex flex-wrap items-center gap-2 pt-1 font-light">
@@ -362,9 +362,9 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         </div>
       </header>
 
-      <div className="p-6 lg:p-8 space-y-8 max-w-[1600px] mx-auto w-full">
+      <div className="varna-grp-content p-6 lg:p-8 space-y-8 max-w-[1600px] mx-auto w-full">
         {/* ── Executive KPI Strip (Differentiated Hero Metric) ────────────────────────────────────────── */}
-        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
+        <section className="varna-grp-kpi-strip grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
           {/* HERO METRIC CARD: Group Avg Score */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-2 bg-gradient-to-br from-[#B85333]/10 via-white to-white dark:from-[#B85333]/20 dark:via-[#1E2028] dark:to-[#1E2028] border border-[#B85333]/40 rounded-xl p-4 shadow-md flex flex-col justify-between relative overflow-hidden">
             <div className="flex items-center justify-between">
@@ -468,7 +468,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         </section>
 
         {/* ── ESG Pillar Dials with Hover Breakdowns & Tier Legend ───────────────── */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <section className="varna-grp-esg-grid grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-12 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
             {/* Header & Tier Legend Key */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-4 gap-3">
@@ -502,7 +502,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 text-center">
+            <div className="varna-grp-esg-dials grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 text-center">
               <PillarBreakdownHoverCard
                 pillarLabel="Environmental"
                 pillarScore={summary.avgE}
@@ -583,7 +583,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         </section>
 
         {/* ── Hotel Leaderboard & Key Insights Panel ──────────────────── */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <section className="varna-grp-leaderboard-section grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -677,7 +677,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         </section>
 
         {/* ── Spend & Tier Distributions + Editorial Quote Card ──────────────────────────────────── */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section className="varna-grp-charts-grid grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* SPEND BY SUPPLIER BAND DONUT CHART */}
           <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
             <div className="border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 flex items-center justify-between">
