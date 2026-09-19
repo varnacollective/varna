@@ -327,7 +327,7 @@ export default function SupplierProfileCard({
   return (
     <Card
       variant={isVerified ? "verified" : "default"}
-      className="p-6 sm:p-7 h-[580px] w-full flex flex-col justify-between transition-all duration-300 relative font-sans"
+      className="varna-supplier-card p-6 sm:p-7 h-[580px] w-full flex flex-col justify-between transition-all duration-300 relative font-sans"
       hoverEffect={true}
       data-varna-card="supplier-profile-card"
     >
@@ -389,7 +389,7 @@ export default function SupplierProfileCard({
 
         {/* 3. Certification Badges (Wrapped nicely with distinct icons) */}
         {badges && badges.length > 0 && (
-          <div className="flex items-center gap-1.5 mb-4 h-7 shrink-0 relative">
+          <div className="varna-badge-row flex items-center gap-1.5 mb-4 h-7 shrink-0 relative">
             {visibleBadges.map((badge, idx) => {
               const text = typeof badge === "string" ? badge : badge?.label || "";
               if (!text) return null;
@@ -461,7 +461,7 @@ export default function SupplierProfileCard({
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-1.5 items-center">
+          <div className="varna-sdg-row flex flex-wrap gap-1.5 items-center">
             {sdgObjects && sdgObjects.length > 0 ? (
               sdgObjects.map((sdg, idx) => (
                 <SDGBadge

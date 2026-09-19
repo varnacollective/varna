@@ -101,7 +101,7 @@ export default function CarbonImpact({
 
       {/* Structured Icon-Array Data Visualization */}
       <div className="bg-[#DFD8C2]/50 dark:bg-[#1C1F26] p-5 rounded-lg border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 shadow-elevation-low relative z-10">
-        <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/15">
+        <div className="varna-seq-header flex justify-between items-center mb-4 pb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/15">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-[#222326] dark:text-[#FAF6EE]">
               Sequestration Progress Array
@@ -124,7 +124,7 @@ export default function CarbonImpact({
         </div>
 
         {/* The Tree Grid Matrix: 10 columns × 4 rows */}
-        <div className="grid grid-cols-10 gap-2.5 sm:gap-3 py-2">
+        <div className="varna-tree-grid grid grid-cols-10 gap-2.5 sm:gap-3 py-2">
           {iconArray.map((icon, idx) => (
             <motion.div
               key={icon.id}
@@ -166,7 +166,7 @@ export default function CarbonImpact({
         </div>
 
         {/* Footer info & absorption benchmark */}
-        <div className="mt-4 pt-3 border-t border-[#6F848F]/15 flex justify-between items-center text-[9px] text-[#6F848F] font-light">
+        <div className="varna-seq-footer mt-4 pt-3 border-t border-[#6F848F]/15 flex justify-between items-center text-[9px] text-[#6F848F] font-light">
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3 h-3 text-[#738678]" />
             <span>1 mature tree absorbs ~22 kg CO₂e / year (US EPA standard)</span>

@@ -97,7 +97,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
       />
 
       {/* Main content */}
-      <main className="flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
+      <main className="varna-main flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
         <TopBar
           clientName={client.clientName}
           industry={client.industry}
@@ -251,7 +251,7 @@ function SuppliersSection({ data }: { data: DashboardData }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
-        <h2 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+        <h2 className="varna-section-h2 text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
           Supplier Portfolio
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">
@@ -362,7 +362,7 @@ function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
   return (
     <div className="space-y-8">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
-        <h2 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+        <h2 className="varna-section-h2 text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
           Orders Overview
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">
@@ -406,7 +406,7 @@ function ImpactSection({
   return (
     <div className="space-y-8">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
-        <h2 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
+        <h2 className="varna-section-h2 text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
           Sustainability Impact Intelligence
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">

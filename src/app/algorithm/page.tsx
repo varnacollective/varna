@@ -48,9 +48,9 @@ export default function AlgorithmPage() {
         onLogout={handleLogout}
       />
 
-      <main className="flex-1 ml-24 relative z-10">
+      <main className="varna-main flex-1 ml-24 relative z-10">
         {/* Floating Theme Toggle */}
-        <div className="fixed top-8 right-8 z-50">
+        <div className="varna-algo-theme-toggle fixed top-8 right-8 z-50">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="p-2.5 border border-[#6F848F]/40 dark:border-[#8C9DA8]/20 text-[#222326] dark:text-[#FAF6EE] bg-[#E4DEC9]/80 dark:bg-[#22252B] backdrop-blur-md shadow-sm transition-colors hover:border-[#7A3F1E] cursor-pointer"

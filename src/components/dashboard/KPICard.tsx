@@ -52,7 +52,7 @@ export default function KPICard({
           {/* Monumental Hero Metric */}
           {varnaScoreData ? (
             <VarnaScoreHoverCard {...varnaScoreData}>
-              <div className="text-4xl sm:text-5xl font-sans font-medium tracking-hero leading-none cursor-help text-gradient-clay my-1.5 inline-block">
+              <div className="varna-kpi-number text-4xl sm:text-5xl font-sans font-medium tracking-hero leading-none cursor-help text-gradient-clay my-1.5 inline-block">
                 <AnimatedCounter
                   value={value}
                   prefix={prefix}
@@ -63,7 +63,7 @@ export default function KPICard({
               </div>
             </VarnaScoreHoverCard>
           ) : (
-            <div className={`text-4xl sm:text-5xl font-sans font-medium tracking-hero leading-none my-1.5 ${
+            <div className={`varna-kpi-number text-4xl sm:text-5xl font-sans font-medium tracking-hero leading-none my-1.5 ${
               isVarnaScore ? "text-gradient-clay" : "text-[#1A1F26] dark:text-[#FAF8F5]"
             }`}>
               <AnimatedCounter

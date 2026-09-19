@@ -44,6 +44,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="
+        varna-topbar
         flex flex-col sm:flex-row items-start sm:items-center justify-between
         px-8 py-5 mb-8 gap-4
         bg-white dark:bg-[#1E2028]
@@ -72,7 +73,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
             details={defaultDetails}
           />
           {/* Serif editorial client name */}
-          <h1 className="font-display text-3xl sm:text-4xl font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight leading-none">
+          <h1 className="varna-client-h1 font-display text-3xl sm:text-4xl font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight leading-none">
             {clientName}
           </h1>
         </div>
@@ -84,7 +85,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
       </div>
 
       {/* Right: Date + Actions */}
-      <div className="flex items-center gap-4">
+      <div className="varna-topbar-actions flex items-center gap-4">
         {/* Date display */}
         <div className="hidden md:flex items-center gap-2 text-xs text-[#6E7781] dark:text-[#9BA9B4] font-light tracking-wider uppercase">
           <Calendar className="w-3.5 h-3.5 text-[#6E7781] dark:text-[#9BA9B4] shrink-0" strokeWidth={1.5} />

@@ -48,7 +48,7 @@ export default function ImpactPillars({
 
   return (
     <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
-      <div className="flex justify-between items-center mb-8 border-b border-[#EAE5DC] dark:border-[#9BA9B4]/18 pb-3">
+      <div className="varna-pillars-header flex justify-between items-center mb-8 border-b border-[#EAE5DC] dark:border-[#9BA9B4]/18 pb-3">
         <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6E7781] dark:text-[#9BA9B4]">
           ESG Performance Pillars · Real-time Gauges
         </h3>
@@ -57,7 +57,7 @@ export default function ImpactPillars({
         </span>
       </div>
 
-      <div className={`grid ${gridCols} gap-8 justify-items-center`}>
+      <div className={`varna-pillars-grid grid ${gridCols} gap-8 justify-items-center`}>
         {visiblePillars.map((pillar) => {
           const originalIndex = PILLAR_CONFIG.findIndex((p) => p.key === pillar.key);
           const score = scores[originalIndex];

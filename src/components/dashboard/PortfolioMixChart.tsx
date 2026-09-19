@@ -164,7 +164,7 @@ export default function PortfolioMixChart({
       </p>
 
       <motion.div
-        className="h-48"
+        className="varna-bar-chart h-48"
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: delay + 0.2 }}

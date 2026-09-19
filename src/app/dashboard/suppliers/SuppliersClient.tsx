@@ -97,7 +97,7 @@ export default function SuppliersClient({
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
+      <main className="varna-main flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
         {/* Top Floating Action Bar */}
         <div className="flex justify-end items-center mb-6 gap-4">
           <button
@@ -117,7 +117,7 @@ export default function SuppliersClient({
               My Suppliers · Composite Verified Profiles
             </div>
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-hero uppercase leading-none mb-2">
+            <h1 className="varna-hero-h1 text-4xl sm:text-5xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-hero uppercase leading-none mb-2">
               The Suppliers Behind Your Orders
             </h1>
             {/* Subtitle */}
@@ -200,7 +200,7 @@ export default function SuppliersClient({
 
           <div className="flex flex-col md:flex-row items-center gap-12">
             {/* Left: Donut Chart */}
-            <div className="relative w-72 h-72 flex-shrink-0">
+            <div className="varna-donut-container relative w-72 h-72 flex-shrink-0">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <defs>

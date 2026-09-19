@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight, LayoutGrid, SlidersHorizontal, Users } from "lucide-react";
 import SupplierProfileCard from "./SupplierProfileCard";
 import type { SupplierConfidenceData } from "@/lib/mock-data";
@@ -22,6 +22,8 @@ export default function SuppliersCarousel({
   const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
 
   const handleScroll = () => {
     if (scrollContainerRef.current) {
@@ -42,6 +44,21 @@ export default function SuppliersCarousel({
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: 460, behavior: "smooth" });
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    // Only act on horizontal swipes (angle < 45 degrees)
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) scrollRight();
+      else scrollLeft();
     }
   };
 
@@ -114,6 +131,8 @@ export default function SuppliersCarousel({
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full"
           >
             {suppliersData.map((supplier) => {
@@ -137,7 +156,7 @@ export default function SuppliersCarousel({
               return (
                 <div
                   key={supplier.enterprise_id || name}
-                  className="min-w-[90%] sm:min-w-[480px] lg:min-w-[500px] snap-center shrink-0 flex"
+                  className="varna-carousel-item min-w-[90%] sm:min-w-[480px] lg:min-w-[500px] snap-center shrink-0 flex"
                 >
                   <SupplierProfileCard
                     name={name}

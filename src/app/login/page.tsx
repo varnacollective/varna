@@ -99,7 +99,7 @@ export default function LoginPage() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="w-full max-w-md"
         >
-          <div className="bg-[#1D1E22] border border-slate-mist/20 p-8 sm:p-10 shadow-2xl relative">
+          <div className="varna-login-card bg-[#1D1E22] border border-slate-mist/20 p-8 sm:p-10 shadow-2xl relative">
             {/* Header / Brand Title */}
             <div className="mb-8 border-b border-slate-mist/15 pb-6 text-left">
               <span className="text-[9px] font-semibold tracking-[0.3em] text-warm-stone/50 uppercase block mb-1.5">

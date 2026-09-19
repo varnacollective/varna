@@ -131,7 +131,7 @@ export default function SpendByCategoryChart({
       <div className="flex flex-col sm:flex-row items-center gap-8">
         {/* Donut chart with tactile drop shadow and in-chart percentage labels */}
         <motion.div
-          className="w-48 h-48 flex-shrink-0 relative"
+          className="varna-donut-sm w-48 h-48 flex-shrink-0 relative"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: delay + 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -192,7 +192,7 @@ export default function SpendByCategoryChart({
                     backgroundColor: BRAND_CHART_COLORS[idx % BRAND_CHART_COLORS.length],
                   }}
                 />
-                <span className="text-[11px] text-[#6F848F] dark:text-[#8C9DA8] flex-1 truncate font-light tracking-wide">
+                <span className="varna-donut-legend-label text-[11px] text-[#6F848F] dark:text-[#8C9DA8] flex-1 truncate font-light tracking-wide">
                   {cat.categoryName}
                 </span>
                 <span className="text-[11px] font-sans font-semibold text-[#222326] dark:text-[#FAF6EE] tabular-nums tracking-wide">

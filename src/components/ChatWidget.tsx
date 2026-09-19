@@ -50,7 +50,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
       <button
         onClick={() => setIsOpen(true)}
         aria-label="Open Varna Assistant"
-        className={`fixed bottom-6 right-6 z-[9999] p-4 rounded-full bg-[#7A3F1E] text-[#D8CFB8] shadow-2xl hover:bg-[#8F4B24] hover:shadow-[0_8px_30px_rgba(122,63,30,0.4)] active:scale-95 transition-all duration-300 flex items-center justify-center border border-[#D8CFB8]/20 ${
+        className={`varna-chat-fab fixed bottom-6 right-6 z-[9999] p-4 rounded-full bg-[#7A3F1E] text-[#D8CFB8] shadow-2xl hover:bg-[#8F4B24] hover:shadow-[0_8px_30px_rgba(122,63,30,0.4)] active:scale-95 transition-all duration-300 flex items-center justify-center border border-[#D8CFB8]/20 ${
           isOpen ? "scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100"
         }`}
       >
@@ -65,7 +65,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 16 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="fixed bottom-6 right-6 z-[9999] w-[360px] sm:w-[400px] h-[530px] max-h-[calc(100vh-5rem)] flex flex-col bg-[#18191D]/95 border border-[#6F848F]/30 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden font-sans select-none"
+            className="varna-chat-panel fixed bottom-6 right-6 z-[9999] w-[360px] sm:w-[400px] h-[530px] max-h-[calc(100vh-5rem)] flex flex-col bg-[#18191D]/95 border border-[#6F848F]/30 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden font-sans select-none"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#6F848F]/20 bg-black/25 flex-shrink-0">
