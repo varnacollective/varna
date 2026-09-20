@@ -51,13 +51,7 @@ export default function CarbonRowV2({
         <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/30 pointer-events-none rounded-[24px]" />
 
         {/* Overlaid Top-Right Soft Wash Card with 3 Script Lines */}
-        <div className="relative z-10 ml-auto p-5 rounded-[20px] bg-[#F4EACF]/90 dark:bg-[#2B2720]/90 backdrop-blur-md border border-[#E8DFC5] dark:border-[#F4EACF]/20 shadow-lg max-w-[320px] sm:max-w-[360px]">
-          <div className="varna-script-text text-[#7D3F1E] dark:text-[#F1E6C8] text-2xl lg:text-[28px] leading-snug font-normal space-y-1">
-            <p>Make impact measurable</p>
-            <p>Make claims credible</p>
-            <p>Make better procurement possible</p>
-          </div>
-        </div>
+
       </motion.div>
 
       {/* 5 Cols: Carbon Impact Card */}
@@ -159,10 +153,9 @@ export default function CarbonRowV2({
                   aria-hidden="true"
                   className={`
                     h-5 rounded-xs transition-colors duration-200
-                    ${
-                      mark.isFilled
-                        ? "bg-[#55705A] dark:bg-[#9DB4A0]"
-                        : "bg-black/10 dark:bg-white/10"
+                    ${mark.isFilled
+                      ? "bg-[#55705A] dark:bg-[#9DB4A0]"
+                      : "bg-black/10 dark:bg-white/10"
                     }
                   `}
                 />

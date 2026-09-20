@@ -217,14 +217,7 @@ export default function SocialRowV2({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none rounded-[24px]" />
 
         {/* Overlaid Bottom-Left Brand-Brown Note Card (D5) */}
-        <div className="relative z-10 p-5 rounded-[20px] bg-[#7D3F1E]/95 dark:bg-[#8A4622]/95 backdrop-blur-md border border-white/15 shadow-xl max-w-[280px]">
-          <div className="text-4xl lg:text-[44px] font-light text-[#F4EACF] dark:text-[#F1E6C8] tracking-tight leading-none mb-1 tabular-nums">
-            {topWomenPct}%
-          </div>
-          <p className="varna-script-text text-[#F4EACF] dark:text-[#F1E6C8] text-xl lg:text-[23px] leading-tight font-normal">
-            of the {topWomenSupplierName} workforce are women
-          </p>
-        </div>
+
       </motion.div>
     </div>
   );

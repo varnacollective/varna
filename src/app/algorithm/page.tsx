@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import Image from "next/image";
 import { useTheme } from "next-themes";
 import Sidebar from "@/components/layout/Sidebar";
 import BrandWatermark from "@/components/ui/BrandWatermark";
-import Card from "@/components/ui/Card";
-import FlowConnector from "@/components/ui/FlowConnector";
-import { Sun, Moon, ArrowRight, ShieldCheck, CheckCircle2, AlertCircle } from "lucide-react";
+import { Sun, Moon, ArrowRight } from "lucide-react";
 
 export default function AlgorithmPage() {
   const router = useRouter();
@@ -23,6 +21,10 @@ export default function AlgorithmPage() {
     if (section !== "algorithm") {
       if (section === "suppliers") {
         router.push("/dashboard/suppliers");
+      } else if (section === "orders") {
+        router.push("/dashboard/orders");
+      } else if (section === "impact") {
+        router.push("/dashboard/impact");
       } else {
         router.push(`/dashboard?section=${section}`);
       }
@@ -38,530 +40,468 @@ export default function AlgorithmPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#222326] dark:text-[#FAF6EE] font-sans transition-colors duration-300 relative selection:bg-[#7A3F1E] selection:text-[#D8CFB8] overflow-x-hidden">
+    <div className="min-h-screen flex bg-[#F4F1EA] dark:bg-[#0F1115] text-[#1A1F26] dark:text-[#EFECE6] font-sans transition-colors duration-300 relative selection:bg-[#7D3F1E] selection:text-white overflow-x-hidden">
       {/* Subtle brand crystal mark in page corner */}
-      <BrandWatermark position="bottom-right" size={600} opacity={0.04} />
+      <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
 
+      {/* Sidebar navigation */}
       <Sidebar
         activeSection="algorithm"
         onSectionChange={handleSectionChange}
         onLogout={handleLogout}
       />
 
-      <main className="varna-main flex-1 ml-24 relative z-10">
-        {/* Floating Theme Toggle */}
-        <div className="varna-algo-theme-toggle fixed top-8 right-8 z-50">
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2.5 border border-[#6F848F]/40 dark:border-[#8C9DA8]/20 text-[#222326] dark:text-[#FAF6EE] bg-[#E4DEC9]/80 dark:bg-[#22252B] backdrop-blur-md shadow-sm transition-colors hover:border-[#7A3F1E] cursor-pointer"
-            title="Toggle theme"
-          >
-            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-        </div>
-
-        {/* ── 1. HERO SECTION & DIAMOND FORMULA ARCHITECTURE ───────────────── */}
-        <section className="pt-16 pb-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/15">
-          {/* Header Block: Clear vertical spacing, full-width, zero overlap */}
-          <div className="flex flex-col items-start mb-16">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#7A3F1E] dark:text-[#FAF6EE]/80">
-                The Varna Framework · Architecture &amp; Methodology
+      {/* Main Content Area */}
+      <main className="varna-main flex-1 ml-24 p-4 lg:p-8 relative z-10">
+        {/* Constrained Max-Width Container (max-w-[1200px]) */}
+        <div className="max-w-[1200px] mx-auto space-y-6">
+          {/* Top Header Bar with Title Tag & Theme Switcher Button */}
+          <div className="flex items-center justify-between gap-4 pb-2">
+            <div className="flex items-center gap-3">
+              <span className="text-xs uppercase tracking-[0.18em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                Enterprise Portal | Methodology &amp; Standard
               </span>
-              <span className="w-8 h-px bg-[#7A3F1E]/40 dark:bg-[#FAF6EE]/30" />
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero leading-tight mb-4 uppercase">
-              The Varna Framework
-            </h1>
-
-            <p className="text-sm sm:text-base text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-3xl font-light leading-relaxed">
-              India's first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook, and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
-            </p>
-
-            <span className="font-accent text-xl text-[#7A3F1E] dark:text-[#FAF6EE]/90 mt-2 select-none">
-              quiet. slow. intentional.
-            </span>
+            {/* Theme Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="
+                p-2.5 rounded-full border border-black/10 dark:border-white/15
+                bg-white dark:bg-[#181B20] text-[#1A1F26] dark:text-[#EFECE6]
+                shadow-xs transition-colors hover:border-[#7D3F1E] dark:hover:border-[#E07A57]
+                cursor-pointer shrink-0
+              "
+              title="Toggle light/dark theme"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-[#E07A57]" strokeWidth={1.8} />
+              ) : (
+                <Moon className="w-4 h-4 text-[#7D3F1E]" strokeWidth={1.8} />
+              )}
+            </button>
           </div>
 
-          {/* ── Diamond Formula Diagram Section ─────────────────────────────────── */}
-          <div className="w-full bg-[#E4DEC9] dark:bg-[#1D1F24] border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 p-8 sm:p-12 shadow-elevation-mid dark:shadow-elevation-dark-mid relative rounded-lg">
-            <div className="text-center mb-10">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#FAF6EE]/70">
-                Core Scoring Model · Convergent Diamond Architecture
+          {/* ── SECTION 1: TOP HEADER BANNER & IMAGE 1 ───────────────────────── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Left (Cols 1-8): Warm Beige Card */}
+            <div className="lg:col-span-8 bg-[#F0EBE1] dark:bg-[#1E2126] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-7 lg:p-10 flex flex-col justify-center min-h-[220px]">
+              <div className="flex items-center justify-between gap-4 mb-2">
+                <span className="text-xs uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A]">
+                  The Framework
+                </span>
+                <span className="varna-script-text text-lg lg:text-xl text-[#7D3F1E] dark:text-[#F1E6C8] font-normal">
+                  quiet. slow. intentional.
+                </span>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#1A1F26] dark:text-[#EFECE6] uppercase tracking-wide leading-tight mb-3">
+                THE VARNA FRAMEWORK
+              </h1>
+
+              <p className="text-sm lg:text-[15px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-relaxed max-w-2xl">
+                India&apos;s first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook, and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
               </p>
-              <h3 className="text-2xl font-sans font-medium tracking-tight text-[#222326] dark:text-[#FAF6EE] mt-1 uppercase">
-                Weight Distribution &amp; Synthesis
-              </h3>
             </div>
 
-            {/* Desktop Diamond SVG Connector Network + Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
-              {/* Card 1: Impact (50%) */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="rounded-lg border-t-4 border-t-[#738678] border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 bg-[#DFD8C2]/60 dark:bg-[#22252B] p-6 flex flex-col justify-between relative group hover:border-[#738678]/60 transition-all shadow-elevation-low dark:shadow-elevation-dark-low hover:shadow-elevation-mid"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-[#738678] dark:text-[#829888]">
+            {/* Right (Cols 9-12): Image Container 1 (Clean render, NO text overlay) */}
+            <div className="lg:col-span-4 rounded-2xl overflow-hidden min-h-[180px] lg:min-h-[220px] relative border border-[#E7E2D6] dark:border-[#2A2F37] bg-[#181B20]">
+              <Image
+                src="/assets/framework1.jpg"
+                alt="Framework Concept"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* ── SECTION 2: THE THREE PILLARS (50%, 30%, 20%) ─────────────────── */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {/* Card 1: Impact (50%) */}
+            <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-6 lg:p-7 flex flex-col justify-between h-full space-y-6">
+              <div>
+                <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A]">
                       Pillar 01
                     </span>
-                    <span className="text-3xl font-sans font-medium text-[#738678] dark:text-[#829888]">
-                      50%
-                    </span>
+                    <h3 className="text-xl font-medium text-[#1A1F26] dark:text-[#EFECE6] mt-0.5">
+                      Impact
+                    </h3>
                   </div>
-                  <h4 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
-                    Impact
-                  </h4>
-                  <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
-                    Evaluates tangible operations across four balanced pillars: Environmental stewardship, Social equity, Governance compliance, and Cultural craft preservation.
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-[#6F848F]/20 dark:border-[#8C9DA8]/15 flex flex-wrap gap-1.5">
-                  {["Environmental", "Social", "Governance", "Cultural"].map((d) => (
-                    <span key={d} className="text-[8px] uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-[#738678]/30 dark:border-[#829888]/30 bg-[#738678]/10 dark:bg-[#829888]/15 text-[#738678] dark:text-[#829888] font-medium">
-                      {d}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
 
-              {/* Card 2: Readiness (30%) */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.25 }}
-                className="rounded-lg border-t-4 border-t-[#6F848F] border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 bg-[#DFD8C2]/60 dark:bg-[#22252B] p-6 flex flex-col justify-between relative group hover:border-[#6F848F]/60 transition-all shadow-elevation-low dark:shadow-elevation-dark-low hover:shadow-elevation-mid"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8]">
+                  <span className="text-3xl font-light text-[#7D3F1E] dark:text-[#E07A57] tabular-nums">
+                    50%
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] leading-relaxed mt-3">
+                  Measures environmental absorption, fair craft wages, cultural preservation, and raw material circularity.
+                </p>
+              </div>
+
+              {/* Bottom Muted Tag Pills */}
+              <div className="pt-2">
+                {["Environmental", "Social", "Governance", "Cultural"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#F4F1EA] dark:bg-[#2A2F37] text-[#5B564E] dark:text-[#C2BCB0] text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-xs mr-2 mb-2 inline-block font-medium border border-black/5 dark:border-white/5"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 2: Readiness (30%) */}
+            <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-6 lg:p-7 flex flex-col justify-between h-full space-y-6">
+              <div>
+                <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A]">
                       Pillar 02
                     </span>
-                    <span className="text-3xl font-sans font-medium text-[#6F848F] dark:text-[#8C9DA8]">
-                      30%
-                    </span>
+                    <h3 className="text-xl font-medium text-[#1A1F26] dark:text-[#EFECE6] mt-0.5">
+                      Readiness
+                    </h3>
                   </div>
-                  <h4 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
-                    Readiness
-                  </h4>
-                  <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
-                    Assesses management capability, operational tracking systems, traceable bills of materials, and long-term organizational capacity for sustainable production.
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-[#6F848F]/20 dark:border-[#8C9DA8]/15 flex flex-wrap gap-1.5">
-                  {["Traceability", "Management", "Systems", "Disclosures"].map((d) => (
-                    <span key={d} className="text-[8px] uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-[#6F848F]/30 dark:border-[#8C9DA8]/30 bg-[#6F848F]/10 dark:bg-[#8C9DA8]/15 text-[#6F848F] dark:text-[#8C9DA8] font-medium">
-                      {d}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
 
-              {/* Card 3: Risk (20%) */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-                className="rounded-lg border-t-4 border-t-[#7A3F1E] border border-[#6F848F]/20 dark:border-[#8C9DA8]/20 bg-[#DFD8C2]/60 dark:bg-[#22252B] p-6 flex flex-col justify-between relative group hover:border-[#7A3F1E]/60 transition-all shadow-elevation-low dark:shadow-elevation-dark-low hover:shadow-elevation-mid"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#944D25]">
+                  <span className="text-3xl font-light text-[#6E8471] dark:text-[#9DB4A0] tabular-nums">
+                    30%
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] leading-relaxed mt-3">
+                  Evaluates operational systems, supply chain traceability, management protocols, and transparent disclosures.
+                </p>
+              </div>
+
+              {/* Bottom Muted Tag Pills */}
+              <div className="pt-2">
+                {["Traceability", "Management", "Systems", "Disclosures"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#F4F1EA] dark:bg-[#2A2F37] text-[#5B564E] dark:text-[#C2BCB0] text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-xs mr-2 mb-2 inline-block font-medium border border-black/5 dark:border-white/5"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 3: Risk (20%) */}
+            <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-6 lg:p-7 flex flex-col justify-between h-full space-y-6">
+              <div>
+                <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A]">
                       Pillar 03
                     </span>
-                    <span className="text-3xl font-sans font-medium text-[#7A3F1E] dark:text-[#944D25]">
-                      20%
-                    </span>
+                    <h3 className="text-xl font-medium text-[#1A1F26] dark:text-[#EFECE6] mt-0.5">
+                      Risk
+                    </h3>
                   </div>
-                  <h4 className="text-xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-2 uppercase tracking-tight">
-                    Risk
-                  </h4>
-                  <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
-                    Evaluates regulatory compliance status, documentation validity, and adverse issues. Calibrated starting at 100 with deductions applied only for verified infractions.
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-[#6F848F]/20 dark:border-[#8C9DA8]/15 flex flex-wrap gap-1.5">
-                  {["Compliance", "Verification", "Integrity", "Labor Law"].map((d) => (
-                    <span key={d} className="text-[8px] uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-[#7A3F1E]/30 dark:border-[#944D25]/30 bg-[#7A3F1E]/10 dark:bg-[#944D25]/15 text-[#7A3F1E] dark:text-[#944D25] font-medium">
-                      {d}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
 
-            {/* Convergence Arrow & Final Score Node */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.55 }}
-              className="mt-8 flex flex-col items-center"
-            >
-              <FlowConnector direction="vertical" length={36} color="#7A3F1E" className="mb-2" />
-              
-              <div className="w-full max-w-md rounded-xl border border-[#7A3F1E]/40 dark:border-[#8C9DA8]/25 bg-gradient-to-b from-[#E4DEC9] to-[#DFD8C2] dark:from-[#262B34] dark:to-[#1E2127] p-7 text-center shadow-elevation-mid dark:shadow-elevation-dark-mid relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#738678] via-[#7A3F1E] to-[#6F848F] dark:from-[#829888] dark:via-[#944D25] dark:to-[#8C9DA8]" />
-                <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#7A3F1E] dark:text-[#FAF6EE]/90">
-                  Weighted Mathematical Synthesis
-                </span>
-                <h3 className="text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-tight uppercase my-1.5">
-                  Final Varna Score (100)
-                </h3>
-                <p className="text-[11px] text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light">
-                  (0.50 × Impact) + (0.30 × Readiness) + (0.20 × Risk)
-                </p>
-                <div className="mt-3.5 inline-flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-[#738678] dark:text-[#829888] font-semibold px-3 py-1 rounded-full bg-[#738678]/10 dark:bg-[#829888]/15 border border-[#738678]/25 dark:border-[#829888]/30">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Determines MSME Performance Band &amp; Procurement Tier</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ── 2. SECTION 1 · THE THREE PRINCIPLES ──────────────────────────── */}
-        <section id="section-1" className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/15">
-          <div className="text-center mb-12">
-            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
-              Section 1 · Foundational Philosophy
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
-              The Three Principles
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card variant="editorial">
-              <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#FAF6EE]/70 mb-3 block">
-                Principle 01
-              </span>
-              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
-                Objective
-              </h3>
-              <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
-                Every score is rooted in empirical, verifiable operational inputs mapped to transparent scoring rubrics: never subjective assessor impressions or vanity narratives.
-              </p>
-            </Card>
-
-            <Card variant="editorial">
-              <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#FAF6EE]/70 mb-3 block">
-                Principle 02
-              </span>
-              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
-                Calibrated
-              </h3>
-              <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
-                Scoring algorithms scale dynamically based on enterprise category, employee headcount, annual revenue, and operating tenure. Micro artisans are never penalized for lacking corporate ESG compliance officers.
-              </p>
-            </Card>
-
-            <Card variant="editorial">
-              <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#FAF6EE]/70 mb-3 block">
-                Principle 03
-              </span>
-              <h3 className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mb-3 uppercase tracking-tight">
-                Developmental
-              </h3>
-              <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 font-light leading-relaxed">
-                A Varna rating is a baseline trajectory, not a static verdict. Every assessment automatically yields a prioritized improvement roadmap guiding suppliers toward the Leader tier.
-              </p>
-            </Card>
-          </div>
-        </section>
-
-        {/* ── 3. SECTION 2 · THE FORMULA BREAKDOWN (with scroll-mt-28) ──────── */}
-        <section
-          id="section-2"
-          className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/15"
-        >
-          <div className="mb-12">
-            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
-              Section 2 · Mathematical Framework
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
-              The Formula Breakdown
-            </h2>
-            <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl font-light mt-2">
-              How individual indicators are audited, aggregated, and balanced into the final enterprise rating.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            <Card variant="default" className="border-l-4 border-l-[#738678]">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 border border-[#738678]/40 bg-[#738678]/10 flex items-center justify-center text-xl font-sans font-medium text-[#738678] dark:text-[#829888] flex-shrink-0">
-                    50%
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
-                      Impact Dimension
-                    </h4>
-                    <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-1">
-                      Direct measurements of environmental efficiency, carbon emissions avoided, artisanal living wages, and cultural heritage protection.
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right text-xs font-sans text-[#6F848F] dark:text-[#8C9DA8] uppercase tracking-wider font-medium">
-                  Impact Score = (E × 0.35) + (S × 0.35) + (G × 0.15) + (C × 0.15)
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="default" className="border-l-4 border-l-[#6F848F]">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 border border-[#6F848F]/40 bg-[#6F848F]/10 flex items-center justify-center text-xl font-sans font-medium text-[#6F848F] dark:text-[#8C9DA8] flex-shrink-0">
-                    30%
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
-                      Readiness Dimension
-                    </h4>
-                    <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-1">
-                      Verification of inventory tracking protocols, supply-chain transparency, worker safety standards, and operational resilience.
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right text-xs font-sans text-[#6F848F] dark:text-[#8C9DA8] uppercase tracking-wider font-medium">
-                  Readiness Score = Sum of Audited Operational Controls
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="default" className="border-l-4 border-l-[#7A3F1E]">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 border border-[#7A3F1E]/40 bg-[#7A3F1E]/10 flex items-center justify-center text-xl font-sans font-medium text-[#7A3F1E] dark:text-[#944D25] flex-shrink-0">
+                  <span className="text-3xl font-light text-[#6F8391] dark:text-[#93A9B8] tabular-nums">
                     20%
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-sans font-medium uppercase tracking-tight text-[#222326] dark:text-[#FAF6EE]">
-                      Risk Dimension
-                    </h4>
-                    <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-1">
-                      Legal compliance standing (GSTIN, Udyam MSME status, statutory labor adherence). Begins at 100 and applies formulaic point deductions.
-                    </p>
-                  </div>
+                  </span>
                 </div>
-                <div className="text-right text-xs font-sans text-[#6F848F] dark:text-[#8C9DA8] uppercase tracking-wider font-medium">
-                  Risk Score = 100 − Deductions for Confirmed Gaps
+
+                <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] leading-relaxed mt-3">
+                  Assesses statutory compliance, labor law adherence, audit verification, and legal integrity indicators.
+                </p>
+              </div>
+
+              {/* Bottom Muted Tag Pills */}
+              <div className="pt-2">
+                {["Compliance", "Verification", "Integrity", "Labor law"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#F4F1EA] dark:bg-[#2A2F37] text-[#5B564E] dark:text-[#C2BCB0] text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-xs mr-2 mb-2 inline-block font-medium border border-black/5 dark:border-white/5"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ── SECTION 3: FINAL VARNA SCORE BAR ───────────────────────────── */}
+          <div className="bg-[#36424A] dark:bg-[#222B32] text-white rounded-2xl p-6 lg:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-md">
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-white/70 block">
+                Weighted synthesis
+              </span>
+              <h2 className="text-2xl lg:text-3xl font-serif font-normal uppercase tracking-wider text-white mt-0.5">
+                FINAL VARNA SCORE
+              </h2>
+            </div>
+
+            <div className="text-left md:text-right space-y-1">
+              <div className="text-base sm:text-lg font-mono font-medium text-[#F4EACF] tracking-wide">
+                (0.50 × Impact) + (0.30 × Readiness) + (0.20 × Risk)
+              </div>
+              <p className="text-xs text-white/80 font-normal">
+                Out of 100. Sets the performance band and verified benchmark tier.
+              </p>
+            </div>
+          </div>
+
+          {/* ── SECTION 4: PRINCIPLES & IMAGE 2 ─────────────────────────────── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Left (Cols 1-7): White Card */}
+            <div className="lg:col-span-7 bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] p-7 lg:p-9 rounded-2xl flex flex-col justify-between">
+              <div>
+                <h2 className="text-2xl font-serif font-normal text-[#1A1F26] dark:text-[#EFECE6] uppercase tracking-wide mb-6 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                  The three principles
+                </h2>
+
+                <div className="space-y-6">
+                  {/* Item 01 */}
+                  <div className="flex items-start gap-4">
+                    <span className="text-sm font-mono font-semibold text-[#7D3F1E] dark:text-[#E07A57] shrink-0 mt-0.5">
+                      01
+                    </span>
+                    <div>
+                      <h4 className="text-base font-medium text-[#1A1F26] dark:text-[#EFECE6]">
+                        Objective
+                      </h4>
+                      <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] leading-relaxed mt-1">
+                        Grounded in empirical data points, third-party certificates, and verified documentation rather than unverified self-assertions.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Item 02 */}
+                  <div className="flex items-start gap-4">
+                    <span className="text-sm font-mono font-semibold text-[#7D3F1E] dark:text-[#E07A57] shrink-0 mt-0.5">
+                      02
+                    </span>
+                    <div>
+                      <h4 className="text-base font-medium text-[#1A1F26] dark:text-[#EFECE6]">
+                        Calibrated
+                      </h4>
+                      <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] leading-relaxed mt-1">
+                        Tailored specifically for micro, small, and artisanal craft producers, recognizing legitimate resource constraints without compromising standards.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Item 03 */}
+                  <div className="flex items-start gap-4">
+                    <span className="text-sm font-mono font-semibold text-[#7D3F1E] dark:text-[#E07A57] shrink-0 mt-0.5">
+                      03
+                    </span>
+                    <div>
+                      <h4 className="text-base font-medium text-[#1A1F26] dark:text-[#EFECE6]">
+                        Developmental
+                      </h4>
+                      <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] leading-relaxed mt-1">
+                        Provides actionable pathways for continuous improvement, guiding suppliers through evidence upgrades and tier progression over time.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </Card>
-          </div>
-        </section>
-
-        {/* ── 4. SECTION 3 · THE MULTIPLIER EFFECT (Calculation Pipeline) ──── */}
-        <section id="section-3" className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/15">
-          <div className="text-center mb-14">
-            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
-              Section 3 · Data Quality Multipliers
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
-              The Evidence Multiplier Pipeline
-            </h2>
-            <p className="text-sm text-[#222326]/75 dark:text-[#FAF6EE]/75 max-w-2xl mx-auto font-light mt-2">
-              How evidentiary confidence scales raw scores down, incentivizing verified audits over unverified claims.
-            </p>
-          </div>
-
-          {/* 5-Step Pipeline Strip */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-16">
-            {/* Step 01 */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
-            >
-              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] block mb-1">Step 01</span>
-              <h5 className="text-sm font-sans font-medium uppercase text-[#222326] dark:text-[#FAF6EE]">Actual Data</h5>
-              <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">Metrics &amp; Invoices</p>
-            </motion.div>
-
-            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
-            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
-
-            {/* Step 02 */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
-            >
-              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] block mb-1">Step 02</span>
-              <h5 className="text-sm font-sans font-medium uppercase text-[#222326] dark:text-[#FAF6EE]">Band Lookup</h5>
-              <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">MSME Thresholds</p>
-            </motion.div>
-
-            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
-            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
-
-            {/* Step 03 */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-              className="w-full md:w-auto flex-1 p-4 border border-[#6F848F]/30 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
-            >
-              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#6F848F] dark:text-[#8C9DA8] block mb-1">Step 03</span>
-              <h5 className="text-sm font-sans font-medium uppercase text-[#222326] dark:text-[#FAF6EE]">Raw Score</h5>
-              <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">Linear Map (0–100)</p>
-            </motion.div>
-
-            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
-            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
-
-            {/* Step 04 */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-              className="w-full md:w-auto flex-1 p-4 border border-[#7A3F1E]/60 dark:border-[#944D25]/40 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-low dark:shadow-elevation-dark-low"
-            >
-              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#7A3F1E] dark:text-[#944D25] block mb-1">Step 04</span>
-              <h5 className="text-sm font-sans font-medium uppercase text-[#7A3F1E] dark:text-[#FAF6EE]">Multiplier</h5>
-              <p className="text-[10px] text-[#6F848F] dark:text-[#FAF6EE]/60 mt-1 font-light">0.50× · 0.75× · 1.00×</p>
-            </motion.div>
-
-            <FlowConnector direction="horizontal" length={28} color="#7A3F1E" className="hidden md:block" />
-            <FlowConnector direction="vertical" length={20} color="#7A3F1E" className="md:hidden" />
-
-            {/* Step 05 */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-              className="w-full md:w-auto flex-1 p-4 border-2 border-[#738678] dark:border-[#829888] bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg text-center shadow-elevation-mid dark:shadow-elevation-dark-mid"
-            >
-              <span className="text-[8px] font-semibold uppercase tracking-widest text-[#738678] dark:text-[#829888] block mb-1">Step 05</span>
-              <h5 className="text-sm font-sans font-medium uppercase text-[#738678] dark:text-[#829888]">Effective</h5>
-              <p className="text-[10px] text-[#738678] dark:text-[#829888] mt-1 font-light">Verified Score</p>
-            </motion.div>
-          </div>
-
-          {/* Evidence Quality Tiers */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="p-6 border border-[#7A3F1E]/40 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-              <div className="text-3xl font-sans font-medium text-[#7A3F1E] dark:text-[#944D25] mb-2">0.50×</div>
-              <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#FAF6EE] mb-1">
-                None / Proxy Data
-              </h5>
-              <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
-                Metric is estimated using regional averages or industry proxies without primary receipts.
-              </p>
             </div>
 
-            <div className="p-6 border border-[#6F848F]/40 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-              <div className="text-3xl font-sans font-medium text-[#6F848F] dark:text-[#8C9DA8] mb-2">0.75×</div>
-              <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#FAF6EE] mb-1">
-                Self-Reported
-              </h5>
-              <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
-                Data is signed and declared by enterprise management but awaiting third-party verification.
-              </p>
-            </div>
-
-            <div className="p-6 border border-[#738678]/40 dark:border-[#8C9DA8]/20 bg-[#E4DEC9] dark:bg-[#22252B] rounded-lg shadow-elevation-low dark:shadow-elevation-dark-low">
-              <div className="text-3xl font-sans font-medium text-[#738678] dark:text-[#829888] mb-2">1.00×</div>
-              <h5 className="text-xs font-semibold uppercase tracking-wider text-[#222326] dark:text-[#FAF6EE] mb-1">
-                Third-Party Verified
-              </h5>
-              <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light leading-relaxed">
-                Backed by active certificates, third-party audit reports, and verified traceability slips.
-              </p>
+            {/* Right (Cols 8-12): Image Container 2 (Clean render, NO text overlay) */}
+            <div className="lg:col-span-5 rounded-2xl overflow-hidden min-h-[300px] relative border border-[#E7E2D6] dark:border-[#2A2F37] bg-[#181B20]">
+              <Image
+                src="/assets/framework2.jpg"
+                alt="Craftsmanship"
+                fill
+                className="object-cover"
+              />
             </div>
           </div>
 
-          <div className="text-center">
-            <p className="font-accent text-2xl md:text-3xl text-[#7A3F1E] dark:text-[#FAF6EE]/90 select-none">
-              "The score is not a judgment. It is a calculation."
-            </p>
-          </div>
-        </section>
+          {/* ── SECTION 5: THE EVIDENCE MULTIPLIER PIPELINE ─────────────────── */}
+          <div className="space-y-4">
+            <div className="pb-1">
+              <h2 className="text-xl font-medium text-[#1A1F26] dark:text-[#EFECE6] tracking-tight">
+                The Evidence Multiplier Pipeline
+              </h2>
+              <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] mt-0.5 font-normal">
+                How evidence confidence adjusts raw pillar scores to ensure verified data integrity.
+              </p>
+            </div>
 
-        {/* ── 5. SECTION 4 · PERFORMANCE BANDS ─────────────────────────────── */}
-        <section id="section-4" className="scroll-mt-28 py-20 px-8 sm:px-14 md:px-20 max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#6F848F] dark:text-[#FAF6EE]/70 block mb-2">
-              Section 4 · Classification Scale
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] uppercase tracking-tight">
-              Performance Bands
-            </h2>
-          </div>
+            {/* Top Row: 5-Step Flow Diagram */}
+            <div className="flex flex-row items-center justify-between gap-2 overflow-x-auto pb-2 min-w-[700px]">
+              {[
+                { step: "Step 01", label: "Actual data" },
+                { step: "Step 02", label: "Band lookup" },
+                { step: "Step 03", label: "Raw score" },
+                { step: "Step 04", label: "Evidence multiplier" },
+                { step: "Step 05", label: "Effective score" },
+              ].map((s, idx, arr) => (
+                <div key={s.step} className="flex items-center gap-2 flex-1">
+                  <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] px-4 py-3 rounded-xl shadow-2xs flex-1 text-center">
+                    <span className="text-[10px] uppercase font-semibold text-[#7D3F1E] dark:text-[#E07A57] block">
+                      {s.step}
+                    </span>
+                    <span className="text-xs font-medium text-[#1A1F26] dark:text-[#EFECE6] mt-0.5 block">
+                      {s.label}
+                    </span>
+                  </div>
 
-          <div className="max-w-4xl mx-auto space-y-4">
-            {[
-              {
-                title: "Varna Leader",
-                range: "85–100",
-                color: "border-l-[#738678]",
-                textColor: "text-[#738678] dark:text-[#829888]",
-                desc: "Industry-leading ESG operations, third-party verified evidence, full traceability.",
-              },
-              {
-                title: "Advanced",
-                range: "70–84",
-                color: "border-l-[#6F848F]",
-                textColor: "text-[#6F848F] dark:text-[#8C9DA8]",
-                desc: "High compliance, verifiable environmental & living wage tracking, consistent reporting.",
-              },
-              {
-                title: "Emerging",
-                range: "55–69",
-                color: "border-l-[#A89C82]",
-                textColor: "text-[#5C5238] dark:text-warm-stone",
-                desc: "Foundational practices in place; actively building formalized sustainability documentation.",
-              },
-              {
-                title: "Foundational",
-                range: "40–54",
-                color: "border-l-[#7A3F1E]",
-                textColor: "text-[#7A3F1E] dark:text-[#944D25]",
-                desc: "Core statutory compliance established; requires technical assistance to scale impact metrics.",
-              },
-              {
-                title: "Not Ready",
-                range: "<40",
-                color: "border-l-[#7A3F1E]/60",
-                textColor: "text-[#7A3F1E]/80 dark:text-[#944D25]/80",
-                desc: "Compliance or disclosure gaps identified; not approved for enterprise procurement catalog.",
-              },
-            ].map((band) => (
-              <div
-                key={band.title}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between p-6 border-l-4 ${band.color} bg-[#E4DEC9] dark:bg-[#22252B] border border-[#6F848F]/25 dark:border-[#8C9DA8]/15 shadow-elevation-low dark:shadow-elevation-dark-low rounded-lg gap-2`}
-              >
+                  {idx < arr.length - 1 && (
+                    <ArrowRight className="w-4 h-4 text-[#6F6A61] dark:text-[#9A948A] shrink-0" />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Bottom Row: Multiplier Cards (3 columns) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-2">
+              {/* Card 1: 0.50x */}
+              <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-6 flex flex-col justify-between">
                 <div>
-                  <h4 className={`text-xl font-sans font-medium uppercase tracking-tight ${band.textColor}`}>
-                    {band.title}
-                  </h4>
-                  <p className="text-xs text-[#222326]/70 dark:text-[#FAF6EE]/70 font-light mt-0.5">
-                    {band.desc}
+                  <div className="flex items-baseline justify-between gap-2 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                    <span className="text-xs font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                      Proxy Data
+                    </span>
+                    <span className="text-3xl font-light text-[#6F8391] dark:text-[#93A9B8] tabular-nums font-mono">
+                      0.50×
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] mt-3 leading-relaxed">
+                    None or proxy data. Unverified claims carry a 50% discount multiplier until documentation is submitted.
                   </p>
                 </div>
-                <span className="text-sm font-sans tracking-widest uppercase font-semibold text-[#222326]/80 dark:text-[#FAF6EE]/90 whitespace-nowrap">
-                  {band.range}
+              </div>
+
+              {/* Card 2: 0.75x */}
+              <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-baseline justify-between gap-2 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                    <span className="text-xs font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                      Self-Reported
+                    </span>
+                    <span className="text-3xl font-light text-[#7D3F1E] dark:text-[#E07A57] tabular-nums font-mono">
+                      0.75×
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] mt-3 leading-relaxed">
+                    Self-reported disclosures with internal documentation on file carry a 75% evidence weight.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3: 1.00x */}
+              <div className="bg-white dark:bg-[#181B20] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-baseline justify-between gap-2 pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37]">
+                    <span className="text-xs font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                      Third-Party Verified
+                    </span>
+                    <span className="text-3xl font-light text-[#55705A] dark:text-[#9DB4A0] tabular-nums font-mono">
+                      1.00×
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] mt-3 leading-relaxed">
+                    Third-party audited certifications, statutory filings, and direct laboratory test reports carry full 100% weight.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── SECTION 6: PERFORMANCE BANDS ───────────────────────────────── */}
+          <div className="bg-white dark:bg-[#181B20] rounded-2xl p-7 lg:p-9 border border-[#E7E2D6] dark:border-[#2A2F37] space-y-6">
+            <div className="pb-3 border-b border-[#E7E2D6] dark:border-[#2A2F37] flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-medium text-[#1A1F26] dark:text-[#EFECE6]">
+                  Performance Bands
+                </h2>
+                <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] mt-0.5 font-normal">
+                  Standardized rating scale assigned based on effective Varna Score.
+                </p>
+              </div>
+            </div>
+
+            {/* Top Segmented Color Bar (5 segments: Grey, Beige, Olive, Brown, Slate) */}
+            <div className="h-3 w-full rounded-full overflow-hidden flex items-center gap-1 bg-black/5 dark:bg-white/10 p-0.5">
+              <div className="h-full w-[40%] bg-[#6F8391] rounded-l-full" title="Not Ready (<40)" />
+              <div className="h-full w-[15%] bg-[#A89C82]" title="Foundational (40-54)" />
+              <div className="h-full w-[15%] bg-[#55705A]" title="Emerging (55-69)" />
+              <div className="h-full w-[15%] bg-[#7D3F1E]" title="Advanced (70-84)" />
+              <div className="h-full w-[15%] bg-[#2B3A55] rounded-r-full" title="Varna Leader (85-100)" />
+            </div>
+
+            {/* Stacked Band Rating List */}
+            <div className="divide-y divide-[#E7E2D6] dark:divide-[#2A2F37]">
+              {/* Band 1 */}
+              <div className="py-3 flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-xs bg-[#2B3A55]" />
+                  <span className="font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                    Varna Leader
+                  </span>
+                </div>
+                <span className="font-mono text-xs font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                  85–100
                 </span>
               </div>
-            ))}
+
+              {/* Band 2 */}
+              <div className="py-3 flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-xs bg-[#7D3F1E]" />
+                  <span className="font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                    Advanced
+                  </span>
+                </div>
+                <span className="font-mono text-xs font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                  70–84
+                </span>
+              </div>
+
+              {/* Band 3 */}
+              <div className="py-3 flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-xs bg-[#55705A]" />
+                  <span className="font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                    Emerging
+                  </span>
+                </div>
+                <span className="font-mono text-xs font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                  55–69
+                </span>
+              </div>
+
+              {/* Band 4 */}
+              <div className="py-3 flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-xs bg-[#A89C82]" />
+                  <span className="font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                    Foundational
+                  </span>
+                </div>
+                <span className="font-mono text-xs font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                  40–54
+                </span>
+              </div>
+
+              {/* Band 5 */}
+              <div className="py-3 flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-xs bg-[#6F8391]" />
+                  <span className="font-semibold text-[#1A1F26] dark:text-[#EFECE6]">
+                    Not Ready
+                  </span>
+                </div>
+                <span className="font-mono text-xs font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                  UNDER 40
+                </span>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
       </main>
     </div>
   );
