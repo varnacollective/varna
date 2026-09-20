@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Wallet, ShoppingBag, Award } from "lucide-react";
+import { Loader2, Wallet, ShoppingBag, Award, Quote } from "lucide-react";
+import Image from "next/image";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
 import ChatWidget from "@/components/ChatWidget";
 import BrandWatermark from "@/components/ui/BrandWatermark";
@@ -18,6 +19,8 @@ import SocialImpact from "@/components/dashboard/SocialImpact";
 import Card from "@/components/ui/Card";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import type { DashboardData } from "@/lib/mock-data";
+
+import ClientOverviewV2 from "@/components/dashboard/v2/ClientOverviewV2";
 
 export default function DashboardClient({ initialData }: { initialData: DashboardData | null }) {
   const router = useRouter();
@@ -98,20 +101,22 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
 
       {/* Main content */}
       <main className="varna-main flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
-        <TopBar
-          clientName={client.clientName}
-          industry={client.industry}
-          logoPath={client.logoPath}
-          dashboardData={data}
-          clientDetails={{
-            "Industry Sector": client.industry,
-            "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
-            "Status": client.status || "Active",
-            "Onboarding Date": client.onboardingDate,
-            "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
-            "Total Spend": summary?.totalSpend ? `₹${summary.totalSpend.toLocaleString('en-IN')}` : undefined,
-          }}
-        />
+        {activeSection !== "overview" && (
+          <TopBar
+            clientName={client.clientName}
+            industry={client.industry}
+            logoPath={client.logoPath}
+            dashboardData={data}
+            clientDetails={{
+              "Industry Sector": client.industry,
+              "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
+              "Status": client.status || "Active",
+              "Onboarding Date": client.onboardingDate,
+              "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
+              "Total Spend": summary?.totalSpend ? `₹${summary.totalSpend.toLocaleString('en-IN')}` : undefined,
+            }}
+          />
+        )}
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -122,12 +127,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             {activeSection === "overview" && (
-              <OverviewSection
-                summary={summary}
-                categorySpend={categorySpend}
-                tierDistribution={tierDistribution}
-                supplierImpactData={data.supplierImpactData}
-              />
+              <ClientOverviewV2 data={data} />
             )}
             {activeSection === "suppliers" && (
               <SuppliersSection data={data} />
@@ -163,8 +163,8 @@ function OverviewSection({
 }) {
   return (
     <div className="space-y-8">
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      {/* 1. KPI Strip (Cols 1-3) & Editorial Card (Col 4) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard
           title="Total Spend"
           value={summary.totalSpend}
@@ -201,29 +201,66 @@ function OverviewSection({
             supplierName: "Portfolio Average",
           }}
         />
+
+        {/* Col 4: Rich terracotta/brown background Editorial Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-[#8C5233] dark:bg-[#7A3F1E] text-white p-6 sm:p-7 rounded-none flex flex-col justify-center items-center text-center relative overflow-hidden shadow-card-light dark:shadow-elevation-dark-low border border-[#7A3F1E]/40"
+        >
+          <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+            <Quote className="w-32 h-32 text-white" />
+          </div>
+          <p className="font-serif italic text-white text-base sm:text-lg leading-relaxed relative z-10 font-normal">
+            &ldquo;Products become purpose. Rooms become stories. Hotels become impact makers.&rdquo;
+          </p>
+        </motion.div>
       </div>
 
-      {/* Impact Pillars with Custom Radial Gauges */}
-      <ImpactPillars
-        eScore={summary.avgEScore}
-        sScore={summary.avgSScore}
-        gScore={summary.avgGScore}
-        cScore={summary.avgCScore}
-        pillarBreakdown={summary.pillarBreakdown}
-        delay={0.25}
-      />
+      {/* 2. Mid-Section Split Layout: Visuals + Circular Pillars */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        {/* Left Column (Visual): Tall elegant card containing /assets/Dashboard_visual_2.svg */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-5 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#9BA9B4]/18 p-6 flex flex-col justify-center items-center overflow-hidden relative shadow-card-light dark:shadow-elevation-dark-low rounded-none min-h-[340px]"
+        >
+          <div className="w-full h-full relative min-h-[300px] flex items-center justify-center">
+            <Image
+              src="/assets/Dashboard_visual_2.svg"
+              alt="Artisanal Amenities Visual"
+              fill
+              className="object-contain p-2 rounded-none"
+            />
+          </div>
+        </motion.div>
 
-      {/* Charts Row */}
+        {/* Right Column (ESG Pillars): Existing circular E, S, G, C charts */}
+        <div className="lg:col-span-7 flex flex-col justify-center">
+          <ImpactPillars
+            eScore={summary.avgEScore}
+            sScore={summary.avgSScore}
+            gScore={summary.avgGScore}
+            cScore={summary.avgCScore}
+            pillarBreakdown={summary.pillarBreakdown}
+            delay={0.3}
+          />
+        </div>
+      </div>
+
+      {/* 3. Bottom Grid: Spend, Tiers, Impact */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SpendByCategoryChart data={categorySpend} delay={0.3} />
-        <PortfolioMixChart data={tierDistribution} delay={0.35} />
+        <SpendByCategoryChart data={categorySpend} delay={0.35} />
+        <PortfolioMixChart data={tierDistribution} delay={0.4} />
       </div>
 
       {/* Impact Metrics Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <CarbonImpact
           totalCO2eAvoidedKg={summary.totalCO2eAvoidedKg}
-          delay={0.4}
+          delay={0.45}
         />
         <SocialImpact
           artisansSupported={summary.totalArtisansSupported}
@@ -231,7 +268,7 @@ function OverviewSection({
           culturalScore={summary.avgCScore}
           wageRatio={supplierImpactData?.[0]?.wageRatio || 1.05}
           supplierImpactData={supplierImpactData}
-          delay={0.45}
+          delay={0.5}
         />
       </div>
     </div>

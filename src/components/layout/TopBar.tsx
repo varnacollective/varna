@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Calendar, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 import BrandLogo from "@/components/ui/BrandLogo";
 import ExportButton from "@/components/ExportButton";
@@ -45,25 +46,26 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="
         varna-topbar
-        flex flex-col sm:flex-row items-start sm:items-center justify-between
-        px-8 py-5 mb-8 gap-4
-        bg-white dark:bg-[#1E2028]
+        flex flex-col md:flex-row items-start md:items-center justify-between
+        px-6 py-6 sm:px-8 sm:py-7 mb-8 gap-6
+        bg-[#F4F1EA] dark:bg-[#1E2028]
         border border-[#EAE5DC] dark:border-[#9BA9B4]/16
         shadow-[0_1px_3px_rgba(26,31,38,0.04),0_4px_16px_rgba(26,31,38,0.05)]
         dark:shadow-elevation-dark-low
-        rounded-none
+        rounded-xl relative overflow-hidden
       "
     >
-      {/* Left: Branding + Client info */}
-      <div className="flex flex-col items-start">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <img src="/logo-light.svg" alt="Varna" className="block dark:hidden h-7 sm:h-8 w-auto object-contain shrink-0" />
-          <img src="/logo-dark.svg" alt="Varna" className="hidden dark:block h-7 sm:h-8 w-auto object-contain shrink-0" />
-          <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#B85333] dark:text-[#C85D3B]">
-            Enterprise Portal · Procurement Intelligence
+      {/* Left: Branding & Welcome Section */}
+      <div className="flex flex-col items-start relative z-10 max-w-xl">
+        <div className="flex items-center gap-2.5 mb-2">
+          <img src="/logo-light.svg" alt="Varna" className="block dark:hidden h-6 sm:h-7 w-auto object-contain shrink-0" />
+          <img src="/logo-dark.svg" alt="Varna" className="hidden dark:block h-6 sm:h-7 w-auto object-contain shrink-0" />
+          <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#B85333] dark:text-[#C85D3B]">
+            Welcome to your Varna Dashboard
           </span>
         </div>
-        <div className="flex items-center gap-3 mt-1">
+
+        <div className="flex items-center gap-4 mt-1">
           <BrandLogo
             logoPath={logoPath}
             alt={clientName}
@@ -72,60 +74,76 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
             entityType="client"
             details={defaultDetails}
           />
-          {/* Serif editorial client name */}
-          <h1 className="varna-client-h1 font-display text-3xl sm:text-4xl font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight leading-none">
+          {/* Refined Serif client name */}
+          <h1 className="varna-client-h1 font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight leading-none">
             {clientName}
           </h1>
         </div>
+
         {industry && (
-          <p className="text-xs text-[#6E7781] dark:text-[#9BA9B4] mt-1.5 font-light tracking-wide">
-            {industry} · Active Assessment Interval
+          <p className="text-xs text-[#6E7781] dark:text-[#9BA9B4] mt-2.5 font-light tracking-wide flex items-center gap-2">
+            <span>{industry}</span>
+            <span className="w-1 h-1 rounded-full bg-[#B85333]" />
+            <span>Active Assessment Interval</span>
           </p>
         )}
       </div>
 
-      {/* Right: Date + Actions */}
-      <div className="varna-topbar-actions flex items-center gap-4">
-        {/* Date display */}
-        <div className="hidden md:flex items-center gap-2 text-xs text-[#6E7781] dark:text-[#9BA9B4] font-light tracking-wider uppercase">
-          <Calendar className="w-3.5 h-3.5 text-[#6E7781] dark:text-[#9BA9B4] shrink-0" strokeWidth={1.5} />
-          <span>{currentDate}</span>
+      {/* Right: Hotel SVG Visual & Action Buttons */}
+      <div className="varna-topbar-actions flex flex-col sm:flex-row items-start sm:items-center gap-4 relative z-10 shrink-0 w-full md:w-auto justify-end">
+        {/* Hotel Visual Image */}
+        <div className="relative overflow-hidden rounded-xl border border-[#E0D8C8] dark:border-[#9BA9B4]/20 shadow-xs shrink-0 hidden lg:block">
+          <Image
+            src="/assets/Dashboard_Hotel.svg"
+            alt="Hotel Banner Visual"
+            width={240}
+            height={130}
+            className="object-cover rounded-xl w-auto h-28"
+            priority
+          />
         </div>
 
-        <div className="h-5 w-px bg-[#EAE5DC] dark:bg-[#9BA9B4]/20 hidden sm:block" />
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+          {/* Date display */}
+          <div className="hidden xl:flex items-center gap-2 text-xs text-[#6E7781] dark:text-[#9BA9B4] font-light tracking-wider uppercase pr-2">
+            <Calendar className="w-3.5 h-3.5 text-[#6E7781] dark:text-[#9BA9B4] shrink-0" strokeWidth={1.5} />
+            <span>{currentDate}</span>
+          </div>
 
-        {/* Theme Toggle — refined bordered icon */}
-        {mounted && (
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="
-              p-2.5 border border-[#EAE5DC] dark:border-[#9BA9B4]/25
-              hover:border-[#B85333]/40 dark:hover:border-[#C85D3B]/50
-              text-[#6E7781] dark:text-[#9BA9B4]
-              hover:text-[#B85333] dark:hover:text-[#C85D3B]
-              bg-white dark:bg-[#252830]
-              transition-all duration-200 cursor-pointer
-            "
-            title="Toggle theme"
-            id="theme-toggle-btn"
-          >
-            {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-          </button>
-        )}
+          {/* Theme Toggle */}
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="
+                p-2.5 border border-[#EAE5DC] dark:border-[#9BA9B4]/25
+                hover:border-[#B85333]/40 dark:hover:border-[#C85D3B]/50
+                text-[#6E7781] dark:text-[#9BA9B4]
+                hover:text-[#B85333] dark:hover:text-[#C85D3B]
+                bg-white dark:bg-[#252830]
+                rounded-lg transition-all duration-200 cursor-pointer shadow-xs
+              "
+              title="Toggle theme"
+              id="theme-toggle-btn"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          )}
 
-        {/* Export Report — Terracotta pill */}
-        {dashboardData ? (
-          <ExportButton data={dashboardData} variant="topbar" />
-        ) : (
-          <button
-            disabled
-            className="flex items-center gap-2.5 px-5 py-3 rounded-none bg-[#B85333]/40 text-white/60 dark:bg-[#C85D3B]/30 dark:text-[#FAF8F5]/50 text-xs font-sans uppercase tracking-widest cursor-not-allowed"
-          >
-            Export Report
-          </button>
-        )}
+          {/* Export Report button */}
+          {dashboardData ? (
+            <ExportButton data={dashboardData} variant="topbar" />
+          ) : (
+            <button
+              disabled
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-[#B85333]/40 text-white/60 text-xs font-sans uppercase tracking-widest cursor-not-allowed"
+            >
+              Export Report
+            </button>
+          )}
+        </div>
       </div>
     </motion.header>
   );
+
 }
 
