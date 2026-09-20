@@ -572,3 +572,165 @@ export function getSupplierLogoFallback(supplierName?: string): string | undefin
   return undefined;
 }
 
+export interface ClientOrderItem {
+  orderNumber: string;
+  orderDate: string;
+  supplierName: string;
+  supplierLogo?: string;
+  orderValue: number;
+  fulfilmentStatus: "Complete" | "In Progress" | "Delayed" | string;
+  evidenceStatus: "Awaiting certificate" | "Verified" | "Self-reported" | string;
+  evidenceWeight: number; // 1.00, 0.75, 0.50
+  evidenceStatusLabel: string;
+  pendingItemNote?: string;
+  relatedOrderNumbers?: string[];
+  checklist: {
+    title: string;
+    description: string;
+    status: "complete" | "pending" | "upcoming";
+  }[];
+}
+
+export const CLIENT_ORDERS_LIST: ClientOrderItem[] = [
+  {
+    orderNumber: "#5",
+    orderDate: "12 May 2026",
+    supplierName: "Bare Necessities",
+    supplierLogo: "/logos/suppliers/bare-necessities.png",
+    orderValue: 78500,
+    fulfilmentStatus: "Complete",
+    evidenceStatus: "Awaiting certificate",
+    evidenceWeight: 0.75,
+    evidenceStatusLabel: "Self-reported",
+    pendingItemNote: "Awaiting the certificate for this order's formulations",
+    relatedOrderNumbers: ["#4"],
+    checklist: [
+      {
+        title: "Company operations disclosed",
+        description: "Complete",
+        status: "complete",
+      },
+      {
+        title: "Laboratory batch certificate",
+        description: "Awaiting the certificate for this order's formulations",
+        status: "pending",
+      },
+      {
+        title: "Verified formulation claims",
+        description: "A reviewed third-party certificate carries full weight (1.00×)",
+        status: "upcoming",
+      },
+    ],
+  },
+  {
+    orderNumber: "#4",
+    orderDate: "28 Apr 2026",
+    supplierName: "Bare Necessities",
+    supplierLogo: "/logos/suppliers/bare-necessities.png",
+    orderValue: 64200,
+    fulfilmentStatus: "Complete",
+    evidenceStatus: "Awaiting certificate",
+    evidenceWeight: 0.75,
+    evidenceStatusLabel: "Self-reported",
+    pendingItemNote: "Awaiting the certificate for this order's formulations",
+    relatedOrderNumbers: ["#5"],
+    checklist: [
+      {
+        title: "Company operations disclosed",
+        description: "Complete",
+        status: "complete",
+      },
+      {
+        title: "Laboratory batch certificate",
+        description: "Awaiting the certificate for this order's formulations",
+        status: "pending",
+      },
+      {
+        title: "Verified formulation claims",
+        description: "A reviewed third-party certificate carries full weight (1.00×)",
+        status: "upcoming",
+      },
+    ],
+  },
+  {
+    orderNumber: "#3",
+    orderDate: "14 Mar 2026",
+    supplierName: "UKHI India",
+    supplierLogo: "/logos/suppliers/ukhi.jpg",
+    orderValue: 96000,
+    fulfilmentStatus: "Complete",
+    evidenceStatus: "Verified",
+    evidenceWeight: 1.0,
+    evidenceStatusLabel: "Third-party verified",
+    checklist: [
+      {
+        title: "Incorporation & GST Audit",
+        description: "Third-party verified documentation on file",
+        status: "complete",
+      },
+      {
+        title: "Handloom Craft Compliance Audit",
+        description: "Verified fair-wage compliance and artisan preservation",
+        status: "complete",
+      },
+      {
+        title: "Verified Sourcing Certificate",
+        description: "Full evidence weight (1.00×) confirmed",
+        status: "complete",
+      },
+    ],
+  },
+  {
+    orderNumber: "#2",
+    orderDate: "02 Feb 2026",
+    supplierName: "UKHI India",
+    supplierLogo: "/logos/suppliers/ukhi.jpg",
+    orderValue: 48450,
+    fulfilmentStatus: "Complete",
+    evidenceStatus: "Verified",
+    evidenceWeight: 1.0,
+    evidenceStatusLabel: "Third-party verified",
+    checklist: [
+      {
+        title: "Incorporation & GST Audit",
+        description: "Third-party verified documentation on file",
+        status: "complete",
+      },
+      {
+        title: "Handloom Craft Compliance Audit",
+        description: "Verified fair-wage compliance and artisan preservation",
+        status: "complete",
+      },
+      {
+        title: "Verified Sourcing Certificate",
+        description: "Full evidence weight (1.00×) confirmed",
+        status: "complete",
+      },
+    ],
+  },
+  {
+    orderNumber: "#1",
+    orderDate: "18 Jan 2026",
+    supplierName: "Kheoni",
+    supplierLogo: "/logos/suppliers/kheoni.jpg",
+    orderValue: 26000,
+    fulfilmentStatus: "In Progress",
+    evidenceStatus: "Self-reported",
+    evidenceWeight: 0.75,
+    evidenceStatusLabel: "Self-reported",
+    checklist: [
+      {
+        title: "Forest-first organic disclosure",
+        description: "Self-reported impact documentation on file",
+        status: "complete",
+      },
+      {
+        title: "Indigenous collection audit",
+        description: "Documentation submitted for verification",
+        status: "pending",
+      },
+    ],
+  },
+];
+
+
