@@ -173,16 +173,17 @@ export default function AllOrdersTableV2({
                     {/* Supplier Logo Tile (D3) + Name */}
                     <td className="py-4 px-3 align-middle">
                       <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-white border border-black/10 shadow-2xs flex items-center justify-center p-1 shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-white border border-black/10 shadow-2xs flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
                           <BrandLogo
                             logoPath={order.supplierLogo}
                             alt={order.supplierName}
                             name={order.supplierName}
                             size="sm"
                             entityType="supplier"
+                            className="!h-full !w-full !min-w-0 !max-w-none !px-0.5 justify-center border-0 bg-transparent shadow-none"
                           />
                         </div>
-                        <span className="text-sm font-medium text-[#1F1B16] dark:text-[#F3EFE7]">
+                        <span className="text-sm font-medium text-[#1F1B16] dark:text-[#F3EFE7] shrink-0">
                           {order.supplierName}
                         </span>
                       </div>

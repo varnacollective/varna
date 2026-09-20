@@ -112,7 +112,7 @@ export default function TopBarV2({
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] flex items-center justify-center p-1 border border-black/5 dark:border-white/10 shrink-0">
             <BrandLogo
-              logoPath={logoPath}
+              logoPath={logoPath || "/logos/clients/oberoi-dubai.png"}
               alt={clientName}
               name={clientName}
               size="sm"

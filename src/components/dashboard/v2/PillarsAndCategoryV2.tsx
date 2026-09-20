@@ -123,6 +123,7 @@ export default function PillarsAndCategoryV2({
               gScore={gScore}
               cScore={cScore}
               pillarBreakdown={pillarBreakdown}
+              hideHeader={true}
             />
           </div>
 

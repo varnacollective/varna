@@ -50,8 +50,8 @@ export default function WelcomeCardV2({
           </svg>
         </div>
 
-        {/* Large White Circular Logo Container (Single Clean Outer Circle - P1-9 fixed) */}
-        <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full bg-white dark:bg-white shadow-md flex items-center justify-center p-5 border border-black/10 shrink-0 relative z-10">
+        {/* Large White Circular Logo Container (Single Clean Outer Circle - enlarged inner logo) */}
+        <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full bg-white dark:bg-white shadow-md flex items-center justify-center p-2 border border-black/10 shrink-0 relative z-10 overflow-hidden">
           <BrandLogo
             logoPath={logoPath}
             alt={clientName}
