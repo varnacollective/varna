@@ -22,6 +22,7 @@ import type { DashboardData } from "@/lib/mock-data";
 
 import ClientOverviewV2 from "@/components/dashboard/v2/ClientOverviewV2";
 import ClientOrdersV2 from "@/components/dashboard/orders/v2/ClientOrdersV2";
+import ClientImpactV2 from "@/components/dashboard/impact/v2/ClientImpactV2";
 
 export default function DashboardClient({ initialData }: { initialData: DashboardData | null }) {
   const router = useRouter();
@@ -137,7 +138,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
               <ClientOrdersV2 dashboardData={data} />
             )}
             {activeSection === "impact" && (
-              <ImpactSection summary={summary} supplierImpactData={data.supplierImpactData} />
+              <ClientImpactV2 dashboardData={data} supplierImpactData={data.supplierImpactData} />
             )}
           </motion.div>
         </AnimatePresence>
