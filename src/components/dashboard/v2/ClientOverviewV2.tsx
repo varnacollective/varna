@@ -25,9 +25,11 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
     supplierName: "Portfolio Average",
   };
 
+  const ratingBand = summary.avgVarnaScore >= 85 ? "Leader band" : summary.avgVarnaScore >= 70 ? "Advanced band" : "Emerging band";
+
   return (
-    <div className="client-overview-v2 w-full max-w-[1400px] mx-auto space-y-6">
-      {/* 1. Top Bar */}
+    <div className="client-overview-v2 w-full max-w-[1760px] mx-auto space-y-6 pb-32">
+      {/* 1. Top Bar (W1) */}
       <TopBarV2
         clientName={client.clientName}
         industry={client.industry}
@@ -43,15 +45,18 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         }}
       />
 
-      {/* 2. Welcome & Hero Banner */}
+      {/* 2. Welcome & Hero Banner (W2, W3 & D6) */}
       <WelcomeCardV2
         clientName={client.clientName}
         industry={client.industry}
         logoPath={client.logoPath}
+        totalSuppliers={summary.totalSuppliers}
+        totalOrders={summary.totalOrders}
+        ratingBand={ratingBand}
         dashboardData={data}
       />
 
-      {/* 3. KPI Strip & Tagline */}
+      {/* 3. KPI Strip & Tagline (W4, W5 & D1) */}
       <KpiRowV2
         totalSpend={summary.totalSpend}
         totalOrders={summary.totalOrders}
@@ -60,7 +65,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         varnaScoreData={varnaScoreData}
       />
 
-      {/* 4. Mid Section: Visual + ESG Pillars + Spend by Product Category */}
+      {/* 4. Mid Section: Visual + ESG Pillars + Spend by Product Category (W6, W7, W8 & D2, D3) */}
       <PillarsAndCategoryV2
         eScore={summary.avgEScore}
         sScore={summary.avgSScore}
@@ -70,14 +75,14 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         categorySpend={categorySpend}
       />
 
-      {/* 5. Carbon Impact + Supplier Tier Distribution */}
+      {/* 5. Carbon Impact + Supplier Tier Distribution (W9, W10 & D4, D5) */}
       <CarbonAndTiersV2
         totalCO2eAvoidedKg={summary.totalCO2eAvoidedKg}
         totalSuppliers={summary.totalSuppliers}
         tierDistribution={tierDistribution}
       />
 
-      {/* 6. Social Livelihood Impact */}
+      {/* 6. Social Livelihood Impact (W11) */}
       <SocialImpactV2
         artisansSupported={summary.totalArtisansSupported}
         womenWorkforcePercent={summary.womenWorkforcePercent}
@@ -85,7 +90,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         supplierImpactData={supplierImpactData}
       />
 
-      {/* 7. Footer Disclaimer */}
+      {/* 7. Footer Disclaimer (W12) */}
       <FooterDisclaimerV2 />
     </div>
   );
