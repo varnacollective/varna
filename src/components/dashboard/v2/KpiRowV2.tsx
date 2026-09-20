@@ -193,13 +193,6 @@ export default function KpiRowV2({
           relative overflow-hidden min-h-[200px] h-full
         "
       >
-        {/* Scoped CSS Import for Handwritten Script Font (Caveat/Kalam) */}
-        <style jsx>{`
-          @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Kalam:wght@400;700&display=swap');
-          .varna-tagline-text {
-            font-family: 'Caveat', 'Kalam', 'Dancing Script', cursive, serif;
-          }
-        `}</style>
 
         {/* Oversized Faint Decorative Quote Mark */}
         <div className="absolute right-3 bottom-2 opacity-[0.06] pointer-events-none text-white select-none">
