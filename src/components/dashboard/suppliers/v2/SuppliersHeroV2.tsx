@@ -105,11 +105,11 @@ export default function SuppliersHeroV2({
         <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none rounded-[24px]" />
 
         {/* Overlaid Bottom-Left Note Card with Script Text */}
-        <div className="relative z-10 p-4 rounded-2xl bg-[#F4EACF]/95 dark:bg-[#2B2720]/95 backdrop-blur-md border border-[#E8DFC5] dark:border-[#F4EACF]/20 shadow-md max-w-[280px]">
+        {/* <div className="relative z-10 p-4 rounded-2xl bg-[#F4EACF]/95 dark:bg-[#2B2720]/95 backdrop-blur-md border border-[#E8DFC5] dark:border-[#F4EACF]/20 shadow-md max-w-[280px]">
           <p className="varna-script-text text-[#7D3F1E] dark:text-[#F1E6C8] text-xl lg:text-[24px] leading-tight font-normal">
             Every credible assessment begins with evidence
           </p>
-        </div>
+        </div> */}
       </motion.div>
     </div>
   );

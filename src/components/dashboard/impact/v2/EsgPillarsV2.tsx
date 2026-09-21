@@ -79,9 +79,7 @@ export default function EsgPillarsV2({
           <h2 className="text-xl lg:text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
             ESG Performance Pillars
           </h2>
-          <span className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-normal hidden sm:inline">
-            Real-time calibrated gauges
-          </span>
+
         </div>
 
         {/* Framework Calibrated Pill */}

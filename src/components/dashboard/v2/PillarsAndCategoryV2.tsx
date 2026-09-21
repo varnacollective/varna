@@ -104,9 +104,7 @@ export default function PillarsAndCategoryV2({
               <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em] whitespace-nowrap">
                 ESG Performance Pillars
               </h2>
-              <span className="hidden sm:inline text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal">
-                Real-time gauges
-              </span>
+
             </div>
 
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0] text-xs font-medium whitespace-nowrap shrink-0">
@@ -205,9 +203,8 @@ export default function PillarsAndCategoryV2({
               return (
                 <div
                   key={cat.categoryName}
-                  className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
-                    isZero ? "opacity-45" : "opacity-100"
-                  }`}
+                  className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
+                    }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <span

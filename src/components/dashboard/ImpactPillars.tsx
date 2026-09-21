@@ -48,14 +48,7 @@ export default function ImpactPillars({
 
   return (
     <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
-      <div className="varna-pillars-header flex justify-between items-center mb-8 border-b border-[#EAE5DC] dark:border-[#9BA9B4]/18 pb-3">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6E7781] dark:text-[#9BA9B4]">
-          ESG Performance Pillars · Real-time Gauges
-        </h3>
-        <span className="text-[9px] font-sans font-semibold uppercase tracking-widest text-[#556B55] dark:text-[#8AAE8A] bg-[#556B55]/10 dark:bg-[#7B9B7B]/15 px-2.5 py-0.5 rounded-full border border-[#556B55]/25 dark:border-[#7B9B7B]/30">
-          Framework Calibrated
-        </span>
-      </div>
+
 
       <div className={`varna-pillars-grid grid ${gridCols} gap-8 justify-items-center`}>
         {visiblePillars.map((pillar) => {

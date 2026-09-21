@@ -64,7 +64,7 @@ export default function WelcomeCardV2({
         {/* Vertically Centered Text Stack (P1-6 fixed) */}
         <div className="flex flex-col justify-center text-center sm:text-left flex-1 min-w-0 relative z-10 py-1">
           <p className="text-[18px] font-normal text-[#5B564E] dark:text-[#C2BCB0] mb-1">
-            Welcome to your Varna Dashboard
+            Your Procurement Impact explained
           </p>
 
           {/* Dynamic Display Title with Clamp */}
@@ -77,11 +77,7 @@ export default function WelcomeCardV2({
             <span className="text-sm font-normal text-[#5B564E] dark:text-[#C2BCB0]">
               {industry}
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#7D3F1E]/30 dark:bg-[#F1E6C8]/30" />
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/60 dark:bg-white/10 border border-[#7D3F1E]/15 dark:border-[#F1E6C8]/20 text-xs text-[#7D3F1E] dark:text-[#F1E6C8] font-medium tracking-wide">
-              <span className="w-2 h-2 rounded-full bg-[#7D3F1E] dark:bg-[#E07A57] animate-pulse" />
-              <span>Active Assessment Interval</span>
-            </div>
+
           </div>
 
           {/* D6 Derived Insight Chips (At a Glance) */}
