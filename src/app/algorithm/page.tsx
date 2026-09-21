@@ -112,7 +112,7 @@ export default function AlgorithmPage() {
                 src="/assets/framework1.jpg"
                 alt="Framework Concept"
                 fill
-                className="object-cover object-right"
+                className="object-cover"
                 priority
               />
             </div>

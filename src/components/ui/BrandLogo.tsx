@@ -200,8 +200,8 @@ export default function BrandLogo({
       text: "text-sm font-semibold",
     },
     lg: {
-      container: "h-full w-full p-2 min-w-[56px] max-w-full",
-      img: "h-full w-full max-h-full object-contain text-sm",
+      container: "h-14 px-4 sm:px-5 min-w-[56px] max-w-[280px]",
+      img: "h-full max-h-10 sm:max-h-11 w-auto object-contain text-sm",
       text: "text-base font-semibold",
     },
   };

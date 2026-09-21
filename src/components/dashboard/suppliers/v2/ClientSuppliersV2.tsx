@@ -104,7 +104,12 @@ export default function ClientSuppliersV2({
         varnaScoreData={varnaScoreData}
       />
 
-
+      {/* 4. Conditional Evidence Alert Banner (S4 & D8) */}
+      <EvidenceAlertV2
+        showAlert={true}
+        alertTitle="Evidence pending for orders #4 and #5"
+        alertBody="Bare Necessities has disclosed its company operations, but the laboratory batch certificate for these formulations hasn't arrived. Until it does, these claims carry a self-reported evidence weight of 0.75×."
+      />
 
       {/* 5. Active Supplier Profiles Header (S5) */}
       <section className="space-y-6 relative">
