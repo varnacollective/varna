@@ -61,7 +61,7 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
           <img src="/logo-light.svg" alt="Varna" className="block dark:hidden h-6 sm:h-7 w-auto object-contain shrink-0" />
           <img src="/logo-dark.svg" alt="Varna" className="hidden dark:block h-6 sm:h-7 w-auto object-contain shrink-0" />
           <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#B85333] dark:text-[#C85D3B]">
-            Welcome to your Varna Dashboard
+            Your Procurement Impact explained
           </span>
         </div>
 
@@ -83,8 +83,6 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
         {industry && (
           <p className="text-xs text-[#6E7781] dark:text-[#9BA9B4] mt-2.5 font-light tracking-wide flex items-center gap-2">
             <span>{industry}</span>
-            <span className="w-1 h-1 rounded-full bg-[#B85333]" />
-            <span>Active Assessment Interval</span>
           </p>
         )}
       </div>
