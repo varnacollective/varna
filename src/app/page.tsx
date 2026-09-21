@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, Eye, EyeOff, Loader2, Quote } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 
 const CAROUSEL_SLIDES = [
   {
@@ -106,17 +106,19 @@ export default function LoginPage() {
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#FAF8F5] text-stone-900 font-sans selection:bg-[#6D7D6D] selection:text-white">
       {/* ── LEFT COLUMN: Form Container (~42% width) ── */}
       <div className="w-full lg:w-[42%] min-h-screen bg-white flex flex-col justify-between items-center p-8 sm:p-12 lg:p-16 relative z-10 flex-shrink-0">
-        {/* Top Header Logo */}
-        <div className="w-full flex justify-center pt-2">
+        {/* Top Combined Branding Block */}
+        <div className="w-full flex flex-col items-center pt-2">
           <img
             src="/Varna 13 Carbon solid.svg"
             alt="Varna Geometric Logo"
-            className="h-14 sm:h-16 w-auto object-contain"
+            className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
             onError={(e) => {
               (e.target as HTMLImageElement).src = "/varna-logo.svg";
             }}
           />
-
+          <span className="text-2xl font-serif tracking-widest text-[#1A1F26] uppercase font-semibold mt-4">
+            VARNA
+          </span>
         </div>
 
         {/* Center Form Container */}
@@ -236,11 +238,6 @@ export default function LoginPage() {
             </button>
           </form>
         </motion.div>
-
-        {/* Bottom Wordmark */}
-        <footer className="w-full text-center text-xs tracking-[0.35em] uppercase font-serif font-semibold text-stone-900 pb-2">
-          VARNA
-        </footer>
       </div>
 
       {/* ── RIGHT COLUMN: Carousel Container (~58% width) ── */}
@@ -250,8 +247,9 @@ export default function LoginPage() {
           {CAROUSEL_SLIDES.map((slide, idx) => (
             <div
               key={slide.image}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
-                }`}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
+              }`}
             >
               <img
                 src={slide.image}
@@ -260,13 +258,6 @@ export default function LoginPage() {
               />
             </div>
           ))}
-
-          {/* Top-Left Quote Icon Badge */}
-          <div className="absolute top-6 left-6 z-20">
-            <div className="w-10 h-10 rounded-xl bg-white/95 backdrop-blur-md shadow-md flex items-center justify-center text-[#8B4513]">
-              <Quote className="w-5 h-5 fill-[#8B4513]" />
-            </div>
-          </div>
 
           {/* Dynamic Handwritten/Serif Script Quote Text Overlay */}
           <AnimatePresence mode="wait">
@@ -291,10 +282,11 @@ export default function LoginPage() {
                 key={idx}
                 onClick={() => setCarouselIndex(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${idx === carouselIndex
-                  ? "w-2.5 h-2.5 bg-white opacity-100 scale-110"
-                  : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80 opacity-60"
-                  }`}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${
+                  idx === carouselIndex
+                    ? "w-2.5 h-2.5 bg-white opacity-100 scale-110"
+                    : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80 opacity-60"
+                }`}
               />
             ))}
           </div>
@@ -303,6 +295,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
-
