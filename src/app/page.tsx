@@ -116,6 +116,7 @@ export default function LoginPage() {
               (e.target as HTMLImageElement).src = "/varna-logo.svg";
             }}
           />
+
         </div>
 
         {/* Center Form Container */}
@@ -128,10 +129,10 @@ export default function LoginPage() {
           {/* Form Titles */}
           <div className="text-center mb-8">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-stone-900 uppercase font-sans mb-2">
-              SUSTAINABILITY PORTAL
+              EVIDENCE TO IMPACT
             </h1>
             <p className="text-xs text-stone-500 font-normal leading-relaxed max-w-xs mx-auto">
-              Secure authenticated access for enterprise hospitality procurement teams.
+              A clear view of your suppliers, procurement choices and the impact they create.
             </p>
           </div>
 
