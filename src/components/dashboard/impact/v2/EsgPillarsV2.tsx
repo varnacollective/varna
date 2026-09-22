@@ -22,14 +22,6 @@ function getBandLabel(score: number): { label: string; bg: string; text: string;
   return { label: "Not Ready", bg: "bg-red-500/15", text: "text-red-600 dark:text-red-400", border: "border-red-500/30" };
 }
 
-function getNextBandDistance(score: number): string | null {
-  if (score < 40) return `${(40 - score).toFixed(1)} points to Foundational`;
-  if (score < 55) return `${(55 - score).toFixed(1)} points to Emerging`;
-  if (score < 70) return `${(70 - score).toFixed(1)} points to Advanced`;
-  if (score < 85) return `${(85 - score).toFixed(1)} points to Leader`;
-  return null;
-}
-
 const PILLARS_DATA = [
   {
     key: "E" as const,
@@ -48,10 +40,16 @@ const PILLARS_DATA = [
   },
 ];
 
+const PILLAR_METER_VALUES: Record<string, number> = {
+  Environmental: 39,
+  Social: 66,
+  Governance: 80,
+};
+
 export default function EsgPillarsV2({
-  eScore = 73.5,
-  sScore = 77.2,
-  gScore = 81.6,
+  eScore = 39,
+  sScore = 66,
+  gScore = 80,
   pillarBreakdown,
   womenWorkforcePercent = 78,
 }: EsgPillarsV2Props) {
@@ -79,7 +77,6 @@ export default function EsgPillarsV2({
           <h2 className="text-xl lg:text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
             ESG Performance Pillars
           </h2>
-
         </div>
 
         {/* Framework Calibrated Pill */}
@@ -94,9 +91,9 @@ export default function EsgPillarsV2({
         {PILLARS_DATA.map((p, idx) => {
           const score = scores[p.label] || 70;
           const band = getBandLabel(score);
-          const nextBandText = getNextBandDistance(score); // D2
           const breakdown = pillarBreakdown?.[p.label] ?? PILLAR_CRITERIA_BREAKDOWN[p.label];
           const isHighest = p.label === highestPillarName;
+          const meterValue = PILLAR_METER_VALUES[p.label] ?? score;
 
           return (
             <motion.div
@@ -117,7 +114,6 @@ export default function EsgPillarsV2({
               "
             >
               <div>
-                {/* Header Row: Pillar Name + Band Pill */}
                 <div className="flex items-center justify-between gap-2 pb-4 border-b border-black/[0.07] dark:border-white/[0.08]">
                   <h3 className="text-xl font-medium text-[#1F1B16] dark:text-[#F3EFE7]">
                     {p.label}
@@ -128,7 +124,6 @@ export default function EsgPillarsV2({
                   </div>
                 </div>
 
-                {/* Circular Gauge Block (Wrapped in PillarBreakdownHoverCard) */}
                 <div className="py-6 flex flex-col items-center justify-center">
                   <PillarBreakdownHoverCard
                     pillarLabel={p.label}
@@ -146,8 +141,8 @@ export default function EsgPillarsV2({
                     </div>
                   </PillarBreakdownHoverCard>
 
-                  {/* D1 Slim 6px 5-Segment Band Scale */}
-                  <div className="w-full max-w-[200px] mt-5" aria-hidden="true">
+                  {/*                   
+                  <div className="w-full max-w-[200px] mt-5" aria-hidden="true" data-value={meterValue}>
                     <div className="flex items-center gap-1 h-1.5 w-full rounded-full bg-black/5 dark:bg-white/10 p-0.5 relative">
                       <div className="h-full w-[40%] bg-[#7A3F1E]/40 rounded-l-full" />
                       <div className="h-full w-[15%] bg-[#6F8391]/40" />
@@ -155,10 +150,9 @@ export default function EsgPillarsV2({
                       <div className="h-full w-[15%] bg-[#7D3F1E]/40" />
                       <div className="h-full w-[15%] bg-[#55705A]/40 rounded-r-full" />
 
-                      {/* Score Marker */}
                       <div
                         className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#7D3F1E] dark:bg-[#E07A57] border-2 border-white dark:border-[#20242B] shadow-xs"
-                        style={{ left: `${Math.min(95, Math.max(5, score))}%` }}
+                        style={{ left: `${meterValue}%` }}
                       />
                     </div>
 
@@ -170,7 +164,7 @@ export default function EsgPillarsV2({
                       <span>85</span>
                       <span>100</span>
                     </div>
-                  </div>
+                  </div>*/}
                 </div>
 
                 {/* Description & D3 Derived Sentences */}
@@ -190,13 +184,6 @@ export default function EsgPillarsV2({
                   )}
                 </div>
               </div>
-
-              {/* D2 Next Band Distance Footer */}
-              {nextBandText && (
-                <div className="pt-3 mt-4 border-t border-black/[0.07] dark:border-white/[0.08] text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-medium">
-                  {nextBandText}
-                </div>
-              )}
             </motion.div>
           );
         })}

@@ -62,11 +62,11 @@ export default function Sidebar({
         className="varna-sidebar fixed left-0 top-0 bottom-0 w-24 flex flex-col items-center py-8 justify-between z-50 bg-white dark:bg-[#141619] border-r border-[#EAE5DC] dark:border-[#9BA9B4]/10 text-[#1A1F26] dark:text-[#EAE5DC] shadow-md dark:shadow-2xl transition-colors duration-300 selection:bg-[#B85333] selection:text-white"
       >
         {/* ── Branding: Varnawordmark ──────── */}
-        <div className="flex items-center justify-center w-full px-3 py-1 varna-sidebar-brand">
+        <div className="flex items-center justify-center w-full px-1 py-1 varna-sidebar-brand overflow-visible">
           <img
             src="/assets/Varnawordmark.svg"
             alt="Varna"
-            className="w-full h-auto max-h-12 object-contain dark:invert transition-opacity duration-300"
+            className="w-24 sm:w-28 h-auto max-h-16 object-contain dark:invert transition-all duration-300 scale-125"
             onError={(e) => {
               (e.target as HTMLImageElement).src = "/Varnawordmark.svg";
             }}

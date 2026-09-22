@@ -157,8 +157,10 @@ export default function SuppliersKpiV2({
           </div>
         </div>
 
-        <div className="text-3xl lg:text-[38px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-3 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend).toLocaleString('en-US')}`}>
-          <AnimatedCounter value={Math.round(totalSpend)} prefix="$" delay={0.3} />
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="text-3xl lg:text-[42px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-3 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend).toLocaleString('en-US')}`}>
+            <AnimatedCounter value={Math.round(totalSpend)} prefix="$" delay={0.3} />
+          </div>
         </div>
 
 

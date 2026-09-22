@@ -101,12 +101,7 @@ export default function ImpactHeroV2({
         {/* Gradient Scrim */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none rounded-[24px]" />
 
-        {/* Overlaid Bottom-Left Cream Note Card with Script Text */}
-        <div className="relative z-10 p-4 rounded-[18px] bg-[#F4EACF]/95 dark:bg-[#2B2720]/95 backdrop-blur-md border border-[#E8DFC5] dark:border-[#F4EACF]/20 shadow-md max-w-[240px]">
-          <p className="varna-script-text text-[#7D3F1E] dark:text-[#F1E6C8] text-xl lg:text-[23px] leading-tight font-normal">
-            Quiet, Slow, Intentional
-          </p>
-        </div>
+
       </motion.div>
     </div>
   );

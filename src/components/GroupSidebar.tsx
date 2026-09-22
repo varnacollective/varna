@@ -72,10 +72,10 @@ export default function GroupSidebar({
                 />
               </div>
               <div className="varna-grp-sidebar-label flex flex-col">
-                <span className="font-sans text-xs uppercase tracking-[0.2em] font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
+                <span className="font-sans text-xl uppercase tracking-[0.2em] font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
                   VARNA
                 </span>
-                <span className="font-sans text-[10px] tracking-wider text-[#6E7781] dark:text-[#8C9DA8] uppercase">
+                <span className="font-sans text-xs tracking-wider text-[#6E7781] dark:text-[#8C9DA8] uppercase">
                   Collective
                 </span>
               </div>
