@@ -83,12 +83,8 @@ export default function WelcomeCardV2({
 
           {/* D6 Derived Insight Chips (At a Glance) */}
           <div className="flex items-center justify-center sm:justify-start gap-2.5 mt-4 flex-wrap pt-3 border-t border-[#7D3F1E]/12 dark:border-[#F1E6C8]/15">
-            <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#7D3F1E]/10 dark:bg-[#F1E6C8]/10 text-[#7D3F1E] dark:text-[#F1E6C8]">
-              {totalSuppliers} supplier enterprises
-            </span>
-            <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0]">
-              {totalOrders} fulfilled orders
-            </span>
+
+
             <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 text-[#6F8391] dark:text-[#93A9B8]">
               {ratingBand}
             </span>

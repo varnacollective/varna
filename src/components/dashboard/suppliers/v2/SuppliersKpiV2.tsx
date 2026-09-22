@@ -161,9 +161,7 @@ export default function SuppliersKpiV2({
           <AnimatedCounter value={Math.round(totalSpend)} prefix="$" delay={0.3} />
         </div>
 
-        <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-          Across vetted ethical artisanal enterprises
-        </p>
+
       </motion.div>
 
       {/* KPI 4: Average Varna Score with Hover Breakdown (NO TRANSFORM to prevent popover clipping!) */}

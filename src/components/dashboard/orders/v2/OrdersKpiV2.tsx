@@ -87,7 +87,7 @@ export default function OrdersKpiV2({
         </div>
 
         <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
-          Across vetted ethical artisanal enterprises
+
         </p>
       </motion.div>
 

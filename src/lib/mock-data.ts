@@ -81,7 +81,7 @@ export interface DashboardData {
 export const MOCK_CLIENTS: ClientMaster[] = [
   {
     clientId: "CLT001",
-    clientName: "The Oberoi Group",
+    clientName: "A Group",
     industry: "Luxury Hospitality",
     city: "Mumbai",
     state: "Maharashtra",
@@ -122,7 +122,7 @@ export const MOCK_CLIENTS: ClientMaster[] = [
 export const MOCK_CLIENT_SUMMARIES: ClientSummary[] = [
   {
     clientId: "CLT001",
-    clientName: "The Oberoi Group",
+    clientName: "A Group",
     totalSpend: 4875000,
     totalOrders: 342,
     avgVarnaScore: 82.4,

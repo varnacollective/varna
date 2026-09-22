@@ -177,7 +177,7 @@ function OverviewSection({
           icon={Wallet}
           accentColor="deep-clay"
           delay={0.05}
-          subtitle="Across vetted ethical artisanal enterprises"
+          subtitle=" "
         />
         <KPICard
           title="Total Orders"
@@ -185,7 +185,7 @@ function OverviewSection({
           icon={ShoppingBag}
           accentColor="slate-mist"
           delay={0.1}
-          subtitle={`Fulfilled by ${summary.totalSuppliers} verified craft groups`}
+          subtitle={` `}
         />
         <KPICard
           title="Avg Varna Score"

@@ -109,16 +109,14 @@ export default function LoginPage() {
         {/* Top Combined Branding Block */}
         <div className="w-full flex flex-col items-center pt-2">
           <img
-            src="/Varna 13 Carbon solid.svg"
+            src="/Varnawordmark.svg"
             alt="Varna Geometric Logo"
-            className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
+            className="w-40 h-40 sm:w-44 sm:h-44 object-contain"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "/varna-logo.svg";
+              (e.target as HTMLImageElement).src = "/Varnawordmark.svg";
             }}
           />
-          <span className="text-2xl font-serif tracking-widest text-[#1A1F26] uppercase font-semibold mt-4">
-            VARNA
-          </span>
+
         </div>
 
         {/* Center Form Container */}
@@ -247,9 +245,8 @@ export default function LoginPage() {
           {CAROUSEL_SLIDES.map((slide, idx) => (
             <div
               key={slide.image}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
+                }`}
             >
               <img
                 src={slide.image}
@@ -282,11 +279,10 @@ export default function LoginPage() {
                 key={idx}
                 onClick={() => setCarouselIndex(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  idx === carouselIndex
-                    ? "w-2.5 h-2.5 bg-white opacity-100 scale-110"
-                    : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80 opacity-60"
-                }`}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${idx === carouselIndex
+                  ? "w-2.5 h-2.5 bg-white opacity-100 scale-110"
+                  : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80 opacity-60"
+                  }`}
               />
             ))}
           </div>

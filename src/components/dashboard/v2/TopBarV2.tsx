@@ -63,7 +63,7 @@ export default function TopBarV2({
       {/* Left: Unified Branding (P1-11 fixed) */}
       <div className="flex items-center gap-3">
         <span className="text-base lg:text-[18px] font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
-          Evidence To Impact
+
         </span>
       </div>
 

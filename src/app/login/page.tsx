@@ -131,7 +131,7 @@ export default function LoginPage() {
           {/* Form Titles */}
           <div className="text-center mb-8">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-stone-900 uppercase font-sans mb-2">
-              EVIDENCE TO IMPACT
+
             </h1>
             <p className="text-xs text-stone-500 font-normal leading-relaxed max-w-xs mx-auto">
               A clear view of your suppliers, procurement choices and the impact they create.
@@ -247,9 +247,8 @@ export default function LoginPage() {
           {CAROUSEL_SLIDES.map((slide, idx) => (
             <div
               key={slide.image}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
+                }`}
             >
               <img
                 src={slide.image}
@@ -282,11 +281,10 @@ export default function LoginPage() {
                 key={idx}
                 onClick={() => setCarouselIndex(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  idx === carouselIndex
+                className={`transition-all duration-300 rounded-full cursor-pointer ${idx === carouselIndex
                     ? "w-2.5 h-2.5 bg-white opacity-100 scale-110"
                     : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80 opacity-60"
-                }`}
+                  }`}
               />
             ))}
           </div>

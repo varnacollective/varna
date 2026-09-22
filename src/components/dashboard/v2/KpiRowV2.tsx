@@ -75,7 +75,7 @@ export default function KpiRowV2({
 
           {/* Caption */}
           <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            {totalOrders === 0 ? "No data in this period" : "Across vetted ethical artisanal enterprises"}
+            {totalOrders === 0 ? "No data in this period" : " "}
           </p>
         </motion.div>
 
@@ -115,7 +115,7 @@ export default function KpiRowV2({
 
           {/* Caption */}
           <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            {totalOrders === 0 ? "No data in this period" : `Fulfilled by ${totalSuppliers} verified craft group${totalSuppliers !== 1 ? "s" : ""}`}
+            {totalOrders === 0 ? "No data in this period" : ` `}
           </p>
         </motion.div>
 

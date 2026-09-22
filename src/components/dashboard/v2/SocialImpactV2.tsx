@@ -31,7 +31,7 @@ export default function SocialImpactV2({
 
   const wageCaption = allSameRatio
     ? `Same multiple at all ${supplierCount} enterprises`
-    : `Across ${supplierCount} supplier enterprises`;
+    : ` `;
 
   const maxWageRatio = Math.max(1.5, ...supplierImpactData.map((s) => s.wageRatio));
 

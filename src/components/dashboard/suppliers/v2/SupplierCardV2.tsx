@@ -192,14 +192,14 @@ export default function SupplierCardV2({
     badges && badges.length > 0
       ? badges
       : isUKHI
-      ? ["DPIIT Startup", "Refillable Format", "ISO 14001", "GST Registered"]
-      : isBare
-      ? ["Cruelty-Free (PETA)", "DPIIT Startup", "Refillable Format", "ISO 14001"]
-      : ["DPIIT Startup", "Refillable Format"];
+        ? ["DPIIT Startup", "Refillable Format", "ISO 14001", "GST Registered"]
+        : isBare
+          ? ["Cruelty-Free (PETA)", "DPIIT Startup", "Refillable Format", "ISO 14001"]
+          : ["DPIIT Startup", "Refillable Format"];
 
   // Certification Badges slicing (3 visible + "+N more" popover)
   const visibleBadges = effectiveBadges.slice(0, 3);
-  const hiddenBadges = effectiveBadges.slice(3);  return (
+  const hiddenBadges = effectiveBadges.slice(3); return (
     <div
       className="
         varna-supplier-card-v2
@@ -318,9 +318,7 @@ export default function SupplierCardV2({
                   <span className="text-sm font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
                     {confidenceLevel}
                   </span>
-                  <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
-                    {confidencePct}%
-                  </span>
+
                 </div>
               </div>
             )}
