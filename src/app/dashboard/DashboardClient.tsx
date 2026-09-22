@@ -20,6 +20,7 @@ import Card from "@/components/ui/Card";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import type { DashboardData } from "@/lib/mock-data";
 
+import { DateRangeProvider } from "@/context/DateRangeContext";
 import ClientOverviewV2 from "@/components/dashboard/v2/ClientOverviewV2";
 import ClientOrdersV2 from "@/components/dashboard/orders/v2/ClientOrdersV2";
 import ClientImpactV2 from "@/components/dashboard/impact/v2/ClientImpactV2";
@@ -90,63 +91,65 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
   const { client, summary, categorySpend, tierDistribution } = data;
 
   return (
-    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 relative selection:bg-[#B85333] selection:text-white overflow-x-hidden">
-      {/* Subtle brand crystal mark in page corner */}
-      <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
+    <DateRangeProvider>
+      <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 relative selection:bg-[#B85333] selection:text-white overflow-x-hidden">
+        {/* Subtle brand crystal mark in page corner */}
+        <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
 
-      {/* Sidebar */}
-      <Sidebar
-        activeSection={activeSection}
-        onSectionChange={handleSectionChange}
-        onLogout={handleLogout}
-      />
+        {/* Sidebar */}
+        <Sidebar
+          activeSection={activeSection}
+          onSectionChange={handleSectionChange}
+          onLogout={handleLogout}
+        />
 
-      {/* Main content */}
-      <main className="varna-main flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
-        {activeSection !== "overview" && (
-          <TopBar
-            clientName={client.clientName}
-            industry={client.industry}
-            logoPath={client.logoPath}
-            dashboardData={data}
-            clientDetails={{
-              "Industry Sector": client.industry,
-              "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
-              "Status": client.status || "Active",
-              "Onboarding Date": client.onboardingDate,
-              "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
-              "Total Spend": summary?.totalSpend ? `$${Math.round(summary.totalSpend / 83).toLocaleString('en-US')}` : undefined,
-            }}
-          />
-        )}
+        {/* Main content */}
+        <main className="varna-main flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
+          {activeSection !== "overview" && (
+            <TopBar
+              clientName={client.clientName}
+              industry={client.industry}
+              logoPath={client.logoPath}
+              dashboardData={data}
+              clientDetails={{
+                "Industry Sector": client.industry,
+                "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
+                "Status": client.status || "Active",
+                "Onboarding Date": client.onboardingDate,
+                "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
+                "Total Spend": summary?.totalSpend ? `$${Math.round(summary.totalSpend / 83).toLocaleString('en-US')}` : undefined,
+              }}
+            />
+          )}
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSection}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {activeSection === "overview" && (
-              <ClientOverviewV2 data={data} />
-            )}
-            {activeSection === "suppliers" && (
-              <SuppliersSection data={data} />
-            )}
-            {activeSection === "orders" && (
-              <ClientOrdersV2 dashboardData={data} />
-            )}
-            {activeSection === "impact" && (
-              <ClientImpactV2 dashboardData={data} supplierImpactData={data.supplierImpactData} />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSection}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {activeSection === "overview" && (
+                <ClientOverviewV2 data={data} />
+              )}
+              {activeSection === "suppliers" && (
+                <SuppliersSection data={data} />
+              )}
+              {activeSection === "orders" && (
+                <ClientOrdersV2 dashboardData={data} />
+              )}
+              {activeSection === "impact" && (
+                <ClientImpactV2 dashboardData={data} supplierImpactData={data.supplierImpactData} />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
-      {/* Varna Chat Assistant */}
-      <ChatWidget dashboardData={data} />
-    </div>
+        {/* Varna Chat Assistant */}
+        <ChatWidget dashboardData={data} />
+      </div>
+    </DateRangeProvider>
   );
 }
 

@@ -230,8 +230,15 @@ export default function AllOrdersTableV2({
               })
             ) : (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-xs text-[#6F6A61] dark:text-[#9A948A]">
-                  No orders match the selected filter criteria.
+                <td colSpan={5} className="py-12 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <p className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
+                      No data in this period
+                    </p>
+                    <p className="text-xs text-[#6F6A61] dark:text-[#9A948A]">
+                      No procurement orders match the selected date range.
+                    </p>
+                  </div>
                 </td>
               </tr>
             )}

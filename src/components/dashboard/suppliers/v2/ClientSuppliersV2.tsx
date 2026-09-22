@@ -89,7 +89,6 @@ export default function ClientSuppliersV2({
 
       {/* 2. Hero Banner (S2) */}
       <SuppliersHeroV2
-        dateRangeText="Apr 1 – Jun 30, 2026"
         dashboardData={dashboardData}
       />
 

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
+import DateRangeFilter from "@/components/ui/DateRangeFilter";
 import ExportButton from "@/components/ExportButton";
 import type { DashboardData } from "@/lib/mock-data";
 
@@ -48,10 +49,7 @@ export default function SuppliersHeroV2({
 
           <div className="flex items-center gap-3 flex-wrap">
             {/* Date Range Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-[#1E2028] border border-black/10 dark:border-white/15 text-xs text-[#5B564E] dark:text-[#C2BCB0] font-medium tracking-wide shadow-xs">
-              <Calendar className="w-3.5 h-3.5 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
-              <span className="uppercase text-[11px] tracking-wider font-semibold">{dateRangeText}</span>
-            </div>
+            <DateRangeFilter />
 
             {/* Export Report Pill */}
 

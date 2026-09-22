@@ -1,6 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
 import type { DashboardData } from "@/lib/mock-data";
+import { CLIENT_ORDERS_LIST } from "@/lib/mock-data";
+import { useDateRange } from "@/context/DateRangeContext";
 import TopBarV2 from "./TopBarV2";
 import WelcomeCardV2 from "./WelcomeCardV2";
 import KpiRowV2 from "./KpiRowV2";
@@ -14,7 +17,26 @@ interface ClientOverviewV2Props {
 }
 
 export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
+  const { state: dateState } = useDateRange();
   const { client, summary, categorySpend, tierDistribution, supplierImpactData } = data;
+
+  const filteredOrders = useMemo(() => {
+    if (!dateState.startDate && !dateState.endDate) return null;
+    const start = dateState.startDate ? new Date(dateState.startDate + "T00:00:00") : null;
+    const end = dateState.endDate ? new Date(dateState.endDate + "T23:59:59") : null;
+
+    return CLIENT_ORDERS_LIST.filter((order) => {
+      if (!order.orderDate) return true;
+      const orderDate = new Date(order.orderDate);
+      if (isNaN(orderDate.getTime())) return true;
+      if (start && orderDate < start) return false;
+      if (end && orderDate > end) return false;
+      return true;
+    });
+  }, [dateState.startDate, dateState.endDate]);
+
+  const currentTotalOrders = filteredOrders ? filteredOrders.length : summary.totalOrders;
+  const currentTotalSpend = filteredOrders ? filteredOrders.reduce((acc, o) => acc + o.orderValue, 0) : summary.totalSpend;
 
   const varnaScoreData = {
     score: Math.round(summary.avgVarnaScore),
@@ -51,15 +73,15 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         industry={client.industry}
         logoPath={client.logoPath}
         totalSuppliers={summary.totalSuppliers}
-        totalOrders={summary.totalOrders}
+        totalOrders={currentTotalOrders}
         ratingBand={ratingBand}
         dashboardData={data}
       />
 
       {/* 3. KPI Strip & Tagline (W4, W5 & D1) */}
       <KpiRowV2
-        totalSpend={summary.totalSpend}
-        totalOrders={summary.totalOrders}
+        totalSpend={currentTotalSpend}
+        totalOrders={currentTotalOrders}
         avgVarnaScore={summary.avgVarnaScore}
         totalSuppliers={summary.totalSuppliers}
         varnaScoreData={varnaScoreData}

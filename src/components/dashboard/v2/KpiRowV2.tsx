@@ -62,16 +62,20 @@ export default function KpiRowV2({
 
           {/* Display Number (Text-Safe Sage #55705A / #9DB4A0) */}
           <div className="text-3xl lg:text-[38px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-3 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend / 83).toLocaleString('en-US')}`}>
-            <AnimatedCounter
-              value={Math.round(totalSpend / 83)}
-              prefix="$"
-              delay={0.2}
-            />
+            {totalOrders === 0 ? (
+              <span className="text-xl text-[#6F6A61] dark:text-[#9A948A] font-medium">$0</span>
+            ) : (
+              <AnimatedCounter
+                value={Math.round(totalSpend / 83)}
+                prefix="$"
+                delay={0.2}
+              />
+            )}
           </div>
 
           {/* Caption */}
           <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            Across vetted ethical artisanal enterprises
+            {totalOrders === 0 ? "No data in this period" : "Across vetted ethical artisanal enterprises"}
           </p>
         </motion.div>
 
@@ -102,12 +106,16 @@ export default function KpiRowV2({
 
           {/* Display Number */}
           <div className="text-3xl lg:text-[42px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-3 tabular-nums">
-            <AnimatedCounter value={totalOrders} delay={0.25} />
+            {totalOrders === 0 ? (
+              <span className="text-xl text-[#6F6A61] dark:text-[#9A948A] font-medium">0</span>
+            ) : (
+              <AnimatedCounter value={totalOrders} delay={0.25} />
+            )}
           </div>
 
           {/* Caption */}
           <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            Fulfilled by {totalSuppliers} verified craft group{totalSuppliers !== 1 ? "s" : ""}
+            {totalOrders === 0 ? "No data in this period" : `Fulfilled by ${totalSuppliers} verified craft group${totalSuppliers !== 1 ? "s" : ""}`}
           </p>
         </motion.div>
 

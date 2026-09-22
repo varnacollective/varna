@@ -8,6 +8,8 @@ import ChatWidget from "@/components/ChatWidget";
 import ClientOrdersV2 from "@/components/dashboard/orders/v2/ClientOrdersV2";
 import type { DashboardData } from "@/lib/mock-data";
 
+import { DateRangeProvider } from "@/context/DateRangeContext";
+
 export default function OrdersClient({
   dashboardData,
 }: {
@@ -37,24 +39,26 @@ export default function OrdersClient({
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#B85333] selection:text-white font-sans relative overflow-x-hidden">
-      {/* Subtle brand crystal mark in page corner */}
-      <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
+    <DateRangeProvider>
+      <div className="min-h-screen flex bg-ambient-mesh-light dark:bg-ambient-mesh-dark text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#B85333] selection:text-white font-sans relative overflow-x-hidden">
+        {/* Subtle brand crystal mark in page corner */}
+        <BrandWatermark position="bottom-right" size={600} opacity={0.035} />
 
-      {/* Sidebar navigation */}
-      <Sidebar
-        activeSection="orders"
-        onSectionChange={handleSectionChange}
-        onLogout={handleLogout}
-      />
+        {/* Sidebar navigation */}
+        <Sidebar
+          activeSection="orders"
+          onSectionChange={handleSectionChange}
+          onLogout={handleLogout}
+        />
 
-      {/* Main Content Area */}
-      <main className="varna-main flex-1 ml-24 p-8 max-w-[1760px] overflow-x-hidden relative z-10">
-        <ClientOrdersV2 dashboardData={dashboardData} />
-      </main>
+        {/* Main Content Area */}
+        <main className="varna-main flex-1 ml-24 p-8 max-w-[1760px] overflow-x-hidden relative z-10">
+          <ClientOrdersV2 dashboardData={dashboardData} />
+        </main>
 
-      {/* Varna Chat Assistant */}
-      <ChatWidget dashboardData={dashboardData} />
-    </div>
+        {/* Varna Chat Assistant */}
+        <ChatWidget dashboardData={dashboardData} />
+      </div>
+    </DateRangeProvider>
   );
 }

@@ -5,6 +5,7 @@ import { Calendar, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import BrandLogo from "@/components/ui/BrandLogo";
+import DateRangeFilter from "@/components/ui/DateRangeFilter";
 import type { DashboardData } from "@/lib/mock-data";
 
 interface TopBarV2Props {
@@ -68,10 +69,9 @@ export default function TopBarV2({
 
       {/* Right Cluster (20px gaps) */}
       <div className="flex items-center gap-4 lg:gap-5 flex-wrap">
-        {/* Date Display */}
-        <div className="hidden lg:flex items-center gap-2 text-xs text-[#6F6A61] dark:text-[#9A948A] font-medium uppercase tracking-widest">
-          <Calendar className="w-4 h-4 text-[#6F6A61] dark:text-[#9A948A]" strokeWidth={1.5} />
-          <span>{currentDate}</span>
+        {/* Date Range Filter */}
+        <div className="hidden lg:flex items-center">
+          <DateRangeFilter />
         </div>
 
         {/* 44px Round Theme Toggle Button */}

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { DashboardData, ClientOrderItem } from "@/lib/mock-data";
 import { CLIENT_ORDERS_LIST } from "@/lib/mock-data";
+import { useDateRange } from "@/context/DateRangeContext";
 import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import OrdersHeroV2 from "./OrdersHeroV2";
 import OrdersKpiV2 from "./OrdersKpiV2";
@@ -16,7 +17,23 @@ interface ClientOrdersV2Props {
 }
 
 export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
-  const [orders] = useState<ClientOrderItem[]>(CLIENT_ORDERS_LIST);
+  const { state: dateState } = useDateRange();
+
+  const filteredOrders = useMemo(() => {
+    if (!dateState.startDate && !dateState.endDate) return CLIENT_ORDERS_LIST;
+    const start = dateState.startDate ? new Date(dateState.startDate + "T00:00:00") : null;
+    const end = dateState.endDate ? new Date(dateState.endDate + "T23:59:59") : null;
+
+    return CLIENT_ORDERS_LIST.filter((order) => {
+      if (!order.orderDate) return true;
+      const orderDate = new Date(order.orderDate);
+      if (isNaN(orderDate.getTime())) return true;
+      if (start && orderDate < start) return false;
+      if (end && orderDate > end) return false;
+      return true;
+    });
+  }, [dateState.startDate, dateState.endDate]);
+
   const [selectedOrderNumber, setSelectedOrderNumber] = useState<string>("#5");
   const [activeFilter, setActiveFilter] = useState<"all" | "awaiting">("all");
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
@@ -27,10 +44,19 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
   const industry = dashboardData?.client?.industry || "Hospitality";
   const logoPath = dashboardData?.client?.logoPath || "/logos/clients/oberoi-dubai.png";
 
-  const totalSpend = dashboardData?.summary?.totalSpend || 313150;
-  const totalOrders = orders.length;
-  const vettedSuppliersCount = 2;
-  const awaitingCount = orders.filter((o) => o.evidenceStatus === "Awaiting certificate").length;
+  const totalOrders = filteredOrders.length;
+  const totalSpend = filteredOrders.reduce((acc, o) => acc + o.orderValue, 0);
+  const vettedSuppliersCount = new Set(filteredOrders.map(o => o.supplierName)).size;
+  const awaitingCount = filteredOrders.filter((o) => o.evidenceStatus === "Awaiting certificate").length;
+
+  // Keep selected order in sync when filtered orders change
+  useEffect(() => {
+    if (filteredOrders.length > 0) {
+      if (!filteredOrders.some(o => o.orderNumber === selectedOrderNumber)) {
+        setSelectedOrderNumber(filteredOrders[0].orderNumber);
+      }
+    }
+  }, [filteredOrders, selectedOrderNumber]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -42,7 +68,7 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
   }, []);
 
   const selectedOrder =
-    orders.find((o) => o.orderNumber === selectedOrderNumber) || orders[0];
+    filteredOrders.find((o) => o.orderNumber === selectedOrderNumber) || filteredOrders[0] || null;
 
   const handleSelectOrder = (order: ClientOrderItem) => {
     setSelectedOrderNumber(order.orderNumber);
@@ -53,7 +79,7 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
 
   const handleSelectAwaitingFilter = () => {
     setActiveFilter("awaiting");
-    const awaitingOrder = orders.find((o) => o.evidenceStatus === "Awaiting certificate");
+    const awaitingOrder = filteredOrders.find((o) => o.evidenceStatus === "Awaiting certificate");
     if (awaitingOrder) {
       setSelectedOrderNumber(awaitingOrder.orderNumber);
     }
@@ -71,7 +97,6 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
 
       {/* 2. Hero Section */}
       <OrdersHeroV2
-        dateRangeText="1 Apr – 30 Jun 2026"
         dashboardData={dashboardData}
       />
 
@@ -81,7 +106,7 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
         totalSpend={totalSpend}
         vettedSuppliersCount={vettedSuppliersCount}
         awaitingCount={awaitingCount}
-        awaitingCaption="Orders #4 and #5 from Bare Necessities"
+        awaitingCaption={awaitingCount > 0 ? "Orders with awaiting verification" : "All orders have evidence on file"}
         onSelectAwaitingFilter={handleSelectAwaitingFilter}
       />
 
@@ -89,7 +114,7 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <div className="lg:col-span-8">
           <AllOrdersTableV2
-            orders={orders}
+            orders={filteredOrders}
             selectedOrderNumber={selectedOrderNumber}
             onSelectOrder={handleSelectOrder}
             activeFilter={activeFilter}
@@ -100,7 +125,13 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
 
         {/* Desktop / Tablet Evidence Panel */}
         <div className="hidden lg:block lg:col-span-4">
-          <EvidencePanelV2 order={selectedOrder} />
+          {selectedOrder ? (
+            <EvidencePanelV2 order={selectedOrder} />
+          ) : (
+            <div className="bg-white dark:bg-[#20242B] rounded-[24px] p-8 border border-black/10 dark:border-white/10 text-center text-xs text-[#6F6A61] dark:text-[#9A948A]">
+              No order selected or no data in this period
+            </div>
+          )}
         </div>
 
         {/* Tablet Full-Width Evidence Panel (768px - 1023px) */}

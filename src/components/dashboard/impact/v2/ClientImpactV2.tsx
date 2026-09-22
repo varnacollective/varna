@@ -45,7 +45,6 @@ export default function ClientImpactV2({
 
       {/* 2. Hero Section */}
       <ImpactHeroV2
-        dateRangeText="1 Apr – 30 Jun 2026"
         dashboardData={dashboardData}
       />
 
