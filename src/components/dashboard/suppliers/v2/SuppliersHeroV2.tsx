@@ -44,7 +44,7 @@ export default function SuppliersHeroV2({
         {/* Top Header Row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <span className="text-xl lg:text-[22px] font-normal text-[#1F1B16] dark:text-[#F1E6C8]">
-            My Suppliers
+            My Partners
           </span>
 
           <div className="flex items-center gap-3 flex-wrap">

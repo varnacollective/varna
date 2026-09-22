@@ -42,7 +42,7 @@ export interface PropertyItem {
 const DEFAULT_PROPERTIES: PropertyItem[] = [
   {
     clientId: "CLT-001",
-    clientName: "The Oberoi Dubai",
+    clientName: "A Dubai",
     propertyType: "Luxury Hotel",
     city: "Dubai",
     country: "UAE",

@@ -26,7 +26,8 @@ export interface BrandLogoProps {
 
 function getInitials(name?: string): string {
   if (!name) return "VC";
-  const cleaned = name.replace(/^(the|a|an)\s+/i, "").trim();
+  if (name.trim().toLowerCase() === "a dubai") return "AD";
+  const cleaned = name.replace(/^(the|an)\s+/i, "").trim();
   const words = cleaned.split(/\s+/).filter(Boolean);
   if (words.length === 0) return "VC";
   if (words.length === 1) return words[0].substring(0, 2).toUpperCase();

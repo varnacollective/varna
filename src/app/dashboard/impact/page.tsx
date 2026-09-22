@@ -58,7 +58,7 @@ export default async function ImpactServerPage() {
         state: clientData?.state || "Unknown State",
         onboardingDate: clientData?.onboarding_date || "2024-01-01",
         status: clientData?.status || "Active",
-        logoPath: clientData?.logo_path || "/logos/clients/oberoi-dubai.png",
+        logoPath: clientData?.logo_path || undefined,
       },
       summary: {
         clientId: session.clientId,

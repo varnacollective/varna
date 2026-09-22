@@ -94,6 +94,47 @@ interface VarnaScoreBandScaleProps {
   className?: string;
 }
 
+export function PerformanceBandsLegend({
+  activeScore,
+  showHeader = false,
+  className = "",
+}: {
+  activeScore?: number;
+  showHeader?: boolean;
+  className?: string;
+}) {
+  const activeBandId = activeScore !== undefined ? getActiveBandId(activeScore) : null;
+
+  return (
+    <div className={`flex items-center gap-x-3 gap-y-1.5 flex-wrap text-[12px] text-[#6F6A61] dark:text-[#9A948A] ${className}`}>
+      {showHeader && (
+        <span className="font-medium text-[#5B564E] dark:text-[#C2BCB0]">Performance Bands:</span>
+      )}
+      {SCORE_BANDS.map((band) => {
+        const isActive = activeBandId === band.id;
+        return (
+          <span
+            key={band.id}
+            className={`flex items-center gap-1.5 transition-all ${
+              isActive
+                ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
+                : ""
+            }`}
+          >
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ backgroundColor: band.color }}
+            />
+            <span>
+              {band.name} {band.rangeLabel}
+            </span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function VarnaScoreBandScale({ score, className = "" }: VarnaScoreBandScaleProps) {
   const activeBandId = getActiveBandId(score);
   const positionPercent = getScorePositionPercent(score);
@@ -133,36 +174,9 @@ export default function VarnaScoreBandScale({ score, className = "" }: VarnaScor
         />
       </div>
 
-      {/* 5-Column Non-Overlapping Grid Legend */}
-      <div className="grid grid-cols-5 w-full pt-1 px-0.5 gap-0.5">
-        {SCORE_BANDS.map((band) => {
-          const isActive = band.id === activeBandId;
-          return (
-            <div
-              key={band.id}
-              className="min-w-0 flex flex-col items-center justify-start text-center overflow-hidden px-0.5"
-            >
-              <span
-                className={`
-                  block w-full text-center leading-[1.15] tracking-tight select-none
-                  break-words overflow-wrap-anywhere
-                  ${
-                    isActive
-                      ? `font-bold ${band.activeTextColor} underline decoration-2 underline-offset-4`
-                      : "font-medium text-[#6F6A61] dark:text-[#9A948A] opacity-75 hover:opacity-100"
-                  }
-                `}
-                style={{
-                  fontSize: "clamp(9px, 2.2vw, 11px)",
-                  maxWidth: "100%",
-                }}
-                title={`${band.name} (${band.rangeLabel})`}
-              >
-                {band.name}
-              </span>
-            </div>
-          );
-        })}
+      {/* Shared Performance Bands Dot+Label Legend */}
+      <div className="pt-1.5">
+        <PerformanceBandsLegend activeScore={score} />
       </div>
     </div>
   );

@@ -111,7 +111,7 @@ export default function AllOrdersTableV2({
                 Order
               </th>
               <th scope="col" className="py-3 px-3">
-                Supplier
+                Partner
               </th>
               <th scope="col" className="py-3 px-3 text-right">
                 Value

@@ -65,7 +65,7 @@ export default function ProgressRing({
             }}
           />
         </svg>
-        
+
         {/* Center value */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.span

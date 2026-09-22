@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Check } from "lucide-react";
 import ImpactPillars from "@/components/dashboard/ImpactPillars";
+import { PerformanceBandsLegend } from "@/components/ui/VarnaScoreBandScale";
 import type { CategorySpend } from "@/lib/mock-data";
 
 interface PillarsAndCategoryV2Props {
@@ -114,27 +115,8 @@ export default function PillarsAndCategoryV2({
             />
           </div>
 
-          {/* Legend Row at Bottom Replacing Old Caption (W6 & P1-7 fixed) */}
-          <div className="pt-4 border-t border-black/[0.07] dark:border-white/[0.08] flex items-center justify-between flex-wrap gap-2 text-[12px] text-[#6F6A61] dark:text-[#9A948A]">
-            <span className="font-medium text-[#5B564E] dark:text-[#C2BCB0]">Performance Bands:</span>
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#D97706]" /> Not Ready &lt;40
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#C05621]" /> Foundational 40–54
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#A89C82]" /> Emerging 55–69
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#6F8391]" /> Advanced 70–84
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#55705A]" /> Leader 85+
-              </span>
-            </div>
-          </div>
+          {/* Shared Performance Bands Legend */}
+          <PerformanceBandsLegend showHeader={true} className="pt-4 border-t border-black/[0.07] dark:border-white/[0.08]" />
         </motion.div>
       </div>
 

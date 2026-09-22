@@ -73,7 +73,7 @@ export default function SocialImpactV2({
                 {womenWorkforcePercent}%
               </div>
               <p className="text-xs text-[#5B564E] dark:text-[#C2BCB0] font-normal mt-1.5">
-                Average of {supplierCount} supplier enterprises
+                Average of {supplierCount} partner enterprises
               </p>
             </div>
           </div>

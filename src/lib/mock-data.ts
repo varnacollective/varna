@@ -81,7 +81,7 @@ export interface DashboardData {
 export const MOCK_CLIENTS: ClientMaster[] = [
   {
     clientId: "CLT001",
-    clientName: "A Group",
+    clientName: "A Dubai",
     industry: "Luxury Hospitality",
     city: "Mumbai",
     state: "Maharashtra",
@@ -122,7 +122,7 @@ export const MOCK_CLIENTS: ClientMaster[] = [
 export const MOCK_CLIENT_SUMMARIES: ClientSummary[] = [
   {
     clientId: "CLT001",
-    clientName: "A Group",
+    clientName: "A Dubai",
     totalSpend: 4875000,
     totalOrders: 342,
     avgVarnaScore: 82.4,
@@ -189,7 +189,7 @@ export const MOCK_CLIENT_SUMMARIES: ClientSummary[] = [
 // ──────────────── 7_SUPPLIER_DETAIL_BY_CLIENT ────────────────
 
 export const MOCK_SUPPLIER_DETAILS: SupplierDetail[] = [
-  // CLT001: The Oberoi Group suppliers
+  // CLT001: A Dubai suppliers
   { clientId: "CLT001", enterpriseId: "ENT001", enterpriseName: "Khadi Naturals", tier: "Platinum", varnaScore: 92, eScore: 95, sScore: 90, gScore: 88, cScore: 94, totalSpend: 520000, totalOrders: 45, city: "Jaipur", state: "Rajasthan", artisansEmployed: 120, womenPercent: 78 },
   { clientId: "CLT001", enterpriseId: "ENT002", enterpriseName: "Anokhi Textiles", tier: "Platinum", varnaScore: 89, eScore: 85, sScore: 92, gScore: 87, cScore: 91, totalSpend: 480000, totalOrders: 38, city: "Jaipur", state: "Rajasthan", artisansEmployed: 95, womenPercent: 82 },
   { clientId: "CLT001", enterpriseId: "ENT003", enterpriseName: "GreenWeave Co.", tier: "Gold", varnaScore: 84, eScore: 88, sScore: 80, gScore: 82, cScore: 86, totalSpend: 350000, totalOrders: 32, city: "Varanasi", state: "Uttar Pradesh", artisansEmployed: 75, womenPercent: 65 },
@@ -559,7 +559,6 @@ export function getClientLogoFallback(clientName?: string): string | undefined {
   const lower = clientName.toLowerCase();
   if (lower.includes("six senses")) return "/logos/clients/six-senses.jpg";
   if (lower.includes("dorchester")) return "/logos/clients/dorchester-collection.png";
-  if (lower.includes("oberoi")) return "/logos/clients/oberoi-dubai.png";
   return undefined;
 }
 

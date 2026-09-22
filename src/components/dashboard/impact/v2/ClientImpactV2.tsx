@@ -19,9 +19,9 @@ export default function ClientImpactV2({
   supplierImpactData,
 }: ClientImpactV2Props) {
   // Client info fallbacks
-  const clientName = dashboardData?.client?.clientName || "The Oberoi";
+  const clientName = dashboardData?.client?.clientName || "A Dubai";
   const industry = dashboardData?.client?.industry || "Hospitality";
-  const logoPath = dashboardData?.client?.logoPath || "/logos/clients/oberoi-dubai.png";
+  const logoPath = dashboardData?.client?.logoPath || undefined;
 
   const summary = dashboardData?.summary;
   const eScore = summary?.avgEScore ?? 73.5;

@@ -520,7 +520,7 @@ function generateExecutiveSummary(data: DashboardData) {
     `${client.clientName} achieved a portfolio-weighted Varna Score of ` +
     `${summary.avgVarnaScore.toFixed(1)}/100, placing the enterprise in the "${rating}" ` +
     `performance band. Across ${summary.totalOrders} procurement orders and ` +
-    `${summary.totalSuppliers} active verified supplier enterprises, the portfolio avoided an estimated ` +
+    `${summary.totalSuppliers} active verified partner enterprises, the portfolio avoided an estimated ` +
     `${summary.totalCO2eAvoidedKg.toLocaleString("en-IN")} kg CO2e through circular sourcing. ` +
     `Social impact indicators reflect ${summary.womenWorkforcePercent.toFixed(1)}% women workforce representation, ` +
     `${artisanSentence} ` +
@@ -541,7 +541,7 @@ function esgInsightText(pillar: "E" | "S" | "G" | "C", score: number | null, dat
       typeof summary.totalArtisansSupported === "number" && summary.totalArtisansSupported > 0
         ? `${summary.totalArtisansSupported.toLocaleString("en-IN")} artisans supported`
         : "supplier workforce impact tracked";
-    return `Social score of ${score ?? 66}/100 driven by ${summary.womenWorkforcePercent.toFixed(1)}% women workforce representation and ${artisanText}. 100% ESI verified coverage across suppliers.`;
+    return `Social score of ${score ?? 66}/100 driven by ${summary.womenWorkforcePercent.toFixed(1)}% women workforce representation and ${artisanText}. 100% ESI verified coverage across partners.`;
   }
   if (pillar === "G") {
     return `Governance score of ${score ?? 80}/100 reflects robust statutory compliance (GST, Udyam, EPR) and verified certifications (ISO 9001, CIPET lab compostability).`;
@@ -895,7 +895,7 @@ export default function VarnaReportPDF({ data, logoSrc }: VarnaReportPDFProps) {
       ══════════════════════════════════════════════════════════ */}
       <Page size="A4" style={S.page}>
         <PageHeaderBlock
-          tag="Section 03: Supplier Portfolio"
+          tag="Section 03: Partner Portfolio"
           title="Active Enterprise Registry"
           subtitle={`${suppliers.length} active verified enterprises · ranked by Varna Score`}
         />
@@ -1048,7 +1048,7 @@ export default function VarnaReportPDF({ data, logoSrc }: VarnaReportPDFProps) {
 
         {/* Legal & Governance Footer Note */}
         <Text style={[S.bodyText, { fontSize: 6.5, color: C.inkMuted, lineHeight: 1.45 }]}>
-          This report is prepared exclusively for {client.clientName} by Varna Collective. All supplier
+          This report is prepared exclusively for {client.clientName} by Varna Collective. All partner
           metrics reflect verified assessments under the Varna ESGC Framework v2.4. Commercial procurement data
           is confidential and restricted to authorized enterprise stakeholders.
         </Text>

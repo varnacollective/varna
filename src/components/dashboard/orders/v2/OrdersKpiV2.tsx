@@ -51,7 +51,7 @@ export default function OrdersKpiV2({
         </div>
 
         <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
-          Across 3 suppliers
+          Across 3 partners
         </p>
       </motion.div>
 
@@ -108,7 +108,7 @@ export default function OrdersKpiV2({
       >
         <div className="flex items-start justify-between">
           <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-            Vetted Suppliers
+            Vetted Partners
           </span>
           <div className="w-9 h-9 rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 flex items-center justify-center text-[#6F8391] dark:text-[#93A9B8] shrink-0">
             <Users className="w-4 h-4" strokeWidth={1.8} />

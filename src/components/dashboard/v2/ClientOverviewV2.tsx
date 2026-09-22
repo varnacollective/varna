@@ -44,7 +44,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
     sScore: Math.round(summary.avgSScore),
     gScore: Math.round(summary.avgGScore),
     cScore: Math.round(summary.avgCScore),
-    supplierName: "Weighted average across your verified suppliers",
+    supplierName: "Weighted average across your verified partners",
   };
 
   const ratingBand = summary.avgVarnaScore >= 85 ? "Leader band" : summary.avgVarnaScore >= 70 ? "Advanced band" : "Emerging band";
@@ -62,7 +62,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
           "Location": client.city && client.state ? `${client.city}, ${client.state}` : client.city || client.state,
           "Status": client.status || "Active",
           "Onboarding Date": client.onboardingDate,
-          "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
+          "Active Partners": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
           "Total Spend": summary?.totalSpend ? `$${Math.round(summary.totalSpend / 83).toLocaleString('en-US')}` : undefined,
         }}
       />

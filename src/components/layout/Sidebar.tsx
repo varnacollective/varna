@@ -23,7 +23,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, href: "/dashboard?section=overview" },
-  { id: "suppliers", label: "Suppliers", icon: Store, href: "/dashboard/suppliers" },
+  { id: "suppliers", label: "Partners", icon: Store, href: "/dashboard/suppliers" },
   { id: "orders", label: "Orders", icon: ShoppingBag, href: "/dashboard?section=orders" },
   { id: "impact", label: "Impact", icon: Leaf, href: "/dashboard?section=impact" },
   { id: "algorithm", label: "Framework", icon: Network, href: "/algorithm" },
@@ -61,28 +61,16 @@ export default function Sidebar({
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="varna-sidebar fixed left-0 top-0 bottom-0 w-24 flex flex-col items-center py-8 justify-between z-50 bg-white dark:bg-[#141619] border-r border-[#EAE5DC] dark:border-[#9BA9B4]/10 text-[#1A1F26] dark:text-[#EAE5DC] shadow-md dark:shadow-2xl transition-colors duration-300 selection:bg-[#B85333] selection:text-white"
       >
-        {/* ── Branding: CSS-based logo swap (no JS, no hydration risk) ──────── */}
-        <div className="flex flex-col items-center w-full px-2 gap-1.5 varna-sidebar-brand">
-          {/* Light Mode logo — black/carbon strokes on white sidebar */}
+        {/* ── Branding: Varnawordmark ──────── */}
+        <div className="flex items-center justify-center w-full px-3 py-1 varna-sidebar-brand">
           <img
-            src="/Varna 13 Carbon solid.svg"
-            alt="Varna Collective"
-            className="block dark:hidden h-12 sm:h-14 w-auto object-contain"
+            src="/assets/Varnawordmark.svg"
+            alt="Varna"
+            className="w-full h-auto max-h-12 object-contain dark:invert transition-opacity duration-300"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/Varnawordmark.svg";
+            }}
           />
-          {/* Dark Mode logo — brand Deep Clay + Sandstone fills on dark sidebar */}
-          <img
-            src="/varna-logo.svg"
-            alt="Varna Collective"
-            className="hidden dark:block h-12 sm:h-14 w-auto object-contain"
-          />
-
-          {/* Brand typography — explicit hex overrides to defeat any inherited color */}
-          <div className="flex flex-col items-center leading-none varna-sidebar-wordmark">
-            <span className="text-[9px] font-sans font-bold tracking-[0.28em] uppercase text-[#1A1F26] dark:text-[#EFECE6] transition-colors duration-300">
-              VARNA
-            </span>
-
-          </div>
         </div>
 
         {/* Navigation items */}

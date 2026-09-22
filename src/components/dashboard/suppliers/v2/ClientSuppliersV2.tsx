@@ -24,7 +24,7 @@ interface ClientSuppliersV2Props {
 export default function ClientSuppliersV2({
   suppliersData = [],
   liveConfidenceData = {},
-  clientName = "The Oberoi Group",
+  clientName = "A Dubai",
   industry = "Luxury Hospitality",
   logoPath,
   dashboardData,
@@ -74,7 +74,7 @@ export default function ClientSuppliersV2({
     sScore: 76,
     gScore: 72,
     cScore: 74,
-    supplierName: "Weighted average across your verified suppliers",
+    supplierName: "Weighted average across your verified partners",
   };
 
   return (
@@ -104,15 +104,15 @@ export default function ClientSuppliersV2({
 
 
 
-      {/* 5. Active Supplier Profiles Header (S5) */}
+      {/* 5. Active Partner Profiles Header (S5) */}
       <section className="space-y-6 relative">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-black/[0.07] dark:border-white/[0.08] pb-4 gap-4">
           <div>
             <h2 className="text-[28px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
-              Active Supplier Profiles
+              Active Partner Profiles
             </h2>
             <p className="text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
-              Scores, evidence confidence and certifications for each supplier.
+              Scores, evidence confidence and certifications for each partner.
             </p>
           </div>
 
@@ -164,7 +164,7 @@ export default function ClientSuppliersV2({
           tabIndex={0}
           role="region"
           aria-roledescription="carousel"
-          aria-label="Active Supplier Profiles"
+          aria-label="Active Partner Profiles"
           className="
             flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-6
             [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden

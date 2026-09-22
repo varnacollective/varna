@@ -105,27 +105,26 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#FAF8F5] text-stone-900 font-sans selection:bg-[#6D7D6D] selection:text-white">
       {/* ── LEFT COLUMN: Form Container (~42% width) ── */}
-      <div className="w-full lg:w-[42%] min-h-screen bg-white flex flex-col justify-between items-center p-8 sm:p-12 lg:p-16 relative z-10 flex-shrink-0">
-        {/* Top Combined Branding Block */}
-        <div className="w-full flex flex-col items-center pt-2">
-          <img
-            src="/Varnawordmark.svg"
-            alt="Varna Geometric Logo"
-            className="w-40 h-40 sm:w-44 sm:h-44 object-contain"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/Varnawordmark.svg";
-            }}
-          />
-
-        </div>
-
+      <div className="w-full lg:w-[42%] min-h-screen bg-white flex flex-col justify-center items-center p-8 sm:p-12 lg:p-16 relative z-10 flex-shrink-0">
         {/* Center Form Container */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-sm my-auto py-8"
+          className="w-full max-w-sm my-auto py-6 flex flex-col items-center"
         >
+          {/* Repositioned & Enlarged VARNA Wordmark */}
+          <div className="w-full flex justify-center mb-2.5 sm:mb-3">
+            <img
+              src="/Varnawordmark.svg"
+              alt="Varna Geometric Logo"
+              className="w-72 h-auto sm:w-84 max-h-36 object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/Varnawordmark.svg";
+              }}
+            />
+          </div>
+
           {/* Form Titles */}
           <div className="text-center mb-8">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-stone-900 uppercase font-sans mb-2">

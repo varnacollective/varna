@@ -43,7 +43,7 @@ export default function SuppliersKpiV2({
   const bandLabel = getBandLabel(avgVarnaScore);
 
   // D3 Derived Insight: Format list of supplier names cleanly using Intl.ListFormat
-  let supplierNamesCaption = "Across verified artisanal suppliers";
+  let supplierNamesCaption = "Across verified artisanal partners";
   if (supplierNames.length > 0) {
     const shortNames = supplierNames.map((name) => {
       if (name.toLowerCase().includes("bare")) return "Bare Necessities";
@@ -65,7 +65,7 @@ export default function SuppliersKpiV2({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 items-stretch">
-      {/* KPI 1: Active Suppliers */}
+      {/* KPI 1: Active Partners */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,7 +82,7 @@ export default function SuppliersKpiV2({
       >
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-            Active Suppliers
+            Active Partners
           </span>
           <div className="w-9 h-9 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
             <Building className="w-4 h-4" strokeWidth={1.8} />
@@ -127,9 +127,9 @@ export default function SuppliersKpiV2({
           <AnimatedCounter value={totalOrders} delay={0.25} />
         </div>
 
-        {/* P1-7 fixed: Across N suppliers */}
+        {/* P1-7 fixed: Across N partners */}
         <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-          Across {totalSuppliers} supplier enterprise{totalSuppliers !== 1 ? "s" : ""}
+          Across {totalSuppliers} partner enterprise{totalSuppliers !== 1 ? "s" : ""}
         </p>
       </motion.div>
 

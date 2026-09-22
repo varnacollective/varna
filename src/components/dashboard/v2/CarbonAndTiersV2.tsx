@@ -212,16 +212,16 @@ export default function CarbonAndTiersV2({
             Partner Tier Distribution
           </h2>
           <p className="text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
-            Partner  by enterprise size
+            Partners by enterprise size
           </p>
 
           <div className="flex items-baseline gap-2 my-3">
-            {/* P0-1 FIXED: Shows 3 TOTAL SUPPLIERS */}
+            {/* P0-1 FIXED: Shows 3 TOTAL PARTNERS */}
             <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
               {correctTotalSuppliers}
             </span>
             <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
-              TOTAL Partner
+              TOTAL PARTNERS
             </span>
           </div>
 
@@ -285,7 +285,7 @@ export default function CarbonAndTiersV2({
         {/* D4 Pinned Footer Insight Tile (W10 fixed) */}
         <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
           <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
-            Largest tier: {largestTierName} ({largestTierCount} of {correctTotalSuppliers} suppliers)
+            Largest tier: {largestTierName} ({largestTierCount} of {correctTotalSuppliers} partners)
           </span>
           <span className="text-[#6F6A61] dark:text-[#9A948A]">
             {Math.round((largestTierCount / correctTotalSuppliers) * 100)}% share
