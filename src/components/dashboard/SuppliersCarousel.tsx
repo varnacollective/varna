@@ -163,15 +163,15 @@ export default function SuppliersCarousel({
                     legalName={name}
                     logoPath={supplier.logo_path}
                     location={
-                      supplier.city
-                        ? `${supplier.city}, ${supplier.state}`
-                        : isUKHI
-                        ? "Pune, Maharashtra"
-                        : isBare
+                      isBare
                         ? "Bengaluru, Karnataka"
+                        : isUKHI
+                        ? "Faridabad, Haryana"
                         : isKheoni
                         ? "Indore, Madhya Pradesh"
-                        : "Karnataka, India"
+                        : supplier.city && supplier.state
+                        ? `${supplier.city}, ${supplier.state}`
+                        : "Bengaluru, Karnataka"
                     }
                     dataTier={isVerified ? "verified" : "self-reported"}
                     varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
@@ -253,15 +253,15 @@ export default function SuppliersCarousel({
                 legalName={name}
                 logoPath={supplier.logo_path}
                 location={
-                  supplier.city
-                    ? `${supplier.city}, ${supplier.state}`
-                    : isUKHI
-                    ? "Pune, Maharashtra"
-                    : isBare
+                  isBare
                     ? "Bengaluru, Karnataka"
+                    : isUKHI
+                    ? "Faridabad, Haryana"
                     : isKheoni
                     ? "Indore, Madhya Pradesh"
-                    : "Karnataka, India"
+                    : supplier.city && supplier.state
+                    ? `${supplier.city}, ${supplier.state}`
+                    : "Bengaluru, Karnataka"
                 }
                 dataTier={isVerified ? "verified" : "self-reported"}
                 varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}

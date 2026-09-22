@@ -202,10 +202,29 @@ export default async function SuppliersServerPage() {
         return false;
       });
 
+      const lowerSupplier = name.toLowerCase();
+      const city = lowerSupplier.includes("bare")
+        ? "Bengaluru"
+        : lowerSupplier.includes("ukhi")
+        ? "Faridabad"
+        : lowerSupplier.includes("kheoni")
+        ? "Indore"
+        : "Bengaluru";
+
+      const state = lowerSupplier.includes("bare")
+        ? "Karnataka"
+        : lowerSupplier.includes("ukhi")
+        ? "Haryana"
+        : lowerSupplier.includes("kheoni")
+        ? "Madhya Pradesh"
+        : "Karnataka";
+
       return {
         enterprise_id: scoreRow.enterprise_id,
         enterprise_name: name,
         logo_path: logoPath,
+        city,
+        state,
         final_varna_score: scoreRow.final_varna_score ?? 0,
         e_pillar_score: scoreRow.e_pillar_score ?? 0,
         s_pillar_score: scoreRow.s_pillar_score ?? 0,

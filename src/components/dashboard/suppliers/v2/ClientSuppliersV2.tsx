@@ -184,6 +184,24 @@ export default function ClientSuppliersV2({
             const confidencePct = confidenceEntry?.score ?? supplier.confidence_pct ?? (isUKHI ? 63 : isBare ? 47 : isKheoni ? 24 : 50);
             const isVerified = confidencePct >= 60;
 
+            const location = isBare
+              ? "Bengaluru, Karnataka"
+              : isUKHI
+              ? "Faridabad, Haryana"
+              : isKheoni
+              ? "Indore, Madhya Pradesh"
+              : supplier.city && supplier.state
+              ? `${supplier.city}, ${supplier.state}`
+              : "Bengaluru, Karnataka";
+
+            const legalName = isBare
+              ? "Bare Necessities Zero Waste Solutions Pvt. Ltd."
+              : isUKHI
+              ? "UKHI India Private Limited"
+              : isKheoni
+              ? "Kheoni Ventures Pvt Ltd"
+              : name;
+
             return (
               <div
                 key={supplier.enterprise_id || name}
@@ -191,9 +209,9 @@ export default function ClientSuppliersV2({
               >
                 <SupplierCardV2
                   name={name}
-                  legalName={isBare ? "Bare Necessities Zero Waste Solutions Pvt. Ltd." : isUKHI ? "UKHI India Private Limited" : name}
+                  legalName={legalName}
                   logoPath={supplier.logo_path}
-                  location={supplier.city ? `${supplier.city}, ${supplier.state}` : isUKHI ? "Pune, Maharashtra" : "Bengaluru, Karnataka"}
+                  location={location}
                   varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
                   eScore={supplier.e_pillar_score ?? 60}
                   sScore={supplier.s_pillar_score ?? 55}
