@@ -171,20 +171,23 @@ export default function VarnaScoreHoverCard({
                     {/* ── Header ─────────────────────────────────── */}
                     <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-mist/20 dark:border-midnight-blue">
                       <div>
-                        <h4 className="text-sm font-sans font-medium tracking-tight text-carbon-ink dark:text-warm-stone leading-tight">
-                          Varna Score Breakdown
+                        <h4 className="text-xs font-sans font-semibold tracking-wider uppercase text-carbon-ink dark:text-warm-stone leading-tight">
+                          VARNA VERIFIED PARTNER SCORE
                         </h4>
-                        {supplierName && (
-                          <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 mt-0.5 font-light tracking-wide">
-                            {supplierName}
-                          </p>
-                        )}
+                        <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 mt-1 font-light tracking-wide">
+                          {supplierName && supplierName !== "Portfolio Average" ? supplierName : "Weighted average across your verified suppliers"}
+                        </p>
                       </div>
-                      <div className="flex flex-col items-end gap-1.5">
-                        <CountUpNumber
-                          value={score}
-                          className="text-3xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone"
-                        />
+                      <div className="flex flex-col items-end gap-1">
+                        <div className="flex items-baseline gap-0.5">
+                          <CountUpNumber
+                            value={score}
+                            className="text-3xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone"
+                          />
+                          <span className="text-xs font-normal text-slate-mist/80 dark:text-warm-stone/60 ml-0.5">
+                            / 100
+                          </span>
+                        </div>
                         <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${band.bg} ${band.text} ${band.border}`}>
                           {band.name}
                         </span>
@@ -201,7 +204,7 @@ export default function VarnaScoreHoverCard({
                           </span>
                         </div>
                         <span className="text-[8px] font-semibold uppercase tracking-widest text-sage-mineral bg-sage-mineral/10 px-2 py-0.5 border border-sage-mineral/20">
-                          50% Weight
+                          50% Weightage
                         </span>
                       </div>
                       <div className="space-y-2.5">
@@ -233,7 +236,7 @@ export default function VarnaScoreHoverCard({
 
                     {/* ── Readiness Section (30%) ─────────────────── */}
                     <div className="mb-5">
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5">
                           <Shield className="w-3 h-3 text-slate-mist" strokeWidth={2} />
                           <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
@@ -241,15 +244,22 @@ export default function VarnaScoreHoverCard({
                           </span>
                         </div>
                         <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-mist bg-slate-mist/10 px-2 py-0.5 border border-slate-mist/20">
-                          30% Weight
+                          30% Weightage
                         </span>
                       </div>
-                      <div className="flex items-center gap-2.5">
-                        <Shield className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
-                        <span className="text-[10px] w-[72px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
-                          Mgmt & Certs
-                        </span>
-                        <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 overflow-hidden">
+                            <Shield className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
+                            <span className="text-[10px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide leading-tight">
+                              Management, certifications & documentation
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono w-7 text-right shrink-0">
+                            {readinessScore}
+                          </span>
+                        </div>
+                        <div className="w-full h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
                           <motion.div
                             className="h-full rounded-r-sm"
                             style={{ backgroundColor: getBarColor(readinessScore) }}
@@ -258,9 +268,6 @@ export default function VarnaScoreHoverCard({
                             transition={{ duration: 0.7, delay: 0.35, ease: EASE_SMOOTH }}
                           />
                         </div>
-                        <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono w-7 text-right">
-                          {readinessScore}
-                        </span>
                       </div>
                     </div>
 
@@ -274,7 +281,7 @@ export default function VarnaScoreHoverCard({
                           </span>
                         </div>
                         <span className="text-[8px] font-semibold uppercase tracking-widest text-deep-clay bg-deep-clay/10 px-2 py-0.5 border border-deep-clay/20">
-                          20% Weight
+                          20% Weightage
                         </span>
                       </div>
                       <div className="flex items-center gap-2.5">
@@ -305,7 +312,7 @@ export default function VarnaScoreHoverCard({
                       className="pt-4 border-t border-slate-mist/15 dark:border-midnight-blue/60"
                     >
                       <p className="text-[9px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
-                        Calculated using the Varna Framework 2.0. Intersection Suppliers receive a +5 bonus.
+                        Calculated using the Varna Framework 2.0.
                       </p>
                     </motion.div>
                   </div>

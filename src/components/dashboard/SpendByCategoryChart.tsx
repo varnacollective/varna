@@ -27,9 +27,8 @@ const BRAND_CHART_COLORS = [
 ];
 
 function formatCurrency(val: number): string {
-  if (val >= 1000000) return `₹${(val / 1000000).toFixed(1)}M`;
-  if (val >= 1000) return `₹${Math.round(val / 1000)}K`;
-  return `₹${val}`;
+  const usd = Math.round(val / 83);
+  return `$${usd.toLocaleString('en-US')}`;
 }
 
 const RADIAN = Math.PI / 180;

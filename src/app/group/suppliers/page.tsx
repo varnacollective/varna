@@ -167,13 +167,13 @@ export default async function GroupSuppliersPage() {
           <div>
             <div className="text-[10px] font-sans font-semibold uppercase tracking-[0.22em] text-[#B85333] dark:text-[#D4705A] mb-1 flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" />
-              <span>ETHICAL PROCUREMENT &amp; SUPPLIER REGISTRY</span>
+              <span>ETHICAL PROCUREMENT &amp; Partner REGISTRY</span>
             </div>
             <h1 className="font-sans text-3xl sm:text-4xl font-medium tracking-tight text-[#1A1F26] dark:text-[#FAF8F5] uppercase">
-              Group Supplier Portfolio
+              Group Partner  Portfolio
             </h1>
             <p className="text-xs text-[#6E7781] dark:text-[#8C9DA8] mt-1 font-light max-w-2xl leading-relaxed">
-              Top verified enterprise suppliers across micro, small, and medium tiers with audited sustainability credentials, living wage affidavits, and confidence verification gauges.
+              Top verified enterprise Partners across micro, small, and medium tiers with audited sustainability credentials, living wage affidavits, and confidence verification gauges.
             </p>
           </div>
 

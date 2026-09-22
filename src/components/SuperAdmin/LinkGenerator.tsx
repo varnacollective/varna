@@ -69,14 +69,14 @@ export default function LinkGenerator() {
               className="w-4 h-4 object-contain"
             />
             <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-mist">
-              Supplier Onboarding
+              Partner Onboarding
             </span>
           </div>
           <h2 className="text-xl font-sans font-medium text-warm-stone tracking-tight">
             Assessment Link Generator
           </h2>
           <p className="text-[11px] text-slate-mist font-light mt-1 leading-relaxed max-w-sm">
-            Generate a unique, secure assessment URL for a supplier enterprise. The link is saved
+            Generate a unique, secure assessment URL for a Partner enterprise. The link is saved
             to Supabase and can be shared directly with the supplier.
           </p>
         </div>
@@ -157,11 +157,10 @@ export default function LinkGenerator() {
             id="copy-assessment-link-btn"
             onClick={handleCopy}
             title="Copy link to clipboard"
-            className={`flex items-center gap-2 px-3.5 py-2 text-[10px] font-mono uppercase tracking-widest border transition-all duration-200 shrink-0 cursor-pointer ${
-              copied
+            className={`flex items-center gap-2 px-3.5 py-2 text-[10px] font-mono uppercase tracking-widest border transition-all duration-200 shrink-0 cursor-pointer ${copied
                 ? "bg-sage-mineral/20 border-sage-mineral/50 text-sage-mineral"
                 : "bg-white/5 border-slate-mist/20 text-slate-mist hover:border-warm-stone/40 hover:text-warm-stone"
-            }`}
+              }`}
           >
             {copied ? (
               <>

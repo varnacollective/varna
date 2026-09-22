@@ -24,23 +24,13 @@ const BRAND_CHART_COLORS = [
 ];
 
 function formatLakhOrInr(val: number): string {
-  if (val >= 100000) {
-    return `INR ${(val / 100000).toFixed(2)} LAKH`;
-  }
-  if (val >= 1000) {
-    return `INR ${Math.round(val / 1000)}K`;
-  }
-  return `INR ${val}`;
+  const usd = Math.round(val / 83);
+  return `$${usd.toLocaleString('en-US')}`;
 }
 
 function formatRowAmount(val: number): string {
-  if (val >= 100000) {
-    return `INR ${(val / 100000).toFixed(2)} lakh`;
-  }
-  if (val >= 1000) {
-    return `INR ${Math.round(val / 1000)}k`;
-  }
-  return `INR ${val}`;
+  const usd = Math.round(val / 83);
+  return `$${usd.toLocaleString('en-US')}`;
 }
 
 export default function PillarsAndCategoryV2({
@@ -129,10 +119,10 @@ export default function PillarsAndCategoryV2({
             <span className="font-medium text-[#5B564E] dark:text-[#C2BCB0]">Performance Bands:</span>
             <div className="flex items-center gap-3 flex-wrap">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#7D3F1E]" /> Not Ready &lt;40
+                <span className="w-2 h-2 rounded-full bg-[#D97706]" /> Not Ready &lt;40
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#7D3F1E]" /> Foundational 40–54
+                <span className="w-2 h-2 rounded-full bg-[#C05621]" /> Foundational 40–54
               </span>
               <span className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-[#A89C82]" /> Emerging 55–69
@@ -141,7 +131,7 @@ export default function PillarsAndCategoryV2({
                 <span className="w-2 h-2 rounded-full bg-[#6F8391]" /> Advanced 70–84
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#6E8471]" /> Leader 85+
+                <span className="w-2 h-2 rounded-full bg-[#55705A]" /> Leader 85+
               </span>
             </div>
           </div>

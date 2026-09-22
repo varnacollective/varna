@@ -210,11 +210,10 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className={`text-xs p-3 flex items-center gap-2 border ${
-                    statusMessage.type === "success"
+                  className={`text-xs p-3 flex items-center gap-2 border ${statusMessage.type === "success"
                       ? "bg-sage-mineral/10 border-sage-mineral/30 text-warm-stone"
                       : "bg-red-950/20 border-red-800/30 text-red-200"
-                  }`}
+                    }`}
                 >
                   {statusMessage.type === "success" ? (
                     <CheckCircle2 className="w-4 h-4 text-sage-mineral shrink-0" />
@@ -253,7 +252,7 @@ export default function CredentialsClient({ initialCredentials }: CredentialsCli
               Authentication Architecture
             </h3>
             <p className="text-xs text-slate-mist font-light leading-relaxed mb-4">
-              Credentials issued here enable hotel clients to view their consolidated ESG metrics, supplier impact scores, and download third-party verified sustainability certificates.
+              Credentials issued here enable hotel clients to view their consolidated ESG metrics, partner impact scores, and download third-party verified sustainability certificates.
             </p>
             <div className="space-y-2.5 text-xs text-warm-stone/80">
               <div className="flex items-start gap-2">

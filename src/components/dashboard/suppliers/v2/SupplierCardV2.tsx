@@ -153,10 +153,10 @@ export default function SupplierCardV2({
   const quoteText = isBare
     ? "Zerowaste personal care formulations with 100% circular packaging and ethically sourced botanicals."
     : isUKHI
-    ? "High-impact handloom textiles produced under strict fair-wage compliance and traditional artisan preservation."
-    : isKheoni
-    ? "Forest-first organic wellness formulations directly sustaining indigenous tribal collection communities."
-    : null;
+      ? "High-impact handloom textiles produced under strict fair-wage compliance and traditional artisan preservation."
+      : isKheoni
+        ? "Forest-first organic wellness formulations directly sustaining indigenous tribal collection communities."
+        : null;
 
   // Category bars dataset (Pillar colors)
   const bars = categoryBars || [
@@ -319,9 +319,9 @@ export default function SupplierCardV2({
           {bars.map((b) => {
             const pillarColor =
               b.label.includes("Env") ? "#55705A" :
-              b.label.includes("Social") ? "#7D3F1E" :
-              b.label.includes("Gov") ? "#6F8391" :
-              "#2B3A55"; // Carbon Impact (light blue #8FA6D0 in dark)
+                b.label.includes("Social") ? "#7D3F1E" :
+                  b.label.includes("Gov") ? "#6F8391" :
+                    "#2B3A55"; // Carbon Impact (light blue #8FA6D0 in dark)
 
             return (
               <div key={b.label} className="space-y-1">
@@ -425,14 +425,7 @@ export default function SupplierCardV2({
 
       {/* Footer Links (Pinned to Bottom with mt-auto) */}
       <div className="pt-4 mt-6 border-t border-black/[0.07] dark:border-white/[0.08] flex items-center justify-between text-xs font-semibold">
-        <button
-          type="button"
-          onClick={() => alert(`Viewing detailed Varna Scorecard for ${name}`)}
-          className="text-[#7D3F1E] dark:text-[#E07A57] hover:underline underline-offset-4 flex items-center gap-1.5 cursor-pointer min-h-[44px] px-2 items-center"
-        >
-          <span>View Scorecard</span>
-          <ExternalLink className="w-3.5 h-3.5" />
-        </button>
+
 
         <Link
           href="/dashboard?section=orders"

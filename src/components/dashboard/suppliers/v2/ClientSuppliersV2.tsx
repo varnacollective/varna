@@ -7,7 +7,6 @@ import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import FooterDisclaimerV2 from "@/components/dashboard/v2/FooterDisclaimerV2";
 import SuppliersHeroV2 from "./SuppliersHeroV2";
 import SuppliersKpiV2 from "./SuppliersKpiV2";
-import EvidenceAlertV2 from "./EvidenceAlertV2";
 import SupplierCardV2 from "./SupplierCardV2";
 import SpendByCategoryV2 from "./SpendByCategoryV2";
 import type { DashboardData, SupplierConfidenceData } from "@/lib/mock-data";
@@ -104,12 +103,7 @@ export default function ClientSuppliersV2({
         varnaScoreData={varnaScoreData}
       />
 
-      {/* 4. Conditional Evidence Alert Banner (S4 & D8) */}
-      <EvidenceAlertV2
-        showAlert={true}
-        alertTitle="Evidence pending for orders #4 and #5"
-        alertBody="Bare Necessities has disclosed its company operations, but the laboratory batch certificate for these formulations hasn't arrived. Until it does, these claims carry a self-reported evidence weight of 0.75×."
-      />
+
 
       {/* 5. Active Supplier Profiles Header (S5) */}
       <section className="space-y-6 relative">

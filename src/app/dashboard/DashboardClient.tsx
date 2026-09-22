@@ -115,7 +115,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
               "Status": client.status || "Active",
               "Onboarding Date": client.onboardingDate,
               "Active Suppliers": summary?.totalSuppliers ? `${summary.totalSuppliers} Verified Enterprises` : undefined,
-              "Total Spend": summary?.totalSpend ? `₹${summary.totalSpend.toLocaleString('en-IN')}` : undefined,
+              "Total Spend": summary?.totalSpend ? `$${Math.round(summary.totalSpend / 83).toLocaleString('en-US')}` : undefined,
             }}
           />
         )}
@@ -169,8 +169,8 @@ function OverviewSection({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard
           title="Total Spend"
-          value={summary.totalSpend}
-          prefix="₹"
+          value={Math.round(summary.totalSpend / 83)}
+          prefix="$"
           icon={Wallet}
           accentColor="deep-clay"
           delay={0.05}
@@ -200,7 +200,7 @@ function OverviewSection({
             sScore: Math.round(summary.avgSScore),
             gScore: Math.round(summary.avgGScore),
             cScore: Math.round(summary.avgCScore),
-            supplierName: "Portfolio Average",
+            supplierName: "Weighted average across your verified suppliers",
           }}
         />
 
@@ -291,7 +291,7 @@ function SuppliersSection({ data }: { data: DashboardData }) {
     <div className="space-y-6">
       <div className="flex flex-col items-start border-b border-[#6F848F]/25 dark:border-[#8C9DA8]/20 pb-3 mb-6">
         <h2 className="varna-section-h2 text-3xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] tracking-hero uppercase leading-none">
-          Supplier Portfolio
+          Partner Portfolio
         </h2>
         <p className="text-xs text-[#6F848F] dark:text-[#8C9DA8] mt-1 font-light tracking-wide">
           List of vetted artisanal enterprises and procurement performance metrics.
@@ -394,7 +394,7 @@ function SuppliersSection({ data }: { data: DashboardData }) {
 function OrdersSection({ summary }: { summary: DashboardData["summary"] }) {
   const orderStats = [
     { label: "Total Orders", value: summary.totalOrders, prefix: "", suffix: "" },
-    { label: "Total Spend", value: summary.totalSpend, prefix: "₹", suffix: "" },
+    { label: "Total Spend", value: Math.round(summary.totalSpend / 83), prefix: "$", suffix: "" },
     { label: "Vetted Suppliers", value: summary.totalSuppliers, prefix: "", suffix: "" },
   ];
 

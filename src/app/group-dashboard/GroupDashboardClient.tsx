@@ -321,7 +321,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
               <span>&bull;</span>
               <span>{summary.noProperties} Portfolio Properties</span>
               <span>&bull;</span>
-              <span>{summary.noActiveSupplierRelationships} Active Supplier Relationships</span>
+              <span>{summary.noActiveSupplierRelationships} Active Partner Relationships</span>
             </p>
           </div>
 
@@ -577,7 +577,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
             </div>
 
             <div className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8] text-center border-t border-[#EAE5DC] dark:border-[#8C9DA8]/15 pt-3 font-mono">
-              Weighted composite score calculated across all active supplier relationships and verified audit documents
+              Weighted composite score calculated across all active partner relationships and verified audit documents
             </div>
           </div>
         </section>
@@ -744,7 +744,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
           <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-6 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
             <div className="border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 pb-3 flex items-center justify-between">
               <h3 className="text-xs font-sans font-semibold uppercase tracking-[0.14em] text-[#6E7781] dark:text-[#8C9DA8]">
-                SUPPLIER TIER DISTRIBUTION
+                PARTNER TIER DISTRIBUTION
               </h3>
             </div>
 
@@ -795,7 +795,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
           {/* EDITORIAL MAGAZINE PULL-QUOTE CARD */}
           <div className="bg-gradient-to-br from-[#FAF8F5] via-[#F4EFEA] to-[#EAE5DC] dark:from-[#1E2028] dark:via-[#191B22] dark:to-[#121316] border border-[#EAE5DC] dark:border-[#8C9DA8]/25 rounded-xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden group">
             <Quote className="w-16 h-16 text-[#B85333]/15 dark:text-[#B85333]/25 absolute -top-3 -left-3 pointer-events-none rotate-12" />
-            
+
             <div className="space-y-4 relative z-10 pt-4">
               <div className="text-[10px] uppercase font-sans font-bold tracking-[0.22em] text-[#B85333] flex items-center gap-1.5">
                 <Sparkles className="w-3 h-3 text-[#B85333]" />

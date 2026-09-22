@@ -70,7 +70,7 @@ export default function SuppliersHeroV2({
         {/* Central Headline Stack */}
         <div className="my-auto py-4 relative z-10">
           <h1 className="font-light font-display uppercase tracking-[0.12em] leading-[1.1] text-[#1F1B16] dark:text-[#F1E6C8] text-[28px] sm:text-[36px] lg:text-[46px] xl:text-[52px] text-balance break-words">
-            THE SUPPLIERS BEHIND YOUR ORDERS
+            THE  CURATED PARTNERS POWERING YOUR ORDERS
           </h1>
           <p className="text-sm lg:text-[15px] text-[#5B564E] dark:text-[#C2BCB0] font-normal max-w-2xl mt-2 leading-relaxed">
             Scores, evidence and order details for each enterprise that fulfilled your orders.

@@ -53,7 +53,7 @@ export default function SocialImpactV2({
           Social Livelihood Impact
         </h2>
         <p className="text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
-          Women's employment and wages at your supplier enterprises
+          Women's employment and wages at your partner enterprises
         </p>
       </div>
 

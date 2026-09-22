@@ -209,10 +209,10 @@ export default function CarbonAndTiersV2({
       >
         <div>
           <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
-            Supplier Tier Distribution
+            Partner Tier Distribution
           </h2>
           <p className="text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
-            Suppliers by enterprise size
+            Partner  by enterprise size
           </p>
 
           <div className="flex items-baseline gap-2 my-3">
@@ -221,7 +221,7 @@ export default function CarbonAndTiersV2({
               {correctTotalSuppliers}
             </span>
             <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
-              TOTAL SUPPLIERS
+              TOTAL Partner
             </span>
           </div>
 
@@ -255,9 +255,8 @@ export default function CarbonAndTiersV2({
               return (
                 <div
                   key={tier.key}
-                  className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
-                    isZero ? "opacity-45" : "opacity-100"
-                  }`}
+                  className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
+                    }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <span
