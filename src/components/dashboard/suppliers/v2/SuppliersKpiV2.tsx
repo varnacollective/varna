@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Building, ShoppingBag, Wallet, Award } from "lucide-react";
 import VarnaScoreHoverCard, { type VarnaScoreData } from "@/components/ui/VarnaScoreHoverCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
+import VarnaScoreBandScale from "@/components/ui/VarnaScoreBandScale";
 
 interface SuppliersKpiV2Props {
   totalSuppliers: number;
@@ -208,44 +209,7 @@ export default function SuppliersKpiV2({
             </div>
 
             {/* Redesigned 5-Segment Performance Band Indicator */}
-            <div className="w-full my-1 space-y-1">
-              {/* Marker Pin above bar */}
-              <div className="relative w-full h-3">
-                <div
-                  className="absolute -top-0.5 flex flex-col items-center -translate-x-1/2 z-20 transition-all duration-300"
-                  style={{ left: `${Math.min(100, Math.max(0, avgVarnaScore))}%` }}
-                  title={`Current Score: ${avgVarnaScore}`}
-                >
-                  <span className="text-[10px] leading-none text-[#7D3F1E] dark:text-[#E07A57] font-bold select-none">
-                    ▼
-                  </span>
-                </div>
-              </div>
-
-              {/* 5 Distinct Colored Segments */}
-              <div className="w-full h-2.5 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 relative p-0.5 gap-0.5">
-                <div className="h-full bg-[#D97706] rounded-l-full transition-opacity hover:opacity-90" style={{ width: "40%" }} title="Not Ready: <40" />
-                <div className="h-full bg-[#C05621] transition-opacity hover:opacity-90" style={{ width: "15%" }} title="Foundational: 40–54" />
-                <div className="h-full bg-[#A89C82] transition-opacity hover:opacity-90" style={{ width: "15%" }} title="Emerging: 55–69" />
-                <div className="h-full bg-[#6F8391] transition-opacity hover:opacity-90" style={{ width: "15%" }} title="Advanced: 70–84" />
-                <div className="h-full bg-[#55705A] rounded-r-full transition-opacity hover:opacity-90" style={{ width: "15%" }} title="Leader: 85–100" />
-
-                {/* Solid Vertical Marker Line */}
-                <div
-                  className="absolute top-0 bottom-0 w-1 bg-[#1F1B16] dark:bg-white shadow-sm -ml-0.5 rounded-full z-10"
-                  style={{ left: `${Math.min(100, Math.max(0, avgVarnaScore))}%` }}
-                />
-              </div>
-
-              {/* Minimalist Band Scale Legend */}
-              <div className="flex justify-between items-center text-[8.5px] font-medium text-[#6F6A61] dark:text-[#9A948A] px-0.5 pt-0.5">
-                <span className={avgVarnaScore < 40 ? "text-[#D97706] font-bold" : "opacity-75"}>Not Ready</span>
-                <span className={avgVarnaScore >= 40 && avgVarnaScore < 55 ? "text-[#C05621] font-bold" : "opacity-75"}>Foundational</span>
-                <span className={avgVarnaScore >= 55 && avgVarnaScore < 70 ? "text-[#A89C82] font-bold" : "opacity-75"}>Emerging</span>
-                <span className={avgVarnaScore >= 70 && avgVarnaScore < 85 ? "text-[#6F8391] font-bold text-[9.5px] underline decoration-2 underline-offset-2" : "opacity-75"}>Advanced</span>
-                <span className={avgVarnaScore >= 85 ? "text-[#55705A] font-bold" : "opacity-75"}>Leader</span>
-              </div>
-            </div>
+            <VarnaScoreBandScale score={avgVarnaScore} />
 
             <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug mt-1">
               {bandCaption}

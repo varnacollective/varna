@@ -76,10 +76,9 @@ export default function AllOrdersTableV2({
             aria-pressed={activeFilter === "all"}
             className={`
               px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer min-h-[36px]
-              ${
-                activeFilter === "all"
-                  ? "bg-[#7D3F1E] dark:bg-[#8A4622] text-white shadow-xs font-semibold"
-                  : "text-[#5B564E] dark:text-[#C2BCB0] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
+              ${activeFilter === "all"
+                ? "bg-[#7D3F1E] dark:bg-[#8A4622] text-white shadow-xs font-semibold"
+                : "text-[#5B564E] dark:text-[#C2BCB0] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
               }
             `}
           >
@@ -92,14 +91,13 @@ export default function AllOrdersTableV2({
             aria-pressed={activeFilter === "awaiting"}
             className={`
               px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer min-h-[36px]
-              ${
-                activeFilter === "awaiting"
-                  ? "bg-[#7D3F1E] dark:bg-[#8A4622] text-white shadow-xs font-semibold"
-                  : "text-[#5B564E] dark:text-[#C2BCB0] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
+              ${activeFilter === "awaiting"
+                ? "bg-[#7D3F1E] dark:bg-[#8A4622] text-white shadow-xs font-semibold"
+                : "text-[#5B564E] dark:text-[#C2BCB0] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
               }
             `}
           >
-            Awaiting evidence {awaitingCount}
+
           </button>
         </div>
       </div>
@@ -121,9 +119,9 @@ export default function AllOrdersTableV2({
               <th scope="col" className="py-3 px-3">
                 Fulfilment
               </th>
-              <th scope="col" className="py-3 px-3">
+              {/* <th scope="col" className="py-3 px-3">
                 Evidence
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.05]">
@@ -141,8 +139,8 @@ export default function AllOrdersTableV2({
                 const evidencePillStyle = isAwaiting
                   ? "border-[#7D3F1E]/30 text-[#7D3F1E] dark:border-[#E07A57]/40 dark:text-[#E07A57] bg-[#7D3F1E]/5 dark:bg-[#E07A57]/10"
                   : isVerified
-                  ? "border-[#55705A]/30 text-[#55705A] dark:border-[#9DB4A0]/40 dark:text-[#9DB4A0] bg-[#55705A]/5 dark:bg-[#9DB4A0]/10"
-                  : "border-black/10 text-[#6F6A61] dark:border-white/15 dark:text-[#9A948A] bg-black/5 dark:bg-white/5";
+                    ? "border-[#55705A]/30 text-[#55705A] dark:border-[#9DB4A0]/40 dark:text-[#9DB4A0] bg-[#55705A]/5 dark:bg-[#9DB4A0]/10"
+                    : "border-black/10 text-[#6F6A61] dark:border-white/15 dark:text-[#9A948A] bg-black/5 dark:bg-white/5";
 
                 return (
                   <tr
@@ -153,10 +151,9 @@ export default function AllOrdersTableV2({
                     aria-current={isSelected ? "true" : undefined}
                     className={`
                       group cursor-pointer transition-colors duration-150 rounded-[18px] outline-none
-                      ${
-                        isSelected
-                          ? "bg-[#F7F3EA] dark:bg-[#272C34] border-l-4 border-[#7D3F1E] dark:border-[#E07A57]"
-                          : "hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
+                      ${isSelected
+                        ? "bg-[#F7F3EA] dark:bg-[#272C34] border-l-4 border-[#7D3F1E] dark:border-[#E07A57]"
+                        : "hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
                       }
                     `}
                   >
@@ -216,7 +213,7 @@ export default function AllOrdersTableV2({
                       </div>
                     </td>
 
-                    {/* Evidence Status Outlined Pill */}
+                    {/* Evidence Status Outlined Pill
                     <td className="py-4 px-3 align-middle">
                       <div
                         className={`
@@ -225,9 +222,9 @@ export default function AllOrdersTableV2({
                         `}
                       >
                         <span className="truncate max-w-[120px]">{order.evidenceStatus}</span>
-                        <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                      </div>
-                    </td>
+                        <ChevronRight className="w-3.5 h-3.5 shrink-0" /> */}
+
+
                   </tr>
                 );
               })
@@ -249,6 +246,6 @@ export default function AllOrdersTableV2({
           Total <span className="font-semibold ml-1">$</span>{Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
