@@ -11,9 +11,9 @@ interface SpendCategoryItem {
 }
 
 const CATEGORY_DATA: SpendCategoryItem[] = [
-  { name: "Organic Toiletries", value: 1583, percentage: 42, color: "#7D3F1E" }, // deep-clay
+  { name: "Organic Toiletries", value: 1585, percentage: 42, color: "#7D3F1E" }, // deep-clay
   { name: "Artisan Ceramics", value: 905, percentage: 24, color: "#4C7355" },   // green
-  { name: "Handmade Soap", value: 754, percentage: 20, color: "#36424A" },      // blue-slate
+  { name: "Handmade Soap", value: 755, percentage: 20, color: "#36424A" },      // blue-slate
   { name: "Eco-Packaging", value: 528, percentage: 14, color: "#B85333" },      // terracotta
 ];
 

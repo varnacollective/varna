@@ -33,7 +33,7 @@ function getBandLabel(score: number): string {
 export default function SuppliersKpiV2({
   totalSuppliers = 3,
   totalOrders = 5,
-  totalSpend = 3770,
+  totalSpend = 3773,
   avgVarnaScore = 75.3,
   supplierNames = ["Bare Necessities", "Kheoni Ventures", "UKHI India"],
   varnaScoreData,

@@ -54,16 +54,7 @@ export default function SuppliersHeroV2({
             </div>
 
             {/* Export Report Pill */}
-            {dashboardData ? (
-              <ExportButton data={dashboardData} variant="topbar" />
-            ) : (
-              <button
-                disabled
-                className="bg-[#7D3F1E] text-white px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider flex items-center gap-2 shadow-md cursor-not-allowed opacity-60"
-              >
-                Export Report
-              </button>
-            )}
+
           </div>
         </div>
 

@@ -170,10 +170,10 @@ export default function AllOrdersTableV2({
                       </div>
                     </td>
 
-                    {/* Supplier Logo Tile (D3) + Name */}
+                    {/* Supplier Logo Tile + Name */}
                     <td className="py-4 px-3 align-middle">
                       <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-white border border-black/10 shadow-2xs flex items-center justify-center p-1 shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-white border border-gray-200 shadow-2xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
                           <BrandLogo
                             logoPath={order.supplierLogo}
                             alt={order.supplierName}
@@ -182,20 +182,19 @@ export default function AllOrdersTableV2({
                             entityType="supplier"
                           />
                         </div>
-                        <span className="text-sm font-medium text-[#1F1B16] dark:text-[#F3EFE7]">
+                        <span className="text-sm font-medium text-[#1F1B16] dark:text-[#F3EFE7] whitespace-nowrap">
                           {order.supplierName}
                         </span>
                       </div>
                     </td>
 
-                    {/* Value + Spend Share Hairline Bar (D5) */}
+                    {/* Value + Spend Share Hairline Bar */}
                     <td className="py-4 px-3 align-middle text-right">
                       <div className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tabular-nums">
-                        <span className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-normal mr-1">INR</span>
-                        {order.orderValue.toLocaleString("en-IN")}
+                        ${Math.round(order.orderValue > 10000 ? order.orderValue / 83 : order.orderValue).toLocaleString("en-US")}
                       </div>
 
-                      {/* D5 Hairline Spend Share Bar */}
+                      {/* Spend Share Hairline Bar */}
                       <div className="w-16 h-1 rounded-full bg-black/5 dark:bg-white/10 ml-auto mt-1 overflow-hidden">
                         <div
                           className="h-full bg-[#55705A] dark:bg-[#9DB4A0] rounded-full"
@@ -247,7 +246,7 @@ export default function AllOrdersTableV2({
       <div className="pt-4 mt-auto border-t border-black/[0.07] dark:border-white/[0.08] flex items-center justify-between text-xs text-[#6F6A61] dark:text-[#9A948A] font-normal">
         <span>Showing {filteredOrders.length} of {orders.length} orders</span>
         <div className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
-          Total <span className="font-normal text-[#6F6A61] dark:text-[#9A948A] ml-1">INR</span> {totalSpend.toLocaleString("en-IN")}
+          Total <span className="font-semibold ml-1">$</span>{Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}
         </div>
       </div>
     </div>

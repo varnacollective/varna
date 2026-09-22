@@ -336,15 +336,17 @@ export default function SupplierProfileCard({
         {/* 1. Header Block: Supplier Name + Status Badge & Varna Score */}
         <div className="flex justify-between items-start mb-2 gap-2">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2.5 mb-1 min-w-0">
-              <BrandLogo
-                logoPath={logoPath}
-                alt={name}
-                name={name}
-                size="sm"
-                entityType="supplier"
-                details={supplierDetails}
-              />
+            <div className="flex items-center gap-3 mb-1 min-w-0">
+              <div className="w-14 h-14 rounded-lg border border-gray-200 bg-white flex items-center justify-center p-1 overflow-hidden shrink-0">
+                <BrandLogo
+                  logoPath={logoPath}
+                  alt={name}
+                  name={name}
+                  size="sm"
+                  entityType="supplier"
+                  details={supplierDetails}
+                />
+              </div>
               <h4 
                 className="text-lg sm:text-xl font-sans text-[#222326] dark:text-[#FAF6EE] font-bold tracking-tight truncate"
                 title={name}

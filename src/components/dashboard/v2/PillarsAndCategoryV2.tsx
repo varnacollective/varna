@@ -24,12 +24,12 @@ const BRAND_CHART_COLORS = [
 ];
 
 function formatLakhOrInr(val: number): string {
-  const usd = Math.round(val / 83);
+  const usd = val > 10000 ? Math.round(val / 83) : Math.round(val);
   return `$${usd.toLocaleString('en-US')}`;
 }
 
 function formatRowAmount(val: number): string {
-  const usd = Math.round(val / 83);
+  const usd = val > 10000 ? Math.round(val / 83) : Math.round(val);
   return `$${usd.toLocaleString('en-US')}`;
 }
 

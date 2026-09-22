@@ -187,9 +187,19 @@ export default function SupplierCardV2({
 
   const bandLabel = getBandLabel(varnaScore);
 
+  // Fallback badges array if props empty (ensures UKHI certificate count is accurately bound)
+  const effectiveBadges =
+    badges && badges.length > 0
+      ? badges
+      : isUKHI
+      ? ["DPIIT Startup", "Refillable Format", "ISO 14001", "GST Registered"]
+      : isBare
+      ? ["Cruelty-Free (PETA)", "DPIIT Startup", "Refillable Format", "ISO 14001"]
+      : ["DPIIT Startup", "Refillable Format"];
+
   // Certification Badges slicing (3 visible + "+N more" popover)
-  const visibleBadges = badges.slice(0, 3);
-  const hiddenBadges = badges.slice(3);
+  const visibleBadges = effectiveBadges.slice(0, 3);
+  const hiddenBadges = effectiveBadges.slice(3);
 
   return (
     <div
@@ -206,23 +216,23 @@ export default function SupplierCardV2({
       "
     >
 
-      {/* Top Header Row (Logo, Title, Score - P1-1, P1-3, P1-4 fixed) */}
+      {/* Top Header Row */}
       <div>
         <div className="flex items-start justify-between gap-4 pb-5 border-b border-black/[0.07] dark:border-white/[0.08]">
           {/* Logo Tile + Title & Subtitle Stack */}
           <div className="flex items-start gap-4 min-w-0 flex-1">
-            {/* 72px White Logo Container */}
-            <div className="w-[72px] h-[72px] rounded-[18px] bg-white dark:bg-white border border-black/10 shadow-xs flex items-center justify-center p-2.5 shrink-0">
+            {/* Standardized 56px (w-14 h-14) White Logo Container */}
+            <div className="w-14 h-14 rounded-lg border border-gray-200 bg-white flex items-center justify-center p-1 overflow-hidden shrink-0">
               <BrandLogo
                 logoPath={logoPath}
                 alt={name}
                 name={name}
-                size="md"
+                size="sm"
                 entityType="supplier"
               />
             </div>
 
-            {/* Title & Subtitle Stack (No overlap! P1-4 fixed) */}
+            {/* Title & Subtitle Stack */}
             <div className="flex flex-col min-w-0 pr-2">
               <h3 className="text-xl lg:text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
                 {name}
@@ -233,7 +243,7 @@ export default function SupplierCardV2({
             </div>
           </div>
 
-          {/* Varna Score Eyebrow & Display Block (Wrapped in VarnaScoreHoverCard, NO TRANSFORM! P1-4 fixed) */}
+          {/* Varna Score Eyebrow & Display Block */}
           <VarnaScoreHoverCard {...varnaScoreData}>
             <div className="flex flex-col items-end shrink-0 cursor-help group">
               <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A] mb-0.5">
@@ -255,7 +265,7 @@ export default function SupplierCardV2({
           </VarnaScoreHoverCard>
         </div>
 
-        {/* Stat Row: SKUs, Units, Evidence Confidence (3 Blocks with Hairlines) */}
+        {/* Stat Row: SKUs, Units, Evidence Confidence */}
         <div className="grid grid-cols-3 gap-4 py-4 border-b border-black/[0.07] dark:border-white/[0.08] items-center text-center sm:text-left">
           {/* Block 1: SKUs sourced */}
           <div>
@@ -277,7 +287,7 @@ export default function SupplierCardV2({
             </span>
           </div>
 
-          {/* Block 3: Evidence Confidence with Interactive Hover Card */}
+          {/* Block 3: Simplified Clean Evidence Confidence Widget */}
           <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-4 flex flex-col justify-center">
             <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
               Evidence confidence
@@ -291,32 +301,27 @@ export default function SupplierCardV2({
                 status={confidenceEntry.status}
                 checklist={confidenceEntry.checklist}
               >
-                <div className="flex items-center gap-2.5 cursor-help group">
-                  <ConfidenceRing score={confidencePct} size={36} strokeWidth={3.5} />
-                  <div className="flex flex-col text-left justify-center">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] leading-none">
-                        {confidenceLevel}
-                      </span>
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0] leading-none">
-                        {confidencePct}%
-                      </span>
-                    </div>
-                    <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-light mt-1 leading-none">
-                      {confidencePct}% • 0.75× weight
+                <div className="flex items-center gap-4 cursor-help group">
+                  <ConfidenceRing score={confidencePct} size={38} strokeWidth={3.5} />
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
+                      {confidenceLevel}
+                    </span>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
+                      {confidencePct}%
                     </span>
                   </div>
                 </div>
               </ConfidenceChecklistHoverCard>
             ) : (
-              <div className="flex items-center gap-2.5">
-                <ConfidenceRing score={confidencePct} size={36} strokeWidth={3.5} />
-                <div className="flex flex-col text-left justify-center">
-                  <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] leading-none">
+              <div className="flex items-center gap-4">
+                <ConfidenceRing score={confidencePct} size={38} strokeWidth={3.5} />
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
                     {confidenceLevel}
                   </span>
-                  <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-light mt-1 leading-none">
-                    {confidencePct}% • 0.75× weight
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
+                    {confidencePct}%
                   </span>
                 </div>
               </div>

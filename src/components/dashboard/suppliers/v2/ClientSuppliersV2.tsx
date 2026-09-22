@@ -97,7 +97,7 @@ export default function ClientSuppliersV2({
       <SuppliersKpiV2
         totalSuppliers={3}
         totalOrders={5}
-        totalSpend={3770}
+        totalSpend={3773}
         avgVarnaScore={75.3}
         supplierNames={supplierNames}
         varnaScoreData={varnaScoreData}
