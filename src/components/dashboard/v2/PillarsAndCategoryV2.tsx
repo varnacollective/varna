@@ -25,13 +25,11 @@ const BRAND_CHART_COLORS = [
 ];
 
 function formatLakhOrInr(val: number): string {
-  const usd = val > 10000 ? Math.round(val / 83) : Math.round(val);
-  return `$${usd.toLocaleString('en-US')}`;
+  return `$${val.toLocaleString('en-US')}`;
 }
 
 function formatRowAmount(val: number): string {
-  const usd = val > 10000 ? Math.round(val / 83) : Math.round(val);
-  return `$${usd.toLocaleString('en-US')}`;
+  return `$${val.toLocaleString('en-US')}`;
 }
 
 export default function PillarsAndCategoryV2({
@@ -48,7 +46,7 @@ export default function PillarsAndCategoryV2({
   const topCategory = categorySpend.length > 0
     ? [...categorySpend].sort((a, b) => b.totalSpend - a.totalSpend)[0]
     : null;
-  const topPct = topCategory && totalCategorySpend > 0 ? Math.round((topCategory.totalSpend / totalCategorySpend) * 100) : 0;
+  const topPct = topCategory && totalCategorySpend > 0 ? (topCategory.totalSpend / totalCategorySpend * 100).toFixed(1) : "0";
   const activeCatCount = categorySpend.filter((c) => c.totalSpend > 0).length;
 
   return (
@@ -168,7 +166,8 @@ export default function PillarsAndCategoryV2({
           {/* Row List for ALL Categories (including 0% ones - P0-4 & W8 fixed) */}
           <div className="space-y-3 mt-4">
             {categorySpend.map((cat, idx) => {
-              const pct = totalCategorySpend > 0 ? Math.round((cat.totalSpend / totalCategorySpend) * 100) : 0;
+              const pctVal = totalCategorySpend > 0 ? (cat.totalSpend / totalCategorySpend) * 100 : 0;
+              const pctStr = pctVal % 1 === 0 ? pctVal.toString() : pctVal.toFixed(1);
               const color = BRAND_CHART_COLORS[idx % BRAND_CHART_COLORS.length];
               const isZero = cat.totalSpend === 0;
 
@@ -193,7 +192,7 @@ export default function PillarsAndCategoryV2({
                       {formatRowAmount(cat.totalSpend)}
                     </span>
                     <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[36px] text-right tabular-nums">
-                      {pct}%
+                      {pctStr}%
                     </span>
                   </div>
                 </div>

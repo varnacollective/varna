@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useMemo } from "react";
 import type { ClientOrderItem } from "@/lib/mock-data";
 import BrandLogo from "@/components/ui/BrandLogo";
-import { ChevronRight } from "lucide-react";
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 interface AllOrdersTableV2Props {
   orders: ClientOrderItem[];
@@ -23,15 +23,20 @@ export default function AllOrdersTableV2({
   totalSpend,
 }: AllOrdersTableV2Props) {
   const tableRef = useRef<HTMLTableElement>(null);
+  const [sortAsc, setSortAsc] = useState<boolean>(true); // Default to ascending (#1 -> #5)
 
-  const awaitingCount = orders.filter(
-    (o) => o.evidenceStatus === "Awaiting certificate"
-  ).length;
+  const filteredOrders = useMemo(() => {
+    const baseList =
+      activeFilter === "awaiting"
+        ? orders.filter((o) => o.evidenceStatus === "Awaiting certificate")
+        : orders;
 
-  const filteredOrders =
-    activeFilter === "awaiting"
-      ? orders.filter((o) => o.evidenceStatus === "Awaiting certificate")
-      : orders;
+    return [...baseList].sort((a, b) => {
+      const numA = parseInt(a.orderNumber.replace(/\D/g, ""), 10) || 0;
+      const numB = parseInt(b.orderNumber.replace(/\D/g, ""), 10) || 0;
+      return sortAsc ? numA - numB : numB - numA;
+    });
+  }, [orders, activeFilter, sortAsc]);
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === "ArrowDown") {
@@ -84,21 +89,6 @@ export default function AllOrdersTableV2({
           >
             All {orders.length}
           </button>
-
-          <button
-            type="button"
-            onClick={() => onFilterChange("awaiting")}
-            aria-pressed={activeFilter === "awaiting"}
-            className={`
-              px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer min-h-[36px]
-              ${activeFilter === "awaiting"
-                ? "bg-[#7D3F1E] dark:bg-[#8A4622] text-white shadow-xs font-semibold"
-                : "text-[#5B564E] dark:text-[#C2BCB0] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
-              }
-            `}
-          >
-
-          </button>
         </div>
       </div>
 
@@ -108,7 +98,19 @@ export default function AllOrdersTableV2({
           <thead>
             <tr className="border-b border-black/[0.07] dark:border-white/[0.08] text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
               <th scope="col" className="py-3 px-3">
-                Order
+                <button
+                  type="button"
+                  onClick={() => setSortAsc(!sortAsc)}
+                  className="flex items-center gap-1 hover:text-[#1F1B16] dark:hover:text-white cursor-pointer transition-colors uppercase tracking-[0.14em]"
+                  title="Click to toggle sort order"
+                >
+                  <span>Order</span>
+                  {sortAsc ? (
+                    <ArrowUp className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" />
+                  ) : (
+                    <ArrowDown className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" />
+                  )}
+                </button>
               </th>
               <th scope="col" className="py-3 px-3">
                 Partner
@@ -119,9 +121,6 @@ export default function AllOrdersTableV2({
               <th scope="col" className="py-3 px-3">
                 Fulfilment
               </th>
-              {/* <th scope="col" className="py-3 px-3">
-                Evidence
-              </th> */}
             </tr>
           </thead>
           <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.05]">
@@ -135,12 +134,6 @@ export default function AllOrdersTableV2({
 
                 const fulfilmentDotColor =
                   order.fulfilmentStatus.toLowerCase().includes("complete") ? "#55705A" : "#6F8391";
-
-                const evidencePillStyle = isAwaiting
-                  ? "border-[#7D3F1E]/30 text-[#7D3F1E] dark:border-[#E07A57]/40 dark:text-[#E07A57] bg-[#7D3F1E]/5 dark:bg-[#E07A57]/10"
-                  : isVerified
-                    ? "border-[#55705A]/30 text-[#55705A] dark:border-[#9DB4A0]/40 dark:text-[#9DB4A0] bg-[#55705A]/5 dark:bg-[#9DB4A0]/10"
-                    : "border-black/10 text-[#6F6A61] dark:border-white/15 dark:text-[#9A948A] bg-black/5 dark:bg-white/5";
 
                 return (
                   <tr
@@ -212,19 +205,6 @@ export default function AllOrdersTableV2({
                         </span>
                       </div>
                     </td>
-
-                    {/* Evidence Status Outlined Pill
-                    <td className="py-4 px-3 align-middle">
-                      <div
-                        className={`
-                          inline-flex items-center justify-between gap-1.5 px-3 py-1 rounded-full border text-xs font-medium transition-colors
-                          ${evidencePillStyle}
-                        `}
-                      >
-                        <span className="truncate max-w-[120px]">{order.evidenceStatus}</span>
-                        <ChevronRight className="w-3.5 h-3.5 shrink-0" /> */}
-
-
                   </tr>
                 );
               })
@@ -253,6 +233,6 @@ export default function AllOrdersTableV2({
           Total <span className="font-semibold ml-1">$</span>{Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}
         </div>
       </div>
-    </div >
+    </div>
   );
 }

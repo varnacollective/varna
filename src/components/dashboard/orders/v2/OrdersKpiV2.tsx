@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingBag, Coins, Users, Clock } from "lucide-react";
+import { ShoppingBag, Coins, Users } from "lucide-react";
 
 interface OrdersKpiV2Props {
   totalOrders?: number;
@@ -16,12 +16,9 @@ export default function OrdersKpiV2({
   totalOrders = 5,
   totalSpend = 313150,
   vettedSuppliersCount = 2,
-  awaitingCount = 2,
-  awaitingCaption = "Orders #4 and #5 from Bare Necessities",
-  onSelectAwaitingFilter,
 }: OrdersKpiV2Props) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 items-stretch">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 items-stretch">
       {/* KPI 1: Total Orders */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -87,7 +84,7 @@ export default function OrdersKpiV2({
         </div>
 
         <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
-
+          Capital allocated to sustainable procurement
         </p>
       </motion.div>
 
@@ -121,52 +118,6 @@ export default function OrdersKpiV2({
 
         <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
           Assessed against the Varna framework
-        </p>
-      </motion.div>
-
-      {/* KPI 4: Awaiting Evidence (Interactive Shortcut D2) */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-        onClick={onSelectAwaitingFilter}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSelectAwaitingFilter?.();
-          }
-        }}
-        className="
-          bg-white dark:bg-[#20242B]
-          border border-[#7D3F1E]/20 dark:border-[#E07A57]/30
-          shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
-          dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-7 lg:p-8
-          flex flex-col justify-between min-h-[200px] h-full
-          hover:border-[#7D3F1E] dark:hover:border-[#E07A57] transition-all duration-200
-          cursor-pointer group focus-visible:ring-2 focus-visible:ring-[#7D3F1E] outline-none
-        "
-      >
-        <div className="flex items-start justify-between">
-          <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#7D3F1E] dark:text-[#E07A57]">
-            Awaiting Evidence
-          </span>
-          <div className="w-9 h-9 rounded-full bg-[#7D3F1E]/10 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57] shrink-0 group-hover:scale-105 transition-transform">
-            <Clock className="w-4 h-4" strokeWidth={1.8} />
-          </div>
-        </div>
-
-        <div className="text-3xl lg:text-[42px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none my-3 tabular-nums flex items-baseline gap-1.5">
-          <span>{awaitingCount}</span>
-          <span className="text-xs uppercase tracking-wider font-semibold text-[#7D3F1E]/80 dark:text-[#E07A57]/80">
-            {awaitingCount === 1 ? "ORDER" : "ORDERS"}
-          </span>
-        </div>
-
-        <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug line-clamp-2" title={awaitingCaption}>
-          {awaitingCount > 0 ? awaitingCaption : "All orders have evidence on file"}
         </p>
       </motion.div>
     </div>

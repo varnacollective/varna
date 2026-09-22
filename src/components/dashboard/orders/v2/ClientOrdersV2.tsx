@@ -105,9 +105,6 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
         totalOrders={totalOrders}
         totalSpend={totalSpend}
         vettedSuppliersCount={vettedSuppliersCount}
-        awaitingCount={awaitingCount}
-        awaitingCaption={awaitingCount > 0 ? "Orders with awaiting verification" : "All orders have evidence on file"}
-        onSelectAwaitingFilter={handleSelectAwaitingFilter}
       />
 
       {/* 4. Desktop & Tablet Split View: All Orders Table (8 cols) + Evidence Panel (4 cols) */}
