@@ -24,9 +24,9 @@ export default function ClientImpactV2({
   const logoPath = dashboardData?.client?.logoPath || undefined;
 
   const summary = dashboardData?.summary;
-  const eScore = summary?.avgEScore ?? 73.5;
-  const sScore = summary?.avgSScore ?? 77.2;
-  const gScore = summary?.avgGScore ?? 81.6;
+  const eScore = summary?.avgEScore ?? 39;
+  const sScore = summary?.avgSScore ?? 66;
+  const gScore = summary?.avgGScore ?? 80;
   const pillarBreakdown = summary?.pillarBreakdown;
 
   const totalCO2eAvoidedKg = summary?.totalCO2eAvoidedKg ?? 2160;

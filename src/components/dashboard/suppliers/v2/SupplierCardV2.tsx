@@ -199,7 +199,14 @@ export default function SupplierCardV2({
 
   // Certification Badges slicing (3 visible + "+N more" popover)
   const visibleBadges = effectiveBadges.slice(0, 3);
-  const hiddenBadges = effectiveBadges.slice(3); return (
+  const hiddenBadges = effectiveBadges.slice(3);
+
+  const isInProgressSupplier =
+    name.toLowerCase().includes("greensole") ||
+    name.toLowerCase().includes("marikar") ||
+    (legalName && (legalName.toLowerCase().includes("greensole") || legalName.toLowerCase().includes("marikar")));
+
+  return (
     <div
       className="
         varna-supplier-card-v2
@@ -232,9 +239,16 @@ export default function SupplierCardV2({
 
             {/* Title & Subtitle Stack */}
             <div className="flex flex-col min-w-0 pr-2">
-              <h3 className="text-lg lg:text-xl font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
-                {name}
-              </h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-lg lg:text-xl font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
+                  {name}
+                </h3>
+                {isInProgressSupplier && (
+                  <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[#6F6A61] dark:text-[#9A948A] text-xs font-normal border border-black/10 dark:border-white/15 whitespace-nowrap">
+                    In Progress
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5 leading-snug break-words">
                 {!isDuplicateName && legalName ? `${legalName} • ${location}` : location}
               </p>
@@ -286,7 +300,7 @@ export default function SupplierCardV2({
           </div>
 
           {/* Block 3: Simplified Clean Evidence Confidence Widget */}
-          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-3 flex flex-col justify-center">
+          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-3 flex flex-col items-center sm:items-start justify-center">
             <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block mb-1">
               Evidence confidence
             </span>
@@ -299,27 +313,13 @@ export default function SupplierCardV2({
                 status={confidenceEntry.status}
                 checklist={confidenceEntry.checklist}
               >
-                <div className="flex items-center gap-3 cursor-help group">
-                  <ConfidenceRing score={confidencePct} size={34} strokeWidth={3} />
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
-                      {confidenceLevel}
-                    </span>
-                    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
-                      {confidencePct}%
-                    </span>
-                  </div>
+                <div className="cursor-help group inline-block">
+                  <ConfidenceRing score={confidencePct} size={56} strokeWidth={4.5} />
                 </div>
               </ConfidenceChecklistHoverCard>
             ) : (
-              <div className="flex items-center gap-3">
-                <ConfidenceRing score={confidencePct} size={34} strokeWidth={3} />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
-                    {confidenceLevel}
-                  </span>
-
-                </div>
+              <div className="inline-block">
+                <ConfidenceRing score={confidencePct} size={56} strokeWidth={4.5} />
               </div>
             )}
           </div>
@@ -432,19 +432,6 @@ export default function SupplierCardV2({
             </div>
           </div>
         )}
-      </div>
-
-      {/* Footer Links (Pinned to Bottom with mt-auto) */}
-      <div className="pt-4 mt-6 border-t border-black/[0.07] dark:border-white/[0.08] flex items-center justify-between text-xs font-semibold">
-
-
-        <Link
-          href="/dashboard?section=orders"
-          className="text-[#7D3F1E] dark:text-[#E07A57] hover:underline underline-offset-4 flex items-center gap-1.5 cursor-pointer min-h-[44px] px-2 items-center"
-        >
-          <span>View Orders</span>
-          <ShoppingBag className="w-3.5 h-3.5" />
-        </Link>
       </div>
     </div>
   );

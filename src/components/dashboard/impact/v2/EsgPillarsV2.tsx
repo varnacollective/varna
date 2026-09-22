@@ -179,7 +179,7 @@ export default function EsgPillarsV2({
 
                   {p.label === "Social" && (
                     <p className="text-[#55705A] dark:text-[#9DB4A0] font-medium">
-                      Women make up {womenWorkforcePercent}% of supplier workforces.
+                      Women make up {womenWorkforcePercent}% of partner workforces.
                     </p>
                   )}
 
