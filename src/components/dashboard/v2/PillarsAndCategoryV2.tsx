@@ -25,11 +25,13 @@ const BRAND_CHART_COLORS = [
 ];
 
 function formatLakhOrInr(val: number): string {
-  return `$${val.toLocaleString('en-US')}`;
+  const usd = val > 0 ? Math.round(val / 83) : 0;
+  return `$${usd.toLocaleString('en-US')}`;
 }
 
 function formatRowAmount(val: number): string {
-  return `$${val.toLocaleString('en-US')}`;
+  const usd = val > 0 ? Math.round(val / 83) : 0;
+  return `$${usd.toLocaleString('en-US')}`;
 }
 
 export default function PillarsAndCategoryV2({
@@ -40,13 +42,14 @@ export default function PillarsAndCategoryV2({
   pillarBreakdown,
   categorySpend,
 }: PillarsAndCategoryV2Props) {
-  const totalCategorySpend = categorySpend.reduce((acc, cat) => acc + cat.totalSpend, 0);
+  const totalCategorySpendInr = categorySpend.reduce((acc, cat) => acc + cat.totalSpend, 0);
+  const totalCategorySpendUsd = categorySpend.reduce((acc, cat) => acc + (cat.totalSpend > 0 ? Math.round(cat.totalSpend / 83) : 0), 0);
 
   // D3 Derived Insight: Identify top category
   const topCategory = categorySpend.length > 0
     ? [...categorySpend].sort((a, b) => b.totalSpend - a.totalSpend)[0]
     : null;
-  const topPct = topCategory && totalCategorySpend > 0 ? (topCategory.totalSpend / totalCategorySpend * 100).toFixed(1) : "0";
+  const topPct = topCategory && totalCategorySpendInr > 0 ? (topCategory.totalSpend / totalCategorySpendInr * 100).toFixed(1) : "0";
   const activeCatCount = categorySpend.filter((c) => c.totalSpend > 0).length;
 
   return (
@@ -136,8 +139,8 @@ export default function PillarsAndCategoryV2({
           </h2>
 
           <div className="flex items-baseline gap-2 mt-2 mb-4">
-            <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend ${formatLakhOrInr(totalCategorySpend)}`}>
-              {formatLakhOrInr(totalCategorySpend)}
+            <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalCategorySpendUsd.toLocaleString('en-US')}`}>
+              ${totalCategorySpendUsd.toLocaleString('en-US')}
             </span>
             <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
               TOTAL SPEND
@@ -147,7 +150,7 @@ export default function PillarsAndCategoryV2({
           {/* 12px Segmented Horizontal Bar */}
           <div className="w-full h-3 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-4">
             {categorySpend.map((cat, idx) => {
-              const pct = totalCategorySpend > 0 ? (cat.totalSpend / totalCategorySpend) * 100 : 0;
+              const pct = totalCategorySpendInr > 0 ? (cat.totalSpend / totalCategorySpendInr) * 100 : 0;
               if (pct <= 0) return null;
               return (
                 <div
@@ -166,7 +169,7 @@ export default function PillarsAndCategoryV2({
           {/* Row List for ALL Categories (including 0% ones - P0-4 & W8 fixed) */}
           <div className="space-y-3 mt-4">
             {categorySpend.map((cat, idx) => {
-              const pctVal = totalCategorySpend > 0 ? (cat.totalSpend / totalCategorySpend) * 100 : 0;
+              const pctVal = totalCategorySpendInr > 0 ? (cat.totalSpend / totalCategorySpendInr) * 100 : 0;
               const pctStr = pctVal % 1 === 0 ? pctVal.toString() : pctVal.toFixed(1);
               const color = BRAND_CHART_COLORS[idx % BRAND_CHART_COLORS.length];
               const isZero = cat.totalSpend === 0;

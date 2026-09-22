@@ -239,12 +239,12 @@ export default function SupplierCardV2({
 
             {/* Title & Subtitle Stack */}
             <div className="flex flex-col min-w-0 pr-2">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center flex-wrap">
                 <h3 className="text-lg lg:text-xl font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
                   {name}
                 </h3>
                 {isInProgressSupplier && (
-                  <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[#6F6A61] dark:text-[#9A948A] text-xs font-normal border border-black/10 dark:border-white/15 whitespace-nowrap">
+                  <span className="bg-[#EBE6DA] text-[#717882] dark:bg-white/10 dark:text-[#9A948A] text-xs px-2 py-1 rounded-full ml-3 font-normal whitespace-nowrap border border-black/5 dark:border-white/10">
                     In Progress
                   </span>
                 )}
@@ -314,12 +314,12 @@ export default function SupplierCardV2({
                 checklist={confidenceEntry.checklist}
               >
                 <div className="cursor-help group inline-block">
-                  <ConfidenceRing score={confidencePct} size={56} strokeWidth={4.5} />
+                  <ConfidenceRing score={confidencePct} size={64} strokeWidth={4.5} />
                 </div>
               </ConfidenceChecklistHoverCard>
             ) : (
               <div className="inline-block">
-                <ConfidenceRing score={confidencePct} size={56} strokeWidth={4.5} />
+                <ConfidenceRing score={confidencePct} size={64} strokeWidth={4.5} />
               </div>
             )}
           </div>

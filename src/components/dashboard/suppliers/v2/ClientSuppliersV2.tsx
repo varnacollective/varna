@@ -8,7 +8,6 @@ import FooterDisclaimerV2 from "@/components/dashboard/v2/FooterDisclaimerV2";
 import SuppliersHeroV2 from "./SuppliersHeroV2";
 import SuppliersKpiV2 from "./SuppliersKpiV2";
 import SupplierCardV2 from "./SupplierCardV2";
-import SpendByCategoryV2 from "./SpendByCategoryV2";
 import type { DashboardData, SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 
@@ -222,7 +221,7 @@ export default function ClientSuppliersV2({
       </section>
 
       {/* 6. Spend by Product Category (S7 & D5) */}
-      <SpendByCategoryV2 />
+
 
       {/* 7. Footer Disclaimer (S8) */}
       <FooterDisclaimerV2 />
