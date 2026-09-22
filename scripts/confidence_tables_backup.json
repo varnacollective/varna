@@ -1,0 +1,1219 @@
+{
+  "timestamp": "2026-09-22T10:25:46.756Z",
+  "confidence_scoring": [
+    {
+      "id": "325",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "GST Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "327",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "Ethics & Responsible Sourcing Policy",
+      "score": 1
+    },
+    {
+      "id": "329",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Clean Legal & Regulatory Compliance Track Record",
+      "score": 1
+    },
+    {
+      "id": "331",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Water Recycling & Conservation Protocols",
+      "score": 1
+    },
+    {
+      "id": "333",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Environmental Management System (ISO 14001)",
+      "score": 0.5
+    },
+    {
+      "id": "335",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Social",
+      "num": 11,
+      "item": "Written Employee & Artisan Contracts",
+      "score": 1
+    },
+    {
+      "id": "337",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Social",
+      "num": 13,
+      "item": "ESI / Worker Health Insurance Coverage",
+      "score": 0.5
+    },
+    {
+      "id": "339",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Carbon Footprint Audit & Report",
+      "score": 0.25
+    },
+    {
+      "id": "341",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Raw Material Traceability & Sustainable Sourcing",
+      "score": 0.25
+    },
+    {
+      "id": "344",
+      "supplier": "UKHI",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Udyam MSME Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "346",
+      "supplier": "UKHI",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "On-Time Supplier Payment Terms",
+      "score": 1
+    },
+    {
+      "id": "348",
+      "supplier": "UKHI",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Water Footprint Reduction Actions",
+      "score": 1
+    },
+    {
+      "id": "350",
+      "supplier": "UKHI",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Non-Toxic & Chemical Safety Compliance",
+      "score": 0.5
+    },
+    {
+      "id": "352",
+      "supplier": "UKHI",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Zero Waste & Circular Packaging Standards",
+      "score": 0
+    },
+    {
+      "id": "354",
+      "supplier": "UKHI",
+      "pillar": "Social",
+      "num": 12,
+      "item": "State Minimum Wage & Fair Living Wage Compliance",
+      "score": 0.5
+    },
+    {
+      "id": "356",
+      "supplier": "UKHI",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Workplace Health & Safety Measures",
+      "score": 0.25
+    },
+    {
+      "id": "358",
+      "supplier": "UKHI",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Energy Consumption & Electricity Tracking",
+      "score": 0.5
+    },
+    {
+      "id": "360",
+      "supplier": "UKHI",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "PETA / BCorp / Quality Audit Certifications",
+      "score": 0
+    },
+    {
+      "id": "326",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Udyam MSME Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "328",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "On-Time Supplier Payment Terms",
+      "score": 1
+    },
+    {
+      "id": "330",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Water Footprint Reduction Actions",
+      "score": 1
+    },
+    {
+      "id": "332",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Non-Toxic & Chemical Safety Compliance",
+      "score": 0.5
+    },
+    {
+      "id": "334",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Zero Waste & Circular Packaging Standards",
+      "score": 0
+    },
+    {
+      "id": "336",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Social",
+      "num": 12,
+      "item": "State Minimum Wage & Fair Living Wage Compliance",
+      "score": 0.5
+    },
+    {
+      "id": "338",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Workplace Health & Safety Measures",
+      "score": 0.25
+    },
+    {
+      "id": "340",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Energy Consumption & Electricity Tracking",
+      "score": 0.5
+    },
+    {
+      "id": "342",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "PETA / BCorp / Quality Audit Certifications",
+      "score": 0
+    },
+    {
+      "id": "343",
+      "supplier": "UKHI",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "GST Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "345",
+      "supplier": "UKHI",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "Ethics & Responsible Sourcing Policy",
+      "score": 1
+    },
+    {
+      "id": "347",
+      "supplier": "UKHI",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Clean Legal & Regulatory Compliance Track Record",
+      "score": 1
+    },
+    {
+      "id": "349",
+      "supplier": "UKHI",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Water Recycling & Conservation Protocols",
+      "score": 1
+    },
+    {
+      "id": "351",
+      "supplier": "UKHI",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Environmental Management System (ISO 14001)",
+      "score": 0.5
+    },
+    {
+      "id": "353",
+      "supplier": "UKHI",
+      "pillar": "Social",
+      "num": 11,
+      "item": "Written Employee & Artisan Contracts",
+      "score": 1
+    },
+    {
+      "id": "355",
+      "supplier": "UKHI",
+      "pillar": "Social",
+      "num": 13,
+      "item": "ESI / Worker Health Insurance Coverage",
+      "score": 0.5
+    },
+    {
+      "id": "357",
+      "supplier": "UKHI",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Carbon Footprint Audit & Report",
+      "score": 0.25
+    },
+    {
+      "id": "359",
+      "supplier": "UKHI",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Raw Material Traceability & Sustainable Sourcing",
+      "score": 0.25
+    },
+    {
+      "id": "157",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "GST Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "158",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Udyam MSME Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "159",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "Ethics & Responsible Sourcing Policy",
+      "score": 1
+    },
+    {
+      "id": "160",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "On-Time Supplier Payment Terms",
+      "score": 1
+    },
+    {
+      "id": "161",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Clean Legal & Regulatory Compliance Track Record",
+      "score": 1
+    },
+    {
+      "id": "162",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Water Footprint Reduction Actions",
+      "score": 1
+    },
+    {
+      "id": "163",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Water Recycling & Conservation Protocols",
+      "score": 1
+    },
+    {
+      "id": "164",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Non-Toxic & Chemical Safety Compliance",
+      "score": 1
+    },
+    {
+      "id": "165",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Environmental Management System (ISO 14001 / Equivalent)",
+      "score": 1
+    },
+    {
+      "id": "166",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Zero Waste & Circular Packaging Standards",
+      "score": 1
+    },
+    {
+      "id": "167",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Social",
+      "num": 11,
+      "item": "Written Employee & Artisan Contracts",
+      "score": 1
+    },
+    {
+      "id": "168",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Social",
+      "num": 12,
+      "item": "State Minimum Wage & Fair Living Wage Compliance",
+      "score": 1
+    },
+    {
+      "id": "169",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Social",
+      "num": 13,
+      "item": "ESI / Worker Health Insurance Coverage",
+      "score": 0.75
+    },
+    {
+      "id": "170",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Workplace Health & Safety Measures",
+      "score": 1
+    },
+    {
+      "id": "171",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Carbon Footprint Audit & Report",
+      "score": 0.75
+    },
+    {
+      "id": "172",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Energy Consumption & Electricity Tracking",
+      "score": 1
+    },
+    {
+      "id": "173",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Raw Material Traceability & Sustainable Sourcing",
+      "score": 1
+    },
+    {
+      "id": "174",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "PETA / BCorp / Quality Audit Certifications",
+      "score": 1
+    },
+    {
+      "id": "175",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "GST Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "237",
+      "supplier": "Bare Necessities",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "MSME / Udyam recognition",
+      "score": 1
+    },
+    {
+      "id": "238",
+      "supplier": "Bare Necessities",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "Signed, dated Code of Conduct",
+      "score": 0.25
+    },
+    {
+      "id": "239",
+      "supplier": "Bare Necessities",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Docs internally consistent",
+      "score": 0.25
+    },
+    {
+      "id": "240",
+      "supplier": "Bare Necessities",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Environmental mgmt. certificate, current",
+      "score": 0.5
+    },
+    {
+      "id": "241",
+      "supplier": "Bare Necessities",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Packaging disclosed",
+      "score": 1
+    },
+    {
+      "id": "176",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Udyam MSME Registration Certificate",
+      "score": 1
+    },
+    {
+      "id": "177",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "Ethics & Responsible Sourcing Policy",
+      "score": 1
+    },
+    {
+      "id": "178",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "On-Time Supplier Payment Terms",
+      "score": 1
+    },
+    {
+      "id": "179",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Clean Legal & Regulatory Compliance Track Record",
+      "score": 1
+    },
+    {
+      "id": "180",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Water Footprint Reduction Actions",
+      "score": 1
+    },
+    {
+      "id": "181",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Water Recycling & Conservation Protocols",
+      "score": 1
+    },
+    {
+      "id": "182",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Non-Toxic & Chemical Safety Compliance",
+      "score": 1
+    },
+    {
+      "id": "183",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Environmental Management System (ISO 14001 / Equivalent)",
+      "score": 1
+    },
+    {
+      "id": "184",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Zero Waste & Circular Packaging Standards",
+      "score": 1
+    },
+    {
+      "id": "185",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Social",
+      "num": 11,
+      "item": "Written Employee & Artisan Contracts",
+      "score": 1
+    },
+    {
+      "id": "186",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Social",
+      "num": 12,
+      "item": "State Minimum Wage & Fair Living Wage Compliance",
+      "score": 1
+    },
+    {
+      "id": "187",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Social",
+      "num": 13,
+      "item": "ESI / Worker Health Insurance Coverage",
+      "score": 0.75
+    },
+    {
+      "id": "188",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Workplace Health & Safety Measures",
+      "score": 1
+    },
+    {
+      "id": "189",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Carbon Footprint Audit & Report",
+      "score": 0.75
+    },
+    {
+      "id": "190",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Energy Consumption & Electricity Tracking",
+      "score": 1
+    },
+    {
+      "id": "191",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Raw Material Traceability & Sustainable Sourcing",
+      "score": 1
+    },
+    {
+      "id": "192",
+      "supplier": "Marikar Green Earth Private Limited",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "PETA / BCorp / Quality Audit Certifications",
+      "score": 1
+    },
+    {
+      "id": "217",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "Incorporation certificate",
+      "score": 1
+    },
+    {
+      "id": "218",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Tax registration, no discrepancy",
+      "score": 1
+    },
+    {
+      "id": "219",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "MSME / Udyam recognition",
+      "score": 1
+    },
+    {
+      "id": "220",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "Signed, dated Code of Conduct",
+      "score": 0.25
+    },
+    {
+      "id": "221",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Docs internally consistent",
+      "score": 0.25
+    },
+    {
+      "id": "222",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Environmental mgmt. certificate, current",
+      "score": 0.5
+    },
+    {
+      "id": "223",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Packaging disclosed",
+      "score": 1
+    },
+    {
+      "id": "224",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Composition % disclosed",
+      "score": 0
+    },
+    {
+      "id": "225",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Energy data, allocated",
+      "score": 0.5
+    },
+    {
+      "id": "226",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Waste / circularity program",
+      "score": 1
+    },
+    {
+      "id": "227",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Social",
+      "num": 11,
+      "item": "OHS certificate, current",
+      "score": 0.25
+    },
+    {
+      "id": "228",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Social",
+      "num": 12,
+      "item": "Labour welfare policy",
+      "score": 0.5
+    },
+    {
+      "id": "229",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Social",
+      "num": 13,
+      "item": "Community / livelihood program",
+      "score": 0
+    },
+    {
+      "id": "230",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Cruelty-free / ethical certification",
+      "score": 1
+    },
+    {
+      "id": "231",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Product safety certificate, current & direct",
+      "score": 0.25
+    },
+    {
+      "id": "232",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Third-party audited report",
+      "score": 0
+    },
+    {
+      "id": "233",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Self-reported impact report",
+      "score": 0
+    },
+    {
+      "id": "234",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "Verified carbon / LCA data",
+      "score": 0
+    },
+    {
+      "id": "235",
+      "supplier": "Bare Necessities",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "Incorporation certificate",
+      "score": 1
+    },
+    {
+      "id": "236",
+      "supplier": "Bare Necessities",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Tax registration, no discrepancy",
+      "score": 1
+    },
+    {
+      "id": "242",
+      "supplier": "Bare Necessities",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Composition % disclosed",
+      "score": 0
+    },
+    {
+      "id": "244",
+      "supplier": "Bare Necessities",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Waste / circularity program",
+      "score": 1
+    },
+    {
+      "id": "246",
+      "supplier": "Bare Necessities",
+      "pillar": "Social",
+      "num": 12,
+      "item": "Labour welfare policy",
+      "score": 0.5
+    },
+    {
+      "id": "248",
+      "supplier": "Bare Necessities",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Cruelty-free / ethical certification",
+      "score": 1
+    },
+    {
+      "id": "250",
+      "supplier": "Bare Necessities",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Third-party audited report",
+      "score": 0
+    },
+    {
+      "id": "252",
+      "supplier": "Bare Necessities",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "Verified carbon / LCA data",
+      "score": 0
+    },
+    {
+      "id": "253",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "Incorporation certificate",
+      "score": 1
+    },
+    {
+      "id": "255",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "MSME / Udyam recognition",
+      "score": 1
+    },
+    {
+      "id": "257",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Docs internally consistent",
+      "score": 1
+    },
+    {
+      "id": "259",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Packaging disclosed",
+      "score": 0.25
+    },
+    {
+      "id": "261",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Energy data, allocated",
+      "score": 0
+    },
+    {
+      "id": "263",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Social",
+      "num": 11,
+      "item": "OHS certificate, current",
+      "score": 0
+    },
+    {
+      "id": "265",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Social",
+      "num": 13,
+      "item": "Community / livelihood program",
+      "score": 0
+    },
+    {
+      "id": "267",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Product safety certificate, current & direct",
+      "score": 0
+    },
+    {
+      "id": "269",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Self-reported impact report",
+      "score": 0
+    },
+    {
+      "id": "272",
+      "supplier": "Kheoni",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Tax registration, no discrepancy",
+      "score": 1
+    },
+    {
+      "id": "274",
+      "supplier": "Kheoni",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "Signed, dated Code of Conduct",
+      "score": 0
+    },
+    {
+      "id": "276",
+      "supplier": "Kheoni",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Environmental mgmt. certificate, current",
+      "score": 0
+    },
+    {
+      "id": "278",
+      "supplier": "Kheoni",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Composition % disclosed",
+      "score": 0
+    },
+    {
+      "id": "280",
+      "supplier": "Kheoni",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Waste / circularity program",
+      "score": 0
+    },
+    {
+      "id": "282",
+      "supplier": "Kheoni",
+      "pillar": "Social",
+      "num": 12,
+      "item": "Labour welfare policy",
+      "score": 0
+    },
+    {
+      "id": "284",
+      "supplier": "Kheoni",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Cruelty-free / ethical certification",
+      "score": 0
+    },
+    {
+      "id": "286",
+      "supplier": "Kheoni",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Third-party audited report",
+      "score": 0
+    },
+    {
+      "id": "288",
+      "supplier": "Kheoni",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "Verified carbon / LCA data",
+      "score": 0
+    },
+    {
+      "id": "243",
+      "supplier": "Bare Necessities",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Energy data, allocated",
+      "score": 0.5
+    },
+    {
+      "id": "245",
+      "supplier": "Bare Necessities",
+      "pillar": "Social",
+      "num": 11,
+      "item": "OHS certificate, current",
+      "score": 0.25
+    },
+    {
+      "id": "247",
+      "supplier": "Bare Necessities",
+      "pillar": "Social",
+      "num": 13,
+      "item": "Community / livelihood program",
+      "score": 0
+    },
+    {
+      "id": "249",
+      "supplier": "Bare Necessities",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Product safety certificate, current & direct",
+      "score": 0.25
+    },
+    {
+      "id": "251",
+      "supplier": "Bare Necessities",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Self-reported impact report",
+      "score": 0
+    },
+    {
+      "id": "254",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Governance",
+      "num": 2,
+      "item": "Tax registration, no discrepancy",
+      "score": 1
+    },
+    {
+      "id": "256",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Governance",
+      "num": 4,
+      "item": "Signed, dated Code of Conduct",
+      "score": 0
+    },
+    {
+      "id": "258",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Environment",
+      "num": 6,
+      "item": "Environmental mgmt. certificate, current",
+      "score": 0
+    },
+    {
+      "id": "260",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Environment",
+      "num": 8,
+      "item": "Composition % disclosed",
+      "score": 0
+    },
+    {
+      "id": "262",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Environment",
+      "num": 10,
+      "item": "Waste / circularity program",
+      "score": 0
+    },
+    {
+      "id": "264",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Social",
+      "num": 12,
+      "item": "Labour welfare policy",
+      "score": 0
+    },
+    {
+      "id": "266",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Social",
+      "num": 14,
+      "item": "Cruelty-free / ethical certification",
+      "score": 0
+    },
+    {
+      "id": "268",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 16,
+      "item": "Third-party audited report",
+      "score": 0
+    },
+    {
+      "id": "270",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "pillar": "Carbon Impact",
+      "num": 18,
+      "item": "Verified carbon / LCA data",
+      "score": 0
+    },
+    {
+      "id": "271",
+      "supplier": "Kheoni",
+      "pillar": "Governance",
+      "num": 1,
+      "item": "Incorporation certificate",
+      "score": 1
+    },
+    {
+      "id": "273",
+      "supplier": "Kheoni",
+      "pillar": "Governance",
+      "num": 3,
+      "item": "MSME / Udyam recognition",
+      "score": 1
+    },
+    {
+      "id": "275",
+      "supplier": "Kheoni",
+      "pillar": "Governance",
+      "num": 5,
+      "item": "Docs internally consistent",
+      "score": 1
+    },
+    {
+      "id": "277",
+      "supplier": "Kheoni",
+      "pillar": "Environment",
+      "num": 7,
+      "item": "Packaging disclosed",
+      "score": 0.25
+    },
+    {
+      "id": "279",
+      "supplier": "Kheoni",
+      "pillar": "Environment",
+      "num": 9,
+      "item": "Energy data, allocated",
+      "score": 0
+    },
+    {
+      "id": "281",
+      "supplier": "Kheoni",
+      "pillar": "Social",
+      "num": 11,
+      "item": "OHS certificate, current",
+      "score": 0
+    },
+    {
+      "id": "283",
+      "supplier": "Kheoni",
+      "pillar": "Social",
+      "num": 13,
+      "item": "Community / livelihood program",
+      "score": 0
+    },
+    {
+      "id": "285",
+      "supplier": "Kheoni",
+      "pillar": "Carbon Impact",
+      "num": 15,
+      "item": "Product safety certificate, current & direct",
+      "score": 0
+    },
+    {
+      "id": "287",
+      "supplier": "Kheoni",
+      "pillar": "Carbon Impact",
+      "num": 17,
+      "item": "Self-reported impact report",
+      "score": 0
+    }
+  ],
+  "confidence_summary": [
+    {
+      "id": "14",
+      "supplier": "Greensole Footwear Pvt Ltd",
+      "governance_5": 4,
+      "environment_5": 3.5,
+      "social_4": 3,
+      "carbon_impact_4": 2.5,
+      "total_18": 13,
+      "confidence_pct": 72
+    },
+    {
+      "id": "15",
+      "supplier": "Marikar Green Earth Private Limited",
+      "governance_5": 3.5,
+      "environment_5": 3.5,
+      "social_4": 2.5,
+      "carbon_impact_4": 2,
+      "total_18": 11.5,
+      "confidence_pct": 64
+    },
+    {
+      "id": "12",
+      "supplier": "UKHI INDIA PRIVATE LIMITED",
+      "governance_5": 4,
+      "environment_5": 4.5,
+      "social_4": 3,
+      "carbon_impact_4": 2.5,
+      "total_18": 11.25,
+      "confidence_pct": 63
+    },
+    {
+      "id": "11",
+      "supplier": "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+      "governance_5": 4.5,
+      "environment_5": 4,
+      "social_4": 3.5,
+      "carbon_impact_4": 3,
+      "total_18": 8.5,
+      "confidence_pct": 47
+    },
+    {
+      "id": "2",
+      "supplier": "Kheoni",
+      "governance_5": 4,
+      "environment_5": 0.25,
+      "social_4": 0,
+      "carbon_impact_4": 0,
+      "total_18": 4.25,
+      "confidence_pct": 24
+    },
+    {
+      "id": "13",
+      "supplier": "Kheoni Ventures Pvt Ltd",
+      "governance_5": 3.5,
+      "environment_5": 3.5,
+      "social_4": 3,
+      "carbon_impact_4": 2,
+      "total_18": 4.25,
+      "confidence_pct": 24
+    }
+  ]
+}

@@ -130,9 +130,6 @@ export default function ConfidenceRing({
             <span className="text-xs font-sans font-medium text-carbon-ink dark:text-warm-stone tracking-tighter leading-none">
               {score}%
             </span>
-            <span className="text-[6px] font-sans uppercase tracking-widest text-slate-mist dark:text-warm-stone/60 mt-0.5 leading-none">
-              {multiplier.toFixed(2)}×
-            </span>
           </>
         )}
       </div>

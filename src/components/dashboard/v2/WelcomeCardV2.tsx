@@ -51,14 +51,14 @@ export default function WelcomeCardV2({
         </div>
 
         {/* Large White Circular Logo Container */}
-        <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full bg-white dark:bg-white shadow-md flex items-center justify-center p-1.5 border border-black/10 shrink-0 relative z-10 overflow-hidden">
+        <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full bg-white dark:bg-white shadow-md flex items-center justify-center border border-black/10 shrink-0 relative z-10 overflow-hidden">
           <BrandLogo
             logoPath={logoPath}
             alt={clientName}
             name={clientName}
             size="lg"
             entityType="client"
-            className="scale-125 lg:scale-135"
+            className="!bg-transparent !border-0 !shadow-none !h-full !w-full !max-w-none flex items-center justify-center scale-140"
           />
         </div>
 

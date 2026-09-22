@@ -38,14 +38,20 @@ export default function PillarBreakdownHoverCard({
     return () => setMounted(false);
   }, []);
 
+  const activeColor =
+    pillarKey === "E" || pillarLabel.toLowerCase().includes("env") ? "#4C7355" :
+    pillarKey === "S" || pillarLabel.toLowerCase().includes("soc") ? "#B85333" :
+    pillarKey === "G" || pillarLabel.toLowerCase().includes("gov") ? "#36424A" :
+    color || "#7A3F1E";
+
   const itemsToDisplay: SubCriterionItem[] = directItems ?? 
     (pillarKey && scores ? getSubCriteriaForPillar(pillarKey, scores) : []) ??
-    (criteria ? criteria.map(c => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color })) : []);
+    (criteria ? criteria.map(c => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color: activeColor })) : []);
 
   // Fallback if criteria passed directly
   const finalItems: SubCriterionItem[] = itemsToDisplay.length > 0
     ? itemsToDisplay
-    : (criteria ? criteria.map((c) => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color })) : []);
+    : (criteria ? criteria.map((c) => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color: activeColor })) : []);
 
   const CARD_WIDTH = 340;
   const CARD_HEIGHT_ESTIMATE = Math.min(100 + finalItems.length * 48, 480);
@@ -153,7 +159,7 @@ export default function PillarBreakdownHoverCard({
                   "
                 >
                   {/* Accent Top Border */}
-                  <div className="h-1.5 w-full" style={{ backgroundColor: color }} />
+                  <div className="h-1.5 w-full" style={{ backgroundColor: activeColor }} />
 
                   <div className="p-4">
                     {/* Header */}
@@ -161,7 +167,7 @@ export default function PillarBreakdownHoverCard({
                       <div className="flex items-center gap-2">
                         <div
                           className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ backgroundColor: color }}
+                          style={{ backgroundColor: activeColor }}
                         />
                         <h4 className="text-xs font-sans font-bold uppercase tracking-wider text-[#1A1F26] dark:text-[#FAF8F5]">
                           {pillarLabel} Breakdown
@@ -185,7 +191,7 @@ export default function PillarBreakdownHoverCard({
                             <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5 truncate max-w-[250px]">
                               <span
                                 className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 shrink-0"
-                                style={{ color }}
+                                style={{ color: activeColor }}
                               >
                                 {item.code}
                               </span>
@@ -201,7 +207,7 @@ export default function PillarBreakdownHoverCard({
                           <div className="h-1.5 w-full bg-[#FAF8F5] dark:bg-[#121316] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15">
                             <motion.div
                               className="h-full rounded-full"
-                              style={{ backgroundColor: color }}
+                              style={{ backgroundColor: activeColor }}
                               initial={{ width: 0 }}
                               animate={{ width: `${Math.min(100, Math.max(0, item.score))}%` }}
                               transition={{ duration: 0.4, ease: "easeOut" }}

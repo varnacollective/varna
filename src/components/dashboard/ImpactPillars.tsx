@@ -57,14 +57,21 @@ export default function ImpactPillars({
           const breakdown = pillarBreakdown?.[pillar.label] ?? PILLAR_CRITERIA_BREAKDOWN[pillar.label];
           const definition = PILLAR_DEFINITIONS[pillar.label];
 
+          const pillarColor =
+            pillar.key === "E" ? "#4C7355" :
+            pillar.key === "S" ? "#B85333" :
+            pillar.key === "G" ? "#36424A" :
+            "#7A3F1E";
+
           return (
             <div key={pillar.key} className="flex flex-col items-center gap-2">
               {/* Radial Gauge: hover shows sub-pillar breakdown */}
               <PillarBreakdownHoverCard
                 pillarLabel={pillar.label}
+                pillarKey={pillar.key}
                 pillarScore={breakdown?.pillarScore ?? Math.round(score)}
                 criteria={breakdown?.criteria ?? []}
-                color={score >= 80 ? "#738678" : score >= 70 ? "#6F848F" : "#7A3F1E"}
+                color={pillarColor}
               >
                 <div className="cursor-help">
                   <RadialGauge

@@ -199,9 +199,7 @@ export default function SupplierCardV2({
 
   // Certification Badges slicing (3 visible + "+N more" popover)
   const visibleBadges = effectiveBadges.slice(0, 3);
-  const hiddenBadges = effectiveBadges.slice(3);
-
-  return (
+  const hiddenBadges = effectiveBadges.slice(3);  return (
     <div
       className="
         varna-supplier-card-v2
@@ -209,7 +207,7 @@ export default function SupplierCardV2({
         border border-black/[0.07] dark:border-white/[0.08]
         shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
         dark:shadow-none dark:border-t-white/[0.12]
-        rounded-[24px] p-7 lg:p-8
+        rounded-[24px] p-5 lg:p-6
         flex flex-col justify-between h-full w-full
         hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         relative overflow-visible
@@ -218,9 +216,9 @@ export default function SupplierCardV2({
 
       {/* Top Header Row */}
       <div>
-        <div className="flex items-start justify-between gap-4 pb-5 border-b border-black/[0.07] dark:border-white/[0.08]">
+        <div className="flex items-start justify-between gap-3 pb-4 border-b border-black/[0.07] dark:border-white/[0.08]">
           {/* Logo Tile + Title & Subtitle Stack */}
-          <div className="flex items-start gap-4 min-w-0 flex-1">
+          <div className="flex items-start gap-3 min-w-0 flex-1">
             {/* Standardized 56px (w-14 h-14) White Logo Container */}
             <div className="w-14 h-14 rounded-lg border border-gray-200 bg-white flex items-center justify-center p-1 overflow-hidden shrink-0">
               <BrandLogo
@@ -234,10 +232,10 @@ export default function SupplierCardV2({
 
             {/* Title & Subtitle Stack */}
             <div className="flex flex-col min-w-0 pr-2">
-              <h3 className="text-xl lg:text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
+              <h3 className="text-lg lg:text-xl font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
                 {name}
               </h3>
-              <p className="text-xs lg:text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal mt-1 leading-snug break-words">
+              <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5 leading-snug break-words">
                 {!isDuplicateName && legalName ? `${legalName} • ${location}` : location}
               </p>
             </div>
@@ -246,19 +244,19 @@ export default function SupplierCardV2({
           {/* Varna Score Eyebrow & Display Block */}
           <VarnaScoreHoverCard {...varnaScoreData}>
             <div className="flex flex-col items-end shrink-0 cursor-help group">
-              <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A] mb-0.5">
+              <span className="text-[9px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A] mb-0.5">
                 VARNA SCORE
               </span>
 
-              <div className="text-3xl lg:text-[40px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
+              <div className="text-2xl lg:text-[34px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
                 {varnaScore.toFixed(1)}
-                <span className="text-sm font-normal text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-0.5">
+                <span className="text-xs font-normal text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-0.5">
                   /100
                 </span>
               </div>
 
               {/* D1 Band Rating Pill */}
-              <div className="mt-1 px-2.5 py-0.5 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 text-[#7D3F1E] dark:text-[#E07A57] text-[11px] font-medium">
+              <div className="mt-1 px-2 py-0.5 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 text-[#7D3F1E] dark:text-[#E07A57] text-[10px] font-medium">
                 {bandLabel}
               </div>
             </div>
@@ -266,30 +264,30 @@ export default function SupplierCardV2({
         </div>
 
         {/* Stat Row: SKUs, Units, Evidence Confidence */}
-        <div className="grid grid-cols-3 gap-4 py-4 border-b border-black/[0.07] dark:border-white/[0.08] items-center text-center sm:text-left">
+        <div className="grid grid-cols-3 gap-3 py-3 border-b border-black/[0.07] dark:border-white/[0.08] items-center text-center sm:text-left">
           {/* Block 1: SKUs sourced */}
           <div>
-            <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
+            <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
               SKUs sourced
             </span>
-            <span className="text-xl lg:text-2xl font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
+            <span className="text-lg lg:text-xl font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
               {skuCount}
             </span>
           </div>
 
           {/* Block 2: Units ordered */}
-          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-4">
-            <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
+          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-3">
+            <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
               Units ordered
             </span>
-            <span className="text-xl lg:text-2xl font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
+            <span className="text-lg lg:text-xl font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
               {totalUnits.toLocaleString("en-US")}
             </span>
           </div>
 
           {/* Block 3: Simplified Clean Evidence Confidence Widget */}
-          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-4 flex flex-col justify-center">
-            <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
+          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-3 flex flex-col justify-center">
+            <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block mb-1">
               Evidence confidence
             </span>
 
@@ -301,26 +299,26 @@ export default function SupplierCardV2({
                 status={confidenceEntry.status}
                 checklist={confidenceEntry.checklist}
               >
-                <div className="flex items-center gap-4 cursor-help group">
-                  <ConfidenceRing score={confidencePct} size={38} strokeWidth={3.5} />
-                  <div className="flex items-center gap-2">
-                    <span className="text-base font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
+                <div className="flex items-center gap-3 cursor-help group">
+                  <ConfidenceRing score={confidencePct} size={34} strokeWidth={3} />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
                       {confidenceLevel}
                     </span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
+                    <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
                       {confidencePct}%
                     </span>
                   </div>
                 </div>
               </ConfidenceChecklistHoverCard>
             ) : (
-              <div className="flex items-center gap-4">
-                <ConfidenceRing score={confidencePct} size={38} strokeWidth={3.5} />
-                <div className="flex items-center gap-2">
-                  <span className="text-base font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
+              <div className="flex items-center gap-3">
+                <ConfidenceRing score={confidencePct} size={34} strokeWidth={3} />
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-bold text-[#1F1B16] dark:text-[#F3EFE7]">
                     {confidenceLevel}
                   </span>
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
+                  <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0]">
                     {confidencePct}%
                   </span>
                 </div>
@@ -329,14 +327,14 @@ export default function SupplierCardV2({
           </div>
         </div>
 
-        {/* Pillar Progress Bars (4 Rows in exact order with Per-Pillar Colors - Part 2 fixed) */}
-        <div className="space-y-3.5 my-5">
+        {/* Pillar Progress Bars */}
+        <div className="space-y-2.5 my-4">
           {bars.map((b) => {
             const pillarColor =
               b.label.includes("Env") ? "#4C7355" :
                 b.label.includes("Social") ? "#B85333" :
                   b.label.includes("Gov") ? "#36424A" :
-                    "#7A3F1E"; // Carbon Impact (light blue #8FA6D0 in dark)
+                    "#7A3F1E";
 
             return (
               <div key={b.label} className="space-y-1">
@@ -349,7 +347,7 @@ export default function SupplierCardV2({
                   </span>
                 </div>
 
-                <div className="w-full h-2 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
+                <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
                   <motion.div
                     className="h-full rounded-full transition-all duration-700"
                     style={{ backgroundColor: pillarColor, width: `${Math.min(100, Math.max(0, b.val))}%` }}
@@ -361,32 +359,32 @@ export default function SupplierCardV2({
             );
           })}
 
-          {/* D4 Derived Insight: Strongest Pillar Chip */}
-          <div className="pt-2 text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-medium">
+          {/* Strongest Pillar Chip */}
+          <div className="pt-1 text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-medium">
             Strongest pillar: <span className="text-[#7D3F1E] dark:text-[#E07A57]">{strongestPillarName} ({maxPillarVal.toFixed(1)}%)</span>
           </div>
         </div>
 
         {/* "In their words" Quote Block */}
         {quoteText && (
-          <div className="my-4 p-4 rounded-2xl bg-[#F7F3EA] dark:bg-[#272C34] border border-black/5 dark:border-white/5 relative">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1">
+          <div className="my-3 p-3.5 rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] border border-black/5 dark:border-white/5 relative">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-0.5">
               In their words
             </span>
-            <p className="varna-quote-text text-[#7D3F1E] dark:text-[#F1E6C8] text-lg lg:text-[20px] leading-snug italic font-normal">
+            <p className="varna-quote-text text-[#7D3F1E] dark:text-[#F1E6C8] text-base lg:text-[17px] leading-snug italic font-normal">
               &ldquo;{quoteText}&rdquo;
             </p>
           </div>
         )}
 
-        {/* Certifications Row (Outlined Pills + "+N more" Popover - D6 fixed) */}
-        {badges.length > 0 && (
-          <div className="my-4">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-2">
+        {/* Certifications Row */}
+        {effectiveBadges.length > 0 && (
+          <div className="my-3">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
               Certifications & Badges
             </span>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 flex-wrap">
               {visibleBadges.map((badge, idx) => {
                 const label = typeof badge === "string" ? badge : badge.label;
                 const cfg = getBadgeConfig(label);
@@ -396,13 +394,13 @@ export default function SupplierCardV2({
                   <div
                     key={idx}
                     className="
-                      inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                      inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
                       border border-black/10 dark:border-white/15
-                      bg-[#FAF8F4] dark:bg-[#272C34] text-xs font-normal
-                      text-[#1F1B16] dark:text-[#F3EFE7] min-h-[36px]
+                      bg-[#FAF8F4] dark:bg-[#272C34] text-[11px] font-normal
+                      text-[#1F1B16] dark:text-[#F3EFE7] min-h-[30px]
                     "
                   >
-                    <IconComp className="w-3.5 h-3.5 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
+                    <IconComp className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
                     <span>{label}</span>
                   </div>
                 );
@@ -416,21 +414,21 @@ export default function SupplierCardV2({
           </div>
         )}
 
-        {/* UN SDGs Row (Official Badges preserved - Constraint 4) */}
+        {/* UN SDGs Row */}
         {sdgObjects && sdgObjects.length > 0 && (
-          <div className="my-4">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-2">
+          <div className="my-3">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
               UN SDGs
             </span>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 flex-wrap">
               {sdgObjects.map((sdg: any, idx: number) => (
                 <SDGBadge
                   key={sdg.id || sdg.sdg_number || idx}
                   goalNumber={sdg.sdg_number ?? sdg.id ?? sdg.goalNumber ?? sdg.number}
                   isPrimary={sdg.is_primary ?? sdg.isStarred ?? sdg.isPrimary ?? false}
                   primaryNarrative={sdg.primary_narrative ?? sdg.narrative ?? null}
-                  size={46}
+                  size={38}
                 />
               ))}
             </div>

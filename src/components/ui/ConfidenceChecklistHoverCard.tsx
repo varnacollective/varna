@@ -46,44 +46,37 @@ function isCanonical(itemLabel: string): boolean {
   });
 }
 
-/**
- * Deduplicate by canonical slot: keep only the first row that matches each
- * canonical entry so we never display the same line twice.
- */
 function deduplicateTo18(items: ConfidenceChecklistItem[]): ConfidenceChecklistItem[] {
+  if (!items || items.length === 0) return [];
+
+  // If 18 items are provided, return them directly
+  if (items.length === 18) {
+    return items;
+  }
+
   const used = new Set<string>();
   const result: ConfidenceChecklistItem[] = [];
 
-  // First pass — rows that match a canonical slot
   for (const item of items) {
-    if (!isCanonical(item.item)) continue;
-    // Find the canonical key for this item
-    const key = CANONICAL_18.find((c) => {
-      const clc = c.toLowerCase();
-      const lc = item.item.toLowerCase();
-      return lc.includes(clc) || clc.includes(lc);
-    })!;
+    const key = item.item.trim().toLowerCase();
     if (!used.has(key)) {
       used.add(key);
       result.push(item);
     }
   }
 
-  // Second pass — fill missing canonical slots as "missing" (score 0)
-  for (const canonical of CANONICAL_18) {
-    if (!used.has(canonical)) {
-      result.push({ item: canonical, status: "missing", score: 0 });
+  // Fill remaining slots up to 18 if needed
+  if (result.length < 18) {
+    for (const canonical of CANONICAL_18) {
+      if (result.length >= 18) break;
+      const cKey = canonical.toLowerCase();
+      if (!result.some((r) => r.item.toLowerCase().includes(cKey) || cKey.includes(r.item.toLowerCase()))) {
+        result.push({ item: canonical, status: "missing", score: 0 });
+      }
     }
   }
 
-  // Preserve framework order
-  return CANONICAL_18.map(
-    (c) => result.find((r) => {
-      const lc = r.item.toLowerCase();
-      const clc = c.toLowerCase();
-      return lc.includes(clc) || clc.includes(lc);
-    })!
-  ).filter(Boolean);
+  return result.slice(0, 18);
 }
 
 interface ConfidenceChecklistHoverCardProps {
