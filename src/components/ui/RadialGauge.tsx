@@ -89,14 +89,14 @@ export default function RadialGauge({
   const bandKey = getPerformanceBand(value);
   const band = PERFORMANCE_BANDS[bandKey];
 
-  // Signature ESG Pillar color triads (light → dark gradient per pillar)
-  // Environmental: Sage Olive  |  Social: Terracotta  |  Governance: Slate Navy  |  Cultural: Midnight + Terracotta
+  // Standardized ESG Pillar colors
+  // Environmental: Green (#4C7355) | Social: Red/Terracotta (#B85333) | Governance: Blue/Slate (#36424A)
   const pillarGradients: Record<string, [string, string]> = {
-    E: value >= 70 ? ["#556B55", "#7B9B7B"] : ["#7B9B7B", "#556B55"],   // Sage Olive — Environmental
-    S: value >= 70 ? ["#B85333", "#D96D4C"] : ["#D96D4C", "#B85333"],   // Terracotta — Social
-    G: ["#2A3644", "#5B7594"],                                            // Deep Slate Navy — Governance
-    C: ["#2F3C52", "#B85333"],                                            // Midnight + Terracotta — Cultural
-    Overall: value >= 80 ? ["#556B55", "#7B9B7B"] : ["#B85333", "#5B7594"],
+    E: ["#4C7355", "#4C7355"], // Environmental - Green
+    S: ["#B85333", "#B85333"], // Social - Red/Terracotta
+    G: ["#36424A", "#36424A"], // Governance - Blue/Slate
+    C: ["#7A3F1E", "#7A3F1E"], // Cultural - Warm Clay
+    Overall: ["#4C7355", "#36424A"],
   };
 
   const [colorStart, colorEnd] = pillarGradients[pillarKey] || ["#829888", "#944D25"];

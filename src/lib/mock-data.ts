@@ -669,8 +669,8 @@ export const CLIENT_ORDERS_LIST: ClientOrderItem[] = [
         status: "complete",
       },
       {
-        title: "Handloom Craft Compliance Audit",
-        description: "Verified fair-wage compliance and artisan preservation",
+        title: "Sustainable Sourcing Audit",
+        description: "Verified ethical supply chain and fair-wage compliance",
         status: "complete",
       },
       {
@@ -697,8 +697,8 @@ export const CLIENT_ORDERS_LIST: ClientOrderItem[] = [
         status: "complete",
       },
       {
-        title: "Handloom Craft Compliance Audit",
-        description: "Verified fair-wage compliance and artisan preservation",
+        title: "Sustainable Sourcing Audit",
+        description: "Verified ethical supply chain and fair-wage compliance",
         status: "complete",
       },
       {

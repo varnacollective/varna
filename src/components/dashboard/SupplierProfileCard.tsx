@@ -309,7 +309,7 @@ export default function SupplierProfileCard({
       ? "Zero-waste personal care formulations with 100% circular packaging and ethically sourced botanicals."
       : lowerName.includes("kheoni")
       ? "Zero-chemical organic agricultural products supporting rural livelihoods and bio-diverse farming practices."
-      : "High-impact handloom textiles produced under strict fair wage compliance and traditional artisan preservation.");
+      : "Ethically sourced natural ingredients produced under strict fair-wage compliance.");
 
   const visibleBadges = badges.slice(0, 3);
   const hiddenBadges = badges.slice(3);
@@ -419,7 +419,7 @@ export default function SupplierProfileCard({
             const isSoc = cat.label.toLowerCase().includes("soc");
             const isGov = cat.label.toLowerCase().includes("gov");
 
-            const barColor = isEnv ? "#738678" : isSoc ? "#B85333" : isGov ? "#6F848F" : "#A89C82";
+            const barColor = isEnv ? "#4C7355" : isSoc ? "#B85333" : isGov ? "#36424A" : "#7A3F1E";
 
             return (
               <div key={cat.label} className="space-y-1 font-sans">

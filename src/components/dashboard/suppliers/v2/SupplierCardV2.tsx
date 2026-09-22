@@ -153,7 +153,7 @@ export default function SupplierCardV2({
   const quoteText = isBare
     ? "Zerowaste personal care formulations with 100% circular packaging and ethically sourced botanicals."
     : isUKHI
-      ? "High-impact handloom textiles produced under strict fair-wage compliance and traditional artisan preservation."
+      ? "Ethically sourced natural ingredients produced under strict fair-wage compliance."
       : isKheoni
         ? "Forest-first organic wellness formulations directly sustaining indigenous tribal collection communities."
         : null;
@@ -177,7 +177,7 @@ export default function SupplierCardV2({
   });
 
   const varnaScoreData: VarnaScoreData = {
-    score: Math.round(varnaScore),
+    score: varnaScore,
     eScore: Math.round(eScore),
     sScore: Math.round(sScore),
     gScore: Math.round(gScore),
@@ -278,8 +278,8 @@ export default function SupplierCardV2({
           </div>
 
           {/* Block 3: Evidence Confidence with Interactive Hover Card */}
-          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-4">
-            <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block mb-1">
+          <div className="border-l border-black/[0.07] dark:border-white/[0.08] pl-4 flex flex-col justify-center">
+            <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
               Evidence confidence
             </span>
 
@@ -291,24 +291,34 @@ export default function SupplierCardV2({
                 status={confidenceEntry.status}
                 checklist={confidenceEntry.checklist}
               >
-                <div className="flex items-center gap-2 cursor-help">
-                  <ConfidenceRing score={confidencePct} size={32} strokeWidth={3.5} />
-                  <div className="flex flex-col text-left">
-                    <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
-                      {confidenceLevel}
-                    </span>
-                    <span className="text-[10px] text-[#6F6A61] dark:text-[#9A948A] font-light">
-                      {confidencePct}% • 0.75×
+                <div className="flex items-center gap-2.5 cursor-help group">
+                  <ConfidenceRing score={confidencePct} size={36} strokeWidth={3.5} />
+                  <div className="flex flex-col text-left justify-center">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] leading-none">
+                        {confidenceLevel}
+                      </span>
+                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#4C7355]/15 text-[#4C7355] dark:bg-[#4C7355]/25 dark:text-[#9DB4A0] leading-none">
+                        {confidencePct}%
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-light mt-1 leading-none">
+                      {confidencePct}% • 0.75× weight
                     </span>
                   </div>
                 </div>
               </ConfidenceChecklistHoverCard>
             ) : (
-              <div className="flex items-center gap-2">
-                <ConfidenceRing score={confidencePct} size={32} strokeWidth={3.5} />
-                <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
-                  {confidenceLevel} ({confidencePct}%)
-                </span>
+              <div className="flex items-center gap-2.5">
+                <ConfidenceRing score={confidencePct} size={36} strokeWidth={3.5} />
+                <div className="flex flex-col text-left justify-center">
+                  <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] leading-none">
+                    {confidenceLevel}
+                  </span>
+                  <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-light mt-1 leading-none">
+                    {confidencePct}% • 0.75× weight
+                  </span>
+                </div>
               </div>
             )}
           </div>
@@ -318,10 +328,10 @@ export default function SupplierCardV2({
         <div className="space-y-3.5 my-5">
           {bars.map((b) => {
             const pillarColor =
-              b.label.includes("Env") ? "#55705A" :
-                b.label.includes("Social") ? "#7D3F1E" :
-                  b.label.includes("Gov") ? "#6F8391" :
-                    "#2B3A55"; // Carbon Impact (light blue #8FA6D0 in dark)
+              b.label.includes("Env") ? "#4C7355" :
+                b.label.includes("Social") ? "#B85333" :
+                  b.label.includes("Gov") ? "#36424A" :
+                    "#7A3F1E"; // Carbon Impact (light blue #8FA6D0 in dark)
 
             return (
               <div key={b.label} className="space-y-1">

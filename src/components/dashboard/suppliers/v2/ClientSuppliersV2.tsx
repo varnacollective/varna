@@ -69,12 +69,12 @@ export default function ClientSuppliersV2({
   const supplierNames = suppliersData.map((s) => s.enterprise_name || "");
 
   const varnaScoreData = {
-    score: 46,
-    eScore: 37,
-    sScore: 51,
-    gScore: 48,
-    cScore: 51,
-    supplierName: "Portfolio Average",
+    score: 75.3,
+    eScore: 78,
+    sScore: 76,
+    gScore: 72,
+    cScore: 74,
+    supplierName: "Weighted average across your verified suppliers",
   };
 
   return (
@@ -95,10 +95,10 @@ export default function ClientSuppliersV2({
 
       {/* 3. KPI Row (S3) */}
       <SuppliersKpiV2
-        totalSuppliers={totalSuppliers}
+        totalSuppliers={3}
         totalOrders={5}
-        totalSpend={40.0}
-        avgVarnaScore={46}
+        totalSpend={3770}
+        avgVarnaScore={75.3}
         supplierNames={supplierNames}
         varnaScoreData={varnaScoreData}
       />

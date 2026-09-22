@@ -11,14 +11,14 @@ interface SpendCategoryItem {
 }
 
 const CATEGORY_DATA: SpendCategoryItem[] = [
-  { name: "Organic Toiletries", value: 16800, percentage: 42, color: "#7D3F1E" }, // deep-clay
-  { name: "Artisan Ceramics", value: 9600, percentage: 24, color: "#55705A" },   // sage-mineral
-  { name: "Handmade Soap", value: 8000, percentage: 20, color: "#6F8391" },      // slate-mist
-  { name: "Eco-Packaging", value: 5600, percentage: 14, color: "#2B3A55" },      // midnight-blue
+  { name: "Organic Toiletries", value: 1583, percentage: 42, color: "#7D3F1E" }, // deep-clay
+  { name: "Artisan Ceramics", value: 905, percentage: 24, color: "#4C7355" },   // green
+  { name: "Handmade Soap", value: 754, percentage: 20, color: "#36424A" },      // blue-slate
+  { name: "Eco-Packaging", value: 528, percentage: 14, color: "#B85333" },      // terracotta
 ];
 
 function formatSpend(val: number): string {
-  return `$${(val / 1000).toFixed(1)}K`;
+  return `$${val.toLocaleString("en-US")}`;
 }
 
 export default function SpendByCategoryV2() {
@@ -83,7 +83,7 @@ export default function SpendByCategoryV2() {
           {/* Center Hole Metric */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
-              $40.0K
+              ${totalSpendVal.toLocaleString("en-US")}
             </span>
             <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#6F6A61] dark:text-[#9A948A] mt-1">
               TOTAL SPEND

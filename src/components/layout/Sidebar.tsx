@@ -81,9 +81,7 @@ export default function Sidebar({
             <span className="text-[9px] font-sans font-bold tracking-[0.28em] uppercase text-[#1A1F26] dark:text-[#EFECE6] transition-colors duration-300">
               VARNA
             </span>
-            <span className="text-[7px] font-sans font-light tracking-[0.22em] uppercase text-[#6E7781] dark:text-[#9BA9B4] transition-colors duration-300">
-              COLLECTIVE
-            </span>
+
           </div>
         </div>
 
@@ -108,10 +106,9 @@ export default function Sidebar({
                   relative flex flex-col items-center justify-center
                   w-full py-3.5 transition-all duration-150
                   group rounded-none border-y border-transparent cursor-pointer
-                  ${
-                    isActive
-                      ? "bg-[#B85333]/10 dark:bg-[#EAE5DC]/12 text-[#B85333] dark:text-[#EAE5DC] relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-gradient-to-b before:from-[#B85333] before:to-[#556B55] shadow-[0_0_12px_rgba(184,83,51,0.15)] font-medium"
-                      : "text-[#6E7781] dark:text-[#9BA9B4]/70 hover:text-[#1A1F26] dark:hover:text-[#EAE5DC] hover:bg-[#F0EBE3] dark:hover:bg-[#EAE5DC]/8"
+                  ${isActive
+                    ? "bg-[#B85333]/10 dark:bg-[#EAE5DC]/12 text-[#B85333] dark:text-[#EAE5DC] relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-gradient-to-b before:from-[#B85333] before:to-[#556B55] shadow-[0_0_12px_rgba(184,83,51,0.15)] font-medium"
+                    : "text-[#6E7781] dark:text-[#9BA9B4]/70 hover:text-[#1A1F26] dark:hover:text-[#EAE5DC] hover:bg-[#F0EBE3] dark:hover:bg-[#EAE5DC]/8"
                   }
                 `}
                 title={item.label}

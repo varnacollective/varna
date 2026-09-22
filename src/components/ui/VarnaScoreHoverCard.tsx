@@ -24,10 +24,11 @@ interface VarnaScoreHoverCardProps extends VarnaScoreData {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function getBarColor(value: number): string {
-  if (value >= 70) return "#738678";
-  if (value >= 45) return "#6F848F";
-  return "#7A3F1E";
+function getPillarBarColor(key: string): string {
+  if (key === "E" || key.toLowerCase().includes("env")) return "#4C7355"; // Green
+  if (key === "S" || key.toLowerCase().includes("soc")) return "#B85333"; // Red/Terracotta
+  if (key === "G" || key.toLowerCase().includes("gov")) return "#36424A"; // Blue/Slate
+  return "#7A3F1E"; // Cultural
 }
 
 const SECTION_ICONS = {
@@ -42,8 +43,8 @@ const PILLAR_ICONS = [Leaf, Users, Shield, Palette];
 
 function CountUpNumber({ value, className }: { value: number; className?: string }) {
   const spring = useSpring(0, { stiffness: 50, damping: 30, duration: 800 });
-  const display = useTransform(spring, (v) => Math.round(v));
-  const [str, setStr] = useState("0");
+  const display = useTransform(spring, (v) => (v % 1 === 0 ? Math.round(v).toString() : v.toFixed(1)));
+  const [str, setStr] = useState(value % 1 === 0 ? value.toString() : value.toFixed(1));
 
   useEffect(() => {
     spring.set(value);
@@ -219,7 +220,7 @@ export default function VarnaScoreHoverCard({
                               <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
                                 <motion.div
                                   className="h-full rounded-r-sm"
-                                  style={{ backgroundColor: getBarColor(p.value) }}
+                                  style={{ backgroundColor: getPillarBarColor(p.key) }}
                                   initial={{ width: 0 }}
                                   animate={{ width: `${p.value}%` }}
                                   transition={{ duration: 0.7, delay: idx * STAGGER_DELAY + 0.15, ease: EASE_SMOOTH }}
@@ -262,7 +263,7 @@ export default function VarnaScoreHoverCard({
                         <div className="w-full h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
                           <motion.div
                             className="h-full rounded-r-sm"
-                            style={{ backgroundColor: getBarColor(readinessScore) }}
+                            style={{ backgroundColor: getPillarBarColor("G") }}
                             initial={{ width: 0 }}
                             animate={{ width: `${readinessScore}%` }}
                             transition={{ duration: 0.7, delay: 0.35, ease: EASE_SMOOTH }}
@@ -292,7 +293,7 @@ export default function VarnaScoreHoverCard({
                         <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
                           <motion.div
                             className="h-full rounded-r-sm"
-                            style={{ backgroundColor: riskIsHigh ? "#7A3F1E" : "#738678" }}
+                            style={{ backgroundColor: getPillarBarColor("S") }}
                             initial={{ width: 0 }}
                             animate={{ width: `${100 - riskScore}%` }}
                             transition={{ duration: 0.7, delay: 0.45, ease: EASE_SMOOTH }}

@@ -81,10 +81,9 @@ export default function OrdersKpiV2({
 
         <div
           className="text-3xl lg:text-[40px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-3 tabular-nums flex items-baseline gap-1"
-          aria-label={`Total spend INR ${totalSpend.toLocaleString("en-IN")}`}
+          aria-label={`Total spend $${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}`}
         >
-          <span className="text-base font-normal text-[#55705A]/70 dark:text-[#9DB4A0]/70">INR</span>
-          <span>{totalSpend.toLocaleString("en-IN")}</span>
+          <span>${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}</span>
         </div>
 
         <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
