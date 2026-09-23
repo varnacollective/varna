@@ -73,6 +73,8 @@ export default function PillarsAndCategoryV2({
             src="/assets/Dashboard_visual_2.svg"
             alt="Artisanal Amenities Visual"
             fill
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
             className="object-cover rounded-[24px] object-[50%_60%] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-90"
           />
           <div className="absolute inset-0 bg-black/5 dark:bg-black/20 pointer-events-none rounded-[24px]" />

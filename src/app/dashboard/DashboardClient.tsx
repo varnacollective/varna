@@ -237,6 +237,8 @@ function OverviewSection({
               src="/assets/Dashboard_visual_2.svg"
               alt="Artisanal Amenities Visual"
               fill
+              loading="lazy"
+              sizes="(max-width: 1024px) 100vw, 40vw"
               className="object-contain p-2 rounded-none"
             />
           </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck, ShieldAlert, Clock } from "lucide-react";
 
@@ -53,7 +54,7 @@ export function getEvidenceMultiplier(score: number): {
   };
 }
 
-export default function ConfidenceRing({
+function ConfidenceRingComponent({
   score,
   size = 64,
   strokeWidth = 4.5,
@@ -74,7 +75,7 @@ export default function ConfidenceRing({
     <motion.div
       whileHover={{ scale: 1.06 }}
       transition={{ type: "spring", stiffness: 400, damping: 20 }}
-      className={`relative flex items-center justify-center select-none cursor-help ${className}`}
+      className={`relative flex items-center justify-center select-none cursor-help transform-gpu will-change-transform ${className}`}
       style={{ width: size, height: size }}
       title={
         isAwaiting
@@ -136,3 +137,6 @@ export default function ConfidenceRing({
     </motion.div>
   );
 }
+
+const ConfidenceRing = memo(ConfidenceRingComponent);
+export default ConfidenceRing;

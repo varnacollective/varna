@@ -48,6 +48,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   /* ── Light / Editorial Theme (Framework, Brand-forward surfaces) ───────────────── */
   :root {
     --background: #FAF8F5;          /* Warm Alabaster base */

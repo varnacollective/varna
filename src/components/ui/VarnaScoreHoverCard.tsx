@@ -154,7 +154,7 @@ export default function VarnaScoreHoverCard({
                 {...POPOVER_ENTRANCE}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                className="fixed z-[9999] pointer-events-auto"
+                className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
                 style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
               >
                 <div
@@ -162,7 +162,7 @@ export default function VarnaScoreHoverCard({
                     bg-white/95 dark:bg-carbon-ink/95 backdrop-blur-xl
                     border border-slate-mist/30 dark:border-slate-mist/20
                     shadow-[0_8px_40px_rgba(47,60,82,0.18)] dark:shadow-[0_12px_50px_rgba(0,0,0,0.55)]
-                    font-sans select-none overflow-hidden
+                    font-sans select-none overflow-hidden transform-gpu
                   "
                 >
                   {/* Colored top border */}

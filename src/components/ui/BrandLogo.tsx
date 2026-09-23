@@ -239,6 +239,8 @@ export default function BrandLogo({
           <img
             src={imageSrc}
             alt={alt || displayName || "Brand Logo"}
+            loading="lazy"
+            decoding="async"
             onError={() => setHasError(true)}
             className={`w-auto object-contain transition-opacity duration-200 ${currentSize.img}`}
           />
@@ -268,7 +270,7 @@ export default function BrandLogo({
                   bottom: coords.placeAbove ? `${window.innerHeight - coords.top}px` : "auto",
                   left: `${coords.left}px`,
                 }}
-                className="z-[99999] w-[290px] sm:w-[320px] bg-[#18191D]/95 text-[#D8CFB8] border border-[#6F848F]/30 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl p-4 font-sans select-none overflow-hidden"
+                className="z-[99999] w-[290px] sm:w-[320px] bg-[#18191D]/95 text-[#D8CFB8] border border-[#6F848F]/30 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl p-4 font-sans select-none overflow-hidden transform-gpu will-change-transform"
               >
                 {/* Popover Header: Enlarged Logo + Entity Name & Close Button */}
                 <div className="flex items-start justify-between gap-3 border-b border-[#6F848F]/20 pb-3 mb-3">
@@ -278,6 +280,8 @@ export default function BrandLogo({
                         <img
                           src={imageSrc}
                           alt={displayName}
+                          loading="lazy"
+                          decoding="async"
                           className="h-8 max-w-[120px] w-auto object-contain"
                         />
                       ) : (

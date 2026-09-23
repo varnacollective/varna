@@ -210,6 +210,8 @@ export default function SocialRowV2({
           src="/assets/Impact3.svg"
           alt="Handmade soap with lavender visual"
           fill
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 40vw"
           className="object-cover rounded-[24px] object-[50%_40%] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-90"
         />
 

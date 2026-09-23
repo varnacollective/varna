@@ -155,7 +155,7 @@ export default function PillarBreakdownHoverCard({
                 onMouseEnter={handleOpen}
                 onMouseLeave={handleClose}
                 role="tooltip"
-                className="fixed z-[9999] pointer-events-auto"
+                className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
                 style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
               >
                 <div
@@ -163,7 +163,7 @@ export default function PillarBreakdownHoverCard({
                     bg-white/95 dark:bg-[#1E2028]/95 backdrop-blur-xl
                     border border-[#EAE5DC] dark:border-[#8C9DA8]/25
                     shadow-[0_12px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)]
-                    rounded-xl overflow-hidden font-sans select-none
+                    rounded-xl overflow-hidden font-sans select-none transform-gpu
                   "
                 >
                   {/* Accent Top Border */}

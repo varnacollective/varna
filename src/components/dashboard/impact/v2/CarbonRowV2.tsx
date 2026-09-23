@@ -44,6 +44,8 @@ export default function CarbonRowV2({
           src="/assets/Impact2.svg"
           alt="Bathroom shelf with amber bottles visual"
           fill
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 33vw"
           className="object-cover rounded-[24px] object-[50%_45%] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-90"
         />
 

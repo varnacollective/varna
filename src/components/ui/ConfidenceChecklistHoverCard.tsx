@@ -277,7 +277,7 @@ export default function ConfidenceChecklistHoverCard({
                     bg-white dark:bg-carbon-ink
                     border-l border-slate-mist/30 dark:border-slate-mist/20
                     shadow-[-8px_0_40px_rgba(47,60,82,0.15)] dark:shadow-[-8px_0_40px_rgba(0,0,0,0.5)]
-                    font-sans select-none"
+                    font-sans select-none transform-gpu will-change-transform"
                 >
                   {/* Colored top accent */}
                   <div

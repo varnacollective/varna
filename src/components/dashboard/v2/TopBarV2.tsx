@@ -74,10 +74,21 @@ export default function TopBarV2({
           <DateRangeFilter />
         </div>
 
-        {/* 44px Round Theme Toggle Button */}
+        {/* 44px Round Theme Toggle Button with Optimistic UI */}
         {mounted && (
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={() => {
+              const nextTheme = (theme === "dark" ? "light" : "dark");
+              // Optimistically update document element class immediately
+              if (typeof document !== "undefined") {
+                if (nextTheme === "dark") {
+                  document.documentElement.classList.add("dark");
+                } else {
+                  document.documentElement.classList.remove("dark");
+                }
+              }
+              setTheme(nextTheme);
+            }}
             className="
               w-11 h-11 rounded-full
               border border-black/[0.08] dark:border-white/[0.14]
@@ -86,17 +97,18 @@ export default function TopBarV2({
               hover:text-[#7D3F1E] dark:hover:text-[#E07A57]
               bg-[#F7F3EA] dark:bg-[#272C34]
               flex items-center justify-center
-              transition-all duration-200 cursor-pointer shadow-xs
+              transition-all duration-150 cursor-pointer shadow-xs
               focus:outline-none focus:ring-2 focus:ring-[#7D3F1E]/40
+              active:scale-95
             "
             title="Toggle color theme"
             aria-label="Toggle light and dark mode"
             id="theme-toggle-btn-v2"
           >
             {theme === "dark" ? (
-              <Sun className="w-5 h-5 transition-transform duration-300 rotate-0 hover:rotate-45" />
+              <Sun className="w-5 h-5 transition-transform duration-200 rotate-0 hover:rotate-45" />
             ) : (
-              <Moon className="w-5 h-5 transition-transform duration-300 rotate-0 hover:-rotate-12" />
+              <Moon className="w-5 h-5 transition-transform duration-200 rotate-0 hover:-rotate-12" />
             )}
           </button>
         )}

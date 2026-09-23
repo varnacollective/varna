@@ -14,6 +14,8 @@ import {
   Loader2,
 } from "lucide-react";
 
+import Image from "next/image";
+
 interface NavItem {
   id: string;
   label: string;
@@ -61,15 +63,15 @@ export default function Sidebar({
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="varna-sidebar fixed left-0 top-0 bottom-0 w-24 flex flex-col items-center py-8 justify-between z-50 bg-white dark:bg-[#141619] border-r border-[#EAE5DC] dark:border-[#9BA9B4]/10 text-[#1A1F26] dark:text-[#EAE5DC] shadow-md dark:shadow-2xl transition-colors duration-300 selection:bg-[#B85333] selection:text-white"
       >
-        {/* ── Branding: Varnawordmark ──────── */}
+        {/* ── Branding: Varnawordmark (LCP Preloaded) ──────── */}
         <div className="flex items-center justify-center w-full px-1 py-1 varna-sidebar-brand overflow-visible">
-          <img
+          <Image
             src="/assets/Varnawordmark.svg"
             alt="Varna"
+            width={112}
+            height={48}
+            priority
             className="w-24 sm:w-28 h-auto max-h-16 object-contain dark:invert transition-all duration-300 scale-125"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/Varnawordmark.svg";
-            }}
           />
         </div>
 
@@ -85,7 +87,9 @@ export default function Sidebar({
                 href={item.href}
                 prefetch={true}
                 onClick={(e) => {
-                  // If onSectionChange handles client-side tab switching on the current route
+                  if (pathname === "/dashboard" && item.href.startsWith("/dashboard?section=")) {
+                    e.preventDefault();
+                  }
                   if (onSectionChange) {
                     onSectionChange(item.id);
                   }
@@ -159,7 +163,13 @@ export default function Sidebar({
             <Link
               key={item.id}
               href={item.href}
-              onClick={() => onSectionChange?.(item.id)}
+              prefetch={true}
+              onClick={(e) => {
+                if (pathname === "/dashboard" && item.href.startsWith("/dashboard?section=")) {
+                  e.preventDefault();
+                }
+                onSectionChange?.(item.id);
+              }}
               className={`varna-bottom-nav-item${isActive ? " varna-bottom-nav-item--active" : ""}`}
               title={item.label}
             >

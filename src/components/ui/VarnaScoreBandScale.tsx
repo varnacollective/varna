@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 export interface ScoreBand {
   id: string;
   name: string;
@@ -94,7 +96,7 @@ interface VarnaScoreBandScaleProps {
   className?: string;
 }
 
-export function PerformanceBandsLegend({
+export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
   activeScore,
   showHeader = false,
   className = "",
@@ -135,14 +137,14 @@ export function PerformanceBandsLegend({
       })}
     </div>
   );
-}
+});
 
-export default function VarnaScoreBandScale({ score, className = "" }: VarnaScoreBandScaleProps) {
+const VarnaScoreBandScale = memo(function VarnaScoreBandScale({ score, className = "" }: VarnaScoreBandScaleProps) {
   const activeBandId = getActiveBandId(score);
   const positionPercent = getScorePositionPercent(score);
 
   return (
-    <div className={`w-full my-1 space-y-1 ${className}`}>
+    <div className={`w-full my-1 space-y-1 transform-gpu ${className}`}>
       {/* Marker Pin above bar */}
       <div className="relative w-full h-3">
         <div
@@ -182,4 +184,6 @@ export default function VarnaScoreBandScale({ score, className = "" }: VarnaScor
       </div>
     </div>
   );
-}
+});
+
+export default VarnaScoreBandScale;

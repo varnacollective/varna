@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, memo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
@@ -47,7 +47,7 @@ interface SDGBadgeProps {
   className?: string;
 }
 
-export default function SDGBadge({
+const SDGBadge = memo(function SDGBadge({
   goalNumber,
   size = 46,
   isAwaitingVerification = false,
@@ -190,6 +190,7 @@ export default function SDGBadge({
           alt={altText}
           width={size}
           height={size}
+          loading="lazy"
           className="w-full h-full object-contain pointer-events-none select-none"
           onError={() => setHasError(true)}
         />
@@ -212,4 +213,6 @@ export default function SDGBadge({
       </div>
     </motion.div>
   );
-}
+});
+
+export default SDGBadge;

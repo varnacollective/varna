@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, memo } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
@@ -76,7 +76,7 @@ interface RadialGaugeProps {
   pillarKey?: "E" | "S" | "G" | "C" | "Overall";
 }
 
-export default function RadialGauge({
+function RadialGaugeComponent({
   value,
   size = 124,
   strokeWidth = 10,
@@ -109,7 +109,7 @@ export default function RadialGauge({
 
   return (
     <motion.div
-      className="flex flex-col items-center gap-2.5"
+      className="flex flex-col items-center gap-2.5 transform-gpu will-change-transform"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
@@ -222,4 +222,7 @@ export default function RadialGauge({
     </motion.div>
   );
 }
+
+const RadialGauge = memo(RadialGaugeComponent);
+export default RadialGauge;
 
