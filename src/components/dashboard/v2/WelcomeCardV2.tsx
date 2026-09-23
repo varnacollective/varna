@@ -82,13 +82,13 @@ export default function WelcomeCardV2({
           </div>
 
           {/* D6 Derived Insight Chips (At a Glance) */}
-          <div className="flex items-center justify-center sm:justify-start gap-2.5 mt-4 flex-wrap pt-3 border-t border-[#7D3F1E]/12 dark:border-[#F1E6C8]/15">
+          {/* <div className="flex items-center justify-center sm:justify-start gap-2.5 mt-4 flex-wrap pt-3 border-t border-[#7D3F1E]/12 dark:border-[#F1E6C8]/15">
 
 
             <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 text-[#6F8391] dark:text-[#93A9B8]">
               {ratingBand}
             </span>
-          </div>
+          </div> */}
         </div>
       </motion.div>
 
