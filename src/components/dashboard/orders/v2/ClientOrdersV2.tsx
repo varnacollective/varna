@@ -8,7 +8,6 @@ import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import OrdersHeroV2 from "./OrdersHeroV2";
 import OrdersKpiV2 from "./OrdersKpiV2";
 import AllOrdersTableV2 from "./AllOrdersTableV2";
-import EvidencePanelV2 from "./EvidencePanelV2";
 import FooterDisclaimerV2 from "./FooterDisclaimerV2";
 import { X } from "lucide-react";
 
@@ -120,21 +119,8 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
           />
         </div>
 
-        {/* Desktop / Tablet Evidence Panel */}
-        <div className="hidden lg:block lg:col-span-4">
-          {selectedOrder ? (
-            <EvidencePanelV2 order={selectedOrder} />
-          ) : (
-            <div className="bg-white dark:bg-[#20242B] rounded-[24px] p-8 border border-black/10 dark:border-white/10 text-center text-xs text-[#6F6A61] dark:text-[#9A948A]">
-              No order selected or no data in this period
-            </div>
-          )}
-        </div>
 
-        {/* Tablet Full-Width Evidence Panel (768px - 1023px) */}
-        <div className="hidden sm:block lg:hidden col-span-1">
-          <EvidencePanelV2 order={selectedOrder} />
-        </div>
+
       </div>
 
       {/* 5. Mobile Bottom Sheet Modal (≤767px) */}
