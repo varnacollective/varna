@@ -53,7 +53,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Varna Collective: Sustainability Dashboard",
+  title: "Varna",
   description:
     "Enterprise sustainability intelligence for ethical procurement. Track ESG impact, supplier scores, and carbon metrics.",
   keywords: [
@@ -63,10 +63,18 @@ export const metadata: Metadata = {
     "hotel sustainability",
     "Varna Collective",
   ],
-  icons: {
-    icon: "/Varna 13 Carbon solid.svg",
-    shortcut: "/Varna 13 Carbon solid.svg",
-  },
+  icons: [
+    {
+      media: "(prefers-color-scheme: light)",
+      url: "/Favicon-light-varna.png",
+      href: "/Favicon-light-varna.png",
+    },
+    {
+      media: "(prefers-color-scheme: dark)",
+      url: "/Favicon-dark-varna.png",
+      href: "/Favicon-dark-varna.png",
+    },
+  ],
 };
 
 export default function RootLayout({
