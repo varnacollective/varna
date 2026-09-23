@@ -14,14 +14,6 @@ interface KpiRowV2Props {
   varnaScoreData: VarnaScoreData;
 }
 
-function getBandCaption(score: number): string {
-  if (score >= 85) return "Leader band: 85–100";
-  if (score >= 70) return "Advanced band: 70–84";
-  if (score >= 55) return "Emerging band: 55–69";
-  if (score >= 40) return "Foundational band: 40–54";
-  return "Not Ready band: <40";
-}
-
 export default function KpiRowV2({
   totalSpend,
   totalOrders,
@@ -29,8 +21,6 @@ export default function KpiRowV2({
   totalSuppliers,
   varnaScoreData,
 }: KpiRowV2Props) {
-  const bandCaption = getBandCaption(avgVarnaScore);
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
       {/* 8 Cols: 3 Equal-Width KPI Cards (P1-5 fixed) */}
@@ -163,11 +153,6 @@ export default function KpiRowV2({
 
               {/* Redesigned 5-Segment Performance Band Indicator */}
               <VarnaScoreBandScale score={avgVarnaScore} />
-
-              {/* Caption */}
-              <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug mt-1">
-                {bandCaption}
-              </p>
             </div>
           </VarnaScoreHoverCard>
         </motion.div>

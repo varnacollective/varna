@@ -2,8 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Calendar } from "lucide-react";
-import DateRangeFilter from "@/components/ui/DateRangeFilter";
 import ExportButton from "@/components/ExportButton";
 import type { DashboardData } from "@/lib/mock-data";
 
@@ -47,9 +45,6 @@ export default function OrdersHeroV2({
           </span>
 
           <div className="flex items-center gap-3 flex-wrap">
-            {/* Date Range Pill */}
-            <DateRangeFilter />
-
             {/* Export Report Pill */}
             {dashboardData ? (
               <ExportButton data={dashboardData} variant="topbar" />
