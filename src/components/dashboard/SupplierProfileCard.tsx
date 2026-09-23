@@ -403,26 +403,28 @@ export default function SupplierProfileCard({
 
         {/* 3. Certification Badges (Wrapped nicely with distinct icons) */}
         {((badges && badges.length > 0) || resolvedReportUrl) && (
-          <div className="varna-badge-row flex items-center gap-1.5 mb-4 min-h-7 shrink-0 relative flex-wrap">
-            {visibleBadges.map((badge, idx) => {
-              const text = typeof badge === "string" ? badge : badge?.label || "";
-              if (!text) return null;
-              const { icon: Icon, bgClass, textClass } = getBadgeConfig(text);
-              return (
-                <span
-                  key={`${text}-${idx}`}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-xs inline-flex shrink-0 h-6.5 ${bgClass} ${textClass}`}
-                  title={text}
-                >
-                  <Icon className="w-3 h-3 flex-shrink-0" />
-                  <span className="truncate max-w-[110px]">{text}</span>
-                </span>
-              );
-            })}
+          <div className="varna-badge-row flex items-start justify-between gap-2 mb-4 min-h-7 shrink-0 relative">
+            <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+              {visibleBadges.map((badge, idx) => {
+                const text = typeof badge === "string" ? badge : badge?.label || "";
+                if (!text) return null;
+                const { icon: Icon, bgClass, textClass } = getBadgeConfig(text);
+                return (
+                  <span
+                    key={`${text}-${idx}`}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-xs inline-flex shrink-0 h-6.5 ${bgClass} ${textClass}`}
+                    title={text}
+                  >
+                    <Icon className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate max-w-[110px]">{text}</span>
+                  </span>
+                );
+              })}
 
-            {hiddenBadges.length > 0 && (
-              <BadgeOverflowPopover hiddenBadges={hiddenBadges} />
-            )}
+              {hiddenBadges.length > 0 && (
+                <BadgeOverflowPopover hiddenBadges={hiddenBadges} />
+              )}
+            </div>
 
             {resolvedReportUrl && (
               <a
@@ -430,7 +432,7 @@ export default function SupplierProfileCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
-                  inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                  shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
                   border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
                   bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
                   dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]

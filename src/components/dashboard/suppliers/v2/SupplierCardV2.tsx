@@ -393,32 +393,34 @@ export default function SupplierCardV2({
               Certifications & Badges
             </span>
 
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {visibleBadges.map((badge, idx) => {
-                const label = typeof badge === "string" ? badge : badge.label;
-                const cfg = getBadgeConfig(label);
-                const IconComp = cfg.icon;
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+                {visibleBadges.map((badge, idx) => {
+                  const label = typeof badge === "string" ? badge : badge.label;
+                  const cfg = getBadgeConfig(label);
+                  const IconComp = cfg.icon;
 
-                return (
-                  <div
-                    key={idx}
-                    className="
-                      inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                      border border-black/10 dark:border-white/15
-                      bg-[#FAF8F4] dark:bg-[#272C34] text-[11px] font-normal
-                      text-[#1F1B16] dark:text-[#F3EFE7] min-h-[30px]
-                    "
-                  >
-                    <IconComp className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
-                    <span>{label}</span>
-                  </div>
-                );
-              })}
+                  return (
+                    <div
+                      key={idx}
+                      className="
+                        inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                        border border-black/10 dark:border-white/15
+                        bg-[#FAF8F4] dark:bg-[#272C34] text-[11px] font-normal
+                        text-[#1F1B16] dark:text-[#F3EFE7] min-h-[30px]
+                      "
+                    >
+                      <IconComp className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
+                      <span>{label}</span>
+                    </div>
+                  );
+                })}
 
-              {/* D6 Overflow Popover */}
-              {hiddenBadges.length > 0 && (
-                <BadgeOverflowPopoverV2 hiddenBadges={hiddenBadges} />
-              )}
+                {/* D6 Overflow Popover */}
+                {hiddenBadges.length > 0 && (
+                  <BadgeOverflowPopoverV2 hiddenBadges={hiddenBadges} />
+                )}
+              </div>
 
               {/* View Scorecard Full-Screen Report Button */}
               {resolvedReportUrl && (
@@ -427,7 +429,7 @@ export default function SupplierCardV2({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="
-                    inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                    shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full
                     border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
                     bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
                     dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
