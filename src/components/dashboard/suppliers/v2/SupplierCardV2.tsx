@@ -245,7 +245,7 @@ export default function SupplierCardV2({
                 </h3>
                 {isInProgressSupplier && (
                   <span className="bg-[#EBE6DA] text-[#717882] dark:bg-white/10 dark:text-[#9A948A] text-xs px-2 py-1 rounded-full ml-3 font-normal whitespace-nowrap border border-black/5 dark:border-white/10">
-                    In Progress
+                    Inactive
                   </span>
                 )}
               </div>

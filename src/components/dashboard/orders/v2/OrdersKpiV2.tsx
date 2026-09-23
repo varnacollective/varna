@@ -83,9 +83,7 @@ export default function OrdersKpiV2({
           <span>${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}</span>
         </div>
 
-        <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
-          Capital allocated to sustainable procurement
-        </p>
+
       </motion.div>
 
       {/* KPI 3: Vetted Suppliers */}
