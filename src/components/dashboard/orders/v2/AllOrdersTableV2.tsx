@@ -94,16 +94,16 @@ export default function AllOrdersTableV2({
 
       {/* Orders Table Area */}
       <div className="overflow-x-auto my-4 -mx-2 px-2">
-        <table ref={tableRef} className="w-full text-left border-collapse min-w-[600px]">
-          <colgroup>
-            <col className="w-[20%]" />
-            <col className="w-[36%]" />
-            <col className="w-[22%]" />
-            <col className="w-[22%]" />
-          </colgroup>
-          <thead>
-            <tr className="border-b border-black/[0.07] dark:border-white/[0.08] text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              <th scope="col" className="py-3.5 px-4 sm:px-6 w-[20%]">
+        <table ref={tableRef} className="w-full text-left min-w-[680px] block">
+          <thead className="block">
+            <tr
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(140px, 1fr) minmax(180px, 1.4fr) minmax(100px, 0.8fr) 64px minmax(140px, 1fr)",
+              }}
+              className="grid items-center border-b border-black/[0.07] dark:border-white/[0.08] text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]"
+            >
+              <th scope="col" className="py-3.5 pl-4 sm:pl-6 pr-3">
                 <button
                   type="button"
                   onClick={() => setSortAsc(!sortAsc)}
@@ -118,18 +118,20 @@ export default function AllOrdersTableV2({
                   )}
                 </button>
               </th>
-              <th scope="col" className="py-3.5 px-4 sm:px-6 w-[36%]">
+              <th scope="col" className="py-3.5 px-3 sm:px-4">
                 Partner
               </th>
-              <th scope="col" className="py-3.5 px-4 sm:px-6 text-right w-[22%]">
+              <th scope="col" className="py-3.5 px-3 sm:px-4 text-right">
                 Value
               </th>
-              <th scope="col" className="py-3.5 px-4 sm:px-6 w-[22%]">
+              {/* Dedicated explicit 64px gap track */}
+              <th aria-hidden="true" className="w-16 min-w-[64px] p-0 pointer-events-none" />
+              <th scope="col" className="py-3.5 pl-3 sm:pl-4 pr-4 sm:pr-6">
                 Fulfilment
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.05]">
+          <tbody className="block divide-y divide-black/[0.05] dark:divide-white/[0.05]">
             {filteredOrders.length > 0 ? (
               filteredOrders.map((order, idx) => {
                 const isSelected = order.orderNumber === selectedOrderNumber;
@@ -148,8 +150,12 @@ export default function AllOrdersTableV2({
                     onKeyDown={(e) => handleKeyDown(e, idx)}
                     tabIndex={0}
                     aria-current={isSelected ? "true" : undefined}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "minmax(140px, 1fr) minmax(180px, 1.4fr) minmax(100px, 0.8fr) 64px minmax(140px, 1fr)",
+                    }}
                     className={`
-                      group cursor-pointer transition-colors duration-150 rounded-[18px] outline-none
+                      grid items-center group cursor-pointer transition-colors duration-150 rounded-[18px] outline-none
                       ${isSelected
                         ? "bg-[#F7F3EA] dark:bg-[#272C34] border-l-4 border-[#7D3F1E] dark:border-[#E07A57]"
                         : "hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
@@ -157,7 +163,7 @@ export default function AllOrdersTableV2({
                     `}
                   >
                     {/* Order # and Date */}
-                    <td className="py-4 px-4 sm:px-6 align-middle">
+                    <td className="py-4 pl-4 sm:pl-6 pr-3 align-middle">
                       <div className="font-semibold text-[15px] text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
                         {order.orderNumber}
                       </div>
@@ -167,7 +173,7 @@ export default function AllOrdersTableV2({
                     </td>
 
                     {/* Supplier Logo Tile + Name */}
-                    <td className="py-4 px-4 sm:px-6 align-middle">
+                    <td className="py-4 px-3 sm:px-4 align-middle">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-white border border-gray-200 shadow-2xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
                           <BrandLogo
@@ -185,7 +191,7 @@ export default function AllOrdersTableV2({
                     </td>
 
                     {/* Value + Spend Share Hairline Bar */}
-                    <td className="py-4 px-4 sm:px-6 align-middle text-right">
+                    <td className="py-4 px-3 sm:px-4 align-middle text-right">
                       <div className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tabular-nums">
                         ${Math.round(order.orderValue > 10000 ? order.orderValue / 83 : order.orderValue).toLocaleString("en-US")}
                       </div>
@@ -199,8 +205,11 @@ export default function AllOrdersTableV2({
                       </div>
                     </td>
 
+                    {/* Dedicated explicit 64px gap track */}
+                    <td aria-hidden="true" className="w-16 min-w-[64px] p-0 pointer-events-none" />
+
                     {/* Fulfilment Status */}
-                    <td className="py-4 px-4 sm:px-6 align-middle">
+                    <td className="py-4 pl-3 sm:pl-4 pr-4 sm:pr-6 align-middle">
                       <div className="inline-flex items-center gap-2">
                         <span
                           className="w-2 h-2 rounded-full shrink-0"
@@ -215,8 +224,8 @@ export default function AllOrdersTableV2({
                 );
               })
             ) : (
-              <tr>
-                <td colSpan={4} className="py-12 text-center">
+              <tr className="block">
+                <td colSpan={5} className="py-12 text-center block">
                   <div className="flex flex-col items-center justify-center space-y-2">
                     <p className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
                       No data in this period
