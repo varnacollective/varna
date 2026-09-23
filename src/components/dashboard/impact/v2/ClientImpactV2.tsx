@@ -19,7 +19,7 @@ export default function ClientImpactV2({
   supplierImpactData,
 }: ClientImpactV2Props) {
   // Client info fallbacks
-  const clientName = dashboardData?.client?.clientName || "A Dubai";
+  const clientName = dashboardData?.client?.clientName || "The Astor Dubai";
   const industry = dashboardData?.client?.industry || "Hospitality";
   const logoPath = dashboardData?.client?.logoPath || undefined;
 

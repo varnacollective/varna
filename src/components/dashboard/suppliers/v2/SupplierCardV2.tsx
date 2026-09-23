@@ -14,6 +14,8 @@ import { getBadgeConfig, type SupplierBadgeItem } from "@/components/dashboard/S
 import { ExternalLink, ShoppingBag, Quote, FileText } from "lucide-react";
 import Link from "next/link";
 import { getPartnerReportUrl } from "@/lib/partner-reports";
+import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
+import { getPartnerPillarBreakdown } from "@/lib/sub-criteria-labels";
 
 interface SupplierCardV2Props {
   name: string;
@@ -37,6 +39,7 @@ interface SupplierCardV2Props {
   liveConfidenceData?: Record<string, SupplierConfidenceData>;
   enterpriseId?: string;
   reportUrl?: string | null;
+  scoresSummary?: Record<string, any>;
 }
 
 function getBandLabel(score: number): string {
@@ -137,6 +140,7 @@ export default function SupplierCardV2({
   liveConfidenceData,
   enterpriseId,
   reportUrl,
+  scoresSummary,
 }: SupplierCardV2Props) {
   const isUKHI = name.toLowerCase().includes("ukhi");
   const isBare = name.toLowerCase().includes("bare");
@@ -336,7 +340,7 @@ export default function SupplierCardV2({
           </div>
         </div>
 
-        {/* Pillar Progress Bars */}
+        {/* Pillar Progress Bars with Hover Breakdown */}
         <div className="space-y-2.5 my-4">
           {bars.map((b) => {
             const pillarColor =
@@ -345,26 +349,39 @@ export default function SupplierCardV2({
                   b.label.includes("Gov") ? "#36424A" :
                     "#7A3F1E";
 
-            return (
-              <div key={b.label} className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#5B564E] dark:text-[#C2BCB0] font-medium">
-                    {b.label}
-                  </span>
-                  <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-semibold tabular-nums">
-                    {b.val.toFixed(1)}
-                  </span>
-                </div>
+            const breakdown = getPartnerPillarBreakdown(b.label, scoresSummary, enterpriseId || name);
+            const effectivePillarScore = breakdown.pillarScore ?? (b.val !== null && b.val !== undefined && !isNaN(b.val) ? b.val : null);
 
-                <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full transition-all duration-700"
-                    style={{ backgroundColor: pillarColor, width: `${Math.min(100, Math.max(0, b.val))}%` }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, Math.max(0, b.val))}%` }}
-                  />
+            return (
+              <PillarBreakdownHoverCard
+                key={b.label}
+                pillarLabel={b.label}
+                pillarScore={effectivePillarScore}
+                color={pillarColor}
+                items={breakdown.items}
+                disableScale={true}
+                className="w-full block cursor-help outline-none group/pillar rounded-lg p-1 -m-1 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+              >
+                <div className="space-y-1 w-full">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[#5B564E] dark:text-[#C2BCB0] font-medium group-hover/pillar:text-[#1F1B16] dark:group-hover/pillar:text-white transition-colors">
+                      {b.label}
+                    </span>
+                    <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-semibold tabular-nums">
+                      {b.val !== null && b.val !== undefined && !isNaN(b.val) ? b.val.toFixed(1) : "—"}
+                    </span>
+                  </div>
+
+                  <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
+                    <motion.div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{ backgroundColor: pillarColor, width: `${Math.min(100, Math.max(0, b.val || 0))}%` }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(100, Math.max(0, b.val || 0))}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
+              </PillarBreakdownHoverCard>
             );
           })}
 

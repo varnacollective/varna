@@ -46,7 +46,7 @@ export default function ClientOrdersV2({
   const [isMobile, setIsMobile] = useState(false);
 
   // Client info fallbacks
-  const clientName = dashboardData?.client?.clientName || "A Dubai";
+  const clientName = dashboardData?.client?.clientName || "The Astor Dubai";
   const industry = dashboardData?.client?.industry || "Hospitality";
   const logoPath = dashboardData?.client?.logoPath || undefined;
 

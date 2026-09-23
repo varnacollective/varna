@@ -29,8 +29,8 @@ export default function OrdersKpiV2({
           border border-black/[0.07] dark:border-white/[0.08]
           shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
           dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-7 lg:p-8
-          flex flex-col justify-between min-h-[200px] h-full
+          rounded-[24px] p-5 lg:p-[22px]
+          flex flex-col justify-between min-h-[160px] h-full
           hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         "
       >
@@ -38,12 +38,12 @@ export default function OrdersKpiV2({
           <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
             Total Orders
           </span>
-          <div className="w-9 h-9 rounded-full bg-[#7D3F1E]/10 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57] shrink-0">
-            <ShoppingBag className="w-4 h-4" strokeWidth={1.8} />
+          <div className="w-[30px] h-[30px] rounded-full bg-[#7D3F1E]/10 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57] shrink-0">
+            <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.8} />
           </div>
         </div>
 
-        <div className="text-4xl lg:text-[52px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-3 tabular-nums">
+        <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-2 tabular-nums">
           {totalOrders}
         </div>
 
@@ -62,8 +62,8 @@ export default function OrdersKpiV2({
           border border-black/[0.07] dark:border-white/[0.08]
           shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
           dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-7 lg:p-8
-          flex flex-col justify-between min-h-[200px] h-full
+          rounded-[24px] p-5 lg:p-[22px]
+          flex flex-col justify-between min-h-[160px] h-full
           hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         "
       >
@@ -71,13 +71,13 @@ export default function OrdersKpiV2({
           <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
             Sustainable Spend
           </span>
-          <div className="w-9 h-9 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0] shrink-0">
-            <Coins className="w-4 h-4" strokeWidth={1.8} />
+          <div className="w-[30px] h-[30px] rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0] shrink-0">
+            <Coins className="w-3.5 h-3.5" strokeWidth={1.8} />
           </div>
         </div>
 
         <div
-          className="text-3xl lg:text-[40px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-3 tabular-nums flex items-baseline gap-1"
+          className="text-2xl lg:text-[32px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-2 tabular-nums flex items-baseline gap-1"
           aria-label={`Total spend $${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}`}
         >
           <span>${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}</span>
@@ -96,8 +96,8 @@ export default function OrdersKpiV2({
           border border-black/[0.07] dark:border-white/[0.08]
           shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
           dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-7 lg:p-8
-          flex flex-col justify-between min-h-[200px] h-full
+          rounded-[24px] p-5 lg:p-[22px]
+          flex flex-col justify-between min-h-[160px] h-full
           hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         "
       >
@@ -105,12 +105,12 @@ export default function OrdersKpiV2({
           <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
             Partners
           </span>
-          <div className="w-9 h-9 rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 flex items-center justify-center text-[#6F8391] dark:text-[#93A9B8] shrink-0">
-            <Users className="w-4 h-4" strokeWidth={1.8} />
+          <div className="w-[30px] h-[30px] rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 flex items-center justify-center text-[#6F8391] dark:text-[#93A9B8] shrink-0">
+            <Users className="w-3.5 h-3.5" strokeWidth={1.8} />
           </div>
         </div>
 
-        <div className="text-4xl lg:text-[52px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-3 tabular-nums">
+        <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-2 tabular-nums">
           {vettedSuppliersCount}
         </div>
 

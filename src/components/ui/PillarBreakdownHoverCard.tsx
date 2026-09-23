@@ -7,12 +7,14 @@ import { getSubCriteriaForPillar, type SubCriterionItem } from "@/lib/sub-criter
 
 export interface PillarBreakdownHoverCardProps {
   pillarLabel: string;
-  pillarScore: number;
+  pillarScore?: number | null;
   pillarKey?: "E" | "S" | "G" | "C";
-  color: string;
+  color?: string;
   items?: SubCriterionItem[];
-  criteria?: Array<{ name: string; score: number; weight?: string }>;
+  criteria?: Array<{ name: string; score: number | null | undefined; weight?: string }>;
   scores?: Record<string, number | undefined | null>;
+  className?: string;
+  disableScale?: boolean;
   children: ReactNode;
 }
 
@@ -24,6 +26,8 @@ export default function PillarBreakdownHoverCard({
   items: directItems,
   criteria,
   scores,
+  className,
+  disableScale = false,
   children,
 }: PillarBreakdownHoverCardProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,6 +56,8 @@ export default function PillarBreakdownHoverCard({
   const finalItems: SubCriterionItem[] = itemsToDisplay.length > 0
     ? itemsToDisplay
     : (criteria ? criteria.map((c) => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color: activeColor })) : []);
+
+  const isPillarScored = pillarScore !== null && pillarScore !== undefined && !isNaN(Number(pillarScore));
 
   const CARD_WIDTH = 340;
   const CARD_HEIGHT_ESTIMATE = Math.min(100 + finalItems.length * 48, 480);
@@ -110,6 +116,8 @@ export default function PillarBreakdownHoverCard({
     };
   }, []);
 
+  const defaultTriggerClasses = `inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all duration-200 ${disableScale ? "" : "hover:scale-[1.02]"}`;
+
   return (
     <>
       <div
@@ -118,7 +126,7 @@ export default function PillarBreakdownHoverCard({
         role="button"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-label={`${pillarLabel} pillar score ${pillarScore}, hover or focus for sub-criteria breakdown`}
+        aria-label={`${pillarLabel} pillar score ${isPillarScored ? pillarScore : "not yet scored"}, hover or focus for sub-criteria breakdown`}
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
         onFocus={handleOpen}
@@ -130,7 +138,7 @@ export default function PillarBreakdownHoverCard({
             handleClick();
           }
         }}
-        className="inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+        className={className || defaultTriggerClasses}
       >
         {children}
       </div>
@@ -174,47 +182,69 @@ export default function PillarBreakdownHoverCard({
                         </h4>
                       </div>
                       <div className="flex items-baseline gap-1 font-mono">
-                        <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
-                          {pillarScore}
-                        </span>
-                        <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
-                          /100
-                        </span>
+                        {isPillarScored ? (
+                          <>
+                            <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
+                              {Number(pillarScore) % 1 === 0 ? Number(pillarScore) : Number(pillarScore).toFixed(1)}
+                            </span>
+                            <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
+                              /100
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-xs text-[#8C9DA8] font-normal italic font-sans">
+                            Not yet scored
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     {/* Sub-Criteria Rows */}
                     <div className="space-y-2.5">
-                      {finalItems.map((item, idx) => (
-                        <div key={item.code || idx} className="space-y-1">
-                          <div className="flex items-center justify-between text-xs font-sans">
-                            <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5 truncate max-w-[250px]">
-                              <span
-                                className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 shrink-0"
-                                style={{ color: activeColor }}
-                              >
-                                {item.code}
+                      {finalItems.map((item, idx) => {
+                        const isScored = item.score !== null && item.score !== undefined && !isNaN(Number(item.score));
+                        const numScore = isScored ? Number(item.score) : 0;
+                        const formattedScore = isScored
+                          ? (numScore % 1 === 0 ? numScore : numScore.toFixed(1))
+                          : "Not yet scored";
+
+                        return (
+                          <div key={item.code || idx} className="space-y-1">
+                            <div className="flex items-center justify-between text-xs font-sans">
+                              <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5 truncate max-w-[250px]">
+                                <span
+                                  className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 shrink-0"
+                                  style={{ color: activeColor }}
+                                >
+                                  {item.code}
+                                </span>
+                                <span className="text-[11px] text-[#6E7781] dark:text-[#8C9DA8] font-normal truncate">
+                                  — {item.name}:
+                                </span>
                               </span>
-                              <span className="text-[11px] text-[#6E7781] dark:text-[#8C9DA8] font-normal truncate">
-                                — {item.name}:
+                              <span className="font-mono font-bold text-xs text-[#1A1F26] dark:text-[#FAF8F5] shrink-0 ml-2">
+                                {isScored ? (
+                                  formattedScore
+                                ) : (
+                                  <span className="text-[10px] font-normal text-[#6E7781] dark:text-[#8C9DA8] italic font-sans">
+                                    Not yet scored
+                                  </span>
+                                )}
                               </span>
-                            </span>
-                            <span className="font-mono font-bold text-xs text-[#1A1F26] dark:text-[#FAF8F5] shrink-0 ml-2">
-                              {item.score}
-                            </span>
+                            </div>
+                            {/* Micro Progress Bar */}
+                            <div className="h-1.5 w-full bg-[#FAF8F5] dark:bg-[#121316] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15">
+                              <motion.div
+                                className="h-full rounded-full"
+                                style={{ backgroundColor: activeColor }}
+                                initial={{ width: 0 }}
+                                animate={{ width: isScored ? `${Math.min(100, Math.max(0, numScore))}%` : "0%" }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                              />
+                            </div>
                           </div>
-                          {/* Micro Progress Bar */}
-                          <div className="h-1.5 w-full bg-[#FAF8F5] dark:bg-[#121316] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15">
-                            <motion.div
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: activeColor }}
-                              initial={{ width: 0 }}
-                              animate={{ width: `${Math.min(100, Math.max(0, item.score))}%` }}
-                              transition={{ duration: 0.4, ease: "easeOut" }}
-                            />
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     {/* Footer */}

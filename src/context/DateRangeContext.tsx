@@ -13,6 +13,7 @@ export interface DateRangeState {
 interface DateRangeContextType {
   state: DateRangeState;
   label: string;
+  isUserSelected: boolean;
   setDateRange: (newRange: { preset: DatePreset; startDate?: string | null; endDate?: string | null }) => void;
   resetDateRange: () => void;
 }
@@ -98,6 +99,7 @@ export function DateRangeProvider({ children }: { children: ReactNode }) {
     startDate: null,
     endDate: null,
   });
+  const [isUserSelected, setIsUserSelected] = useState<boolean>(false);
 
   // Read URL query params on initial mount
   useEffect(() => {
@@ -114,12 +116,14 @@ export function DateRangeProvider({ children }: { children: ReactNode }) {
         startDate: presetInfo.startDate,
         endDate: presetInfo.endDate,
       });
+      setIsUserSelected(true);
     } else if (from || to) {
       setState({
         preset: "custom",
         startDate: from || null,
         endDate: to || null,
       });
+      setIsUserSelected(true);
     }
   }, []);
 
@@ -139,6 +143,7 @@ export function DateRangeProvider({ children }: { children: ReactNode }) {
       endDate: newEnd,
     };
 
+    setIsUserSelected(true);
     setState(newState);
 
     // Update URL query parameters seamlessly
@@ -162,10 +167,14 @@ export function DateRangeProvider({ children }: { children: ReactNode }) {
   };
 
   const resetDateRange = () => {
+    setIsUserSelected(false);
     setDateRange({ preset: "all_time" });
   };
 
   const label = useMemo(() => {
+    if (!isUserSelected) {
+      return "Select Period";
+    }
     if (state.preset === "all_time") {
       return "All time";
     }
@@ -182,10 +191,10 @@ export function DateRangeProvider({ children }: { children: ReactNode }) {
       return `Until ${formatDateForDisplay(state.endDate)}`;
     }
     return "All time";
-  }, [state]);
+  }, [state, isUserSelected]);
 
   return (
-    <DateRangeContext.Provider value={{ state, label, setDateRange, resetDateRange }}>
+    <DateRangeContext.Provider value={{ state, label, isUserSelected, setDateRange, resetDateRange }}>
       {children}
     </DateRangeContext.Provider>
   );

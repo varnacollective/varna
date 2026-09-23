@@ -18,7 +18,7 @@ const PRESET_OPTIONS: { id: DatePreset; label: string }[] = [
 ];
 
 export default function DateRangeFilter({ className = "", variant = "pill" }: DateRangeFilterProps) {
-  const { state, label, setDateRange } = useDateRange();
+  const { state, label, isUserSelected, setDateRange } = useDateRange();
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +99,7 @@ export default function DateRangeFilter({ className = "", variant = "pill" }: Da
         aria-haspopup="true"
       >
         <Calendar className="w-3.5 h-3.5 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
-        <span className="uppercase text-[11px] tracking-wider font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
+        <span className="text-[11px] tracking-wider font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
           {label}
         </span>
         <ChevronDown
@@ -137,7 +137,7 @@ export default function DateRangeFilter({ className = "", variant = "pill" }: Da
           {/* Preset Buttons */}
           <div className="grid grid-cols-1 gap-1">
             {PRESET_OPTIONS.map((option) => {
-              const isSelected = activePreset === option.id;
+              const isSelected = isUserSelected && activePreset === option.id;
               return (
                 <button
                   key={option.id}

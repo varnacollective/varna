@@ -25,10 +25,18 @@ export default async function SuppliersServerPage() {
   const clientId = session.clientId;
 
   try {
-    // 1. Fetch scores_summary (all active suppliers)
+    // 1. Fetch scores_summary (all active suppliers with complete sub-criteria)
     const { data: scoresData, error: scoresError } = await supabase
       .from("scores_summary")
-      .select("enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score, overall_assessor_summary, sdg_alignments");
+      .select(`
+        enterprise_id, enterprise_name, logo_path, final_varna_score,
+        e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score,
+        e1_eff_score, e2_eff_score, e3_eff_score, e4_eff_score, e5_eff_score, e6_eff_score,
+        s1_eff_score, s2_eff_score, s3_eff_score, s4_eff_score,
+        g1_eff_score, g2_eff_score, g3_eff_score,
+        c1_eff_score, c2_eff_score, c3_eff_score,
+        is_craftled, overall_assessor_summary, sdg_alignments
+      `);
 
     if (scoresError) {
       console.error("Supabase scores_summary error:", scoresError);
@@ -236,6 +244,7 @@ export default async function SuppliersServerPage() {
         confidence_pct: confidenceRow?.confidence_pct ?? 0,
         confidence_summary: confidenceRow || null,
         badges: extractSupplierBadges(name, scoreRow.enterprise_id),
+        scores_summary: scoreRow,
       };
     });
 

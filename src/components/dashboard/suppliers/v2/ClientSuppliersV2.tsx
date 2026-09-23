@@ -23,7 +23,7 @@ interface ClientSuppliersV2Props {
 export default function ClientSuppliersV2({
   suppliersData = [],
   liveConfidenceData = {},
-  clientName = "A Dubai",
+  clientName = "The Astor Dubai",
   industry = "Luxury Hospitality",
   logoPath,
   dashboardData,
@@ -232,6 +232,7 @@ export default function ClientSuppliersV2({
                   ]}
                   sdgObjects={supplier.sdg_objects || []}
                   liveConfidenceData={liveConfidenceData}
+                  scoresSummary={supplier.scores_summary}
                 />
               </div>
             );

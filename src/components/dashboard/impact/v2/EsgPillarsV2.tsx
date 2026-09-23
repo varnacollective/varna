@@ -107,7 +107,7 @@ export default function EsgPillarsV2({
                 border border-black/[0.07] dark:border-white/[0.08]
                 shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
                 dark:shadow-none dark:border-t-white/[0.12]
-                rounded-[24px] p-6 lg:p-7
+                rounded-[24px] p-5 lg:p-[22px]
                 flex flex-col justify-between h-full w-full
                 hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
                 relative overflow-visible
@@ -124,7 +124,7 @@ export default function EsgPillarsV2({
                   </div>
                 </div>
 
-                <div className="py-6 flex flex-col items-center justify-center">
+                <div className="py-4 flex flex-col items-center justify-center">
                   <PillarBreakdownHoverCard
                     pillarLabel={p.label}
                     pillarScore={breakdown?.pillarScore ?? Math.round(score)}

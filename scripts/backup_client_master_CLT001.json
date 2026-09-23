@@ -1,0 +1,15 @@
+{
+  "id": "1",
+  "client_id": "CLT-001",
+  "client_name": "A Dubai",
+  "property_type": "Luxury Hotel",
+  "city": "Dubai",
+  "country": "UAE",
+  "procurement_contact_name": "Sarah Al-Hassan",
+  "contact_email": "procurement@oberoigroup.com",
+  "account_start_date": "2025-12-31T18:30:00.000Z",
+  "csrd_reporting_obligation": "Yes",
+  "account_status": "Active",
+  "logo_path": null,
+  "parent_group": null
+}
