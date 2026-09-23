@@ -58,8 +58,6 @@ export default function TopBar({ clientName, industry, logoPath, clientDetails, 
       {/* Left: Branding & Welcome Section */}
       <div className="flex flex-col items-start relative z-10 max-w-xl">
         <div className="flex items-center gap-2.5 mb-2">
-          <img src="/logo-light.svg" alt="Varna" className="block dark:hidden h-6 sm:h-7 w-auto object-contain shrink-0" />
-          <img src="/logo-dark.svg" alt="Varna" className="hidden dark:block h-6 sm:h-7 w-auto object-contain shrink-0" />
           <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#B85333] dark:text-[#C85D3B]">
             Your Procurement Impact explained
           </span>
