@@ -95,9 +95,15 @@ export default function AllOrdersTableV2({
       {/* Orders Table Area */}
       <div className="overflow-x-auto my-4 -mx-2 px-2">
         <table ref={tableRef} className="w-full text-left border-collapse min-w-[600px]">
+          <colgroup>
+            <col className="w-[20%]" />
+            <col className="w-[36%]" />
+            <col className="w-[22%]" />
+            <col className="w-[22%]" />
+          </colgroup>
           <thead>
             <tr className="border-b border-black/[0.07] dark:border-white/[0.08] text-[11px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              <th scope="col" className="py-3 px-3">
+              <th scope="col" className="py-3.5 px-4 sm:px-6 w-[20%]">
                 <button
                   type="button"
                   onClick={() => setSortAsc(!sortAsc)}
@@ -112,13 +118,13 @@ export default function AllOrdersTableV2({
                   )}
                 </button>
               </th>
-              <th scope="col" className="py-3 px-3">
+              <th scope="col" className="py-3.5 px-4 sm:px-6 w-[36%]">
                 Partner
               </th>
-              <th scope="col" className="py-3 px-3 text-right">
+              <th scope="col" className="py-3.5 px-4 sm:px-6 text-right w-[22%]">
                 Value
               </th>
-              <th scope="col" className="py-3 px-3">
+              <th scope="col" className="py-3.5 px-4 sm:px-6 w-[22%]">
                 Fulfilment
               </th>
             </tr>
@@ -151,7 +157,7 @@ export default function AllOrdersTableV2({
                     `}
                   >
                     {/* Order # and Date */}
-                    <td className="py-4 px-3 align-middle">
+                    <td className="py-4 px-4 sm:px-6 align-middle">
                       <div className="font-semibold text-[15px] text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
                         {order.orderNumber}
                       </div>
@@ -161,7 +167,7 @@ export default function AllOrdersTableV2({
                     </td>
 
                     {/* Supplier Logo Tile + Name */}
-                    <td className="py-4 px-3 align-middle">
+                    <td className="py-4 px-4 sm:px-6 align-middle">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-white border border-gray-200 shadow-2xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
                           <BrandLogo
@@ -179,13 +185,13 @@ export default function AllOrdersTableV2({
                     </td>
 
                     {/* Value + Spend Share Hairline Bar */}
-                    <td className="py-4 px-3 align-middle text-right">
+                    <td className="py-4 px-4 sm:px-6 align-middle text-right">
                       <div className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tabular-nums">
                         ${Math.round(order.orderValue > 10000 ? order.orderValue / 83 : order.orderValue).toLocaleString("en-US")}
                       </div>
 
                       {/* Spend Share Hairline Bar */}
-                      <div className="w-16 h-1 rounded-full bg-black/5 dark:bg-white/10 ml-auto mt-1 overflow-hidden">
+                      <div className="w-16 sm:w-20 h-1 rounded-full bg-black/5 dark:bg-white/10 ml-auto mt-1.5 overflow-hidden">
                         <div
                           className="h-full bg-[#55705A] dark:bg-[#9DB4A0] rounded-full"
                           style={{ width: `${spendPct}%` }}
@@ -194,7 +200,7 @@ export default function AllOrdersTableV2({
                     </td>
 
                     {/* Fulfilment Status */}
-                    <td className="py-4 px-3 align-middle">
+                    <td className="py-4 px-4 sm:px-6 align-middle">
                       <div className="inline-flex items-center gap-2">
                         <span
                           className="w-2 h-2 rounded-full shrink-0"
@@ -210,7 +216,7 @@ export default function AllOrdersTableV2({
               })
             ) : (
               <tr>
-                <td colSpan={5} className="py-12 text-center">
+                <td colSpan={4} className="py-12 text-center">
                   <div className="flex flex-col items-center justify-center space-y-2">
                     <p className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
                       No data in this period

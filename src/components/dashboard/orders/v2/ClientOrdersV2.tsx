@@ -13,10 +13,17 @@ import { X } from "lucide-react";
 
 interface ClientOrdersV2Props {
   dashboardData?: DashboardData | null;
+  evidencePanel?: React.ReactNode;
 }
 
-export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
+export default function ClientOrdersV2({
+  dashboardData,
+  evidencePanel,
+}: ClientOrdersV2Props) {
   const { state: dateState } = useDateRange();
+
+  // Check if an evidence panel is present to be rendered
+  const hasEvidencePanel = Boolean(evidencePanel);
 
   const filteredOrders = useMemo(() => {
     if (!dateState.startDate && !dateState.endDate) return CLIENT_ORDERS_LIST;
@@ -71,7 +78,7 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
 
   const handleSelectOrder = (order: ClientOrderItem) => {
     setSelectedOrderNumber(order.orderNumber);
-    if (isMobile) {
+    if (isMobile && hasEvidencePanel) {
       setIsMobileSheetOpen(true);
     }
   };
@@ -106,9 +113,9 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
         vettedSuppliersCount={vettedSuppliersCount}
       />
 
-      {/* 4. Desktop & Tablet Split View: All Orders Table (8 cols) + Evidence Panel (4 cols) */}
+      {/* 4. Desktop & Tablet Split View: All Orders Table (8 or 12 cols) + Evidence Panel (4 cols if present) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        <div className="lg:col-span-8">
+        <div className={hasEvidencePanel ? "lg:col-span-8" : "lg:col-span-12"}>
           <AllOrdersTableV2
             orders={filteredOrders}
             selectedOrderNumber={selectedOrderNumber}
@@ -119,12 +126,15 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
           />
         </div>
 
-
-
+        {hasEvidencePanel && (
+          <div className="hidden lg:block lg:col-span-4">
+            {evidencePanel}
+          </div>
+        )}
       </div>
 
       {/* 5. Mobile Bottom Sheet Modal (≤767px) */}
-      {isMobileSheetOpen && (
+      {hasEvidencePanel && isMobileSheetOpen && (
         <div
           role="dialog"
           aria-modal="true"
@@ -151,6 +161,7 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
               <X className="w-5 h-5" />
             </button>
 
+            {evidencePanel}
           </div>
         </div>
       )}
