@@ -432,11 +432,6 @@ export default function SupplierCardV2({
                     </div>
                   );
                 })}
-
-                {/* D6 Overflow Popover */}
-                {hiddenBadges.length > 0 && (
-                  <BadgeOverflowPopoverV2 hiddenBadges={hiddenBadges} />
-                )}
               </div>
 
               {/* View Scorecard Full-Screen Report Button */}
