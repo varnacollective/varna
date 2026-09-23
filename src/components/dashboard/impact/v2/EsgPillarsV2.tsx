@@ -80,10 +80,10 @@ export default function EsgPillarsV2({
         </div>
 
         {/* Framework Calibrated Pill */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0] text-xs font-medium whitespace-nowrap shrink-0 border border-[#55705A]/25 dark:border-[#9DB4A0]/30">
+        {/* <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0] text-xs font-medium whitespace-nowrap shrink-0 border border-[#55705A]/25 dark:border-[#9DB4A0]/30">
           <Check className="w-3.5 h-3.5 text-[#55705A] dark:text-[#9DB4A0]" strokeWidth={2.5} />
           <span>Framework Calibrated</span>
-        </div>
+        </div> */}
       </div>
 
       {/* 3 Pillar Cards Grid (4 cols each) */}

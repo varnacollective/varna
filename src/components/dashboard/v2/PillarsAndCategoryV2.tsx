@@ -99,10 +99,10 @@ export default function PillarsAndCategoryV2({
 
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0] text-xs font-medium whitespace-nowrap shrink-0">
+            {/* <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0] text-xs font-medium whitespace-nowrap shrink-0">
               <Check className="w-3.5 h-3.5 text-[#55705A] dark:text-[#9DB4A0]" strokeWidth={2.5} />
               <span>Framework Calibrated</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Body: Circular Gauges Container (ImpactPillars renders circular RadialGauge SVGs) */}
