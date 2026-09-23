@@ -106,14 +106,16 @@ export function PerformanceBandsLegend({
   const activeBandId = activeScore !== undefined ? getActiveBandId(activeScore) : null;
 
   return (
-    <div className={`flex items-center gap-x-3 gap-y-1.5 flex-wrap text-[12px] text-[#6F6A61] dark:text-[#9A948A] ${className}`}>
+    <div className={`flex flex-col gap-1.5 text-[12px] text-[#6F6A61] dark:text-[#9A948A] ${className}`}>
       {showHeader && (
-        <span className="font-medium text-[#5B564E] dark:text-[#C2BCB0]">Performance Bands:</span>
+        <span className="font-medium text-[#5B564E] dark:text-[#C2BCB0] mb-0.5">
+          Performance Bands:
+        </span>
       )}
       {SCORE_BANDS.map((band) => {
         const isActive = activeBandId === band.id;
         return (
-          <span
+          <div
             key={band.id}
             className={`flex items-center gap-1.5 transition-all ${
               isActive
@@ -128,7 +130,7 @@ export function PerformanceBandsLegend({
             <span>
               {band.name} {band.rangeLabel}
             </span>
-          </span>
+          </div>
         );
       })}
     </div>
