@@ -15,14 +15,6 @@ interface SuppliersKpiV2Props {
   varnaScoreData: VarnaScoreData;
 }
 
-function getBandCaption(score: number): string {
-  if (score >= 85) return "Leader band: 85–100";
-  if (score >= 70) return "Advanced band: 70–84";
-  if (score >= 55) return "Emerging band: 55–69";
-  if (score >= 40) return "Foundational band: 40–54";
-  return "Not Ready band: <40";
-}
-
 function getBandLabel(score: number): string {
   if (score >= 85) return "Leader";
   if (score >= 70) return "Advanced";
@@ -39,7 +31,6 @@ export default function SuppliersKpiV2({
   supplierNames = ["Bare Necessities", "Kheoni Ventures", "UKHI India"],
   varnaScoreData,
 }: SuppliersKpiV2Props) {
-  const bandCaption = getBandCaption(avgVarnaScore);
   const bandLabel = getBandLabel(avgVarnaScore);
 
   // D3 Derived Insight: Format list of supplier names cleanly using Intl.ListFormat
@@ -210,10 +201,6 @@ export default function SuppliersKpiV2({
 
             {/* Redesigned 5-Segment Performance Band Indicator */}
             <VarnaScoreBandScale score={avgVarnaScore} />
-
-            <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug mt-1">
-              {bandCaption}
-            </p>
           </div>
         </VarnaScoreHoverCard>
       </motion.div>
