@@ -352,7 +352,7 @@ export default function SupplierCardV2({
                     {b.label}
                   </span>
                   <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-semibold tabular-nums">
-                    {b.val.toFixed(1)}%
+                    {b.val.toFixed(1)}
                   </span>
                 </div>
 
@@ -370,7 +370,7 @@ export default function SupplierCardV2({
 
           {/* Strongest Pillar Chip */}
           <div className="pt-1 text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-medium">
-            Strongest pillar: <span className="text-[#7D3F1E] dark:text-[#E07A57]">{strongestPillarName} ({maxPillarVal.toFixed(1)}%)</span>
+            Strongest pillar: <span className="text-[#7D3F1E] dark:text-[#E07A57]">{strongestPillarName} ({maxPillarVal.toFixed(1)})</span>
           </div>
         </div>
 
