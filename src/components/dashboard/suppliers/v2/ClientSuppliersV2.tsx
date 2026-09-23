@@ -210,6 +210,7 @@ export default function ClientSuppliersV2({
                 <SupplierCardV2
                   name={name}
                   legalName={legalName}
+                  enterpriseId={supplier.enterprise_id}
                   logoPath={supplier.logo_path}
                   location={location}
                   varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}

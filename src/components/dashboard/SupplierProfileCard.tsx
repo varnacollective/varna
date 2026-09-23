@@ -18,10 +18,13 @@ import {
   Award,
   RefreshCw,
   ShieldCheck,
+  FileText,
+  ExternalLink,
   type LucideIcon,
 } from "lucide-react";
 
 import BrandLogo from "@/components/ui/BrandLogo";
+import { getPartnerReportUrl } from "@/lib/partner-reports";
 
 export interface BadgeConfig {
   icon: LucideIcon;
@@ -253,6 +256,8 @@ export interface SupplierProfileCardProps {
   sdgIds?: number[];
   sdgObjects?: Array<{ sdg_number: number; is_primary?: boolean; primary_narrative?: string | null }>;
   liveConfidenceData?: Record<string, SupplierConfidenceData>;
+  enterpriseId?: string;
+  reportUrl?: string | null;
 }
 
 export default function SupplierProfileCard({
@@ -279,8 +284,15 @@ export default function SupplierProfileCard({
   sdgIds = [],
   sdgObjects = [],
   liveConfidenceData,
+  enterpriseId,
+  reportUrl,
 }: SupplierProfileCardProps) {
   const carbonScore = carbonScoreProp ?? cScore ?? 0;
+
+  const resolvedReportUrl =
+    reportUrl !== undefined
+      ? reportUrl
+      : getPartnerReportUrl({ name, legalName, enterpriseId });
 
   const confidenceData =
     (liveConfidenceData && liveConfidenceData[name]) ||
@@ -390,8 +402,8 @@ export default function SupplierProfileCard({
         </div>
 
         {/* 3. Certification Badges (Wrapped nicely with distinct icons) */}
-        {badges && badges.length > 0 && (
-          <div className="varna-badge-row flex items-center gap-1.5 mb-4 h-7 shrink-0 relative">
+        {((badges && badges.length > 0) || resolvedReportUrl) && (
+          <div className="varna-badge-row flex items-center gap-1.5 mb-4 min-h-7 shrink-0 relative flex-wrap">
             {visibleBadges.map((badge, idx) => {
               const text = typeof badge === "string" ? badge : badge?.label || "";
               if (!text) return null;
@@ -410,6 +422,29 @@ export default function SupplierProfileCard({
 
             {hiddenBadges.length > 0 && (
               <BadgeOverflowPopover hiddenBadges={hiddenBadges} />
+            )}
+
+            {resolvedReportUrl && (
+              <a
+                href={resolvedReportUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                  border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
+                  bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
+                  dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
+                  text-[#7D3F1E] dark:text-[#E07A57]
+                  text-[10px] font-bold tracking-wider uppercase
+                  transition-all duration-150 shadow-xs cursor-pointer h-6.5
+                  group/scorecard
+                "
+                title={`View ${name} Scorecard (PDF)`}
+              >
+                <FileText className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57] group-hover/scorecard:text-white transition-colors" strokeWidth={2} />
+                <span>View Scorecard</span>
+                <ExternalLink className="w-2.5 h-2.5 text-[#7D3F1E]/70 dark:text-[#E07A57]/70 group-hover/scorecard:text-white transition-colors" strokeWidth={2} />
+              </a>
             )}
           </div>
         )}

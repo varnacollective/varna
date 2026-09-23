@@ -11,8 +11,9 @@ import type { SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 import BrandLogo from "@/components/ui/BrandLogo";
 import { getBadgeConfig, type SupplierBadgeItem } from "@/components/dashboard/SupplierProfileCard";
-import { ExternalLink, ShoppingBag, Quote } from "lucide-react";
+import { ExternalLink, ShoppingBag, Quote, FileText } from "lucide-react";
 import Link from "next/link";
+import { getPartnerReportUrl } from "@/lib/partner-reports";
 
 interface SupplierCardV2Props {
   name: string;
@@ -34,6 +35,8 @@ interface SupplierCardV2Props {
   categoryBars?: { label: string; val: number }[];
   sdgObjects?: any[];
   liveConfidenceData?: Record<string, SupplierConfidenceData>;
+  enterpriseId?: string;
+  reportUrl?: string | null;
 }
 
 function getBandLabel(score: number): string {
@@ -132,10 +135,18 @@ export default function SupplierCardV2({
   categoryBars,
   sdgObjects = [],
   liveConfidenceData,
+  enterpriseId,
+  reportUrl,
 }: SupplierCardV2Props) {
   const isUKHI = name.toLowerCase().includes("ukhi");
   const isBare = name.toLowerCase().includes("bare");
   const isKheoni = name.toLowerCase().includes("kheoni");
+
+  // Resolve full-screen PDF report URL for this partner
+  const resolvedReportUrl =
+    reportUrl !== undefined
+      ? reportUrl
+      : getPartnerReportUrl({ name, legalName, enterpriseId });
 
   // Determine if title equals legal name to avoid duplication (P1-3 fixed)
   const isDuplicateName = legalName && legalName.trim().toLowerCase() === name.trim().toLowerCase();
@@ -376,7 +387,7 @@ export default function SupplierCardV2({
         )}
 
         {/* Certifications Row */}
-        {effectiveBadges.length > 0 && (
+        {(effectiveBadges.length > 0 || resolvedReportUrl) && (
           <div className="my-3">
             <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
               Certifications & Badges
@@ -407,6 +418,30 @@ export default function SupplierCardV2({
               {/* D6 Overflow Popover */}
               {hiddenBadges.length > 0 && (
                 <BadgeOverflowPopoverV2 hiddenBadges={hiddenBadges} />
+              )}
+
+              {/* View Scorecard Full-Screen Report Button */}
+              {resolvedReportUrl && (
+                <a
+                  href={resolvedReportUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                    border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
+                    bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
+                    dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
+                    text-[#7D3F1E] dark:text-[#E07A57]
+                    text-[11px] font-semibold tracking-wide
+                    transition-all duration-150 shadow-xs cursor-pointer min-h-[30px]
+                    group/scorecard
+                  "
+                  title={`View ${name} Scorecard (PDF)`}
+                >
+                  <FileText className="w-3.5 h-3.5 text-[#7D3F1E] dark:text-[#E07A57] group-hover/scorecard:text-white transition-colors" strokeWidth={1.8} />
+                  <span>View Scorecard</span>
+                  <ExternalLink className="w-3 h-3 text-[#7D3F1E]/70 dark:text-[#E07A57]/70 group-hover/scorecard:text-white transition-colors" strokeWidth={1.8} />
+                </a>
               )}
             </div>
           </div>
