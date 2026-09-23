@@ -151,7 +151,6 @@ export default function ClientOrdersV2({ dashboardData }: ClientOrdersV2Props) {
               <X className="w-5 h-5" />
             </button>
 
-            <EvidencePanelV2 order={selectedOrder} />
           </div>
         </div>
       )}
