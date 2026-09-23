@@ -47,8 +47,7 @@ export default function ImpactHeroV2({
           </span>
 
           <div className="flex items-center gap-3 flex-wrap">
-            {/* Date Range Pill */}
-            <DateRangeFilter />
+
 
             {/* Export Report Pill */}
             {dashboardData ? (

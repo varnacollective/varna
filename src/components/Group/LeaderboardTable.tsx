@@ -190,7 +190,7 @@ export default function LeaderboardTable({
                 className="py-3.5 px-3 text-right font-semibold cursor-pointer group/header hover:text-[#B85333] transition-colors"
               >
                 <div className="flex items-center justify-end gap-1.5">
-                  <span>Total Spend</span>
+                  <span>Sustainable Spend</span>
                   {renderSortIndicator("totalSpend")}
                 </div>
               </th>
@@ -366,7 +366,7 @@ export default function LeaderboardTable({
               {/* Card Metrics Grid */}
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-[#FAF8F5] dark:bg-[#18191D] p-2 rounded-lg flex items-center justify-between">
-                  <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">Total Spend</span>
+                  <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">Sustainable Spend</span>
                   <span className="font-mono font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
                     {formatLakhs(item.totalSpend)}
                   </span>

@@ -123,7 +123,7 @@ export default function SpendByCategoryChart({
       <p className="text-3xl sm:text-4xl font-sans font-medium text-[#7A3F1E] dark:text-[#FAF6EE] tracking-hero mb-6 mt-2">
         {formatCurrency(totalSpend)}{" "}
         <span className="text-[10px] font-sans font-light uppercase tracking-wider text-[#6F848F] dark:text-[#8C9DA8] ml-1.5">
-          total spend
+          sustainable spend
         </span>
       </p>
 

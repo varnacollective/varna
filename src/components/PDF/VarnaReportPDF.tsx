@@ -459,7 +459,7 @@ function SpendDonutChart({
         {/* Center label */}
         <View style={{ position: "absolute", alignItems: "center", justifyContent: "center" }}>
           <Text style={{ fontFamily: "Helvetica-Bold", fontSize: 6, color: C.inkMuted, textTransform: "uppercase" }}>
-            Total Spend
+            Sustainable Spend
           </Text>
           <Text style={{ fontFamily: "Times-Roman", fontSize: 10.5, color: C.ink, marginTop: 1 }}>
             {fmt(totalSpend / 100000, "Rs. ", "L", 1)}
@@ -510,11 +510,11 @@ function generateExecutiveSummary(data: DashboardData) {
 
   const pillarSentence = culturalIsNA
     ? `ESG pillar scores indicate strongest operational performance in Governance (${summary.avgGScore.toFixed(0)}) ` +
-      `and Social (${summary.avgSScore.toFixed(0)}), with improvement recommended in Environmental (${summary.avgEScore.toFixed(0)}). ` +
-      `Cultural & Craft heritage scoring is Not Applicable (N/A) for this circular packaging and zero-waste portfolio.`
+    `and Social (${summary.avgSScore.toFixed(0)}), with improvement recommended in Environmental (${summary.avgEScore.toFixed(0)}). ` +
+    `Cultural & Craft heritage scoring is Not Applicable (N/A) for this circular packaging and zero-waste portfolio.`
     : `ESG pillar scores show balanced performance across Governance (${summary.avgGScore.toFixed(0)}), ` +
-      `Social (${summary.avgSScore.toFixed(0)}), Environmental (${summary.avgEScore.toFixed(0)}), ` +
-      `and Cultural heritage (${summary.avgCScore.toFixed(0)}).`;
+    `Social (${summary.avgSScore.toFixed(0)}), Environmental (${summary.avgEScore.toFixed(0)}), ` +
+    `and Cultural heritage (${summary.avgCScore.toFixed(0)}).`;
 
   return (
     `${client.clientName} achieved a portfolio-weighted Varna Score of ` +

@@ -143,7 +143,7 @@ export default function PillarsAndCategoryV2({
               ${totalCategorySpendUsd.toLocaleString('en-US')}
             </span>
             <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
-              TOTAL SPEND
+              SUSTAINABLE SPEND
             </span>
           </div>
 

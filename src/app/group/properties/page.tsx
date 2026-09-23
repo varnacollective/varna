@@ -402,11 +402,10 @@ export default function GroupPropertiesPage() {
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-sans transition-all shrink-0 cursor-pointer ${
-                  isActive
+                className={`px-3 py-1.5 rounded-lg text-xs font-sans transition-all shrink-0 cursor-pointer ${isActive
                     ? "bg-[#B85333] text-white font-semibold shadow-xs"
                     : "bg-[#FAF8F5] dark:bg-[#22252B] text-[#1A1F26] dark:text-[#FAF8F5] hover:bg-[#EAE5DC] dark:hover:bg-[#2A2D34] border border-[#EAE5DC] dark:border-[#8C9DA8]/30 font-medium"
-                }`}
+                  }`}
               >
                 {type}
               </button>
@@ -446,7 +445,7 @@ export default function GroupPropertiesPage() {
                   className="py-3.5 px-4 cursor-pointer group hover:text-[#B85333] transition-colors text-right"
                 >
                   <div className="flex items-center justify-end gap-1.5">
-                    <span>Total Spend</span>
+                    <span>Sustainable Spend</span>
                     {renderSortIndicator("totalSpendInr")}
                   </div>
                 </th>
@@ -475,10 +474,10 @@ export default function GroupPropertiesPage() {
                     rank === 1
                       ? "bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]/40"
                       : rank === 2
-                      ? "bg-[#A89C82]/20 text-[#A89C82] border-[#A89C82]/40"
-                      : rank === 3
-                      ? "bg-[#B85333]/20 text-[#B85333] border-[#B85333]/40"
-                      : "bg-[#6F848F]/20 text-[#6F848F] border-[#6F848F]/40";
+                        ? "bg-[#A89C82]/20 text-[#A89C82] border-[#A89C82]/40"
+                        : rank === 3
+                          ? "bg-[#B85333]/20 text-[#B85333] border-[#B85333]/40"
+                          : "bg-[#6F848F]/20 text-[#6F848F] border-[#6F848F]/40";
 
                   return (
                     <motion.tr

@@ -47,13 +47,7 @@ export default function SuppliersHeroV2({
             My Partners
           </span>
 
-          <div className="flex items-center gap-3 flex-wrap">
-            {/* Date Range Pill */}
-            <DateRangeFilter />
 
-            {/* Export Report Pill */}
-
-          </div>
         </div>
 
         {/* Central Headline Stack */}

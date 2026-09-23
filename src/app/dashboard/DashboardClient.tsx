@@ -341,7 +341,7 @@ function SuppliersSection({ data }: { data: DashboardData }) {
                 </VarnaScoreHoverCard>
               </div>
               <div>
-                <p className="text-[9px] uppercase text-[#6F848F] dark:text-[#8C9DA8] tracking-widest font-light">Total Spend</p>
+                <p className="text-[9px] uppercase text-[#6F848F] dark:text-[#8C9DA8] tracking-widest font-light">Sustainable Spend</p>
                 <p className="text-2xl font-sans font-medium text-[#222326] dark:text-[#FAF6EE] mt-0.5">
                   ₹{Math.round(supplier.totalSpend / 1000)}K
                 </p>

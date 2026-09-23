@@ -43,7 +43,7 @@ export default function KpiRowV2({
           {/* Top Row: Eyebrow + 36px Tinted Icon Chip (W4) */}
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              Total Spend
+              Sustainable Spend
             </span>
             <div className="w-9 h-9 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0]">
               <Wallet className="w-4 h-4" strokeWidth={1.8} />

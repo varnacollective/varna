@@ -69,7 +69,7 @@ export default function OrdersKpiV2({
       >
         <div className="flex items-start justify-between">
           <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-            Total Spend
+            Sustainable Spend
           </span>
           <div className="w-9 h-9 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0] shrink-0">
             <Coins className="w-4 h-4" strokeWidth={1.8} />
