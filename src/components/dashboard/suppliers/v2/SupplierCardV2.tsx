@@ -85,10 +85,10 @@ function BadgeOverflowPopoverV2({ hiddenBadges }: { hiddenBadges: SupplierBadgeI
         type="button"
         onClick={togglePopover}
         className="
-          px-3 py-1.5 rounded-full border border-black/10 dark:border-white/15
+          px-2 py-0.5 rounded-full border border-black/10 dark:border-white/15
           bg-[#F7F3EA] dark:bg-[#272C34] text-[#5B564E] dark:text-[#C2BCB0]
-          hover:border-[#7D3F1E]/40 text-xs font-semibold tracking-wide
-          transition-colors cursor-pointer min-h-[36px] inline-flex items-center
+          hover:border-[#7D3F1E]/40 text-[10.5px] font-semibold tracking-wide
+          transition-colors cursor-pointer h-[26px] min-h-[26px] inline-flex items-center
         "
       >
         +{hiddenBadges.length} more
@@ -229,7 +229,7 @@ export default function SupplierCardV2({
         border border-black/[0.07] dark:border-white/[0.08]
         shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
         dark:shadow-none dark:border-t-white/[0.12]
-        rounded-[24px] p-5 lg:p-6
+        rounded-[24px] p-5
         flex flex-col justify-between h-full w-full
         hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         relative overflow-visible
@@ -238,11 +238,11 @@ export default function SupplierCardV2({
 
       {/* Top Header Row */}
       <div>
-        <div className="flex items-start justify-between gap-3 pb-4 border-b border-black/[0.07] dark:border-white/[0.08]">
+        <div className="flex items-start justify-between gap-3 pb-3 border-b border-black/[0.07] dark:border-white/[0.08]">
           {/* Logo Tile + Title & Subtitle Stack */}
           <div className="flex items-start gap-3 min-w-0 flex-1">
-            {/* Standardized 56px (w-14 h-14) White Logo Container */}
-            <div className="w-14 h-14 rounded-lg border border-gray-200 bg-white flex items-center justify-center p-1 overflow-hidden shrink-0">
+            {/* Standardized 48px (w-12 h-12) White Logo Container */}
+            <div className="w-12 h-12 rounded-lg border border-gray-200 bg-white flex items-center justify-center p-1 overflow-hidden shrink-0">
               <BrandLogo
                 logoPath={logoPath}
                 alt={name}
@@ -255,7 +255,7 @@ export default function SupplierCardV2({
             {/* Title & Subtitle Stack */}
             <div className="flex flex-col min-w-0 pr-2">
               <div className="flex items-center flex-wrap">
-                <h3 className="text-lg lg:text-xl font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
+                <h3 className="text-base lg:text-[18px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
                   {name}
                 </h3>
                 {isInProgressSupplier && (
@@ -277,9 +277,9 @@ export default function SupplierCardV2({
                 VARNA SCORE
               </span>
 
-              <div className="text-2xl lg:text-[34px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
+              <div className="text-xl lg:text-[28px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
                 {varnaScore.toFixed(1)}
-                <span className="text-xs font-normal text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-0.5">
+                <span className="text-[11px] font-normal text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-0.5">
                   /100
                 </span>
               </div>
@@ -293,13 +293,13 @@ export default function SupplierCardV2({
         </div>
 
         {/* Stat Row: SKUs, Units, Evidence Confidence */}
-        <div className="grid grid-cols-3 gap-3 py-3 border-b border-black/[0.07] dark:border-white/[0.08] items-center text-center sm:text-left">
+        <div className="grid grid-cols-3 gap-3 py-2 border-b border-black/[0.07] dark:border-white/[0.08] items-center text-center sm:text-left">
           {/* Block 1: SKUs sourced */}
           <div>
             <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
               SKUs sourced
             </span>
-            <span className="text-lg lg:text-xl font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
+            <span className="text-base lg:text-lg font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
               {skuCount}
             </span>
           </div>
@@ -309,7 +309,7 @@ export default function SupplierCardV2({
             <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
               Units ordered
             </span>
-            <span className="text-lg lg:text-xl font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
+            <span className="text-base lg:text-lg font-light text-[#1F1B16] dark:text-[#F3EFE7] mt-0.5 block tabular-nums">
               {totalUnits.toLocaleString("en-US")}
             </span>
           </div>
@@ -329,19 +329,19 @@ export default function SupplierCardV2({
                 checklist={confidenceEntry.checklist}
               >
                 <div className="cursor-help group inline-block">
-                  <ConfidenceRing score={confidencePct} size={64} strokeWidth={4.5} />
+                  <ConfidenceRing score={confidencePct} size={54} strokeWidth={4} />
                 </div>
               </ConfidenceChecklistHoverCard>
             ) : (
               <div className="inline-block">
-                <ConfidenceRing score={confidencePct} size={64} strokeWidth={4.5} />
+                <ConfidenceRing score={confidencePct} size={54} strokeWidth={4} />
               </div>
             )}
           </div>
         </div>
 
         {/* Pillar Progress Bars with Hover Breakdown */}
-        <div className="space-y-2.5 my-4">
+        <div className="space-y-2.5 mt-2.5 mb-2.5">
           {bars.map((b) => {
             const pillarColor =
               b.label.includes("Env") ? "#4C7355" :
@@ -372,7 +372,7 @@ export default function SupplierCardV2({
                     </span>
                   </div>
 
-                  <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
+                  <div className="w-full h-[5px] rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
                     <motion.div
                       className="h-full rounded-full transition-all duration-700"
                       style={{ backgroundColor: pillarColor, width: `${Math.min(100, Math.max(0, b.val || 0))}%` }}
@@ -386,18 +386,18 @@ export default function SupplierCardV2({
           })}
 
           {/* Strongest Pillar Chip */}
-          <div className="pt-1 text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-medium">
+          <div className="pt-0.5 text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-medium">
             Strongest pillar: <span className="text-[#7D3F1E] dark:text-[#E07A57]">{strongestPillarName} ({maxPillarVal.toFixed(1)})</span>
           </div>
         </div>
 
         {/* "In their words" Quote Block */}
         {quoteText && (
-          <div className="my-3 p-3.5 rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] border border-black/5 dark:border-white/5 relative">
+          <div className="mt-2 mb-2 p-3.5 rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] border border-black/5 dark:border-white/5 relative">
             <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-0.5">
               In their words
             </span>
-            <p className="varna-quote-text text-[#7D3F1E] dark:text-[#F1E6C8] text-base lg:text-[17px] leading-snug italic font-normal">
+            <p className="varna-quote-text text-[#7D3F1E] dark:text-[#F1E6C8] text-[13.5px] lg:text-[14px] leading-relaxed italic font-normal">
               &ldquo;{quoteText}&rdquo;
             </p>
           </div>
@@ -405,8 +405,8 @@ export default function SupplierCardV2({
 
         {/* Certifications Row */}
         {(effectiveBadges.length > 0 || resolvedReportUrl) && (
-          <div className="my-3">
-            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
+          <div className="mt-2.5 mb-2">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1">
               Certifications & Badges
             </span>
 
@@ -421,10 +421,10 @@ export default function SupplierCardV2({
                     <div
                       key={idx}
                       className="
-                        inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                        inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full
                         border border-black/10 dark:border-white/15
-                        bg-[#FAF8F4] dark:bg-[#272C34] text-[11px] font-normal
-                        text-[#1F1B16] dark:text-[#F3EFE7] min-h-[30px]
+                        bg-[#FAF8F4] dark:bg-[#272C34] text-[10.5px] font-normal
+                        text-[#1F1B16] dark:text-[#F3EFE7] h-[26px] min-h-[26px]
                       "
                     >
                       <IconComp className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" strokeWidth={1.8} />
@@ -441,20 +441,20 @@ export default function SupplierCardV2({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="
-                    shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                    shrink-0 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full
                     border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
                     bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
                     dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
                     text-[#7D3F1E] dark:text-[#E07A57]
-                    text-[11px] font-semibold tracking-wide
-                    transition-all duration-150 shadow-xs cursor-pointer min-h-[30px]
+                    text-[10.5px] font-semibold tracking-wide
+                    transition-all duration-150 shadow-xs cursor-pointer h-[26px] min-h-[26px]
                     group/scorecard
                   "
                   title={`View ${name} Scorecard (PDF)`}
                 >
-                  <FileText className="w-3.5 h-3.5 text-[#7D3F1E] dark:text-[#E07A57] group-hover/scorecard:text-white transition-colors" strokeWidth={1.8} />
+                  <FileText className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57] group-hover/scorecard:text-white transition-colors" strokeWidth={1.8} />
                   <span>View Scorecard</span>
-                  <ExternalLink className="w-3 h-3 text-[#7D3F1E]/70 dark:text-[#E07A57]/70 group-hover/scorecard:text-white transition-colors" strokeWidth={1.8} />
+                  <ExternalLink className="w-2.5 h-2.5 text-[#7D3F1E]/70 dark:text-[#E07A57]/70 group-hover/scorecard:text-white transition-colors" strokeWidth={1.8} />
                 </a>
               )}
             </div>
@@ -463,8 +463,8 @@ export default function SupplierCardV2({
 
         {/* UN SDGs Row */}
         {sdgObjects && sdgObjects.length > 0 && (
-          <div className="my-3">
-            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1.5">
+          <div className="mt-2.5">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#6F6A61] dark:text-[#9A948A] block mb-1">
               UN SDGs
             </span>
 
@@ -475,7 +475,7 @@ export default function SupplierCardV2({
                   goalNumber={sdg.sdg_number ?? sdg.id ?? sdg.goalNumber ?? sdg.number}
                   isPrimary={sdg.is_primary ?? sdg.isStarred ?? sdg.isPrimary ?? false}
                   primaryNarrative={sdg.primary_narrative ?? sdg.narrative ?? null}
-                  size={38}
+                  size={34}
                 />
               ))}
             </div>

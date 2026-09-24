@@ -47,9 +47,13 @@ import { DateRangeProvider } from "@/context/DateRangeContext";
 export default function SuppliersClient({
   suppliersData,
   liveConfidenceData,
+  clientName,
+  logoPath,
 }: {
   suppliersData: any[];
   liveConfidenceData: Record<string, SupplierConfidenceData>;
+  clientName?: string;
+  logoPath?: string;
 }) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
@@ -92,6 +96,8 @@ export default function SuppliersClient({
           <ClientSuppliersV2
             suppliersData={suppliersData}
             liveConfidenceData={liveConfidenceData}
+            clientName={clientName}
+            logoPath={logoPath}
           />
         </main>
 

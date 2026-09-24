@@ -25,6 +25,12 @@ export default function WelcomeCardV2({
   ratingBand = "Advanced band",
   dashboardData,
 }: WelcomeCardV2Props) {
+  const isAstorDubai = Boolean(
+    (logoPath && logoPath.toLowerCase().includes("astor")) ||
+    clientName.toLowerCase().includes("astor") ||
+    clientName.toLowerCase().includes("a dubai")
+  );
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
       {/* 8 Cols: Welcome Card (Cream #F4EACF; Dark: #2B2720) */}
@@ -50,15 +56,24 @@ export default function WelcomeCardV2({
           </svg>
         </div>
 
-        {/* Large White Circular Logo Container */}
-        <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full bg-white dark:bg-white shadow-md flex items-center justify-center border border-black/10 shrink-0 relative z-10 overflow-hidden">
+        {/* Circular Logo Container */}
+        <div
+          className={`
+            w-32 h-32 lg:w-36 lg:h-36 rounded-full
+            ${isAstorDubai ? "bg-black dark:bg-black border border-[#D4AF37]/35 dark:border-[#D4AF37]/40 shadow-lg" : "bg-white dark:bg-white border border-black/10 shadow-md"}
+            flex items-center justify-center shrink-0 relative z-10 overflow-hidden
+          `}
+        >
           <BrandLogo
             logoPath={logoPath}
             alt={clientName}
             name={clientName}
             size="lg"
             entityType="client"
-            className="!bg-transparent !border-0 !shadow-none !h-full !w-full !max-w-none flex items-center justify-center scale-140"
+            className={`
+              !border-0 !shadow-none !h-full !w-full !max-w-none flex items-center justify-center
+              ${isAstorDubai ? "!bg-black p-3.5" : "!bg-transparent scale-140"}
+            `}
           />
         </div>
 

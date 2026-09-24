@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import SuppliersClient from "./SuppliersClient";
 
-import { getSupplierLogoFallback } from "@/lib/mock-data";
+import { getSupplierLogoFallback, getClientLogoFallback } from "@/lib/mock-data";
 
 export default async function SuppliersServerPage() {
   const cookieStore = await cookies();
@@ -25,6 +25,13 @@ export default async function SuppliersServerPage() {
   const clientId = session.clientId;
 
   try {
+    // 0. Fetch Client Master
+    const { data: clientData } = await supabase
+      .from("client_master")
+      .select("client_name, logo_path, property_type")
+      .eq("client_id", clientId)
+      .single();
+
     // 1. Fetch scores_summary (all active suppliers with complete sub-criteria)
     const { data: scoresData, error: scoresError } = await supabase
       .from("scores_summary")
@@ -298,7 +305,17 @@ export default async function SuppliersServerPage() {
       };
     });
 
-    return <SuppliersClient suppliersData={mergedSuppliers} liveConfidenceData={liveConfidenceData} />;
+    const clientName = clientData?.client_name || session.clientName || "The Astor Dubai";
+    const logoPath = clientData?.logo_path || getClientLogoFallback(clientName);
+
+    return (
+      <SuppliersClient
+        suppliersData={mergedSuppliers}
+        liveConfidenceData={liveConfidenceData}
+        clientName={clientName}
+        logoPath={logoPath}
+      />
+    );
   } catch (error) {
     console.error("Suppliers Server Component error:", error);
     redirect("/");

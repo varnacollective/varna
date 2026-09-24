@@ -9,7 +9,7 @@ import SuppliersHeroV2 from "./SuppliersHeroV2";
 import SuppliersKpiV2 from "./SuppliersKpiV2";
 import SupplierCardV2 from "./SupplierCardV2";
 import type { DashboardData, SupplierConfidenceData } from "@/lib/mock-data";
-import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
+import { SUPPLIER_CONFIDENCE_CHECKLISTS, getClientLogoFallback } from "@/lib/mock-data";
 
 interface ClientSuppliersV2Props {
   suppliersData: any[];
@@ -31,6 +31,7 @@ export default function ClientSuppliersV2({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [carouselIndex, setCarouselIndex] = useState(1);
   const totalSuppliers = suppliersData.length || 3;
+  const effectiveLogoPath = logoPath || dashboardData?.client?.logoPath || getClientLogoFallback(clientName);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -82,7 +83,7 @@ export default function ClientSuppliersV2({
       <TopBarV2
         clientName={clientName}
         industry={industry}
-        logoPath={logoPath}
+        logoPath={effectiveLogoPath}
         dashboardData={dashboardData}
       />
 

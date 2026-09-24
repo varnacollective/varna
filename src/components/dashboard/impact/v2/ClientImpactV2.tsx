@@ -1,6 +1,7 @@
 "use client";
 
 import type { DashboardData } from "@/lib/mock-data";
+import { getClientLogoFallback } from "@/lib/mock-data";
 import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import ImpactHeroV2 from "./ImpactHeroV2";
 import EsgPillarsV2 from "./EsgPillarsV2";
@@ -21,7 +22,7 @@ export default function ClientImpactV2({
   // Client info fallbacks
   const clientName = dashboardData?.client?.clientName || "The Astor Dubai";
   const industry = dashboardData?.client?.industry || "Hospitality";
-  const logoPath = dashboardData?.client?.logoPath || undefined;
+  const logoPath = dashboardData?.client?.logoPath || getClientLogoFallback(clientName);
 
   const summary = dashboardData?.summary;
   const eScore = summary?.avgEScore ?? 39;

@@ -559,6 +559,7 @@ export function getClientLogoFallback(clientName?: string): string | undefined {
   const lower = clientName.toLowerCase();
   if (lower.includes("six senses")) return "/logos/clients/six-senses.jpg";
   if (lower.includes("dorchester")) return "/logos/clients/dorchester-collection.png";
+  if (lower.includes("astor") || lower.includes("a dubai")) return "/logos/clients/Astor_Dubai.jpeg";
   return undefined;
 }
 

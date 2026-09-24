@@ -128,7 +128,7 @@ function ConfidenceRingComponent({
           </>
         ) : (
           <>
-            <span className="text-xs font-sans font-medium text-carbon-ink dark:text-warm-stone tracking-tighter leading-none">
+            <span className="text-[13px] font-sans font-semibold text-carbon-ink dark:text-warm-stone tracking-tighter leading-none">
               {score}%
             </span>
           </>

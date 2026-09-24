@@ -213,6 +213,11 @@ export default function BrandLogo({
   const cleanFields = getCleanDetails(details);
   const showPopover = (isHovered || isOpen) && interactive;
 
+  const isDarkLogo = Boolean(
+    imageSrc &&
+    (imageSrc.toLowerCase().includes("astor") || displayName.toLowerCase().includes("astor") || displayName.toLowerCase().includes("a dubai"))
+  );
+
   return (
     <>
       {/* Trigger Chip Container with Spring Scale Motion */}
@@ -225,9 +230,9 @@ export default function BrandLogo({
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
         className={`
           inline-flex items-center justify-center
-          bg-white rounded-lg select-none shrink-0 z-10
+          ${isDarkLogo ? "bg-black border-black/30 dark:border-white/10" : "bg-white border-black/5 dark:border-white/10"}
+          rounded-lg select-none shrink-0 z-10
           shadow-xs dark:shadow-[0_2px_8px_rgba(0,0,0,0.35)]
-          border border-black/5 dark:border-white/10
           transition-colors duration-200
           ${interactive ? "cursor-pointer" : ""}
           ${currentSize.container}
@@ -275,7 +280,7 @@ export default function BrandLogo({
                 {/* Popover Header: Enlarged Logo + Entity Name & Close Button */}
                 <div className="flex items-start justify-between gap-3 border-b border-[#6F848F]/20 pb-3 mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="bg-white p-2 rounded-lg shadow-sm border border-black/10 shrink-0">
+                    <div className={`${isDarkLogo ? "bg-black border-white/15" : "bg-white border-black/10"} p-2 rounded-lg shadow-sm border shrink-0`}>
                       {imageSrc && !hasError ? (
                         <img
                           src={imageSrc}

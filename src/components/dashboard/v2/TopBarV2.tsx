@@ -43,6 +43,12 @@ export default function TopBarV2({
     "Portal Access": "Authenticated Enterprise Client",
   };
 
+  const isAstorDubai = Boolean(
+    (logoPath && logoPath.toLowerCase().includes("astor")) ||
+    clientName.toLowerCase().includes("astor") ||
+    clientName.toLowerCase().includes("a dubai")
+  );
+
   return (
     <motion.header
       initial={{ y: -10, opacity: 0 }}
@@ -118,7 +124,7 @@ export default function TopBarV2({
 
         {/* Client Identity Tile */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] flex items-center justify-center p-1 border border-black/5 dark:border-white/10 shrink-0">
+          <div className={`w-10 h-10 rounded-xl ${isAstorDubai ? "bg-black border-black/30 dark:border-white/10" : "bg-[#F7F3EA] dark:bg-[#272C34] border-black/5 dark:border-white/10"} flex items-center justify-center p-0.5 border shrink-0 overflow-hidden`}>
             <BrandLogo
               logoPath={logoPath}
               alt={clientName}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import type { DashboardData, ClientOrderItem } from "@/lib/mock-data";
-import { CLIENT_ORDERS_LIST } from "@/lib/mock-data";
+import { CLIENT_ORDERS_LIST, getClientLogoFallback } from "@/lib/mock-data";
 import { useDateRange } from "@/context/DateRangeContext";
 import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import OrdersHeroV2 from "./OrdersHeroV2";
@@ -48,7 +48,7 @@ export default function ClientOrdersV2({
   // Client info fallbacks
   const clientName = dashboardData?.client?.clientName || "The Astor Dubai";
   const industry = dashboardData?.client?.industry || "Hospitality";
-  const logoPath = dashboardData?.client?.logoPath || undefined;
+  const logoPath = dashboardData?.client?.logoPath || getClientLogoFallback(clientName);
 
   const totalOrders = filteredOrders.length;
   const totalSpend = filteredOrders.reduce((acc, o) => acc + o.orderValue, 0);
