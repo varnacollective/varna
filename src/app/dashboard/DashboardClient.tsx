@@ -105,7 +105,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
 
         {/* Main content */}
         <main className="varna-main flex-1 ml-24 p-8 max-w-[1400px] overflow-x-hidden relative z-10">
-          {activeSection !== "overview" && (
+          {activeSection !== "overview" && activeSection !== "orders" && activeSection !== "impact" && (
             <TopBar
               clientName={client.clientName}
               industry={client.industry}

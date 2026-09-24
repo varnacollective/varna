@@ -190,19 +190,22 @@ export default function BrandLogo({
     };
   }, [isHovered, isOpen, updateCoords]);
 
-  const sizeClasses: Record<LogoSize, { container: string; img: string; text: string }> = {
+  const sizeClasses: Record<LogoSize, { container: string; img: string; text: string; darkContainer: string }> = {
     sm: {
       container: "h-9 sm:h-10 px-2.5 sm:px-3 min-w-[36px] max-w-[170px]",
+      darkContainer: "w-9 h-9 sm:w-10 sm:h-10",
       img: "h-full max-h-7 sm:max-h-8 w-auto object-contain text-[10px]",
       text: "text-xs font-semibold",
     },
     md: {
       container: "h-11 sm:h-12 px-3 sm:px-4 min-w-[44px] max-w-[220px]",
+      darkContainer: "w-11 h-11 sm:w-12 sm:h-12",
       img: "h-full max-h-8 sm:max-h-9 w-auto object-contain text-xs",
       text: "text-sm font-semibold",
     },
     lg: {
       container: "h-14 px-4 sm:px-5 min-w-[56px] max-w-[280px]",
+      darkContainer: "w-14 h-14",
       img: "h-full max-h-10 sm:max-h-11 w-auto object-contain text-sm",
       text: "text-base font-semibold",
     },
@@ -237,12 +240,11 @@ export default function BrandLogo({
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
         className={`
           inline-flex items-center justify-center
-          ${isDarkLogo ? "bg-black border border-[#D4AF37]/30 rounded-full overflow-hidden aspect-square !p-0" : "bg-white border-black/5 dark:border-white/10 rounded-lg"}
+          ${isDarkLogo ? `bg-black border border-[#D4AF37]/30 rounded-full overflow-hidden aspect-square !p-0 ${currentSize.darkContainer}` : `bg-white border-black/5 dark:border-white/10 rounded-lg ${currentSize.container}`}
           select-none shrink-0 z-10
           shadow-xs dark:shadow-[0_2px_8px_rgba(0,0,0,0.35)]
           transition-colors duration-200
           ${interactive ? "cursor-pointer" : ""}
-          ${isDarkLogo ? "" : currentSize.container}
           ${className}
         `}
         title={interactive ? `${displayName} (Click or hover to inspect details)` : displayName}
