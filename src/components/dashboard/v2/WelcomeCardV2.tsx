@@ -72,7 +72,7 @@ export default function WelcomeCardV2({
             entityType="client"
             className={`
               !border-0 !shadow-none !h-full !w-full !max-w-none flex items-center justify-center
-              ${isAstorDubai ? "!bg-black p-3.5" : "!bg-transparent scale-140"}
+              ${isAstorDubai ? "!bg-black !p-0 rounded-full overflow-hidden" : "!bg-transparent scale-140"}
             `}
           />
         </div>

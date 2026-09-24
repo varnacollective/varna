@@ -29,20 +29,51 @@ export default function ClientSuppliersV2({
   dashboardData,
 }: ClientSuppliersV2Props) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [carouselIndex, setCarouselIndex] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [cardsPerPage, setCardsPerPage] = useState(2);
   const totalSuppliers = suppliersData.length || 3;
   const effectiveLogoPath = logoPath || dashboardData?.client?.logoPath || getClientLogoFallback(clientName);
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -520, behavior: "smooth" });
+  // Derive cardsPerPage dynamically based on the container width
+  useEffect(() => {
+    const updateCardsPerPage = () => {
+      if (!scrollContainerRef.current) return;
+      const width = scrollContainerRef.current.clientWidth;
+      setCardsPerPage(width < 768 ? 1 : 2);
+    };
+
+    updateCardsPerPage();
+    window.addEventListener("resize", updateCardsPerPage);
+    return () => window.removeEventListener("resize", updateCardsPerPage);
+  }, []);
+
+  const totalPages = Math.max(1, Math.ceil(totalSuppliers / cardsPerPage));
+
+  const goToPage = (pageIndex: number) => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const cards = container.querySelectorAll<HTMLElement>(".varna-partner-card-wrapper");
+    if (!cards.length) return;
+
+    const clampedPage = Math.max(0, Math.min(pageIndex, totalPages - 1));
+    const targetCardIndex = Math.min(clampedPage * cardsPerPage, cards.length - 1);
+    const targetCard = cards[targetCardIndex];
+
+    if (targetCard) {
+      container.scrollTo({
+        left: targetCard.offsetLeft,
+        behavior: "smooth",
+      });
+      setCurrentPage(clampedPage);
     }
   };
 
+  const scrollLeft = () => {
+    goToPage(currentPage - 1);
+  };
+
   const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 520, behavior: "smooth" });
-    }
+    goToPage(currentPage + 1);
   };
 
   // Keyboard arrow navigation
@@ -53,18 +84,41 @@ export default function ClientSuppliersV2({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [currentPage, totalPages, cardsPerPage]);
 
   // Update carousel index indicator on scroll
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-    const maxScroll = scrollWidth - clientWidth;
-    if (maxScroll <= 0) return;
-    const progress = scrollLeft / maxScroll;
-    const activeIndex = Math.min(totalSuppliers, Math.max(1, Math.round(progress * (totalSuppliers - 1)) + 1));
-    setCarouselIndex(activeIndex);
+    const container = scrollContainerRef.current;
+    const cards = container.querySelectorAll<HTMLElement>(".varna-partner-card-wrapper");
+    if (!cards.length) return;
+
+    const scrollLeft = container.scrollLeft;
+    const currentCardsPerPage = container.clientWidth < 768 ? 1 : 2;
+
+    let closestIndex = 0;
+    let minDiff = Infinity;
+    cards.forEach((card, idx) => {
+      const diff = Math.abs(card.offsetLeft - scrollLeft);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = idx;
+      }
+    });
+
+    const page = Math.floor(closestIndex / currentCardsPerPage);
+    const totalP = Math.max(1, Math.ceil(totalSuppliers / currentCardsPerPage));
+    setCurrentPage(Math.min(page, totalP - 1));
   };
+
+  const startCardIndex = currentPage * cardsPerPage + 1;
+  const endCardIndex = Math.min(startCardIndex + cardsPerPage - 1, totalSuppliers);
+  const counterText =
+    startCardIndex === endCardIndex
+      ? `${startCardIndex} of ${totalSuppliers}`
+      : `${startCardIndex}–${endCardIndex} of ${totalSuppliers}`;
+  const canScrollPrev = currentPage > 0;
+  const canScrollNext = currentPage < totalPages - 1;
 
   const supplierNames = suppliersData.map((s) => s.enterprise_name || "");
 
@@ -116,24 +170,26 @@ export default function ClientSuppliersV2({
             </p>
           </div>
 
-          {/* Carousel Counter & Navigation Buttons (S5 fixed) */}
+          {/* Carousel Counter & Navigation Buttons */}
           <div className="flex items-center gap-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] tabular-nums">
-              {carouselIndex}–{Math.min(carouselIndex + 1, totalSuppliers)} of {totalSuppliers}
+              {counterText}
             </span>
 
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={scrollLeft}
-                className="
+                disabled={!canScrollPrev}
+                className={`
                   w-11 h-11 rounded-full
                   border border-black/[0.08] dark:border-white/[0.14]
                   bg-white dark:bg-[#20242B] text-[#5B564E] dark:text-[#C2BCB0]
                   hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
                   dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
                   flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer
-                "
+                  ${!canScrollPrev ? "opacity-35 cursor-not-allowed hover:bg-white hover:text-[#5B564E] hover:border-black/[0.08] dark:hover:bg-[#20242B] dark:hover:text-[#C2BCB0] dark:hover:border-white/[0.14]" : ""}
+                `}
                 aria-label="Scroll left"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -141,14 +197,16 @@ export default function ClientSuppliersV2({
               <button
                 type="button"
                 onClick={scrollRight}
-                className="
+                disabled={!canScrollNext}
+                className={`
                   w-11 h-11 rounded-full
                   border border-black/[0.08] dark:border-white/[0.14]
                   bg-white dark:bg-[#20242B] text-[#5B564E] dark:text-[#C2BCB0]
                   hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
                   dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
                   flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer
-                "
+                  ${!canScrollNext ? "opacity-35 cursor-not-allowed hover:bg-white hover:text-[#5B564E] hover:border-black/[0.08] dark:hover:bg-[#20242B] dark:hover:text-[#C2BCB0] dark:hover:border-white/[0.14]" : ""}
+                `}
                 aria-label="Scroll right"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -157,87 +215,97 @@ export default function ClientSuppliersV2({
           </div>
         </div>
 
-        {/* 2-Up Responsive Scroll Carousel (S6 fixed: Equal heights, 2-up on desktop, 1-up on mobile) */}
-        <div
-          ref={scrollContainerRef}
-          onScroll={handleScroll}
-          tabIndex={0}
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Active Partner Profiles"
-          className="
-            flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-6
-            [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden
-            focus:outline-none focus:ring-2 focus:ring-[#7D3F1E]/30 rounded-[24px]
-          "
-        >
-          {suppliersData.map((supplier) => {
-            const name = supplier.enterprise_name;
-            const isUKHI = name.toLowerCase().includes("ukhi");
-            const isBare = name.toLowerCase().includes("bare");
-            const isKheoni = name.toLowerCase().includes("kheoni");
+        {/* 2-Up Responsive Scroll Carousel Track (Constrained to 1328px and centered at track level) */}
+        <div className="w-full max-w-[1328px] mx-auto">
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            tabIndex={0}
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Active Partner Profiles"
+            className="
+              relative flex overflow-x-auto snap-x snap-mandatory gap-7 no-scrollbar pb-6
+              [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden
+              focus:outline-none focus:ring-2 focus:ring-[#7D3F1E]/30 rounded-[24px]
+            "
+          >
+            {suppliersData.map((supplier) => {
+              const name = supplier.enterprise_name;
+              const isUKHI = name.toLowerCase().includes("ukhi");
+              const isBare = name.toLowerCase().includes("bare");
+              const isKheoni = name.toLowerCase().includes("kheoni");
 
-            const confidenceEntry =
-              (liveConfidenceData && liveConfidenceData[name]) ||
-              SUPPLIER_CONFIDENCE_CHECKLISTS[name] ||
-              (isUKHI ? SUPPLIER_CONFIDENCE_CHECKLISTS["UKHI India Private Limited"] : null);
+              const confidenceEntry =
+                (liveConfidenceData && liveConfidenceData[name]) ||
+                SUPPLIER_CONFIDENCE_CHECKLISTS[name] ||
+                (isUKHI ? SUPPLIER_CONFIDENCE_CHECKLISTS["UKHI India Private Limited"] : null);
 
-            const confidencePct = confidenceEntry?.score ?? supplier.confidence_pct ?? (isUKHI ? 63 : isBare ? 47 : isKheoni ? 24 : 50);
-            const isVerified = confidencePct >= 60;
+              const confidencePct = confidenceEntry?.score ?? supplier.confidence_pct ?? (isUKHI ? 63 : isBare ? 47 : isKheoni ? 24 : 50);
+              const isVerified = confidencePct >= 60;
 
-            const location = isBare
-              ? "Bengaluru, Karnataka"
-              : isUKHI
-              ? "Faridabad, Haryana"
-              : isKheoni
-              ? "Indore, Madhya Pradesh"
-              : supplier.city && supplier.state
-              ? `${supplier.city}, ${supplier.state}`
-              : "Bengaluru, Karnataka";
+              const location = isBare
+                ? "Bengaluru, Karnataka"
+                : isUKHI
+                ? "Faridabad, Haryana"
+                : isKheoni
+                ? "Indore, Madhya Pradesh"
+                : supplier.city && supplier.state
+                ? `${supplier.city}, ${supplier.state}`
+                : "Bengaluru, Karnataka";
 
-            const legalName = isBare
-              ? "Bare Necessities Zero Waste Solutions Pvt. Ltd."
-              : isUKHI
-              ? "UKHI India Private Limited"
-              : isKheoni
-              ? "Kheoni Ventures Pvt Ltd"
-              : name;
+              const legalName = isBare
+                ? "Bare Necessities Zero Waste Solutions Pvt. Ltd."
+                : isUKHI
+                ? "UKHI India Private Limited"
+                : isKheoni
+                ? "Kheoni Ventures Pvt Ltd"
+                : name;
 
-            return (
+              return (
+                <div
+                  key={supplier.enterprise_id || name}
+                  className="varna-partner-card-wrapper w-full md:w-[calc((100%-28px)/2)] md:max-w-[650px] snap-start shrink-0 flex items-stretch"
+                >
+                  <SupplierCardV2
+                    name={name}
+                    legalName={legalName}
+                    enterpriseId={supplier.enterprise_id}
+                    logoPath={supplier.logo_path}
+                    location={location}
+                    varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
+                    eScore={supplier.e_pillar_score ?? 60}
+                    sScore={supplier.s_pillar_score ?? 55}
+                    gScore={supplier.g_pillar_score ?? 50}
+                    cScore={supplier.c_pillar_score ?? 45}
+                    carbonScore={supplier.c_pillar_score ?? 45}
+                    skuCount={isUKHI ? 4 : 2}
+                    totalUnits={isUKHI ? 2400 : 1200}
+                    confidenceScore={confidencePct}
+                    confidenceColor={isVerified ? "#55705A" : "#7D3F1E"}
+                    badges={supplier.badges || []}
+                    categoryBars={[
+                      { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
+                      { label: "Social", val: supplier.s_pillar_score ?? 55 },
+                      { label: "Governance", val: supplier.g_pillar_score ?? 50 },
+                      { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
+                    ]}
+                    sdgObjects={supplier.sdg_objects || []}
+                    liveConfidenceData={liveConfidenceData}
+                    scoresSummary={supplier.scores_summary}
+                  />
+                </div>
+              );
+            })}
+
+            {/* Trailing spacer so an odd final card (e.g. 5th card) lands cleanly on the left slot without cut-offs */}
+            {suppliersData.length % 2 !== 0 && (
               <div
-                key={supplier.enterprise_id || name}
-                className="min-w-[100%] md:min-w-[49%] lg:min-w-[49%] snap-center shrink-0 flex items-stretch"
-              >
-                <SupplierCardV2
-                  name={name}
-                  legalName={legalName}
-                  enterpriseId={supplier.enterprise_id}
-                  logoPath={supplier.logo_path}
-                  location={location}
-                  varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
-                  eScore={supplier.e_pillar_score ?? 60}
-                  sScore={supplier.s_pillar_score ?? 55}
-                  gScore={supplier.g_pillar_score ?? 50}
-                  cScore={supplier.c_pillar_score ?? 45}
-                  carbonScore={supplier.c_pillar_score ?? 45}
-                  skuCount={isUKHI ? 4 : 2}
-                  totalUnits={isUKHI ? 2400 : 1200}
-                  confidenceScore={confidencePct}
-                  confidenceColor={isVerified ? "#55705A" : "#7D3F1E"}
-                  badges={supplier.badges || []}
-                  categoryBars={[
-                    { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
-                    { label: "Social", val: supplier.s_pillar_score ?? 55 },
-                    { label: "Governance", val: supplier.g_pillar_score ?? 50 },
-                    { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
-                  ]}
-                  sdgObjects={supplier.sdg_objects || []}
-                  liveConfidenceData={liveConfidenceData}
-                  scoresSummary={supplier.scores_summary}
-                />
-              </div>
-            );
-          })}
+                aria-hidden="true"
+                className="hidden md:block w-full md:w-[calc((100%-28px)/2)] md:max-w-[650px] shrink-0 pointer-events-none opacity-0"
+              />
+            )}
+          </div>
         </div>
       </section>
 

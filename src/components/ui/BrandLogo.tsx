@@ -218,6 +218,13 @@ export default function BrandLogo({
     (imageSrc.toLowerCase().includes("astor") || displayName.toLowerCase().includes("astor") || displayName.toLowerCase().includes("a dubai"))
   );
 
+  // Exact scale factors tuned against the 1280x640 canvas (content occupies 52.0% width, 68.8% height):
+  // At scale(1.70) for sm (40px tile): content fills 88.5% of diameter (35.4px x 23.4px) with 0 clipped pixels.
+  // At scale(1.65) for lg (144px hero circle): content fills 85.9% of diameter (123.6px x 81.7px) with 5.3% margin and 0 clipped pixels.
+  // At scale(1.68) for md (44-48px tile): content fills 87.2% of diameter with 0 clipped pixels.
+  // translateY(-1.2%) accounts for the content center being at y=327.5 (vs canvas center y=320), achieving perfect vertical centering.
+  const astorScale = size === "sm" ? 1.70 : size === "lg" ? 1.65 : 1.68;
+
   return (
     <>
       {/* Trigger Chip Container with Spring Scale Motion */}
@@ -230,12 +237,12 @@ export default function BrandLogo({
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
         className={`
           inline-flex items-center justify-center
-          ${isDarkLogo ? "bg-black border-black/30 dark:border-white/10" : "bg-white border-black/5 dark:border-white/10"}
-          rounded-lg select-none shrink-0 z-10
+          ${isDarkLogo ? "bg-black border border-[#D4AF37]/30 rounded-full overflow-hidden aspect-square !p-0" : "bg-white border-black/5 dark:border-white/10 rounded-lg"}
+          select-none shrink-0 z-10
           shadow-xs dark:shadow-[0_2px_8px_rgba(0,0,0,0.35)]
           transition-colors duration-200
           ${interactive ? "cursor-pointer" : ""}
-          ${currentSize.container}
+          ${isDarkLogo ? "" : currentSize.container}
           ${className}
         `}
         title={interactive ? `${displayName} (Click or hover to inspect details)` : displayName}
@@ -247,7 +254,12 @@ export default function BrandLogo({
             loading="lazy"
             decoding="async"
             onError={() => setHasError(true)}
-            className={`w-auto object-contain transition-opacity duration-200 ${currentSize.img}`}
+            style={isDarkLogo ? { transform: `scale(${astorScale}) translateY(-1.2%)`, transformOrigin: "center" } : undefined}
+            className={
+              isDarkLogo
+                ? "w-full h-full object-contain shrink-0 transition-opacity duration-200"
+                : `w-auto object-contain transition-opacity duration-200 ${currentSize.img}`
+            }
           />
         ) : (
           <span className={`font-sans font-bold tracking-wider text-[#222326] ${currentSize.text}`}>
@@ -280,14 +292,15 @@ export default function BrandLogo({
                 {/* Popover Header: Enlarged Logo + Entity Name & Close Button */}
                 <div className="flex items-start justify-between gap-3 border-b border-[#6F848F]/20 pb-3 mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`${isDarkLogo ? "bg-black border-white/15" : "bg-white border-black/10"} p-2 rounded-lg shadow-sm border shrink-0`}>
+                    <div className={`${isDarkLogo ? "bg-black border border-[#D4AF37]/30 w-12 h-12 rounded-full overflow-hidden flex items-center justify-center p-0 shrink-0" : "bg-white p-2 rounded-lg shadow-sm border border-black/10 shrink-0"}`}>
                       {imageSrc && !hasError ? (
                         <img
                           src={imageSrc}
                           alt={displayName}
                           loading="lazy"
                           decoding="async"
-                          className="h-8 max-w-[120px] w-auto object-contain"
+                          style={isDarkLogo ? { transform: "scale(1.68) translateY(-1.2%)", transformOrigin: "center" } : undefined}
+                          className={isDarkLogo ? "w-full h-full object-contain shrink-0" : "h-8 max-w-[120px] w-auto object-contain"}
                         />
                       ) : (
                         <span className="font-sans font-bold text-sm text-[#222326]">

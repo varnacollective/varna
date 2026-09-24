@@ -230,7 +230,7 @@ export default function SupplierCardV2({
         shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
         dark:shadow-none dark:border-t-white/[0.12]
         rounded-[24px] p-5
-        flex flex-col justify-between h-full w-full
+        flex flex-col justify-between h-full w-full max-w-[650px]
         hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         relative overflow-visible
       "
@@ -410,7 +410,7 @@ export default function SupplierCardV2({
               Certifications & Badges
             </span>
 
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
                 {visibleBadges.map((badge, idx) => {
                   const label = typeof badge === "string" ? badge : badge.label;

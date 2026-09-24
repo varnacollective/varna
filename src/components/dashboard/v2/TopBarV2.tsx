@@ -124,7 +124,7 @@ export default function TopBarV2({
 
         {/* Client Identity Tile */}
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-xl ${isAstorDubai ? "bg-black border-black/30 dark:border-white/10" : "bg-[#F7F3EA] dark:bg-[#272C34] border-black/5 dark:border-white/10"} flex items-center justify-center p-0.5 border shrink-0 overflow-hidden`}>
+          <div className={`w-10 h-10 ${isAstorDubai ? "rounded-full bg-black border border-[#D4AF37]/30 shadow-xs" : "rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] border border-black/5 dark:border-white/10"} flex items-center justify-center p-0 shrink-0 overflow-hidden`}>
             <BrandLogo
               logoPath={logoPath}
               alt={clientName}
@@ -132,6 +132,7 @@ export default function TopBarV2({
               size="sm"
               entityType="client"
               details={defaultDetails}
+              className={isAstorDubai ? "!border-0 !shadow-none !h-full !w-full !min-w-0 !max-w-none !bg-black !p-0 rounded-full overflow-hidden" : ""}
             />
           </div>
           <div className="flex flex-col text-left">
