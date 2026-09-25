@@ -10,16 +10,19 @@ const CAROUSEL_SLIDES = [
     image: "/assets/Login1.svg",
     quote: " ",
     position: "bottom-12 left-12 sm:bottom-16 sm:left-16",
+    objectPosition: "object-center",
   },
   {
     image: "/assets/Login2.svg",
     quote: " ",
     position: "top-16 right-12 sm:top-24 sm:right-16",
+    objectPosition: "object-center",
   },
   {
     image: "/assets/Login3.svg",
     quote: " ",
     position: "top-16 right-12 sm:top-24 sm:right-16",
+    objectPosition: "object-center",
   },
 ];
 
@@ -247,13 +250,14 @@ export default function LoginPage() {
           {CAROUSEL_SLIDES.map((slide, idx) => (
             <div
               key={slide.image}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
-                }`}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${
+                idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
+              }`}
             >
               <img
                 src={slide.image}
                 alt={`Varna Carousel slide ${idx + 1}`}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${slide.objectPosition || "object-center"}`}
               />
             </div>
           ))}
