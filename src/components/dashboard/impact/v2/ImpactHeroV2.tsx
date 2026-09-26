@@ -27,8 +27,8 @@ export default function ImpactHeroV2({
           lg:col-span-8
           bg-[#F4EACF] dark:bg-[#2B2720]
           border border-[#E8DFC5] dark:border-[#F4EACF]/14
-          p-7 lg:p-10 rounded-[24px] shadow-sm
-          flex flex-col justify-between min-h-[280px]
+          p-5 lg:p-6 rounded-[24px] shadow-sm
+          flex flex-col justify-between min-h-[200px] sm:min-h-[210px] lg:min-h-[220px]
           relative overflow-hidden
         "
       >
@@ -41,8 +41,8 @@ export default function ImpactHeroV2({
         </div>
 
         {/* Top Header Row */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
-          <span className="text-xl lg:text-[22px] font-normal text-[#1F1B16] dark:text-[#F1E6C8]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 relative z-10">
+          <span className="text-lg lg:text-xl font-normal text-[#1F1B16] dark:text-[#F1E6C8]">
             My Impact
           </span>
 
@@ -64,11 +64,11 @@ export default function ImpactHeroV2({
         </div>
 
         {/* Central Headline Stack */}
-        <div className="my-auto py-4 relative z-10">
-          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-[1.1] text-[#1F1B16] dark:text-[#F1E6C8] text-[28px] sm:text-[36px] lg:text-[46px] xl:text-[52px] text-balance break-words">
+        <div className="my-2 py-1 relative z-10">
+          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-[1.12] text-[#1F1B16] dark:text-[#F1E6C8] text-[24px] sm:text-[30px] lg:text-[38px] xl:text-[42px] text-balance break-words">
             SUSTAINABILITY IMPACT
           </h1>
-          <p className="text-sm lg:text-[15px] text-[#5B564E] dark:text-[#C2BCB0] font-normal max-w-2xl mt-2 leading-relaxed">
+          <p className="text-xs sm:text-sm lg:text-[14.5px] text-[#5B564E] dark:text-[#C2BCB0] font-normal max-w-2xl mt-1.5 leading-snug">
             What your procurement has changed so far: emissions avoided, livelihoods supported and how each ESG pillar scores.
           </p>
         </div>
@@ -84,9 +84,9 @@ export default function ImpactHeroV2({
         transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="
           lg:col-span-4
-          rounded-[24px] overflow-hidden relative min-h-[280px]
+          rounded-[24px] overflow-hidden relative h-full min-h-[200px] sm:min-h-[210px] lg:min-h-[220px]
           border border-black/[0.07] dark:border-white/[0.12] shadow-sm
-          bg-[#1F1B16] group flex flex-col justify-end p-6
+          bg-[#1F1B16] group flex flex-col justify-end p-2
         "
       >
         <Image
