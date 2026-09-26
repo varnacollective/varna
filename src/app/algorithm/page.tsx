@@ -87,8 +87,8 @@ export default function AlgorithmPage() {
           {/* ── SECTION 1: TOP HEADER BANNER & IMAGE 1 ───────────────────────── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* Left (Cols 1-8): Warm Beige Card */}
-            <div className="lg:col-span-8 bg-[#F0EBE1] dark:bg-[#1E2126] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-7 lg:p-10 flex flex-col justify-center min-h-[220px]">
-              <div className="flex items-center justify-between gap-4 mb-2">
+            <div className="lg:col-span-8 bg-[#F0EBE1] dark:bg-[#1E2126] border border-[#E7E2D6] dark:border-[#2A2F37] rounded-2xl p-5 lg:p-6 flex flex-col justify-between min-h-[200px] sm:min-h-[210px] lg:min-h-[220px]">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="text-xs uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A]">
                   The Framework
                 </span>
@@ -97,22 +97,24 @@ export default function AlgorithmPage() {
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#1A1F26] dark:text-[#EFECE6] uppercase tracking-wide leading-tight mb-3">
-                THE VARNA FRAMEWORK
-              </h1>
+              <div className="my-1 py-0.5">
+                <h1 className="text-[24px] sm:text-[30px] lg:text-[38px] xl:text-[42px] font-serif font-normal text-[#1A1F26] dark:text-[#EFECE6] uppercase tracking-wide leading-[1.12] mb-1.5">
+                  THE VARNA FRAMEWORK
+                </h1>
 
-              <p className="text-sm lg:text-[15px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-relaxed max-w-2xl">
-                India&apos;s first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook, and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
-              </p>
+                <p className="text-xs sm:text-sm lg:text-[14.5px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug max-w-2xl">
+                  India&apos;s first sustainability credentialing standard engineered specifically for small and micro enterprises. Built for producers that conventional ESG frameworks overlook, and for hospitality buyers who need verifiable integrity rather than a self-declared checkbox.
+                </p>
+              </div>
             </div>
 
-            {/* Right (Cols 9-12): Image Container 1 (Clean render, NO text overlay) */}
-            <div className="lg:col-span-4 rounded-2xl overflow-hidden min-h-[180px] lg:min-h-[220px] relative border border-[#E7E2D6] dark:border-[#2A2F37] bg-[#181B20]">
+            {/* Right (Cols 9-12): Image Container 1 */}
+            <div className="lg:col-span-4 rounded-2xl overflow-hidden h-full min-h-[200px] sm:min-h-[210px] lg:min-h-[220px] relative border border-[#E7E2D6] dark:border-[#2A2F37] bg-[#694941] p-1">
               <Image
                 src="/assets/framework1.jpg"
-                alt="Framework Concept"
+                alt="Framework Concept with core methodology principles"
                 fill
-                className="object-cover"
+                className="object-contain rounded-2xl object-center p-1 transition-transform duration-700 hover:scale-[1.02] dark:brightness-95"
                 priority
               />
             </div>
