@@ -91,16 +91,14 @@ export default function ImpactHeroV2({
       >
         <Image
           src="/assets/Impact1.svg"
-          alt="Woven craft baskets visual"
+          alt="Woven craft baskets visual with impact note"
           fill
-          className="object-cover rounded-[24px] object-[50%_40%] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-90"
+          className="object-contain rounded-[24px] object-center p-1 transition-transform duration-700 group-hover:scale-[1.02] dark:brightness-95"
           priority
         />
 
-        {/* Gradient Scrim */}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none rounded-[24px]" />
-
-
+        {/* Subtle Bottom Gradient Scrim */}
+        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[#1F1B16]/80 to-transparent pointer-events-none rounded-[24px]" />
       </motion.div>
     </div>
   );
