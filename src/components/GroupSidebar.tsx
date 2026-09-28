@@ -59,29 +59,20 @@ export default function GroupSidebar({
       <aside className="varna-grp-sidebar w-64 h-screen sticky top-0 flex flex-col justify-between bg-white dark:bg-[#18191D] border-r border-[#EAE5DC] dark:border-[#8C9DA8]/15 text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 z-30 select-none shadow-xs shrink-0">
         {/* ── Top Branding Area ──────────────────────────────────────────────── */}
         <div>
-          <div className="varna-grp-sidebar-branding p-6 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <div className="relative w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 p-1.5 shadow-xs">
-                <Image
-                  src="/varna-logo.svg"
-                  alt="Varna Collective Logo"
-                  width={28}
-                  height={28}
-                  className="object-contain dark:invert"
-                  priority
-                />
-              </div>
-              <div className="varna-grp-sidebar-label flex flex-col">
-                <span className="font-sans text-xl uppercase tracking-[0.2em] font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
-                  VARNA
-                </span>
-                <span className="font-sans text-xs tracking-wider text-[#6E7781] dark:text-[#8C9DA8] uppercase">
-                  Collective
-                </span>
-              </div>
+          <div className="varna-grp-sidebar-branding px-5 py-5 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col gap-3">
+            {/* Varnawordmark — mirrors client sidebar branding */}
+            <div className="flex items-center justify-start overflow-visible">
+              <Image
+                src="/assets/Varnawordmark.svg"
+                alt="Varna"
+                width={128}
+                height={40}
+                priority
+                className="w-32 h-auto object-contain dark:invert transition-all duration-300"
+              />
             </div>
 
-            <div className="varna-grp-sidebar-label mt-1 px-3 py-1.5 rounded-md bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 flex items-center gap-2">
+            <div className="varna-grp-sidebar-label px-3 py-1.5 rounded-md bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 flex items-center gap-2">
               <Building className="w-3.5 h-3.5 text-[#B85333] shrink-0" />
               <div className="flex flex-col overflow-hidden">
                 <span className="text-[11px] font-sans font-semibold text-[#1A1F26] dark:text-[#FAF8F5] truncate">

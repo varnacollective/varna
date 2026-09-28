@@ -26,12 +26,12 @@ export default function GroupImpactPage() {
   };
 
   const eSub = [
-    { code: "E1", label: "Carbon Footprint Audit", value: 68, color: "#738678" },
-    { code: "E2", label: "Sustainable Raw Materials", value: 56, color: "#738678" },
-    { code: "E3", label: "Circularity & Waste Reduction", value: 61, color: "#738678" },
-    { code: "E4", label: "Water Conservation & Recycling", value: 65, color: "#738678" },
-    { code: "E5", label: "Non-Toxic & Chemical Safety", value: 60, color: "#738678" },
-    { code: "E6", label: "Zero Waste Packaging Standards", value: 62, color: "#738678" },
+    { code: "E1", label: "Carbon Footprint Audit", value: 68, color: "#4C7355" },
+    { code: "E2", label: "Sustainable Raw Materials", value: 56, color: "#4C7355" },
+    { code: "E3", label: "Circularity & Waste Reduction", value: 61, color: "#4C7355" },
+    { code: "E4", label: "Water Conservation & Recycling", value: 65, color: "#4C7355" },
+    { code: "E5", label: "Non-Toxic & Chemical Safety", value: 60, color: "#4C7355" },
+    { code: "E6", label: "Zero Waste Packaging Standards", value: 62, color: "#4C7355" },
   ];
 
   const sSub = [
@@ -42,15 +42,15 @@ export default function GroupImpactPage() {
   ];
 
   const gSub = [
-    { code: "G1", label: "Legal & Regulatory Compliance", value: 69, color: "#6F848F" },
-    { code: "G2", label: "Ethics & Responsible Sourcing", value: 63, color: "#6F848F" },
-    { code: "G3", label: "Supply Chain Audit Transparency", value: 58, color: "#6F848F" },
+    { code: "G1", label: "Legal & Regulatory Compliance", value: 69, color: "#36424A" },
+    { code: "G2", label: "Ethics & Responsible Sourcing", value: 63, color: "#36424A" },
+    { code: "G3", label: "Supply Chain Audit Transparency", value: 58, color: "#36424A" },
   ];
 
   const cSub = [
-    { code: "C1", label: "Craft Authenticity & Heritage", value: 65, color: "#A89C82" },
-    { code: "C2", label: "Rare Skill Preservation", value: 59, color: "#A89C82" },
-    { code: "C3", label: "Climate Vulnerability Mitigation", value: 62, color: "#A89C82" },
+    { code: "C1", label: "Craft Authenticity & Heritage", value: 65, color: "#7A3F1E" },
+    { code: "C2", label: "Rare Skill Preservation", value: 59, color: "#7A3F1E" },
+    { code: "C3", label: "Climate Vulnerability Mitigation", value: 62, color: "#7A3F1E" },
   ];
 
   return (
@@ -100,7 +100,7 @@ export default function GroupImpactPage() {
             pillarLabel="Environmental"
             pillarScore={pillarScores.e}
             pillarKey="E"
-            color="#738678"
+            color="#4C7355"
             items={eSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
           >
             <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
@@ -108,7 +108,7 @@ export default function GroupImpactPage() {
                 value={pillarScores.e}
                 size={130}
                 strokeWidth={9}
-                color="#738678"
+                color="#4C7355"
                 label="Environmental (E1–E6)"
                 delay={0.1}
               />
@@ -138,7 +138,7 @@ export default function GroupImpactPage() {
             pillarLabel="Governance"
             pillarScore={pillarScores.g}
             pillarKey="G"
-            color="#6F848F"
+            color="#36424A"
             items={gSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
           >
             <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
@@ -146,7 +146,7 @@ export default function GroupImpactPage() {
                 value={pillarScores.g}
                 size={130}
                 strokeWidth={9}
-                color="#6F848F"
+                color="#36424A"
                 label="Governance (G1–G3)"
                 delay={0.3}
               />
@@ -157,7 +157,7 @@ export default function GroupImpactPage() {
             pillarLabel="Cultural"
             pillarScore={pillarScores.c}
             pillarKey="C"
-            color="#A89C82"
+            color="#7A3F1E"
             items={cSub.map((i) => ({ code: i.code, name: i.label, score: i.value, color: i.color }))}
           >
             <div className="flex flex-col items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
@@ -165,7 +165,7 @@ export default function GroupImpactPage() {
                 value={pillarScores.c}
                 size={130}
                 strokeWidth={9}
-                color="#A89C82"
+                color="#7A3F1E"
                 label="Carbon &amp; Culture (C1–C3)"
                 delay={0.4}
               />

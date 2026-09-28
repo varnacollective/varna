@@ -13,7 +13,6 @@ import {
   Trophy,
   AlertTriangle,
   AlertCircle,
-  Calendar,
   Search,
   Sun,
   Moon,
@@ -37,6 +36,8 @@ import {
 import LeaderboardTable from "@/components/Group/LeaderboardTable";
 import RadialGauge from "@/components/ui/RadialGauge";
 import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
+import DateRangeFilter from "@/components/ui/DateRangeFilter";
+import { DateRangeProvider } from "@/context/DateRangeContext";
 import {
   type FullGroupDashboardData,
   type HotelLeaderboardItem,
@@ -274,7 +275,6 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
   const { theme, setTheme } = useTheme();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPeriod, setSelectedPeriod] = useState("Aug 2026");
 
   const filteredHotels = hotels.filter((h: HotelLeaderboardItem) => {
     const term = searchTerm.toLowerCase();
@@ -304,6 +304,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
   };
 
   return (
+    <DateRangeProvider>
     <div className="w-full font-sans">
       {/* ── Top Header Bar / Hero Band ──────────────────────────────────────────────────── */}
       <header className="varna-grp-header px-6 md:px-8 py-8 bg-gradient-to-r from-[#FAF8F5] via-[#F4EFEA] to-[#FAF8F5] dark:from-[#18191D] dark:via-[#22252B] dark:to-[#18191D] border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 shadow-xs">
@@ -335,19 +336,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 {theme === "dark" ? <Sun className="w-4 h-4 text-[#C5A059]" /> : <Moon className="w-4 h-4 text-[#1A1F26]" />}
               </button>
 
-              <div className="flex items-center gap-2 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 px-3 py-1.5 rounded-lg shadow-xs">
-                <Calendar className="w-3.5 h-3.5 text-[#B85333]" />
-                <select
-                  value={selectedPeriod}
-                  onChange={(e) => setSelectedPeriod(e.target.value)}
-                  className="bg-transparent text-xs font-sans font-semibold text-[#1A1F26] dark:text-[#FAF8F5] focus:outline-none cursor-pointer"
-                >
-                  <option value="Aug 2026" className="bg-white dark:bg-[#1E2028]">Aug 2026</option>
-                  <option value="Jul 2026" className="bg-white dark:bg-[#1E2028]">Jul 2026</option>
-                  <option value="Q2 2026" className="bg-white dark:bg-[#1E2028]">Q2 2026</option>
-                  <option value="FY 2025" className="bg-white dark:bg-[#1E2028]">FY 2025</option>
-                </select>
-              </div>
+              <DateRangeFilter />
             </div>
 
             <div className="text-right hidden sm:block">
@@ -818,5 +807,6 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         </section>
       </div>
     </div>
+    </DateRangeProvider>
   );
 }
