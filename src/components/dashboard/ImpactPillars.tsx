@@ -13,55 +13,38 @@ interface ImpactPillarsProps {
   eScore: number;
   sScore: number;
   gScore: number;
-  cScore: number;
+  cScore?: number;
   pillarBreakdown?: Record<string, any>;
   delay?: number;
 }
 
 const PILLAR_CONFIG = [
-  { key: "E" as const, label: "Environmental" },
-  { key: "S" as const, label: "Social" },
-  { key: "G" as const, label: "Governance" },
-  { key: "C" as const, label: "Cultural" },
+  { key: "E" as const, label: "Environmental", color: "#4C7355" },
+  { key: "S" as const, label: "Social", color: "#B85333" },
+  { key: "G" as const, label: "Governance", color: "#36424A" },
 ];
 
 export default function ImpactPillars({
   eScore,
   sScore,
   gScore,
-  cScore,
   pillarBreakdown,
   delay = 0,
 }: ImpactPillarsProps) {
-  const scores = [eScore, sScore, gScore, cScore];
-
-  // If Cultural score is 0, filter it out
-  const showCultural = cScore > 0;
-  const visiblePillars = showCultural
-    ? PILLAR_CONFIG
-    : PILLAR_CONFIG.filter((p) => p.key !== "C");
-
-  // Dynamic grid: 3 cols centered when Cultural hidden, 4 cols when shown
-  const gridCols = showCultural
-    ? "grid-cols-2 md:grid-cols-4"
-    : "grid-cols-3";
+  const scores: Record<string, number> = {
+    Environmental: eScore,
+    Social: sScore,
+    Governance: gScore,
+  };
 
   return (
     <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
-
-
-      <div className={`varna-pillars-grid grid ${gridCols} gap-8 justify-items-center`}>
-        {visiblePillars.map((pillar) => {
-          const originalIndex = PILLAR_CONFIG.findIndex((p) => p.key === pillar.key);
-          const score = scores[originalIndex];
+      {/* Accommodates exactly 3 ESG pillars evenly distributed and centered */}
+      <div className="varna-pillars-grid grid grid-cols-3 gap-8 justify-items-center w-full">
+        {PILLAR_CONFIG.map((pillar, idx) => {
+          const score = scores[pillar.label] ?? 0;
           const breakdown = pillarBreakdown?.[pillar.label] ?? PILLAR_CRITERIA_BREAKDOWN[pillar.label];
           const definition = PILLAR_DEFINITIONS[pillar.label];
-
-          const pillarColor =
-            pillar.key === "E" ? "#4C7355" :
-            pillar.key === "S" ? "#B85333" :
-            pillar.key === "G" ? "#36424A" :
-            "#7A3F1E";
 
           return (
             <div key={pillar.key} className="flex flex-col items-center gap-2">
@@ -71,7 +54,7 @@ export default function ImpactPillars({
                 pillarKey={pillar.key}
                 pillarScore={breakdown?.pillarScore ?? Math.round(score)}
                 criteria={breakdown?.criteria ?? []}
-                color={pillarColor}
+                color={pillar.color}
               >
                 <div className="cursor-help">
                   <RadialGauge
@@ -79,7 +62,7 @@ export default function ImpactPillars({
                     size={124}
                     strokeWidth={10}
                     pillarKey={pillar.key}
-                    delay={delay + 0.08 * originalIndex}
+                    delay={delay + 0.08 * idx}
                   />
                 </div>
               </PillarBreakdownHoverCard>

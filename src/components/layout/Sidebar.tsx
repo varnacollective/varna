@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState, Suspense } from "react";
 import {
   LayoutDashboard,
   Store,
@@ -13,42 +13,92 @@ import {
   LogOut,
   Loader2,
 } from "lucide-react";
-
 import Image from "next/image";
 
 interface NavItem {
   id: string;
   label: string;
   icon: any;
-  href: string;
+  defaultHref: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard, href: "/dashboard?section=overview" },
-  { id: "suppliers", label: "Partners", icon: Store, href: "/dashboard/suppliers" },
-  { id: "orders", label: "Orders", icon: ShoppingBag, href: "/dashboard?section=orders" },
-  { id: "impact", label: "Impact", icon: Leaf, href: "/dashboard?section=impact" },
-  { id: "algorithm", label: "Framework", icon: Network, href: "/algorithm" },
+  { id: "overview", label: "Overview", icon: LayoutDashboard, defaultHref: "/dashboard?section=overview" },
+  { id: "suppliers", label: "Partners", icon: Store, defaultHref: "/dashboard/suppliers" },
+  { id: "orders", label: "Orders", icon: ShoppingBag, defaultHref: "/dashboard?section=orders" },
+  { id: "impact", label: "Impact", icon: Leaf, defaultHref: "/dashboard?section=impact" },
+  { id: "algorithm", label: "Framework", icon: Network, defaultHref: "/algorithm" },
 ];
 
 interface SidebarProps {
   activeSection: string;
-  onSectionChange: (section: string) => void;
-  onLogout: () => void;
+  onSectionChange?: (section: string) => void;
+  onLogout?: () => void;
 }
 
-export default function Sidebar({
+function buildNavHref(itemId: string, defaultHref: string, clientId?: string | null): string {
+  if (!clientId) return defaultHref;
+
+  switch (itemId) {
+    case "overview":
+      return `/dashboard?section=overview&clientId=${encodeURIComponent(clientId)}`;
+    case "suppliers":
+      return `/dashboard/suppliers?clientId=${encodeURIComponent(clientId)}`;
+    case "orders":
+      return `/dashboard?section=orders&clientId=${encodeURIComponent(clientId)}`;
+    case "impact":
+      return `/dashboard?section=impact&clientId=${encodeURIComponent(clientId)}`;
+    case "algorithm":
+      return `/algorithm?clientId=${encodeURIComponent(clientId)}`;
+    default:
+      return defaultHref.includes("?")
+        ? `${defaultHref}&clientId=${encodeURIComponent(clientId)}`
+        : `${defaultHref}?clientId=${encodeURIComponent(clientId)}`;
+  }
+}
+
+function checkIsActive(
+  itemId: string,
+  activeSection: string,
+  pathname: string,
+  currentSectionQuery?: string | null
+): boolean {
+  if (activeSection === itemId) return true;
+  if (itemId === "suppliers" && pathname.includes("/suppliers")) return true;
+  if (itemId === "orders") {
+    if (pathname.includes("/orders")) return true;
+    if (pathname === "/dashboard" && currentSectionQuery === "orders") return true;
+  }
+  if (itemId === "impact") {
+    if (pathname.includes("/impact")) return true;
+    if (pathname === "/dashboard" && currentSectionQuery === "impact") return true;
+  }
+  if (itemId === "overview") {
+    if (pathname === "/dashboard" && (!currentSectionQuery || currentSectionQuery === "overview")) return true;
+  }
+  if (itemId === "algorithm" && pathname.includes("/algorithm")) return true;
+  return false;
+}
+
+interface SidebarViewProps extends SidebarProps {
+  clientId?: string | null;
+  currentSectionQuery?: string | null;
+}
+
+function SidebarView({
   activeSection,
   onSectionChange,
   onLogout,
-}: SidebarProps) {
+  clientId,
+  currentSectionQuery,
+}: SidebarViewProps) {
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogoutClick = async () => {
     setIsLoggingOut(true);
     try {
-      await onLogout();
+      await onLogout?.();
     } catch {
       setIsLoggingOut(false);
     }
@@ -63,7 +113,7 @@ export default function Sidebar({
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="varna-sidebar fixed left-0 top-0 bottom-0 w-24 flex flex-col items-center py-8 justify-between z-50 bg-white dark:bg-[#141619] border-r border-[#EAE5DC] dark:border-[#9BA9B4]/10 text-[#1A1F26] dark:text-[#EAE5DC] shadow-md dark:shadow-2xl transition-colors duration-300 selection:bg-[#B85333] selection:text-white"
       >
-        {/* ── Branding: Varnawordmark (LCP Preloaded) ──────── */}
+        {/* ── Branding: Varnawordmark ──────── */}
         <div className="flex items-center justify-center w-full px-1 py-1 varna-sidebar-brand overflow-visible">
           <Image
             src="/assets/Varnawordmark.svg"
@@ -78,16 +128,17 @@ export default function Sidebar({
         {/* Navigation items */}
         <nav className="flex flex-col items-center gap-2 w-full px-2 mt-8 flex-1">
           {NAV_ITEMS.map((item) => {
-            const isActive = activeSection === item.id;
+            const href = buildNavHref(item.id, item.defaultHref, clientId);
+            const isActive = checkIsActive(item.id, activeSection, pathname, currentSectionQuery);
             const Icon = item.icon;
 
             return (
               <Link
                 key={item.id}
-                href={item.href}
+                href={href}
                 prefetch={true}
                 onClick={(e) => {
-                  if (pathname === "/dashboard" && item.href.startsWith("/dashboard?section=")) {
+                  if (pathname === "/dashboard" && href.includes("/dashboard?section=")) {
                     e.preventDefault();
                   }
                   if (onSectionChange) {
@@ -157,15 +208,17 @@ export default function Sidebar({
       {/* ── Mobile Bottom Navigation Bar (hidden on desktop/tablet via CSS) ── */}
       <nav className="varna-bottom-nav" aria-label="Mobile navigation">
         {NAV_ITEMS.map((item) => {
-          const isActive = activeSection === item.id;
+          const href = buildNavHref(item.id, item.defaultHref, clientId);
+          const isActive = checkIsActive(item.id, activeSection, pathname, currentSectionQuery);
           const Icon = item.icon;
+
           return (
             <Link
               key={item.id}
-              href={item.href}
+              href={href}
               prefetch={true}
               onClick={(e) => {
-                if (pathname === "/dashboard" && item.href.startsWith("/dashboard?section=")) {
+                if (pathname === "/dashboard" && href.includes("/dashboard?section=")) {
                   e.preventDefault();
                 }
                 onSectionChange?.(item.id);
@@ -193,5 +246,42 @@ export default function Sidebar({
         </button>
       </nav>
     </>
+  );
+}
+
+function SidebarWithParams(props: SidebarProps) {
+  const searchParams = useSearchParams();
+  const params = useParams();
+
+  const clientId =
+    searchParams?.get("clientId") ||
+    (params?.hotelId as string) ||
+    (params?.clientId as string) ||
+    null;
+
+  const currentSectionQuery = searchParams?.get("section") || null;
+
+  return (
+    <SidebarView
+      {...props}
+      clientId={clientId}
+      currentSectionQuery={currentSectionQuery}
+    />
+  );
+}
+
+export default function Sidebar(props: SidebarProps) {
+  return (
+    <Suspense
+      fallback={
+        <SidebarView
+          {...props}
+          clientId={null}
+          currentSectionQuery={null}
+        />
+      }
+    >
+      <SidebarWithParams {...props} />
+    </Suspense>
   );
 }

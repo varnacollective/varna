@@ -250,7 +250,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
     const avgEScore = summaryData?.avg_e_score ?? fallbackHotel.eScore;
     const avgSScore = summaryData?.avg_s_score ?? fallbackHotel.sScore;
     const avgGScore = summaryData?.avg_g_score ?? fallbackHotel.gScore;
-    const avgCScore = summaryData?.avg_c_score_craft_only ?? fallbackHotel.cScore;
+    const avgCScore = 0; // Cultural pillar is disabled (score 0)
     const totalCO2eAvoidedKg = summaryData?.total_co2e_avoided_kg_auto ?? fallbackHotel.co2eAvoidedKg;
     const totalArtisansSupported = summaryData?.total_artisans_supported ?? (fallbackHotel.activeSuppliers * 320);
     const totalSuppliers = summaryData?.no_active_suppliers ?? fallbackHotel.activeSuppliers;
