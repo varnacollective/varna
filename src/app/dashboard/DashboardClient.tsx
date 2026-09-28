@@ -51,7 +51,12 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
       router.push("/algorithm");
     } else {
       setActiveSection(section);
-      window.history.pushState({}, "", `/dashboard?section=${section}`);
+      const params = new URLSearchParams(window.location.search);
+      const clientId = params.get("clientId");
+      const nextQuery = new URLSearchParams();
+      nextQuery.set("section", section);
+      if (clientId) nextQuery.set("clientId", clientId);
+      window.history.pushState({}, "", `/dashboard?${nextQuery.toString()}`);
     }
   };
 

@@ -317,8 +317,6 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 <span className="font-medium text-[#1A1F26] dark:text-[#FAF8F5]">{summary.parentGroup}</span>
                 <span>&bull;</span>
                 <span>{summary.noProperties} Portfolio Properties</span>
-                <span>&bull;</span>
-                <span>{summary.noActiveSupplierRelationships} Active Partner Relationships</span>
               </p>
             </div>
 

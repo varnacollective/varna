@@ -4,25 +4,42 @@ import { createClient } from "@/utils/supabase/server";
 import SuppliersClient from "./SuppliersClient";
 
 import { getSupplierLogoFallback, getClientLogoFallback } from "@/lib/mock-data";
+import { resolveHotelProperty } from "@/lib/properties-data";
 
-export default async function SuppliersServerPage() {
+interface PageProps {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function SuppliersServerPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const rawClientId = resolvedSearchParams.clientId;
+  const queryClientId =
+    typeof rawClientId === "string"
+      ? rawClientId
+      : Array.isArray(rawClientId)
+      ? rawClientId[0]
+      : undefined;
+
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("varna_session");
 
-  if (!sessionCookie?.value) {
+  let session: { clientId: string; clientName: string; isGroup?: boolean } | null = null;
+  if (sessionCookie?.value) {
+    try {
+      session = JSON.parse(sessionCookie.value);
+    } catch {
+      // ignore
+    }
+  }
+
+  if (!session && !queryClientId) {
     redirect("/");
   }
+
+  const clientId = queryClientId || session?.clientId || "CLT-001";
+  const fallbackHotel = resolveHotelProperty(clientId);
 
   const supabase = await createClient();
-
-  let session: { clientId: string; clientName: string };
-  try {
-    session = JSON.parse(sessionCookie.value);
-  } catch {
-    redirect("/");
-  }
-
-  const clientId = session.clientId;
 
   try {
     // 0. Fetch Client Master
@@ -30,7 +47,7 @@ export default async function SuppliersServerPage() {
       .from("client_master")
       .select("client_name, logo_path, property_type")
       .eq("client_id", clientId)
-      .single();
+      .maybeSingle();
 
     // 1. Fetch scores_summary (all active suppliers with complete sub-criteria)
     const { data: scoresData, error: scoresError } = await supabase
@@ -305,7 +322,7 @@ export default async function SuppliersServerPage() {
       };
     });
 
-    const clientName = clientData?.client_name || session.clientName || "The Astor Dubai";
+    const clientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
     const logoPath = clientData?.logo_path || getClientLogoFallback(clientName);
 
     return (

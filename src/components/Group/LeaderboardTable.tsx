@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Link from "next/link";
 import { type HotelLeaderboardItem } from "@/types/group-dashboard";
-import { ArrowUpDown, ArrowUp, ArrowDown, ChevronRight, Star, ShieldCheck } from "lucide-react";
+import { ArrowUpDown, ArrowUp, ArrowDown, ChevronRight, Star, ShieldCheck, ExternalLink } from "lucide-react";
 
 interface LeaderboardTableProps {
   hotels: HotelLeaderboardItem[];
@@ -239,6 +240,7 @@ export default function LeaderboardTable({
                   {renderSortIndicator("activeSuppliers")}
                 </div>
               </th>
+              <th className="py-3.5 px-3 text-center font-semibold">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#EAE5DC] dark:divide-[#8C9DA8]/15 text-xs">
@@ -322,6 +324,18 @@ export default function LeaderboardTable({
 
                   <td className="py-3.5 px-3 text-center font-mono text-xs font-semibold text-[#1A1F26] dark:text-[#FAF8F5]">
                     {item.activeSuppliers}
+                  </td>
+
+                  <td className="py-3.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                    <Link
+                      href={`/dashboard?clientId=${item.clientId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-sans font-semibold border border-[#B85333]/30 text-[#B85333] hover:bg-[#B85333] hover:text-white dark:border-[#D4705A]/40 dark:text-[#D4705A] dark:hover:bg-[#B85333] dark:hover:text-white transition-all shadow-xs shrink-0 whitespace-nowrap cursor-pointer"
+                    >
+                      <span>View Dashboard</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
                   </td>
                 </tr>
               );

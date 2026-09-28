@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   Building2,
   Search,
@@ -458,7 +459,7 @@ export default function GroupPropertiesPage() {
                 </th>
                 <th className="py-3.5 px-4 text-center">Suppliers</th>
                 <th className="py-3.5 px-4 text-center">Status</th>
-                <th className="py-3.5 px-3 text-center w-10"></th>
+                <th className="py-3.5 px-4 text-center">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EAE5DC] dark:divide-[#8C9DA8]/15 font-sans">
@@ -613,9 +614,17 @@ export default function GroupPropertiesPage() {
                         )}
                       </td>
 
-                      {/* Row Hover Details Affordance */}
-                      <td className="py-4 px-3 text-center">
-                        <ChevronRight className="w-4 h-4 text-[#6E7781]/0 group-hover:text-[#B85333] group-hover:translate-x-0.5 transition-all" />
+                      {/* Action: View Dashboard */}
+                      <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                        <Link
+                          href={`/dashboard?clientId=${prop.clientId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-semibold border border-[#B85333]/30 text-[#B85333] hover:bg-[#B85333] hover:text-white dark:border-[#D4705A]/40 dark:text-[#D4705A] dark:hover:bg-[#B85333] dark:hover:text-white transition-all shadow-xs shrink-0 whitespace-nowrap cursor-pointer"
+                        >
+                          <span>View Dashboard</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </Link>
                       </td>
                     </motion.tr>
                   );
