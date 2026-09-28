@@ -382,9 +382,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
               </span>
               <span className="text-xs font-light text-[#6E7781] dark:text-[#8C9DA8]">/ 100 benchmark</span>
             </div>
-            <p className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8] mt-2 font-light border-t border-[#EAE5DC] dark:border-[#8C9DA8]/20 pt-2">
-              +4.2 pts YTD across all 8 portfolio properties
-            </p>
+
           </div>
 
           <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
@@ -416,7 +414,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
           <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
             <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
               <Coins className="w-3.5 h-3.5 text-[#6F848F]" />
-              <span className="truncate">Total Spend</span>
+              <span className="truncate">Sustainable Spend</span>
             </div>
             <div className="mt-2">
               <span className="text-xl lg:text-2xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5]">
@@ -720,7 +718,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                   {formatLakhs(summary.totalSpend)}
                 </span>
                 <span className="text-[9px] uppercase tracking-wider text-[#6E7781] dark:text-[#8C9DA8]">
-                  Total Spend
+                  Sustainable Spend
                 </span>
               </div>
             </div>
