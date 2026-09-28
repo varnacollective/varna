@@ -402,8 +402,8 @@ export default function SupplierProfileCard({
         </div>
 
         {/* 3. Certification Badges (Wrapped nicely with distinct icons) */}
-        {((badges && badges.length > 0) || resolvedReportUrl) && (
-          <div className="varna-badge-row flex items-start justify-between gap-2 mb-4 min-h-7 shrink-0 relative">
+        {((badges && badges.length > 0)) && (
+          <div className="varna-badge-row flex items-start gap-2 mb-4 min-h-7 shrink-0 relative">
             <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
               {visibleBadges.map((badge, idx) => {
                 const text = typeof badge === "string" ? badge : badge?.label || "";
@@ -425,29 +425,6 @@ export default function SupplierProfileCard({
                 <BadgeOverflowPopover hiddenBadges={hiddenBadges} />
               )}
             </div>
-
-            {resolvedReportUrl && (
-              <a
-                href={resolvedReportUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                  border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
-                  bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
-                  dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
-                  text-[#7D3F1E] dark:text-[#E07A57]
-                  text-[10px] font-bold tracking-wider uppercase
-                  transition-all duration-150 shadow-xs cursor-pointer h-6.5
-                  group/scorecard
-                "
-                title={`View ${name} Scorecard (PDF)`}
-              >
-                <FileText className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57] group-hover/scorecard:text-white transition-colors" strokeWidth={2} />
-                <span>View Scorecard</span>
-                <ExternalLink className="w-2.5 h-2.5 text-[#7D3F1E]/70 dark:text-[#E07A57]/70 group-hover/scorecard:text-white transition-colors" strokeWidth={2} />
-              </a>
-            )}
           </div>
         )}
 
@@ -525,6 +502,28 @@ export default function SupplierProfileCard({
               ))
             )}
           </div>
+
+          {/* View Scorecard — centered between SDG Index and Evidence Quality ring */}
+          {resolvedReportUrl && (
+            <a
+              href={resolvedReportUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                shrink-0 inline-flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg
+                border border-[#7D3F1E]/30 dark:border-[#E07A57]/35
+                bg-[#7D3F1E]/[0.06] hover:bg-[#7D3F1E] hover:text-white hover:border-[#7D3F1E]
+                dark:bg-[#E07A57]/10 dark:hover:bg-[#E07A57] dark:hover:text-white dark:hover:border-[#E07A57]
+                text-[#7D3F1E] dark:text-[#E07A57]
+                transition-all duration-150 shadow-xs cursor-pointer
+                group/scorecard-footer
+              "
+              title={`View ${name} Scorecard (PDF)`}
+            >
+              <FileText className="w-4 h-4 text-[#7D3F1E] dark:text-[#E07A57] group-hover/scorecard-footer:text-white transition-colors" strokeWidth={1.5} />
+              <span className="text-[9px] font-bold tracking-wider uppercase whitespace-nowrap">View Scorecard</span>
+            </a>
+          )}
 
           <ConfidenceChecklistHoverCard
             supplierName={name}

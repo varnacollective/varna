@@ -59,18 +59,16 @@ export default function GroupSidebar({
       <aside className="varna-grp-sidebar w-64 h-screen sticky top-0 flex flex-col justify-between bg-white dark:bg-[#18191D] border-r border-[#EAE5DC] dark:border-[#8C9DA8]/15 text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 z-30 select-none shadow-xs shrink-0">
         {/* ── Top Branding Area ──────────────────────────────────────────────── */}
         <div>
-          <div className="varna-grp-sidebar-branding px-5 py-5 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col gap-3">
-            {/* Varnawordmark — mirrors client sidebar branding */}
-            <div className="flex items-center justify-start overflow-visible">
-              <Image
-                src="/assets/Varnawordmark.svg"
-                alt="Varna"
-                width={128}
-                height={40}
-                priority
-                className="w-32 h-auto object-contain dark:invert transition-all duration-300"
-              />
-            </div>
+          <div className="varna-grp-sidebar-branding px-3.5 py-5 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col gap-3">
+            {/* Varnawordmark — mirrors client sidebar branding, aligned with nav link padding */}
+            <Image
+              src="/assets/Varnawordmark.svg"
+              alt="Varna"
+              width={128}
+              height={40}
+              priority
+              className="w-28 h-auto object-contain dark:invert transition-all duration-300 scale-110 origin-left"
+            />
 
             <div className="varna-grp-sidebar-label px-3 py-1.5 rounded-md bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 flex items-center gap-2">
               <Building className="w-3.5 h-3.5 text-[#B85333] shrink-0" />
