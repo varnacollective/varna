@@ -83,10 +83,10 @@ module.exports = {
         "glow-clay":          "0 0 24px -2px rgba(148, 77, 37, 0.45)",
       },
       fontFamily: {
-        // Universal Geometric Sans
-        sans: ["Avenir", "Avenir Next", "var(--font-jost)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
-        // Serif alias (also Jost to preserve existing behaviour)
-        serif: ["Avenir", "Avenir Next", "var(--font-jost)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+        // Universal Geometric Sans: Avenir (macOS native) -> Jost (Next.js font fallback) -> sans-serif
+        sans: ["Avenir", "var(--font-jost)", "Jost", "sans-serif"],
+        jost: ["var(--font-jost)", "Jost", "sans-serif"],
+        serif: ["Avenir", "var(--font-jost)", "Jost", "sans-serif"],
         // Editorial Display — Cormorant Garamond / Playfair for luxury hero headings
         display: ["var(--font-cormorant)", "var(--font-playfair)", "Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
         // Handwriting accents (<5% of UI)

@@ -10,8 +10,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Avenir", "Avenir Next", var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Avenir", "Avenir Next", var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Avenir", var(--font-jost), "Jost", sans-serif;
+  --font-jost: var(--font-jost), "Jost", sans-serif;
+  --font-serif: "Avenir", var(--font-jost), "Jost", sans-serif;
   --font-display: var(--font-cormorant), var(--font-playfair), "Cormorant Garamond", "Playfair Display", Georgia, serif;
   --font-accent: var(--font-caveat), var(--font-cedarville), "Caveat", "Cedarville Cursive", cursive;
   

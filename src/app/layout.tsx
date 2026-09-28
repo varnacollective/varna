@@ -8,7 +8,7 @@ const jost = Jost({
   subsets: ["latin"],
   variable: "--font-jost",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const cormorant = Cormorant_Garamond({

@@ -336,9 +336,7 @@ export default function GroupPropertiesPage() {
             <span className="text-2xl sm:text-3xl font-sans font-medium text-[#B85333] dark:text-[#D4705A]">
               {avgVarnaScore} <span className="text-xs font-light text-[#6E7781]">/ 100</span>
             </span>
-            <span className="text-[10px] bg-[#B85333]/10 text-[#B85333] dark:text-[#D4705A] px-2 py-0.5 rounded font-mono font-bold border border-[#B85333]/20 flex items-center gap-1">
-              <TrendingUp className="w-2.5 h-2.5" /> +4.2 YTD
-            </span>
+
           </div>
         </div>
 
@@ -403,8 +401,8 @@ export default function GroupPropertiesPage() {
                 key={type}
                 onClick={() => setSelectedType(type)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-sans transition-all shrink-0 cursor-pointer ${isActive
-                    ? "bg-[#B85333] text-white font-semibold shadow-xs"
-                    : "bg-[#FAF8F5] dark:bg-[#22252B] text-[#1A1F26] dark:text-[#FAF8F5] hover:bg-[#EAE5DC] dark:hover:bg-[#2A2D34] border border-[#EAE5DC] dark:border-[#8C9DA8]/30 font-medium"
+                  ? "bg-[#B85333] text-white font-semibold shadow-xs"
+                  : "bg-[#FAF8F5] dark:bg-[#22252B] text-[#1A1F26] dark:text-[#FAF8F5] hover:bg-[#EAE5DC] dark:hover:bg-[#2A2D34] border border-[#EAE5DC] dark:border-[#8C9DA8]/30 font-medium"
                   }`}
               >
                 {type}
