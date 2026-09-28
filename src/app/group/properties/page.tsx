@@ -37,34 +37,20 @@ export interface PropertyItem {
   co2eAvoidedKg: number;
   treesEquivalent: number;
   activeSuppliers: number;
+  groupId?: string;
+  portfolio?: string;
   varnaLeaders: number;
 }
 
-const DEFAULT_PROPERTIES: PropertyItem[] = [
-  {
-    clientId: "CLT-001",
-    clientName: "The Astor Dubai",
-    propertyType: "Luxury Hotel",
-    city: "Dubai",
-    country: "UAE",
-    varnaScore: 84.5,
-    eScore: 82.0,
-    sScore: 88.5,
-    gScore: 85.0,
-    cScore: 82.5,
-    totalSpendInr: 25000000,
-    totalOrders: 5,
-    co2eAvoidedKg: 2160,
-    treesEquivalent: 98,
-    activeSuppliers: 4,
-    varnaLeaders: 2,
-  },
+const ALL_GROUP_PROPERTIES: PropertyItem[] = [
   {
     clientId: "CLT-004",
     clientName: "Meridian Grand Palm",
     propertyType: "Luxury Resort",
     city: "Goa",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 81.2,
     eScore: 78.5,
     sScore: 84.0,
@@ -78,29 +64,13 @@ const DEFAULT_PROPERTIES: PropertyItem[] = [
     varnaLeaders: 2,
   },
   {
-    clientId: "CLT-002",
-    clientName: "Six Senses The Palm",
-    propertyType: "Luxury Resort",
-    city: "Dubai",
-    country: "UAE",
-    varnaScore: 78.9,
-    eScore: 81.0,
-    sScore: 76.5,
-    gScore: 80.0,
-    cScore: 78.0,
-    totalSpendInr: 19600000,
-    totalOrders: 4,
-    co2eAvoidedKg: 1820,
-    treesEquivalent: 83,
-    activeSuppliers: 3,
-    varnaLeaders: 1,
-  },
-  {
     clientId: "CLT-005",
     clientName: "Meridian Oceanview Resort",
     propertyType: "Resort",
     city: "Kochi",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 74.3,
     eScore: 72.0,
     sScore: 75.5,
@@ -114,29 +84,13 @@ const DEFAULT_PROPERTIES: PropertyItem[] = [
     varnaLeaders: 1,
   },
   {
-    clientId: "CLT-003",
-    clientName: "The Dorchester Dubai",
-    propertyType: "Luxury Hotel",
-    city: "Dubai",
-    country: "UAE",
-    varnaScore: 71.8,
-    eScore: 69.5,
-    sScore: 74.0,
-    gScore: 72.5,
-    cScore: 71.0,
-    totalSpendInr: 15600000,
-    totalOrders: 3,
-    co2eAvoidedKg: 1410,
-    treesEquivalent: 64,
-    activeSuppliers: 2,
-    varnaLeaders: 1,
-  },
-  {
     clientId: "CLT-006",
     clientName: "Meridian Heritage Suites",
     propertyType: "Boutique Hotel",
     city: "Jaipur",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 68.4,
     eScore: 65.0,
     sScore: 72.5,
@@ -155,6 +109,8 @@ const DEFAULT_PROPERTIES: PropertyItem[] = [
     propertyType: "Business Hotel",
     city: "Bengaluru",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 62.1,
     eScore: 60.5,
     sScore: 63.0,
@@ -173,6 +129,8 @@ const DEFAULT_PROPERTIES: PropertyItem[] = [
     propertyType: "Resort",
     city: "Alibaug",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 56.8,
     eScore: 54.0,
     sScore: 58.5,
@@ -185,7 +143,56 @@ const DEFAULT_PROPERTIES: PropertyItem[] = [
     activeSuppliers: 2,
     varnaLeaders: 0,
   },
+  {
+    clientId: "CLT-009",
+    clientName: "Meridian Business Bay",
+    propertyType: "Business Hotel",
+    city: "Mumbai",
+    country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
+    varnaScore: 52.4,
+    eScore: 50.0,
+    sScore: 53.5,
+    gScore: 55.0,
+    cScore: 51.0,
+    totalSpendInr: 8160000,
+    totalOrders: 2,
+    co2eAvoidedKg: 690,
+    treesEquivalent: 31,
+    activeSuppliers: 1,
+    varnaLeaders: 0,
+  },
+  {
+    clientId: "CLT-010",
+    clientName: "Meridian Hilltop Sanctuary",
+    propertyType: "Resort",
+    city: "Shimla",
+    country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
+    varnaScore: 47.9,
+    eScore: 45.0,
+    sScore: 49.0,
+    gScore: 51.5,
+    cScore: 46.0,
+    totalSpendInr: 6880000,
+    totalOrders: 1,
+    co2eAvoidedKg: 540,
+    treesEquivalent: 25,
+    activeSuppliers: 1,
+    varnaLeaders: 0,
+  },
 ];
+
+// Active Group context: Meridian Hotels & Resorts (GRP-001)
+const CURRENT_GROUP_ID = "GRP-001";
+const CURRENT_PORTFOLIO_NAME = "Meridian Hotels & Resorts";
+
+// Enforce strict Group-Level isolation: only allow properties belonging to the active group
+const DEFAULT_PROPERTIES: PropertyItem[] = ALL_GROUP_PROPERTIES.filter(
+  (hotel) => hotel.portfolio === CURRENT_PORTFOLIO_NAME || hotel.groupId === CURRENT_GROUP_ID
+);
 
 type SortField =
   | "rank"
@@ -297,7 +304,7 @@ export default function GroupPropertiesPage() {
             Hotel-Level Leaderboard
           </h1>
           <p className="text-xs text-[#6E7781] dark:text-[#8C9DA8] mt-1 font-light max-w-2xl leading-relaxed">
-            Comparative performance, verified ESG metrics, ethical procurement spend, and carbon abatement across all 8 group properties.
+            Comparative performance, verified ESG metrics, ethical procurement spend, and carbon abatement across all {DEFAULT_PROPERTIES.length} Meridian properties.
           </p>
         </div>
 

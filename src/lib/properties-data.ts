@@ -4,6 +4,8 @@ export interface HotelPropertyMetadata {
   propertyType: string;
   city: string;
   country: string;
+  groupId?: string;
+  portfolio?: string;
   varnaScore: number;
   eScore: number;
   sScore: number;
@@ -24,6 +26,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Luxury Hotel",
     city: "Dubai",
     country: "UAE",
+    groupId: "GRP-ASTOR",
+    portfolio: "The Astor Collection",
     varnaScore: 84.5,
     eScore: 82.0,
     sScore: 88.5,
@@ -42,6 +46,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Luxury Resort",
     city: "Dubai",
     country: "UAE",
+    groupId: "GRP-IHG",
+    portfolio: "Six Senses Hotels Resorts Spas",
     varnaScore: 78.9,
     eScore: 81.0,
     sScore: 76.5,
@@ -60,6 +66,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Luxury Hotel",
     city: "Dubai",
     country: "UAE",
+    groupId: "GRP-DORCHESTER",
+    portfolio: "Dorchester Collection",
     varnaScore: 71.8,
     eScore: 69.5,
     sScore: 74.0,
@@ -78,6 +86,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Luxury Resort",
     city: "Goa",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 81.2,
     eScore: 78.5,
     sScore: 84.0,
@@ -96,6 +106,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Resort",
     city: "Kochi",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 74.3,
     eScore: 72.0,
     sScore: 75.5,
@@ -114,6 +126,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Boutique Hotel",
     city: "Jaipur",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 68.4,
     eScore: 65.0,
     sScore: 72.5,
@@ -132,6 +146,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Business Hotel",
     city: "Bengaluru",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 62.1,
     eScore: 60.5,
     sScore: 63.0,
@@ -150,6 +166,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Resort",
     city: "Alibaug",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 56.8,
     eScore: 54.0,
     sScore: 58.5,
@@ -168,6 +186,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Business Hotel",
     city: "Mumbai",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 52.4,
     eScore: 50.0,
     sScore: 53.5,
@@ -186,6 +206,8 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
     propertyType: "Resort",
     city: "Shimla",
     country: "India",
+    groupId: "GRP-001",
+    portfolio: "Meridian Hotels & Resorts",
     varnaScore: 47.9,
     eScore: 45.0,
     sScore: 49.0,
@@ -200,8 +222,14 @@ export const HOTEL_PROPERTIES: Record<string, HotelPropertyMetadata> = {
   },
 };
 
+export function getGroupProperties(groupId: string = "GRP-001"): HotelPropertyMetadata[] {
+  return Object.values(HOTEL_PROPERTIES).filter(
+    (h) => h.groupId === groupId || h.portfolio === "Meridian Hotels & Resorts"
+  );
+}
+
 export function resolveHotelProperty(queryId?: string | null): HotelPropertyMetadata {
-  if (!queryId) return HOTEL_PROPERTIES["CLT-001"];
+  if (!queryId) return HOTEL_PROPERTIES["CLT-004"] || HOTEL_PROPERTIES["CLT-001"];
   const clean = queryId.trim();
   if (HOTEL_PROPERTIES[clean]) return HOTEL_PROPERTIES[clean];
 
@@ -212,5 +240,5 @@ export function resolveHotelProperty(queryId?: string | null): HotelPropertyMeta
     return normId === norm || normName === norm || normName.includes(norm);
   });
 
-  return found || HOTEL_PROPERTIES["CLT-001"];
+  return found || HOTEL_PROPERTIES["CLT-004"] || HOTEL_PROPERTIES["CLT-001"];
 }
