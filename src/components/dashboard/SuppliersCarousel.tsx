@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight, LayoutGrid, SlidersHorizontal, Users } from "lucide-react";
-import SupplierProfileCard from "./SupplierProfileCard";
+import SupplierCardV2 from "@/components/dashboard/suppliers/v2/SupplierCardV2";
 import type { SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 
@@ -16,7 +16,7 @@ interface SuppliersCarouselProps {
 export default function SuppliersCarousel({
   suppliersData,
   liveConfidenceData = {},
-  title = "Active Group Supplier Profiles",
+  title = "Active Group Partner Profiles",
   subtitle = "Detailed sustainability audits, official UN SDG badges, and evidence confidence gauges.",
 }: SuppliersCarouselProps) {
   const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
@@ -133,7 +133,7 @@ export default function SuppliersCarousel({
             onScroll={handleScroll}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full"
+            className="flex items-stretch overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full"
           >
             {suppliersData.map((supplier) => {
               const name = supplier.enterprise_name;
@@ -153,27 +153,38 @@ export default function SuppliersCarousel({
 
               const isVerified = confidencePct >= 60;
 
+              const location =
+                isBare
+                  ? "Bengaluru, Karnataka"
+                  : isUKHI
+                  ? "Faridabad, Haryana"
+                  : isKheoni
+                  ? "Indore, Madhya Pradesh"
+                  : supplier.city && supplier.state
+                  ? `${supplier.city}, ${supplier.state}`
+                  : "Bengaluru, Karnataka";
+
+              const legalName =
+                supplier.legal_name ||
+                (isBare
+                  ? "Bare Necessities Zero Waste Solutions Pvt. Ltd."
+                  : isUKHI
+                  ? "UKHI India Private Limited"
+                  : isKheoni
+                  ? "Kheoni Ventures Pvt Ltd"
+                  : name);
+
               return (
                 <div
                   key={supplier.enterprise_id || name}
-                  className="varna-carousel-item min-w-[90%] sm:min-w-[480px] lg:min-w-[500px] snap-center shrink-0 flex"
+                  className="varna-partner-card-wrapper w-full md:w-[calc((100%-28px)/2)] md:max-w-[650px] snap-start shrink-0 flex items-stretch"
                 >
-                  <SupplierProfileCard
+                  <SupplierCardV2
                     name={name}
-                    legalName={name}
+                    legalName={legalName}
+                    enterpriseId={supplier.enterprise_id}
                     logoPath={supplier.logo_path}
-                    location={
-                      isBare
-                        ? "Bengaluru, Karnataka"
-                        : isUKHI
-                        ? "Faridabad, Haryana"
-                        : isKheoni
-                        ? "Indore, Madhya Pradesh"
-                        : supplier.city && supplier.state
-                        ? `${supplier.city}, ${supplier.state}`
-                        : "Bengaluru, Karnataka"
-                    }
-                    dataTier={isVerified ? "verified" : "self-reported"}
+                    location={location}
                     varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
                     eScore={supplier.e_pillar_score ?? 60}
                     sScore={supplier.s_pillar_score ?? 55}
@@ -183,19 +194,17 @@ export default function SuppliersCarousel({
                     skuCount={isUKHI ? 4 : 2}
                     totalUnits={isUKHI ? 2400 : 1200}
                     confidenceScore={confidencePct}
-                    confidenceColor={isVerified ? "#738678" : "#7A3F1E"}
-                    confidenceDasharray={`${confidencePct}, 100`}
+                    confidenceColor={isVerified ? "#55705A" : "#7D3F1E"}
                     badges={supplier.badges || []}
-                    tags={[]}
                     categoryBars={[
-                      { label: "Environment", val: supplier.e_pillar_score ?? 60 },
+                      { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
                       { label: "Social", val: supplier.s_pillar_score ?? 55 },
                       { label: "Governance", val: supplier.g_pillar_score ?? 50 },
                       { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
                     ]}
-                    barColorClass={isVerified ? "bg-[#738678]" : "bg-[#7A3F1E]"}
                     sdgObjects={supplier.sdg_objects || []}
                     liveConfidenceData={liveConfidenceData}
+                    scoresSummary={supplier.scores_summary}
                   />
                 </div>
               );
@@ -227,7 +236,7 @@ export default function SuppliersCarousel({
         </div>
       ) : (
         /* Accessible Grid View */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7 w-full">
           {suppliersData.map((supplier) => {
             const name = supplier.enterprise_name;
             const isUKHI = name.toLowerCase().includes("ukhi");
@@ -246,47 +255,60 @@ export default function SuppliersCarousel({
 
             const isVerified = confidencePct >= 60;
 
+            const location =
+              isBare
+                ? "Bengaluru, Karnataka"
+                : isUKHI
+                ? "Faridabad, Haryana"
+                : isKheoni
+                ? "Indore, Madhya Pradesh"
+                : supplier.city && supplier.state
+                ? `${supplier.city}, ${supplier.state}`
+                : "Bengaluru, Karnataka";
+
+            const legalName =
+              supplier.legal_name ||
+              (isBare
+                ? "Bare Necessities Zero Waste Solutions Pvt. Ltd."
+                : isUKHI
+                ? "UKHI India Private Limited"
+                : isKheoni
+                ? "Kheoni Ventures Pvt Ltd"
+                : name);
+
             return (
-              <SupplierProfileCard
+              <div
                 key={supplier.enterprise_id || name}
-                name={name}
-                legalName={name}
-                logoPath={supplier.logo_path}
-                location={
-                  isBare
-                    ? "Bengaluru, Karnataka"
-                    : isUKHI
-                    ? "Faridabad, Haryana"
-                    : isKheoni
-                    ? "Indore, Madhya Pradesh"
-                    : supplier.city && supplier.state
-                    ? `${supplier.city}, ${supplier.state}`
-                    : "Bengaluru, Karnataka"
-                }
-                dataTier={isVerified ? "verified" : "self-reported"}
-                varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
-                eScore={supplier.e_pillar_score ?? 60}
-                sScore={supplier.s_pillar_score ?? 55}
-                gScore={supplier.g_pillar_score ?? 50}
-                cScore={supplier.c_pillar_score ?? 45}
-                carbonScore={supplier.c_pillar_score ?? 45}
-                skuCount={isUKHI ? 4 : 2}
-                totalUnits={isUKHI ? 2400 : 1200}
-                confidenceScore={confidencePct}
-                confidenceColor={isVerified ? "#738678" : "#7A3F1E"}
-                confidenceDasharray={`${confidencePct}, 100`}
-                badges={supplier.badges || []}
-                tags={[]}
-                categoryBars={[
-                  { label: "Environment", val: supplier.e_pillar_score ?? 60 },
-                  { label: "Social", val: supplier.s_pillar_score ?? 55 },
-                  { label: "Governance", val: supplier.g_pillar_score ?? 50 },
-                  { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
-                ]}
-                barColorClass={isVerified ? "bg-[#738678]" : "bg-[#7A3F1E]"}
-                sdgObjects={supplier.sdg_objects || []}
-                liveConfidenceData={liveConfidenceData}
-              />
+                className="varna-partner-card-wrapper w-full flex items-stretch"
+              >
+                <SupplierCardV2
+                  name={name}
+                  legalName={legalName}
+                  enterpriseId={supplier.enterprise_id}
+                  logoPath={supplier.logo_path}
+                  location={location}
+                  varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
+                  eScore={supplier.e_pillar_score ?? 60}
+                  sScore={supplier.s_pillar_score ?? 55}
+                  gScore={supplier.g_pillar_score ?? 50}
+                  cScore={supplier.c_pillar_score ?? 45}
+                  carbonScore={supplier.c_pillar_score ?? 45}
+                  skuCount={isUKHI ? 4 : 2}
+                  totalUnits={isUKHI ? 2400 : 1200}
+                  confidenceScore={confidencePct}
+                  confidenceColor={isVerified ? "#55705A" : "#7D3F1E"}
+                  badges={supplier.badges || []}
+                  categoryBars={[
+                    { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
+                    { label: "Social", val: supplier.s_pillar_score ?? 55 },
+                    { label: "Governance", val: supplier.g_pillar_score ?? 50 },
+                    { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
+                  ]}
+                  sdgObjects={supplier.sdg_objects || []}
+                  liveConfidenceData={liveConfidenceData}
+                  scoresSummary={supplier.scores_summary}
+                />
+              </div>
             );
           })}
         </div>

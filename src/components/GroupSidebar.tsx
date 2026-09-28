@@ -25,7 +25,7 @@ interface GroupSidebarProps {
 const NAV_ITEMS = [
   { id: "overview", label: "Group Overview", icon: LayoutDashboard, href: "/group/dashboard" },
   { id: "properties", label: "Properties", icon: Building2, href: "/group/properties" },
-  { id: "suppliers", label: "Suppliers", icon: Users, href: "/group/suppliers" },
+  { id: "suppliers", label: "Partners", icon: Users, href: "/group/suppliers" },
   { id: "impact", label: "Impact", icon: Leaf, href: "/group/impact" },
   { id: "reports", label: "Reports", icon: FileText, href: "/group/reports" },
 ];
@@ -59,26 +59,30 @@ export default function GroupSidebar({
       <aside className="varna-grp-sidebar w-64 h-screen sticky top-0 flex flex-col justify-between bg-white dark:bg-[#18191D] border-r border-[#EAE5DC] dark:border-[#8C9DA8]/15 text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 z-30 select-none shadow-xs shrink-0">
         {/* ── Top Branding Area ──────────────────────────────────────────────── */}
         <div>
-          <div className="varna-grp-sidebar-branding px-3.5 py-5 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col gap-3">
-            {/* Varnawordmark — mirrors client sidebar branding, aligned with nav link padding */}
-            <Image
-              src="/assets/Varnawordmark.svg"
-              alt="Varna"
-              width={128}
-              height={40}
-              priority
-              className="w-28 h-auto object-contain dark:invert transition-all duration-300 scale-110 origin-left"
-            />
+          <div className="varna-grp-sidebar-branding border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15 flex flex-col">
+            {/* Varnawordmark — minimal wrapper flush with nav links */}
+            <div className="flex items-center h-16 px-6">
+              <Image
+                src="/assets/Varnawordmark.svg"
+                alt="Varna"
+                width={128}
+                height={40}
+                priority
+                className="w-28 h-auto object-contain dark:invert transition-all duration-300 scale-110 origin-left"
+              />
+            </div>
 
-            <div className="varna-grp-sidebar-label px-3 py-1.5 rounded-md bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 flex items-center gap-2">
-              <Building className="w-3.5 h-3.5 text-[#B85333] shrink-0" />
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-[11px] font-sans font-semibold text-[#1A1F26] dark:text-[#FAF8F5] truncate">
-                  {groupName}
-                </span>
-                <span className="text-[9px] font-mono text-[#6E7781] dark:text-[#8C9DA8]">
-                  GRP-001 Portfolio
-                </span>
+            <div className="px-6 pb-3">
+              <div className="varna-grp-sidebar-label px-3 py-1.5 rounded-md bg-[#FAF8F5] dark:bg-[#22252B] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 flex items-center gap-2">
+                <Building className="w-3.5 h-3.5 text-[#B85333] shrink-0" />
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-[11px] font-sans font-semibold text-[#1A1F26] dark:text-[#FAF8F5] truncate">
+                    {groupName}
+                  </span>
+                  <span className="text-[9px] font-mono text-[#6E7781] dark:text-[#8C9DA8]">
+                    GRP-001 Portfolio
+                  </span>
+                </div>
               </div>
             </div>
           </div>

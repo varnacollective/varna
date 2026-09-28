@@ -8,10 +8,18 @@ export default async function GroupSuppliersPage() {
   try {
     const supabase = await createClient();
 
-    // 1. Fetch scores_summary (all active suppliers)
+    // 1. Fetch scores_summary (all active suppliers with complete sub-criteria)
     const { data: scoresData } = await supabase
       .from("scores_summary")
-      .select("enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score, overall_assessor_summary, sdg_alignments");
+      .select(`
+        enterprise_id, enterprise_name, logo_path, final_varna_score,
+        e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score,
+        e1_eff_score, e2_eff_score, e3_eff_score, e4_eff_score, e5_eff_score, e6_eff_score,
+        s1_eff_score, s2_eff_score, s3_eff_score, s4_eff_score,
+        g1_eff_score, g2_eff_score, g3_eff_score,
+        c1_eff_score, c2_eff_score, c3_eff_score,
+        overall_assessor_summary, sdg_alignments
+      `);
 
     // 2. Fetch confidence_summary
     const { data: confidenceSummaryData } = await supabase
@@ -104,6 +112,7 @@ export default async function GroupSuppliersPage() {
         sdg_objects: supplierSdgs,
         confidence_pct: confidencePct,
         confidence_summary: confidenceRow || null,
+        scores_summary: scoreRow,
         badges,
       };
     });
@@ -179,7 +188,7 @@ export default async function GroupSuppliersPage() {
 
           <div className="flex items-center gap-2 border border-[#EAE5DC] dark:border-[#8C9DA8]/20 px-3.5 py-2 bg-white dark:bg-[#1E2028] rounded-lg text-xs text-[#6E7781] dark:text-[#8C9DA8] shadow-xs">
             <ShieldCheck className="w-4 h-4 text-[#556B55]" />
-            <span className="font-mono text-[11px]">5 Verified Group Suppliers</span>
+            <span className="font-mono text-[11px]">5 Verified Group Partners</span>
           </div>
         </header>
 
@@ -187,7 +196,7 @@ export default async function GroupSuppliersPage() {
         <SuppliersCarousel
           suppliersData={mergedSuppliers}
           liveConfidenceData={liveConfidenceData}
-          title="Active Group Supplier Profiles"
+          title="Active Group Partner Profiles"
           subtitle="Detailed sustainability audits, official UN SDG badges, and evidence confidence gauges."
         />
       </div>
