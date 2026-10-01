@@ -29,7 +29,7 @@ export default async function EnterprisesPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-mist font-light">
-            View, audit, and modify supplier enterprise records. Cell edits are immediately synced to PostgreSQL.
+            View, audit, and modify partner enterprise records. Cell edits are immediately synced to PostgreSQL.
           </p>
         </div>
       </div>

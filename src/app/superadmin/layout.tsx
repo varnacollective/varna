@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  FileCheck,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -30,6 +31,12 @@ const NAV_ITEMS = [
     href: "/superadmin",
     icon: LayoutDashboard,
     table: "System Stats",
+  },
+  {
+    name: "Certificates",
+    href: "/superadmin/certificates",
+    icon: FileCheck,
+    table: "partner_certificates",
   },
   {
     name: "Enterprises",

@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import DashboardClient from "./DashboardClient";
 import {
@@ -13,6 +14,34 @@ import { resolveHotelProperty } from "@/lib/properties-data";
 interface DashboardPageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
+
+// ─── Cached data fetchers ─────────────────────────────────────────────────────
+// assessment_inputs is global/slow-changing: cache for 5 minutes
+const getCachedAssessmentInputs = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("assessment_inputs")
+      .select("enterprise_name_auto, tier_used_auto, s2_gender_input_pct_women, s3_wages_input_wage_ratio");
+    if (error) console.error("Supabase assessment_inputs error:", error);
+    return data || [];
+  },
+  ["assessment_inputs_global"],
+  { revalidate: 300, tags: ["assessment_inputs"] }
+);
+
+// scores_summary is global/updated by assessments: cache for 5 minutes
+const getCachedScoresSummary = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data } = await supabase
+      .from("scores_summary")
+      .select(
+        "enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score"
+      );
+    return data || [];
+  },
+  ["scores_summary_global"],
+  { revalidate: 300, tags: ["scores_summary"] }
+);
 
 export default async function DashboardServerPage({ searchParams }: DashboardPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
@@ -56,49 +85,51 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
   const supabase = await createClient();
 
   try {
-    // 1. Fetch Client Master
-    const { data: clientData, error: clientError } = await supabase
-      .from("client_master")
-      .select("*")
-      .eq("client_id", clientId)
-      .maybeSingle();
+    // ─── Fire all per-client queries in parallel ──────────────────────────────
+    const [
+      { data: clientData, error: clientError },
+      { data: summaryData, error: summaryError },
+      { data: supplierLinks, error: linksError },
+      { data: catSpendData, error: catSpendError },
+    ] = await Promise.all([
+      // 1. Fetch Client Master
+      supabase
+        .from("client_master")
+        .select("*")
+        .eq("client_id", clientId)
+        .maybeSingle(),
 
-    if (clientError) {
-      console.error("Supabase client_master error:", clientError);
-    }
+      // 2. Fetch Client Summary (Overview Page KPI Metrics)
+      supabase
+        .from("client_summary")
+        .select("*")
+        .eq("client_id", clientId)
+        .maybeSingle(),
 
-    // 2. Fetch Client Summary (Overview Page KPI Metrics)
-    const { data: summaryData, error: summaryError } = await supabase
-      .from("client_summary")
-      .select("*")
-      .eq("client_id", clientId)
-      .maybeSingle();
+      // 3. Get the list of supplier IDs for this client
+      supabase
+        .from("supplier_detail_by_client")
+        .select("enterprise_id")
+        .eq("client_id", clientId),
 
-    if (summaryError) {
-      console.error("Supabase client_summary error:", summaryError);
-    }
+      // 4. Fetch Category Spend
+      supabase
+        .from("category_spend_by_client")
+        .select("category_name, total_spend_inr_auto, total_units_auto")
+        .eq("client_id", clientId),
+    ]);
 
-    // 3. Get the list of supplier IDs for this client
-    const { data: supplierLinks, error: linksError } = await supabase
-      .from("supplier_detail_by_client")
-      .select("enterprise_id")
-      .eq("client_id", clientId);
+    if (clientError) console.error("Supabase client_master error:", clientError);
+    if (summaryError) console.error("Supabase client_summary error:", summaryError);
+    if (linksError) console.error("Supabase supplier_detail_by_client error:", linksError);
+    if (catSpendError) console.error("Supabase category_spend_by_client error:", catSpendError);
 
-    if (linksError) {
-      console.error("Supabase supplier_detail_by_client error:", linksError);
-    }
-
-    // 4. Fetch Assessment Inputs (Supplier Tier Distribution & Impact Metrics)
-    let assessmentData: any[] = [];
-    const { data: allAssessmentData, error: assessmentError } = await supabase
-      .from("assessment_inputs")
-      .select("enterprise_name_auto, tier_used_auto, s2_gender_input_pct_women, s3_wages_input_wage_ratio");
-
-    if (assessmentError) {
-      console.error("Supabase assessment_inputs error:", assessmentError);
-    } else {
-      assessmentData = allAssessmentData || [];
-    }
+    // ─── Fire global cached queries in parallel ───────────────────────────────
+    // These are cached at the server layer for 5 min to avoid repeated full-table scans
+    const [assessmentData, scoresData] = await Promise.all([
+      getCachedAssessmentInputs(supabase),
+      getCachedScoresSummary(supabase),
+    ]);
 
     // Calculate Average Gender Representation (% Women) in TypeScript
     const validGenderPctValues = assessmentData
@@ -112,14 +143,12 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
 
     // Process Supplier Tier Distribution
     let platinum = 0, gold = 0, silver = 0;
-    let microA = 0, microB = 0, small = 0, medium = 0;
 
     assessmentData?.forEach((row: any) => {
       const tier = (row.tier_used_auto || "").toLowerCase();
-      if (tier.includes("platinum") || tier.includes("medium")) { platinum++; medium++; }
-      else if (tier.includes("gold") || tier.includes("small")) { gold++; small++; }
-      else if (tier.includes("silver") || tier.includes("micro b")) { silver++; microB++; }
-      else { silver++; microA++; }
+      if (tier.includes("platinum") || tier.includes("medium")) { platinum++; }
+      else if (tier.includes("gold") || tier.includes("small")) { gold++; }
+      else { silver++; }
     });
 
     const tierDistribution = [
@@ -152,16 +181,6 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
           { name: "UKHI India", womenPct: 65, wageRatio: 1.4 },
           { name: "Kheoni Ventures", womenPct: 75, wageRatio: 1.6 },
         ];
-
-    // 5. Fetch Category Spend
-    const { data: catSpendData, error: catSpendError } = await supabase
-      .from("category_spend_by_client")
-      .select("*")
-      .eq("client_id", clientId);
-
-    if (catSpendError) {
-      console.error("Supabase category_spend_by_client error:", catSpendError);
-    }
 
     const categorySpend = catSpendData && catSpendData.length > 0
       ? catSpendData.map((row: any) => ({
@@ -202,11 +221,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
           },
         ];
 
-    // 6. Fetch Suppliers for Dashboard Portfolio View (Maintained static/global across views)
-    const { data: scoresData } = await supabase
-      .from("scores_summary")
-      .select("enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score");
-
+    // 6. Build supplier list from cached scores_summary
     const suppliersList: SupplierDetail[] = (scoresData && scoresData.length > 0 ? scoresData : [
       { enterprise_name: "Bare Necessities Zero Waste Solutions Pvt. Ltd.", enterprise_id: "ENT-001", final_varna_score: 78, e_pillar_score: 75, s_pillar_score: 80, g_pillar_score: 70, c_pillar_score: 72 },
       { enterprise_name: "UKHI INDIA PRIVATE LIMITED", enterprise_id: "ENT-002", final_varna_score: 56, e_pillar_score: 60, s_pillar_score: 55, g_pillar_score: 50, c_pillar_score: 45 },
