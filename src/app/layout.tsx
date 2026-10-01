@@ -52,6 +52,11 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+// ─── Preconnect hints ────────────────────────────────────────────────────────
+// Tell the browser to open connections to critical origins as early as possible,
+// reducing latency for the first Supabase API call and Google Fonts.
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+
 export const metadata: Metadata = {
   title: "Varna",
   description:
@@ -84,6 +89,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <head>
+        {/* Preconnect to Supabase to eliminate DNS + TLS handshake latency */}
+        {SUPABASE_URL && (
+          <>
+            <link rel="preconnect" href={SUPABASE_URL} />
+            <link rel="dns-prefetch" href={SUPABASE_URL} />
+          </>
+        )}
+        {/* Preconnect to Google Fonts CDN */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body className={`${jost.variable} ${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#FAF8F5] dark:bg-[#121316] text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#B85333] selection:text-white`}>
         <ThemeProvider
           attribute="class"

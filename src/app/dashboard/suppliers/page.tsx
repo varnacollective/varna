@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import SuppliersClient from "./SuppliersClient";
 
@@ -9,6 +10,103 @@ import { resolveHotelProperty } from "@/lib/properties-data";
 interface PageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
+
+// ─── Cached fetchers for global, slow-changing supplier tables ───────────────
+// These tables change only when new assessments are run, not per-client-request.
+// 5-minute cache avoids repeated full-table scans on every /suppliers navigation.
+
+const getCachedScoresSummaryFull = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("scores_summary")
+      .select(`
+        enterprise_id, enterprise_name, logo_path, final_varna_score,
+        e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score,
+        e1_eff_score, e2_eff_score, e3_eff_score, e4_eff_score, e5_eff_score, e6_eff_score,
+        s1_eff_score, s2_eff_score, s3_eff_score, s4_eff_score,
+        g1_eff_score, g2_eff_score, g3_eff_score,
+        c1_eff_score, c2_eff_score, c3_eff_score,
+        is_craftled, overall_assessor_summary, sdg_alignments
+      `);
+    if (error) console.error("Supabase scores_summary error:", error);
+    return data || [];
+  },
+  ["scores_summary_full"],
+  { revalidate: 300, tags: ["scores_summary"] }
+);
+
+const getCachedConfidenceSummary = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("confidence_summary")
+      .select("*");
+    if (error) console.error("Supabase confidence_summary error:", error);
+    return data || [];
+  },
+  ["confidence_summary"],
+  { revalidate: 300, tags: ["confidence_summary"] }
+);
+
+const getCachedConfidenceScoring = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("confidence_scoring")
+      .select("supplier, item, score");
+    if (error) console.error("Supabase confidence_scoring error:", error);
+    return data || [];
+  },
+  ["confidence_scoring"],
+  { revalidate: 300, tags: ["confidence_scoring"] }
+);
+
+const getCachedEnterpriseMaster = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("enterprise_master")
+      .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number");
+    if (error) console.error("Supabase enterprise_master error:", error);
+    return data || [];
+  },
+  ["enterprise_master"],
+  { revalidate: 300, tags: ["enterprise_master"] }
+);
+
+const getCachedSupplierSustainability = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("supplier_sustainability")
+      .select("enterprise_id, environmental_certifications, has_lca, has_sustainability_report");
+    if (error) console.error("Supabase supplier_sustainability error:", error);
+    return data || [];
+  },
+  ["supplier_sustainability"],
+  { revalidate: 300, tags: ["supplier_sustainability"] }
+);
+
+const getCachedSupplierSocial = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("supplier_social")
+      .select("enterprise_id, social_certifications, health_safety_description");
+    if (error) console.error("Supabase supplier_social error:", error);
+    return data || [];
+  },
+  ["supplier_social"],
+  { revalidate: 300, tags: ["supplier_social"] }
+);
+
+const getCachedSupplierSdgs = unstable_cache(
+  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+    const { data, error } = await supabase
+      .from("supplier_sdgs")
+      .select("*")
+      .order("sdg_number", { ascending: true });
+    if (error) console.error("Supabase supplier_sdgs error:", error);
+    return data || [];
+  },
+  ["supplier_sdgs"],
+  { revalidate: 300, tags: ["supplier_sdgs"] }
+);
 
 export default async function SuppliersServerPage({ searchParams }: PageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
@@ -42,74 +140,33 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
   const supabase = await createClient();
 
   try {
-    // 0. Fetch Client Master
-    const { data: clientData } = await supabase
-      .from("client_master")
-      .select("client_name, logo_path, property_type")
-      .eq("client_id", clientId)
-      .maybeSingle();
-
-    // 1. Fetch scores_summary (all active suppliers with complete sub-criteria)
-    const { data: scoresData, error: scoresError } = await supabase
-      .from("scores_summary")
-      .select(`
-        enterprise_id, enterprise_name, logo_path, final_varna_score,
-        e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score,
-        e1_eff_score, e2_eff_score, e3_eff_score, e4_eff_score, e5_eff_score, e6_eff_score,
-        s1_eff_score, s2_eff_score, s3_eff_score, s4_eff_score,
-        g1_eff_score, g2_eff_score, g3_eff_score,
-        c1_eff_score, c2_eff_score, c3_eff_score,
-        is_craftled, overall_assessor_summary, sdg_alignments
-      `);
-
-    if (scoresError) {
-      console.error("Supabase scores_summary error:", scoresError);
-    }
-
-    // 2. Fetch confidence_summary
-    const { data: confidenceSummaryData, error: confidenceSummaryError } = await supabase
-      .from("confidence_summary")
-      .select("*");
-
-    if (confidenceSummaryError) {
-      console.error("Supabase confidence_summary error:", confidenceSummaryError);
-    }
-
-    // 3. Fetch confidence_scoring (for detailed checklists & certification badges)
-    const { data: confidenceScoringData, error: confidenceScoringError } = await supabase
-      .from("confidence_scoring")
-      .select("*");
-
-    if (confidenceScoringError) {
-      console.error("Supabase confidence_scoring error:", confidenceScoringError);
-    }
-
-    // 4. Fetch enterprise_master (for metadata flags like material innovation, women-led, udyam)
-    const { data: enterpriseMasterData, error: enterpriseMasterError } = await supabase
-      .from("enterprise_master")
-      .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number");
-
-    if (enterpriseMasterError) {
-      console.error("Supabase enterprise_master error:", enterpriseMasterError);
-    }
-
-    // 5. Fetch supplier_sustainability
-    const { data: supplierSustainabilityData, error: sustError } = await supabase
-      .from("supplier_sustainability")
-      .select("enterprise_id, environmental_certifications, has_lca, has_sustainability_report");
-
-    if (sustError) {
-      console.error("Supabase supplier_sustainability error:", sustError);
-    }
-
-    // 6. Fetch supplier_social
-    const { data: supplierSocialData, error: socialError } = await supabase
-      .from("supplier_social")
-      .select("enterprise_id, social_certifications, health_safety_description");
-
-    if (socialError) {
-      console.error("Supabase supplier_social error:", socialError);
-    }
+    // ─── Fire all queries in parallel ────────────────────────────────────────
+    // Per-client query runs uncached (fresh data). All global supplier tables
+    // are served from the 5-minute server cache.
+    const [
+      clientData,
+      scoresData,
+      confidenceSummaryData,
+      confidenceScoringData,
+      enterpriseMasterData,
+      supplierSustainabilityData,
+      supplierSocialData,
+      supplierSdgsData,
+    ] = await Promise.all([
+      supabase
+        .from("client_master")
+        .select("client_name, logo_path, property_type")
+        .eq("client_id", clientId)
+        .maybeSingle()
+        .then((r) => r.data),
+      getCachedScoresSummaryFull(supabase),
+      getCachedConfidenceSummary(supabase),
+      getCachedConfidenceScoring(supabase),
+      getCachedEnterpriseMaster(supabase),
+      getCachedSupplierSustainability(supabase),
+      getCachedSupplierSocial(supabase),
+      getCachedSupplierSdgs(supabase),
+    ]);
 
     // Helper: Map confidence_scoring, enterprise_master, supplier_sustainability & supplier_social attributes to badge tags
     const extractSupplierBadges = (name: string, enterpriseId?: string): string[] => {
@@ -198,17 +255,7 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       return Array.from(new Set(badges));
     };
 
-    // 7. Fetch supplier_sdgs
-    const { data: supplierSdgsData, error: sdgsError } = await supabase
-      .from("supplier_sdgs")
-      .select("*")
-      .order("sdg_number", { ascending: true });
-
-    if (sdgsError) {
-      console.error("Supabase supplier_sdgs error:", sdgsError);
-    }
-
-    // 6. Merge scores_summary, confidence_summary, enterprise_master, and supplier_sdgs
+    // Merge scores_summary, confidence_summary, enterprise_master, and supplier_sdgs
     const mergedSuppliers = (scoresData || []).map((scoreRow: any) => {
       const name = scoreRow.enterprise_name || "";
 
@@ -272,7 +319,7 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       };
     });
 
-    // 6. Build liveConfidenceData dictionary for checklist hover cards
+    // Build liveConfidenceData dictionary for checklist hover cards
     const liveConfidenceData: Record<string, any> = {};
 
     mergedSuppliers.forEach((supplierRow: any) => {

@@ -5,8 +5,14 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Wallet, ShoppingBag, Award, Quote } from "lucide-react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import VarnaScoreHoverCard from "@/components/ui/VarnaScoreHoverCard";
-import ChatWidget from "@/components/ChatWidget";
+// Lazy-load the AI Chat widget — its SDK bundle (~80 KB) is deferred until after
+// the dashboard is interactive, shaving it from the critical path entirely.
+const ChatWidget = dynamic(() => import("@/components/ChatWidget"), {
+  ssr: false,
+  loading: () => null,
+});
 import BrandWatermark from "@/components/ui/BrandWatermark";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
