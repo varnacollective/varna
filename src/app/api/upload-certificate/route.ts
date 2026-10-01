@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       console.warn("Could not set anyone-reader permission on Drive file:", permError);
     }
 
-    // 6. Insert new record into partner_certificates Supabase table
+
     const supabase = await createClient();
 
     const insertPayload = {
