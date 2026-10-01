@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
-import { createClient } from "@/utils/supabase/server";
+import { createClient, createAnonClient } from "@/utils/supabase/server";
 import SuppliersClient from "./SuppliersClient";
 
 import { getSupplierLogoFallback, getClientLogoFallback } from "@/lib/mock-data";
@@ -12,11 +12,14 @@ interface PageProps {
 }
 
 // ─── Cached fetchers for global, slow-changing supplier tables ───────────────
-// These tables change only when new assessments are run, not per-client-request.
-// 5-minute cache avoids repeated full-table scans on every /suppliers navigation.
+// IMPORTANT: createAnonClient() is called INSIDE each factory — do NOT pass
+// the Supabase client as an unstable_cache argument. Next.js serialises args
+// to build cache keys and the Supabase client has circular references that
+// cause JSON.stringify to throw a "Converting circular structure to JSON" error.
 
 const getCachedScoresSummaryFull = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("scores_summary")
       .select(`
@@ -36,10 +39,9 @@ const getCachedScoresSummaryFull = unstable_cache(
 );
 
 const getCachedConfidenceSummary = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
-    const { data, error } = await supabase
-      .from("confidence_summary")
-      .select("*");
+  async () => {
+    const supabase = createAnonClient();
+    const { data, error } = await supabase.from("confidence_summary").select("*");
     if (error) console.error("Supabase confidence_summary error:", error);
     return data || [];
   },
@@ -48,7 +50,8 @@ const getCachedConfidenceSummary = unstable_cache(
 );
 
 const getCachedConfidenceScoring = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("confidence_scoring")
       .select("supplier, item, score");
@@ -60,7 +63,8 @@ const getCachedConfidenceScoring = unstable_cache(
 );
 
 const getCachedEnterpriseMaster = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("enterprise_master")
       .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number");
@@ -72,7 +76,8 @@ const getCachedEnterpriseMaster = unstable_cache(
 );
 
 const getCachedSupplierSustainability = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("supplier_sustainability")
       .select("enterprise_id, environmental_certifications, has_lca, has_sustainability_report");
@@ -84,7 +89,8 @@ const getCachedSupplierSustainability = unstable_cache(
 );
 
 const getCachedSupplierSocial = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("supplier_social")
       .select("enterprise_id, social_certifications, health_safety_description");
@@ -96,7 +102,8 @@ const getCachedSupplierSocial = unstable_cache(
 );
 
 const getCachedSupplierSdgs = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("supplier_sdgs")
       .select("*")
@@ -142,7 +149,7 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
   try {
     // ─── Fire all queries in parallel ────────────────────────────────────────
     // Per-client query runs uncached (fresh data). All global supplier tables
-    // are served from the 5-minute server cache.
+    // are served from the 5-minute server cache (cookie-free anon client inside).
     const [
       clientData,
       scoresData,
@@ -159,48 +166,41 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
         .eq("client_id", clientId)
         .maybeSingle()
         .then((r) => r.data),
-      getCachedScoresSummaryFull(supabase),
-      getCachedConfidenceSummary(supabase),
-      getCachedConfidenceScoring(supabase),
-      getCachedEnterpriseMaster(supabase),
-      getCachedSupplierSustainability(supabase),
-      getCachedSupplierSocial(supabase),
-      getCachedSupplierSdgs(supabase),
+      getCachedScoresSummaryFull(),
+      getCachedConfidenceSummary(),
+      getCachedConfidenceScoring(),
+      getCachedEnterpriseMaster(),
+      getCachedSupplierSustainability(),
+      getCachedSupplierSocial(),
+      getCachedSupplierSdgs(),
     ]);
 
-    // Helper: Map confidence_scoring, enterprise_master, supplier_sustainability & supplier_social attributes to badge tags
+    // Helper: Map certifications and badge flags to badge tags
     const extractSupplierBadges = (name: string, enterpriseId?: string): string[] => {
       const badges: string[] = [];
       const lowerName = name.trim().toLowerCase();
 
-      // Match supplier_sustainability record
       const sustRow = (supplierSustainabilityData || []).find((s: any) => s.enterprise_id === enterpriseId);
       if (sustRow?.environmental_certifications) {
-        const envCerts = sustRow.environmental_certifications.split(",").map((c: string) => c.trim());
-        envCerts.forEach((cert: string) => {
+        sustRow.environmental_certifications.split(",").map((c: string) => c.trim()).forEach((cert: string) => {
           if (cert && !badges.includes(cert)) badges.push(cert);
         });
       }
 
-      // Match supplier_social record
       const socialRow = (supplierSocialData || []).find((s: any) => s.enterprise_id === enterpriseId);
       if (socialRow?.social_certifications) {
-        const socCerts = socialRow.social_certifications.split(",").map((c: string) => c.trim());
-        socCerts.forEach((cert: string) => {
+        socialRow.social_certifications.split(",").map((c: string) => c.trim()).forEach((cert: string) => {
           if (cert && !badges.includes(cert)) badges.push(cert);
         });
       }
 
-      // Filter confidence_scoring rows for this supplier where score > 0
       const scoringRows = (confidenceScoringData || []).filter((c: any) => {
         if (!c.supplier) return false;
         const sName = c.supplier.trim().toLowerCase();
         return lowerName === sName || lowerName.includes(sName) || sName.includes(lowerName);
       });
 
-      const positiveScores = scoringRows.filter((r: any) => (parseFloat(r.score) || 0) > 0);
-
-      positiveScores.forEach((r: any) => {
+      scoringRows.filter((r: any) => (parseFloat(r.score) || 0) > 0).forEach((r: any) => {
         const item = (r.item || "").toLowerCase();
         if ((item.includes("cruelty") || item.includes("peta") || item.includes("vegan")) && !badges.some(b => b.toLowerCase().includes("cruelty") || b.toLowerCase().includes("peta"))) {
           badges.push("Cruelty-Free (PETA)");
@@ -216,7 +216,6 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
         }
       });
 
-      // Match enterprise_master record
       const masterRow = (enterpriseMasterData || []).find((m: any) => {
         if (enterpriseId && m.enterprise_id === enterpriseId) return true;
         if (!m.enterprise_name) return false;
@@ -225,21 +224,12 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       });
 
       if (masterRow) {
-        if (masterRow.udyam_number && !badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) {
-          badges.push("DPIIT Startup");
-        }
-        if (masterRow.is_material_innovation_yn === "Y" && !badges.includes("Material Innovation")) {
-          badges.push("Material Innovation");
-        }
-        if (masterRow.is_womenled_yn === "Y" && !badges.includes("Women-Led")) {
-          badges.push("Women-Led");
-        }
-        if (masterRow.is_craftled_yn === "Y" && !badges.includes("Craft-Led")) {
-          badges.push("Craft-Led");
-        }
+        if (masterRow.udyam_number && !badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) badges.push("DPIIT Startup");
+        if (masterRow.is_material_innovation_yn === "Y" && !badges.includes("Material Innovation")) badges.push("Material Innovation");
+        if (masterRow.is_womenled_yn === "Y" && !badges.includes("Women-Led")) badges.push("Women-Led");
+        if (masterRow.is_craftled_yn === "Y" && !badges.includes("Craft-Led")) badges.push("Craft-Led");
       }
 
-      // Guarantee signature badges for standard suppliers
       if (lowerName.includes("bare")) {
         if (!badges.some(b => b.toLowerCase().includes("cruelty") || b.toLowerCase().includes("peta"))) badges.unshift("Cruelty-Free (PETA)");
         if (!badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) badges.push("DPIIT Startup");
@@ -251,15 +241,13 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
         if (!badges.some(b => b.toLowerCase().includes("dpiit") || b.toLowerCase().includes("startup"))) badges.push("DPIIT Startup");
       }
 
-      // Return unique array preserving order
       return Array.from(new Set(badges));
     };
 
-    // Merge scores_summary, confidence_summary, enterprise_master, and supplier_sdgs
+    // Merge scores_summary with all other supplier data
     const mergedSuppliers = (scoresData || []).map((scoreRow: any) => {
       const name = scoreRow.enterprise_name || "";
 
-      // Match enterprise_name (scores_summary) to supplier (confidence_summary)
       const confidenceRow = (confidenceSummaryData || []).find((c: any) => {
         if (!c.supplier) return false;
         const sName = c.supplier.trim().toLowerCase();
@@ -276,27 +264,13 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       });
       const logoPath = scoreRow.logo_path || masterRow?.logo_path || getSupplierLogoFallback(name);
 
-      const supplierSdgs = (supplierSdgsData || []).filter((s: any) => {
-        if (scoreRow.enterprise_id && s.enterprise_id === scoreRow.enterprise_id) return true;
-        return false;
-      });
+      const supplierSdgs = (supplierSdgsData || []).filter((s: any) =>
+        scoreRow.enterprise_id && s.enterprise_id === scoreRow.enterprise_id
+      );
 
       const lowerSupplier = name.toLowerCase();
-      const city = lowerSupplier.includes("bare")
-        ? "Bengaluru"
-        : lowerSupplier.includes("ukhi")
-        ? "Faridabad"
-        : lowerSupplier.includes("kheoni")
-        ? "Indore"
-        : "Bengaluru";
-
-      const state = lowerSupplier.includes("bare")
-        ? "Karnataka"
-        : lowerSupplier.includes("ukhi")
-        ? "Haryana"
-        : lowerSupplier.includes("kheoni")
-        ? "Madhya Pradesh"
-        : "Karnataka";
+      const city = lowerSupplier.includes("bare") ? "Bengaluru" : lowerSupplier.includes("ukhi") ? "Faridabad" : lowerSupplier.includes("kheoni") ? "Indore" : "Bengaluru";
+      const state = lowerSupplier.includes("bare") ? "Karnataka" : lowerSupplier.includes("ukhi") ? "Haryana" : lowerSupplier.includes("kheoni") ? "Madhya Pradesh" : "Karnataka";
 
       return {
         enterprise_id: scoreRow.enterprise_id,
@@ -336,21 +310,11 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       const checklist = scoringRows.map((c: any) => {
         let status = "missing";
         const numericScore = parseFloat(c.score) || 0;
-        
         if (numericScore === 1) status = "verified";
         else if (numericScore > 0 && numericScore < 1) {
-          if (c.item.toLowerCase().includes("certificate")) {
-            status = "lapsed";
-          } else {
-            status = "partial";
-          }
+          status = c.item.toLowerCase().includes("certificate") ? "lapsed" : "partial";
         }
-
-        return {
-          item: c.item,
-          status,
-          score: numericScore,
-        };
+        return { item: c.item, status, score: numericScore };
       });
 
       const totalScoreSum = scoringRows.reduce((acc: number, c: any) => acc + (parseFloat(c.score) || 0), 0);

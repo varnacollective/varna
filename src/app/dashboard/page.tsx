@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
-import { createClient } from "@/utils/supabase/server";
+import { createClient, createAnonClient } from "@/utils/supabase/server";
 import DashboardClient from "./DashboardClient";
 import {
   type DashboardData,
@@ -16,9 +16,14 @@ interface DashboardPageProps {
 }
 
 // ─── Cached data fetchers ─────────────────────────────────────────────────────
-// assessment_inputs is global/slow-changing: cache for 5 minutes
+// These read global/shared tables that don't change per client request.
+// We use createAnonClient() INSIDE the cache factory — do NOT pass the Supabase
+// client as an argument, because unstable_cache serialises arguments and the
+// Supabase client object has circular references that cause JSON.stringify to throw.
+
 const getCachedAssessmentInputs = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
+  async () => {
+    const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("assessment_inputs")
       .select("enterprise_name_auto, tier_used_auto, s2_gender_input_pct_women, s3_wages_input_wage_ratio");
@@ -29,14 +34,15 @@ const getCachedAssessmentInputs = unstable_cache(
   { revalidate: 300, tags: ["assessment_inputs"] }
 );
 
-// scores_summary is global/updated by assessments: cache for 5 minutes
 const getCachedScoresSummary = unstable_cache(
-  async (supabase: Awaited<ReturnType<typeof createClient>>) => {
-    const { data } = await supabase
+  async () => {
+    const supabase = createAnonClient();
+    const { data, error } = await supabase
       .from("scores_summary")
       .select(
         "enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score"
       );
+    if (error) console.error("Supabase scores_summary error:", error);
     return data || [];
   },
   ["scores_summary_global"],
@@ -112,7 +118,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         .select("enterprise_id")
         .eq("client_id", clientId),
 
-      // 4. Fetch Category Spend
+      // 4. Fetch Category Spend (explicit columns only — no SELECT *)
       supabase
         .from("category_spend_by_client")
         .select("category_name, total_spend_inr_auto, total_units_auto")
@@ -124,11 +130,10 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
     if (linksError) console.error("Supabase supplier_detail_by_client error:", linksError);
     if (catSpendError) console.error("Supabase category_spend_by_client error:", catSpendError);
 
-    // ─── Fire global cached queries in parallel ───────────────────────────────
-    // These are cached at the server layer for 5 min to avoid repeated full-table scans
+    // ─── Fire global cached queries (cookie-free client inside cache) ─────────
     const [assessmentData, scoresData] = await Promise.all([
-      getCachedAssessmentInputs(supabase),
-      getCachedScoresSummary(supabase),
+      getCachedAssessmentInputs(),
+      getCachedScoresSummary(),
     ]);
 
     // Calculate Average Gender Representation (% Women) in TypeScript
@@ -297,8 +302,8 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         totalSuppliers,
         avgLeadTimeDays: 12,
         pillarBreakdown: {
-          Environmental: { 
-            pillarScore: avgEScore, 
+          Environmental: {
+            pillarScore: avgEScore,
             criteria: [
               { name: "Carbon Impact", score: summaryData?.avg_e1_carbon_auto || avgEScore + 2, weight: "20%" },
               { name: "Material Sustainability", score: summaryData?.avg_e2_material_pct_auto || avgEScore - 1, weight: "20%" },
@@ -306,32 +311,32 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
               { name: "Water Management", score: summaryData?.avg_e4_water_auto || avgEScore - 3, weight: "15%" },
               { name: "Pollution Control", score: summaryData?.avg_e5_pollution_auto || avgEScore + 1, weight: "15%" },
               { name: "Packaging", score: summaryData?.avg_e6_packaging_auto || avgEScore + 3, weight: "15%" },
-            ]
+            ],
           },
-          Social: { 
-            pillarScore: avgSScore, 
+          Social: {
+            pillarScore: avgSScore,
             criteria: [
               { name: "Employment & Livelihood Impact", score: summaryData?.avg_s1_employment_auto || avgSScore + 1, weight: "30%" },
               { name: "Gender Inclusion", score: summaryData?.avg_s2_gender_auto || avgSScore + 3, weight: "25%" },
               { name: "Working Conditions & Fair Wages", score: summaryData?.avg_s3_wages_auto || avgSScore - 2, weight: "25%" },
               { name: "Health, Safety & Wellbeing", score: summaryData?.avg_s4_health_auto || avgSScore, weight: "20%" },
-            ]
+            ],
           },
-          Governance: { 
-            pillarScore: avgGScore, 
+          Governance: {
+            pillarScore: avgGScore,
             criteria: [
               { name: "Legal & Regulatory Compliance", score: summaryData?.avg_g1_legal_auto || avgGScore + 2, weight: "40%" },
               { name: "Business Ethics & Honest Dealing", score: summaryData?.avg_g2_ethics_auto || avgGScore - 1, weight: "35%" },
               { name: "Responsible Sourcing Basics", score: summaryData?.avg_g3_sourcing_auto || avgGScore, weight: "25%" },
-            ]
+            ],
           },
-          Cultural: { 
-            pillarScore: avgCScore, 
+          Cultural: {
+            pillarScore: avgCScore,
             criteria: [
               { name: "Craft Authenticity & Process Integrity", score: summaryData?.avg_c1_craft_auth_auto || avgCScore + 1, weight: "40%" },
               { name: "Skill Rarity & GI Status", score: summaryData?.avg_c2_skill_rarity_auto || avgCScore - 2, weight: "35%" },
               { name: "Climate-Vulnerable Community Context", score: summaryData?.avg_c3_climatevulnerable_auto || avgCScore, weight: "25%" },
-            ]
+            ],
           },
         },
         sdgImpact: [],
