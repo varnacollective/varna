@@ -32,6 +32,7 @@ import {
 import LeaderboardTable from "@/components/Group/LeaderboardTable";
 import RadialGauge from "@/components/ui/RadialGauge";
 import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
+import GroupOverallScorePopover from "@/components/ui/GroupOverallScorePopover";
 import DateRangeFilter from "@/components/ui/DateRangeFilter";
 import { DateRangeProvider } from "@/context/DateRangeContext";
 import {
@@ -348,25 +349,36 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
         <div className="varna-grp-content p-6 lg:p-8 space-y-8 max-w-[1600px] mx-auto w-full">
           {/* ── Executive KPI Strip (Differentiated Hero Metric) ────────────────────────────────────────── */}
           <section className="varna-grp-kpi-strip grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
-            {/* HERO METRIC CARD: Group Avg Score */}
-            <div className="col-span-2 sm:col-span-2 lg:col-span-2 bg-gradient-to-br from-[#B85333]/10 via-white to-white dark:from-[#B85333]/20 dark:via-[#1E2028] dark:to-[#1E2028] border border-[#B85333]/40 rounded-xl p-4 shadow-md flex flex-col justify-between relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-bold tracking-wider text-[#B85333] dark:text-[#D4705A]">
-                  <Award className="w-4 h-4 text-[#B85333]" />
-                  <span>Group Avg Varna Score</span>
+            {/* HERO METRIC CARD: Group Avg Score — hover for pillar breakdown */}
+            <GroupOverallScorePopover
+              score={summary.avgVarnaScore}
+              eScore={summary.avgE}
+              sScore={summary.avgS}
+              gScore={summary.avgG}
+              cScore={summary.avgC ?? 59}
+              className="col-span-2 sm:col-span-2 lg:col-span-2"
+            >
+              <div className="bg-gradient-to-br from-[#B85333]/10 via-white to-white dark:from-[#B85333]/20 dark:via-[#1E2028] dark:to-[#1E2028] border border-[#B85333]/40 rounded-xl p-4 shadow-md flex flex-col justify-between relative overflow-hidden cursor-pointer group w-full h-full">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-bold tracking-wider text-[#B85333] dark:text-[#D4705A]">
+                    <Award className="w-4 h-4 text-[#B85333]" />
+                    <span>Group Avg Varna Score</span>
+                  </div>
+                  <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#556B55]/15 text-[#556B55] dark:text-[#738678] border border-[#556B55]/30">
+                    Emerging Tier
+                  </span>
                 </div>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#556B55]/15 text-[#556B55] dark:text-[#738678] border border-[#556B55]/30">
-                  Emerging Tier
-                </span>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl lg:text-5xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight">
+                    {summary.avgVarnaScore.toFixed(1)}
+                  </span>
+                  <span className="text-xs font-light text-[#6E7781] dark:text-[#8C9DA8]">/ 100 benchmark</span>
+                </div>
+                <p className="text-[9px] text-[#6E7781]/70 dark:text-[#8C9DA8]/60 font-mono mt-2 group-hover:text-[#B85333]/70 transition-colors">
+                  Hover for pillar breakdown ↗
+                </p>
               </div>
-              <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-3xl sm:text-4xl lg:text-5xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight">
-                  {summary.avgVarnaScore.toFixed(1)}
-                </span>
-                <span className="text-xs font-light text-[#6E7781] dark:text-[#8C9DA8]">/ 100 benchmark</span>
-              </div>
-
-            </div>
+            </GroupOverallScorePopover>
 
             <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
               <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">

@@ -13,168 +13,111 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for hardcoded Super Admin credentials
-    if (clientId.trim().toLowerCase() === "superadmin" && password === "Varna") {
-      const response = NextResponse.json({
-        success: true,
-        isSuperAdmin: true,
-        redirectUrl: "/superadmin",
-        client: {
-          clientId: "Superadmin",
-          clientName: "Super Administrator",
-          industry: "Platform Administration",
-        },
-      });
-
-      // Set secure HTTP-only cookie for superadmin session
-      response.cookies.set("varna_superadmin_session", "true", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24, // 24 hours
-        path: "/",
-      });
-
-      response.cookies.set("varna_session", JSON.stringify({
-        clientId: "Superadmin",
-        clientName: "Super Administrator",
-        role: "superadmin",
-      }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
-
-      return response;
-    }
-
     const supabase = await createClient();
 
-    // Check for Group ID login fast-path / fallback
-    const cleanId = clientId.trim().toUpperCase();
-    if (cleanId === "GRP-001" && password === "1234") {
-      const response = NextResponse.json({
-        success: true,
-        isGroup: true,
-        redirectUrl: "/group-dashboard",
-        client: {
-          clientId: "GRP-001",
-          clientName: "Meridian Hospitality Group (DEMO)",
-          industry: "Hospitality Group",
-          isGroup: true,
-          parentGroup: "Meridian Hospitality Group (DEMO)",
-        },
-      });
+    // ── Single authoritative lookup: client_credentials table ──────────────
+    // All accounts (CLT-*, GRP-*, superadmin) must have a row here.
+    // Try uppercase first (CLT-001, GRP-001), then exact case (superadmin).
+    const upperClientId = clientId.trim().toUpperCase();
+    const exactClientId = clientId.trim();
 
-      response.cookies.set("varna_session", JSON.stringify({
-        clientId: "GRP-001",
-        clientName: "Meridian Hospitality Group (DEMO)",
-        isGroup: true,
-        parentGroup: "Meridian Hospitality Group (DEMO)",
-      }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
+    let credRow: Record<string, any> | null = null;
 
-      return response;
-    }
-
-    // 1. Check custom credentials managed in client_credentials table
-    const { data: credClient } = await supabase
+    const { data: upper } = await supabase
       .from("client_credentials")
       .select("*")
-      .eq("client_id", clientId)
-      .single();
+      .eq("client_id", upperClientId)
+      .maybeSingle();
 
-    if (credClient) {
-      if (credClient.password !== password) {
-        return NextResponse.json(
-          { error: "Invalid password for client account." },
-          { status: 401 }
-        );
-      }
-
-      const isGroup = Boolean(credClient.is_group) || credClient.client_id.startsWith("GRP-");
-      const redirectUrl = isGroup ? "/group-dashboard" : "/dashboard";
-
-      const response = NextResponse.json({
-        success: true,
-        isGroup,
-        redirectUrl,
-        client: {
-          clientId: credClient.client_id,
-          clientName: credClient.client_name || credClient.client_id,
-          industry: isGroup ? "Hospitality Group" : "Hospitality",
-          isGroup,
-          parentGroup: credClient.parent_group || null,
-        },
-      });
-
-      response.cookies.set("varna_session", JSON.stringify({
-        clientId: credClient.client_id,
-        clientName: credClient.client_name || credClient.client_id,
-        isGroup,
-        parentGroup: credClient.parent_group || null,
-      }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
-
-      return response;
+    if (upper) {
+      credRow = upper;
+    } else if (exactClientId !== upperClientId) {
+      // Only do second query if the case-normalized version differs
+      const { data: exact } = await supabase
+        .from("client_credentials")
+        .select("*")
+        .eq("client_id", exactClientId)
+        .maybeSingle();
+      credRow = exact ?? null;
     }
 
-    // 2. Fallback to client_master with prototype password
-    if (password !== "1234") {
+    if (!credRow) {
+      return NextResponse.json(
+        { error: "Invalid Client ID or password. Please check and try again." },
+        { status: 401 }
+      );
+    }
+
+    if (credRow.password !== password) {
       return NextResponse.json(
         { error: "Invalid password. Please check and try again." },
         { status: 401 }
       );
     }
 
-    // Authenticate client by checking client_master table.
-    const { data: client, error } = await supabase
-      .from("client_master")
-      .select("client_id, client_name, property_type, city, country, parent_group")
-      .eq("client_id", clientId)
-      .single();
+    // ── Determine account type ──────────────────────────────────────────────
+    // is_superadmin column is optional for backward compat — fall back to
+    // matching client_id = 'superadmin' until the column is added to the table.
+    const isSuperAdmin =
+      Boolean(credRow.is_superadmin) ||
+      credRow.client_id.toLowerCase() === "superadmin";
 
-    if (error || !client) {
-      return NextResponse.json(
-        { error: "Invalid Client ID. Please check and try again." },
-        { status: 401 }
-      );
-    }
+    const isGroup =
+      !isSuperAdmin &&
+      (Boolean(credRow.is_group) || credRow.client_id.startsWith("GRP-"));
 
+    const redirectUrl = isSuperAdmin
+      ? "/superadmin"
+      : isGroup
+      ? "/group-dashboard"
+      : "/dashboard";
+
+    // ── Set cookies & respond ───────────────────────────────────────────────
     const response = NextResponse.json({
       success: true,
-      redirectUrl: "/dashboard",
+      isSuperAdmin,
+      isGroup,
+      redirectUrl,
       client: {
-        clientId: client.client_id,
-        clientName: client.client_name,
-        industry: client.property_type,
-        parentGroup: client.parent_group || null,
+        clientId: credRow.client_id,
+        clientName: credRow.client_name || credRow.client_id,
+        industry: isSuperAdmin
+          ? "Platform Administration"
+          : isGroup
+          ? "Hospitality Group"
+          : credRow.property_type || "Hospitality",
+        isGroup,
+        parentGroup: credRow.parent_group || null,
       },
     });
 
-    response.cookies.set("varna_session", JSON.stringify({
-      clientId: client.client_id,
-      clientName: client.client_name,
-      parentGroup: client.parent_group || null,
-    }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24,
-      path: "/",
-    });
+    if (isSuperAdmin) {
+      response.cookies.set("varna_superadmin_session", "true", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24,
+        path: "/",
+      });
+    }
+
+    response.cookies.set(
+      "varna_session",
+      JSON.stringify({
+        clientId: credRow.client_id,
+        clientName: credRow.client_name || credRow.client_id,
+        role: isSuperAdmin ? "superadmin" : isGroup ? "group" : "client",
+        isGroup,
+        parentGroup: credRow.parent_group || null,
+      }),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24,
+        path: "/",
+      }
+    );
 
     return response;
   } catch {

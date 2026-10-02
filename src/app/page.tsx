@@ -60,9 +60,6 @@ export default function LoginPage() {
 
     const cleanClientId = clientId.trim();
 
-    // Direct superadmin fallback/fast-path check
-    const isSuperAdminLocal = cleanClientId.toLowerCase() === "superadmin" && password === "Varna";
-
     try {
       const res = await fetch("/api/auth", {
         method: "POST",
@@ -73,18 +70,12 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        // If API fails but local superadmin credentials match, provide resilient entry
-        if (isSuperAdminLocal) {
-          localStorage.setItem("varna_superadmin", "true");
-          router.push("/superadmin");
-          return;
-        }
         setError(data.error || "Authentication failed. Please check your credentials.");
         setLoading(false);
         return;
       }
 
-      if (data.isSuperAdmin || isSuperAdminLocal) {
+      if (data.isSuperAdmin) {
         localStorage.setItem("varna_superadmin", "true");
         router.push("/superadmin");
       } else {
@@ -93,11 +84,6 @@ export default function LoginPage() {
         router.push(targetUrl);
       }
     } catch {
-      if (isSuperAdminLocal) {
-        localStorage.setItem("varna_superadmin", "true");
-        router.push("/superadmin");
-        return;
-      }
       setError("Network error. Please try again.");
       setLoading(false);
     }
