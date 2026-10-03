@@ -139,24 +139,17 @@ function UploadCertificateContent() {
       <header className="border-b border-gray-200 bg-[#FAF8F5]/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#B44C22]/10 border border-[#B44C22]/30 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-[#B44C22]" />
-            </div>
+
             <div>
               <span className="font-serif tracking-wider text-base font-semibold text-gray-900">
                 VARNA COLLECTIVE
               </span>
               <span className="hidden sm:inline-block ml-2 text-xs font-mono text-gray-500 uppercase tracking-wider">
-                • Partner Verification
+                Partner Verification
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Secure Vault
-            </span>
-          </div>
+
         </div>
       </header>
 
@@ -164,10 +157,7 @@ function UploadCertificateContent() {
       <main className="flex-1 max-w-2xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-14">
         {/* Dynamic Partner Name Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B44C22]/10 border border-[#B44C22]/20 text-[#B44C22] text-xs font-mono mb-3">
-            <FileCheck className="w-3.5 h-3.5 text-[#B44C22]" />
-            Official Certificate Intake
-          </div>
+
           <h1 className="text-3xl sm:text-4xl font-serif text-gray-900 tracking-tight mb-2">
             {partnerName}
           </h1>
@@ -296,11 +286,10 @@ function UploadCertificateContent() {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
-                  isDragging
-                    ? "border-[#B44C22] bg-[#B44C22]/5"
-                    : "border-gray-300 hover:border-gray-400 bg-[#FAF8F5]/60 hover:bg-[#FAF8F5]"
-                }`}
+                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${isDragging
+                  ? "border-[#B44C22] bg-[#B44C22]/5"
+                  : "border-gray-300 hover:border-gray-400 bg-[#FAF8F5]/60 hover:bg-[#FAF8F5]"
+                  }`}
               >
                 <div className="w-12 h-12 rounded-xl bg-[#B44C22]/10 border border-[#B44C22]/20 text-[#B44C22] mx-auto flex items-center justify-center mb-3">
                   <UploadCloud className="w-6 h-6" />
