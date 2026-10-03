@@ -31,7 +31,7 @@ const NAV_ITEMS = [
 ];
 
 export default function GroupSidebar({
-  userName = "Yuvraj",
+  userName = "Adam Strange",
   userRole = "Group Chairperson",
   groupName = "Meridian Hotels & Resorts",
 }: GroupSidebarProps) {
@@ -101,20 +101,18 @@ export default function GroupSidebar({
                   href={item.href}
                   className={`
                     w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-sans transition-all duration-200 group
-                    ${
-                      active
-                        ? "bg-[#B85333]/10 dark:bg-[#B85333]/20 text-[#B85333] dark:text-[#D4705A] font-semibold border border-[#B85333]/30 shadow-xs"
-                        : "text-[#6E7781] dark:text-[#8C9DA8] hover:bg-[#FAF8F5] dark:hover:bg-[#22252B] hover:text-[#1A1F26] dark:hover:text-[#FAF8F5]"
+                    ${active
+                      ? "bg-[#B85333]/10 dark:bg-[#B85333]/20 text-[#B85333] dark:text-[#D4705A] font-semibold border border-[#B85333]/30 shadow-xs"
+                      : "text-[#6E7781] dark:text-[#8C9DA8] hover:bg-[#FAF8F5] dark:hover:bg-[#22252B] hover:text-[#1A1F26] dark:hover:text-[#FAF8F5]"
                     }
                   `}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
-                      className={`w-4 h-4 transition-colors shrink-0 ${
-                        active
+                      className={`w-4 h-4 transition-colors shrink-0 ${active
                           ? "text-[#B85333] dark:text-[#D4705A]"
                           : "text-[#6E7781] dark:text-[#8C9DA8] group-hover:text-[#1A1F26] dark:group-hover:text-[#FAF8F5]"
-                      }`}
+                        }`}
                     />
                     <span className="varna-grp-sidebar-label">{item.label}</span>
                   </div>
