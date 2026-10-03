@@ -243,18 +243,21 @@
 .text-gradient-clay {
   background: linear-gradient(135deg, #B44C22 0%, #D1643B 50%, #8A3716 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-sage {
   background: linear-gradient(135deg, #6B7D70 0%, #8DA295 50%, #455249 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-gold {
   background: linear-gradient(135deg, #C5A059 0%, #FAF8F5 60%, #9B783E 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
