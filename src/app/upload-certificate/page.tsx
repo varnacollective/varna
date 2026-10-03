@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import Image from "next/image";
+import React, { useState, useRef, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   UploadCloud,
   FileCheck,
@@ -10,34 +10,28 @@ import {
   AlertCircle,
   FileText,
   X,
-  Building2,
   ShieldCheck,
   ArrowRight,
   ExternalLink,
   Loader2,
   RefreshCw,
+  Plus,
 } from "lucide-react";
 
-const CERTIFICATE_CATEGORIES = [
-  { value: "Governance", label: "Governance (e.g., ISO 37001, Anti-Bribery, Corporate Ethics)" },
-  { value: "Environment", label: "Environment (e.g., ISO 14001, OEKO-TEX, GOTS, Carbon Neutral)" },
-  { value: "Social & Labor", label: "Social & Labor (e.g., Fair Trade, SA8000, SMETA, WRAP)" },
-  { value: "Quality & Safety", label: "Quality & Safety (e.g., ISO 9001, GMP, Product Safety)" },
-  { value: "Sourcing & Traceability", label: "Sourcing & Traceability (e.g., FSC, Conflict-Free, GRS)" },
-  { value: "Other", label: "Other Compliance & Industry Certification" },
-];
+function UploadCertificateContent() {
+  const searchParams = useSearchParams();
+  const rawPartner = searchParams.get("partner") || searchParams.get("partnerName");
+  const partnerName = rawPartner ? decodeURIComponent(rawPartner).trim() : "Partner Verification";
+  const folderId = searchParams.get("folderId") || searchParams.get("folder_id") || "";
 
-export default function PartnerUploadCertificatePage() {
-  const [partnerName, setPartnerName] = useState("");
-  const [certificateType, setCertificateType] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successData, setSuccessData] = useState<{
     partner_name: string;
-    certificate_type: string;
+    file_count: number;
+    file_names: string[];
     drive_webview_link?: string;
   } | null>(null);
 
@@ -57,30 +51,29 @@ export default function PartnerUploadCertificatePage() {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const selected = e.dataTransfer.files[0];
-      setFile(selected);
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      setFiles((prev) => [...prev, ...droppedFiles]);
       setErrorMessage(null);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
+      const selectedFiles = Array.from(e.target.files);
+      setFiles((prev) => [...prev, ...selectedFiles]);
       setErrorMessage(null);
     }
-  };
-
-  const removeFile = () => {
-    setFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
+  const removeFile = (indexToRemove: number) => {
+    setFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const resetForm = () => {
-    setPartnerName("");
-    setCertificateType("");
-    setFile(null);
+    setFiles([]);
     setSuccessData(null);
     setErrorMessage(null);
     if (fileInputRef.current) {
@@ -92,18 +85,8 @@ export default function PartnerUploadCertificatePage() {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!partnerName.trim()) {
-      setErrorMessage("Please enter your company or partner name.");
-      return;
-    }
-
-    if (!certificateType) {
-      setErrorMessage("Please select a certificate type category.");
-      return;
-    }
-
-    if (!file) {
-      setErrorMessage("Please select or drop a certificate document to upload.");
+    if (files.length === 0) {
+      setErrorMessage("Please select or drop at least one certificate document to upload.");
       return;
     }
 
@@ -111,9 +94,19 @@ export default function PartnerUploadCertificatePage() {
 
     try {
       const formData = new FormData();
-      formData.append("partnerName", partnerName.trim());
-      formData.append("certificateType", certificateType);
-      formData.append("file", file);
+      formData.append("partnerName", partnerName);
+      if (folderId) {
+        formData.append("folderId", folderId);
+      }
+      formData.append("certificateType", "Sustainability & Compliance");
+
+      // Append each file to 'files'
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+
+      // Backward compatibility fallback for single-file API handlers
+      formData.append("file", files[0]);
 
       const response = await fetch("/api/upload-certificate", {
         method: "POST",
@@ -127,8 +120,9 @@ export default function PartnerUploadCertificatePage() {
       }
 
       setSuccessData({
-        partner_name: partnerName.trim(),
-        certificate_type: certificateType,
+        partner_name: partnerName,
+        file_count: files.length,
+        file_names: files.map((f) => f.name),
         drive_webview_link: result.data?.drive_webview_link,
       });
     } catch (err: any) {
@@ -140,26 +134,26 @@ export default function PartnerUploadCertificatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121316] text-[#D8CFB8] flex flex-col justify-between selection:bg-[#7A3F1E] selection:text-[#D8CFB8]">
+    <div className="min-h-screen bg-[#FAF8F5] text-gray-900 flex flex-col justify-between selection:bg-[#B44C22]/20 selection:text-[#B44C22]">
       {/* Top Navigation / Brand Header */}
-      <header className="border-b border-white/10 bg-[#161719]/80 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-gray-200 bg-[#FAF8F5]/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#7A3F1E]/20 border border-[#7A3F1E]/40 flex items-center justify-center text-[#D8CFB8]">
-              <ShieldCheck className="w-5 h-5 text-[#B85333]" />
+            <div className="w-8 h-8 rounded-lg bg-[#B44C22]/10 border border-[#B44C22]/30 flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5 text-[#B44C22]" />
             </div>
             <div>
-              <span className="font-serif tracking-wider text-base font-semibold text-[#D8CFB8]">
+              <span className="font-serif tracking-wider text-base font-semibold text-gray-900">
                 VARNA COLLECTIVE
               </span>
-              <span className="hidden sm:inline-block ml-2 text-xs font-mono text-[#6F848F] uppercase tracking-wider">
+              <span className="hidden sm:inline-block ml-2 text-xs font-mono text-gray-500 uppercase tracking-wider">
                 • Partner Verification
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-xs font-mono text-[#6F848F]">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Secure Vault
             </span>
           </div>
@@ -167,32 +161,32 @@ export default function PartnerUploadCertificatePage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        {/* Page Heading */}
+      <main className="flex-1 max-w-2xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        {/* Dynamic Partner Name Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7A3F1E]/20 border border-[#7A3F1E]/40 text-[#D8CFB8] text-xs font-mono mb-3">
-            <FileCheck className="w-3.5 h-3.5 text-[#B85333]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B44C22]/10 border border-[#B44C22]/20 text-[#B44C22] text-xs font-mono mb-3">
+            <FileCheck className="w-3.5 h-3.5 text-[#B44C22]" />
             Official Certificate Intake
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-normal text-[#FAF8F5] tracking-tight mb-3">
-            Partner Certificate Submission
+          <h1 className="text-3xl sm:text-4xl font-serif text-gray-900 tracking-tight mb-2">
+            {partnerName}
           </h1>
-          <p className="text-sm text-[#96AAB4] max-w-lg mx-auto font-light leading-relaxed">
-            Upload your sustainability, quality, and governance credentials. Documents are verified by the Varna Collective compliance team and permanently archived to the enterprise registry.
+          <p className="text-sm text-gray-600 max-w-lg mx-auto font-light leading-relaxed">
+            Upload your sustainability and compliance documents
           </p>
         </div>
 
         {/* Error Alert */}
         {errorMessage && (
-          <div className="mb-6 p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-200 text-sm flex items-start gap-3 animate-in fade-in duration-200">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+          <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-in fade-in duration-200">
+            <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="font-medium">Submission Failed</p>
-              <p className="text-xs text-red-300/90 mt-0.5">{errorMessage}</p>
+              <p className="text-xs text-red-600 mt-0.5">{errorMessage}</p>
             </div>
             <button
               onClick={() => setErrorMessage(null)}
-              className="text-red-400 hover:text-red-200 text-xs"
+              className="text-red-500 hover:text-red-700 text-xs"
             >
               Dismiss
             </button>
@@ -201,43 +195,54 @@ export default function PartnerUploadCertificatePage() {
 
         {/* Form or Success State */}
         {successData ? (
-          <div className="bg-[#1C1D21] border border-emerald-500/30 rounded-2xl p-8 sm:p-10 shadow-2xl text-center space-y-6 animate-in fade-in duration-300">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center">
+          <div className="bg-white shadow-sm border border-emerald-200 rounded-2xl p-8 sm:p-10 text-center space-y-6 animate-in fade-in duration-300">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 mx-auto flex items-center justify-center">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
             <div>
-              <h2 className="text-2xl font-serif text-[#FAF8F5]">Certificate Submitted Successfully</h2>
-              <p className="text-xs text-[#96AAB4] mt-1">
-                Your certificate has been securely transferred to the Varna Cloud Vault and registered under review.
+              <h2 className="text-2xl font-serif text-gray-900">Documents Submitted Successfully</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Your compliance documents have been securely uploaded to the Varna Cloud Vault and queued for verification.
               </p>
             </div>
 
             {/* Submission Summary Card */}
-            <div className="bg-[#121316] rounded-xl p-5 border border-white/5 text-left space-y-3 font-mono text-xs">
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-[#6F848F]">Partner / Company:</span>
-                <span className="text-[#FAF8F5] font-semibold">{successData.partner_name}</span>
+            <div className="bg-[#FAF8F5] rounded-xl p-5 border border-gray-200 text-left space-y-3 font-mono text-xs">
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-gray-500">Partner / Organization:</span>
+                <span className="text-gray-900 font-semibold">{successData.partner_name}</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-[#6F848F]">Certificate Category:</span>
-                <span className="text-[#B85333] font-medium">{successData.certificate_type}</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-gray-500">Documents Uploaded:</span>
+                <span className="text-[#B44C22] font-semibold">{successData.file_count} file(s)</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-[#6F848F]">Review Status:</span>
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <div className="border-b border-gray-200 pb-2">
+                <span className="text-gray-500 block mb-1">Files:</span>
+                <ul className="space-y-1 pl-2">
+                  {successData.file_names.map((name, i) => (
+                    <li key={i} className="text-gray-700 truncate flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-gray-500">Review Status:</span>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                   Pending Superadmin Verification
                 </span>
               </div>
               {successData.drive_webview_link && (
                 <div className="flex justify-between items-center pt-1">
-                  <span className="text-[#6F848F]">Storage Vault:</span>
+                  <span className="text-gray-500">Storage Vault:</span>
                   <a
                     href={successData.drive_webview_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[#D8CFB8] hover:text-white underline underline-offset-2 transition-colors"
+                    className="inline-flex items-center gap-1 text-[#B44C22] hover:text-[#8A3716] font-medium underline underline-offset-2 transition-colors"
                   >
                     View in Google Drive
                     <ExternalLink className="w-3 h-3" />
@@ -250,138 +255,110 @@ export default function PartnerUploadCertificatePage() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#7A3F1E] hover:bg-[#B85333] text-white font-medium text-sm transition-all shadow-lg hover:shadow-[#7A3F1E]/30"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#B44C22] hover:bg-[#8A3716] text-white font-medium text-sm transition-all shadow-sm cursor-pointer"
               >
                 <RefreshCw className="w-4 h-4" />
-                Submit Another Certificate
+                Upload More Documents
               </button>
             </div>
           </div>
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="bg-[#1C1D21] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6"
+            className="bg-white shadow-sm border border-gray-200 rounded-2xl p-6 sm:p-8 space-y-6"
           >
-            {/* Field 1: Partner / Company Name */}
-            <div className="space-y-2">
-              <label
-                htmlFor="partnerName"
-                className="block text-xs font-mono uppercase tracking-wider text-[#96AAB4]"
-              >
-                Company / Partner Name <span className="text-[#B85333]">*</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F848F]">
-                  <Building2 className="w-4 h-4" />
-                </div>
-                <input
-                  id="partnerName"
-                  type="text"
-                  required
-                  disabled={loading}
-                  value={partnerName}
-                  onChange={(e) => setPartnerName(e.target.value)}
-                  placeholder="e.g., Artisan Heritage Weavers Ltd."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#121316] border border-white/10 text-sm text-[#FAF8F5] placeholder-[#6F848F] focus:outline-none focus:border-[#7A3F1E] focus:ring-1 focus:ring-[#7A3F1E] transition-all disabled:opacity-50"
-                />
+            {/* Multi-File Dropzone */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-mono uppercase tracking-wider text-gray-600">
+                  Certificate Documents <span className="text-[#B44C22]">*</span>
+                </label>
+                {files.length > 0 && (
+                  <span className="text-xs font-mono text-gray-500">
+                    {files.length} {files.length === 1 ? "file" : "files"} selected
+                  </span>
+                )}
               </div>
-            </div>
-
-            {/* Field 2: Certificate Type */}
-            <div className="space-y-2">
-              <label
-                htmlFor="certificateType"
-                className="block text-xs font-mono uppercase tracking-wider text-[#96AAB4]"
-              >
-                Certificate Type <span className="text-[#B85333]">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  id="certificateType"
-                  required
-                  disabled={loading}
-                  value={certificateType}
-                  onChange={(e) => setCertificateType(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#121316] border border-white/10 text-sm text-[#FAF8F5] focus:outline-none focus:border-[#7A3F1E] focus:ring-1 focus:ring-[#7A3F1E] transition-all disabled:opacity-50 appearance-none cursor-pointer"
-                >
-                  <option value="" disabled className="bg-[#121316] text-[#6F848F]">
-                    Select certification domain...
-                  </option>
-                  {CERTIFICATE_CATEGORIES.map((cat) => (
-                    <option key={cat.value} value={cat.value} className="bg-[#121316] text-[#FAF8F5]">
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#6F848F]">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Field 3: File Input Element */}
-            <div className="space-y-2">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#96AAB4]">
-                Certificate Document (PDF or Image) <span className="text-[#B85333]">*</span>
-              </label>
 
               <input
                 ref={fileInputRef}
                 type="file"
-                id="certificateFile"
+                id="certificateFiles"
                 accept=".pdf,.png,.jpg,.jpeg,.webp"
+                multiple
                 onChange={handleFileChange}
                 disabled={loading}
                 className="hidden"
               />
 
-              {!file ? (
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
-                    isDragging
-                      ? "border-[#B85333] bg-[#7A3F1E]/10"
-                      : "border-white/10 hover:border-white/20 bg-[#121316]/50 hover:bg-[#121316]"
-                  }`}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-[#7A3F1E]/20 text-[#D8CFB8] mx-auto flex items-center justify-center mb-3">
-                    <UploadCloud className="w-6 h-6 text-[#B85333]" />
-                  </div>
-                  <p className="text-sm font-medium text-[#FAF8F5]">
-                    Click to browse or drag and drop your document
-                  </p>
-                  <p className="text-xs text-[#6F848F] mt-1">
-                    Supports PDF, PNG, JPG, JPEG, WEBP (Max 25MB)
-                  </p>
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
+                  isDragging
+                    ? "border-[#B44C22] bg-[#B44C22]/5"
+                    : "border-gray-300 hover:border-gray-400 bg-[#FAF8F5]/60 hover:bg-[#FAF8F5]"
+                }`}
+              >
+                <div className="w-12 h-12 rounded-xl bg-[#B44C22]/10 border border-[#B44C22]/20 text-[#B44C22] mx-auto flex items-center justify-center mb-3">
+                  <UploadCloud className="w-6 h-6" />
                 </div>
-              ) : (
-                <div className="flex items-center justify-between p-4 rounded-xl bg-[#121316] border border-white/10">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-lg bg-[#7A3F1E]/20 text-[#B85333] flex items-center justify-center shrink-0">
-                      <FileText className="w-5 h-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-[#FAF8F5] truncate">{file.name}</p>
-                      <p className="text-xs text-[#6F848F] font-mono">
-                        {(file.size / (1024 * 1024)).toFixed(2)} MB
-                      </p>
-                    </div>
-                  </div>
-                  {!loading && (
+                <p className="text-sm font-medium text-gray-900">
+                  Click to browse or drag and drop your files
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Supports multiple PDFs, PNGs, JPGs, or WEBPs (Max 25MB each)
+                </p>
+              </div>
+
+              {/* Selected Files List */}
+              {files.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center justify-between text-xs font-medium text-gray-700">
+                    <span>Selected Files</span>
                     <button
                       type="button"
-                      onClick={removeFile}
-                      className="p-1.5 rounded-lg text-[#6F848F] hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                      title="Remove file"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-[#B44C22] hover:text-[#8A3716] flex items-center gap-1 text-xs"
                     >
-                      <X className="w-4 h-4" />
+                      <Plus className="w-3.5 h-3.5" />
+                      Add more files
                     </button>
-                  )}
+                  </div>
+                  <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+                    {files.map((selectedFile, index) => (
+                      <div
+                        key={`${selectedFile.name}-${index}`}
+                        className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F5] border border-gray-200"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-lg bg-[#B44C22]/10 text-[#B44C22] flex items-center justify-center shrink-0">
+                            <FileText className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {selectedFile.name}
+                            </p>
+                            <p className="text-xs text-gray-500 font-mono">
+                              {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                            </p>
+                          </div>
+                        </div>
+                        {!loading && (
+                          <button
+                            type="button"
+                            onClick={() => removeFile(index)}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove file"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -390,17 +367,19 @@ export default function PartnerUploadCertificatePage() {
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-[#7A3F1E] hover:bg-[#B85333] text-[#FAF8F5] font-medium text-sm transition-all shadow-lg hover:shadow-[#7A3F1E]/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                disabled={loading || files.length === 0}
+                className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-[#B44C22] hover:bg-[#8A3716] text-white font-medium text-sm transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Encrypting & Uploading to Drive...</span>
+                    <span>Uploading {files.length} document{files.length > 1 ? "s" : ""} to Drive...</span>
                   </>
                 ) : (
                   <>
-                    <span>Submit Certificate for Verification</span>
+                    <span>
+                      Submit {files.length > 0 ? `${files.length} ` : ""}Certificate{files.length > 1 ? "s" : ""} for Verification
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -411,9 +390,23 @@ export default function PartnerUploadCertificatePage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-6 text-center text-xs text-[#6F848F]">
+      <footer className="border-t border-gray-200 py-6 text-center text-xs text-gray-500">
         <p>© {new Date().getFullYear()} Varna Collective. All partner documents are securely stored and verified.</p>
       </footer>
     </div>
+  );
+}
+
+export default function PartnerUploadCertificatePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center">
+          <Loader2 className="w-6 h-6 animate-spin text-[#B44C22]" />
+        </div>
+      }
+    >
+      <UploadCertificateContent />
+    </Suspense>
   );
 }
