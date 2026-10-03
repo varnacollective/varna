@@ -348,7 +348,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
 
         <div className="varna-grp-content p-6 lg:p-8 space-y-8 max-w-[1600px] mx-auto w-full">
           {/* ── Executive KPI Strip (Differentiated Hero Metric) ────────────────────────────────────────── */}
-          <section className="varna-grp-kpi-strip grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
+          <section className="varna-grp-kpi-strip grid grid-cols-2 sm:grid-cols-3 lg:flex lg:items-stretch gap-3">
             {/* HERO METRIC CARD: Group Avg Score — hover for pillar breakdown */}
             <GroupOverallScorePopover
               score={summary.avgVarnaScore}
@@ -356,105 +356,101 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
               sScore={summary.avgS}
               gScore={summary.avgG}
               cScore={summary.avgC ?? 59}
-              className="col-span-2 sm:col-span-2 lg:col-span-2"
+              className="col-span-2 sm:col-span-2 lg:flex-[1.3] lg:min-w-[210px]"
             >
-              <div className="bg-gradient-to-br from-[#B85333]/10 via-white to-white dark:from-[#B85333]/20 dark:via-[#1E2028] dark:to-[#1E2028] border border-[#B85333]/40 rounded-xl p-4 shadow-md flex flex-col justify-between relative overflow-hidden cursor-pointer group w-full h-full">
+              <div className="bg-gradient-to-br from-[#B85333]/10 via-white to-white dark:from-[#B85333]/20 dark:via-[#1E2028] dark:to-[#1E2028] border border-[#B85333]/40 rounded-xl px-4 py-3.5 shadow-md flex flex-col justify-between relative overflow-hidden cursor-pointer group w-full h-full">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-bold tracking-wider text-[#B85333] dark:text-[#D4705A]">
-                    <Award className="w-4 h-4 text-[#B85333]" />
-                    <span>Group Avg Varna Score</span>
+                    <Award className="w-4 h-4 text-[#B85333] shrink-0" />
+                    <span className="whitespace-nowrap">Group Avg Varna Score</span>
                   </div>
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#556B55]/15 text-[#556B55] dark:text-[#738678] border border-[#556B55]/30">
-                    Emerging Tier
-                  </span>
+
                 </div>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight">
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl lg:text-4xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] tracking-tight leading-none">
                     {summary.avgVarnaScore.toFixed(1)}
                   </span>
                   <span className="text-xs font-light text-[#6E7781] dark:text-[#8C9DA8]">/ 100 benchmark</span>
                 </div>
-                <p className="text-[9px] text-[#6E7781]/70 dark:text-[#8C9DA8]/60 font-mono mt-2 group-hover:text-[#B85333]/70 transition-colors">
-                  Hover for pillar breakdown ↗
-                </p>
+
               </div>
             </GroupOverallScorePopover>
 
-            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl px-4 py-3.5 shadow-card-light dark:shadow-elevation-dark-low flex flex-col gap-1.5 lg:flex-1 lg:min-w-[130px]">
               <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
-                <Building2 className="w-3.5 h-3.5 text-[#556B55]" />
-                <span className="truncate">Properties</span>
+                <Building2 className="w-3.5 h-3.5 text-[#556B55] shrink-0" />
+                <span className="whitespace-nowrap">Properties</span>
               </div>
-              <div className="mt-2">
-                <span className="text-2xl lg:text-3xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5]">
+              <div>
+                <span className="text-2xl lg:text-3xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] leading-tight">
                   {summary.noProperties}
                 </span>
-                <span className="text-[10px] text-[#556B55] block mt-0.5 font-mono">100% Active</span>
+                <span className="text-[10px] text-[#556B55] block font-mono">100% Active</span>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl px-4 py-3.5 shadow-card-light dark:shadow-elevation-dark-low flex flex-col gap-1.5 lg:flex-[1.2] lg:min-w-[165px]">
               <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
-                <Users className="w-3.5 h-3.5 text-[#B85333]" />
-                <span className="truncate">Active Suppliers</span>
+                <Users className="w-3.5 h-3.5 text-[#B85333] shrink-0" />
+                <span className="whitespace-nowrap">Active Suppliers</span>
               </div>
-              <div className="mt-2">
-                <span className="text-2xl lg:text-3xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5]">
+              <div>
+                <span className="text-2xl lg:text-3xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] leading-tight">
                   {summary.noActiveSupplierRelationships}
                 </span>
-                <span className="text-[10px] text-[#6E7781] block mt-0.5 font-mono">Verified Ledger</span>
+                <span className="text-[10px] text-[#6E7781] block font-mono">Verified Ledger</span>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl px-4 py-3.5 shadow-card-light dark:shadow-elevation-dark-low flex flex-col gap-1.5 lg:flex-[1.25] lg:min-w-[175px]">
               <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
-                <Coins className="w-3.5 h-3.5 text-[#6F848F]" />
-                <span className="truncate">Sustainable Spend</span>
+                <Coins className="w-3.5 h-3.5 text-[#6F848F] shrink-0" />
+                <span className="whitespace-nowrap">Sustainable Spend</span>
               </div>
-              <div className="mt-2">
-                <span className="text-xl lg:text-2xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5]">
+              <div>
+                <span className="text-xl lg:text-2xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] leading-tight">
                   {formatLakhs(summary.totalSpend)}
                 </span>
-                <span className="text-[10px] text-[#6E7781] block mt-0.5 font-mono">$228K Eq.</span>
+                <span className="text-[10px] text-[#6E7781] block font-mono">$228K Eq.</span>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl px-4 py-3.5 shadow-card-light dark:shadow-elevation-dark-low flex flex-col gap-1.5 lg:flex-1 lg:min-w-[130px]">
               <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
-                <Leaf className="w-3.5 h-3.5 text-[#556B55]" />
-                <span className="truncate">Total CO₂e</span>
+                <Leaf className="w-3.5 h-3.5 text-[#556B55] shrink-0" />
+                <span className="whitespace-nowrap">Total CO₂e</span>
               </div>
-              <div className="mt-2">
-                <span className="text-lg lg:text-xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5]">
+              <div>
+                <span className="text-lg lg:text-xl font-sans font-medium text-[#1A1F26] dark:text-[#FAF8F5] leading-tight">
                   {formatNum(summary.totalCo2eKg)} <span className="text-[10px] font-normal text-[#6E7781]">kg</span>
                 </span>
-                <span className="text-[10px] text-[#6E7781] block mt-0.5 font-mono">Gross Footprint</span>
+                <span className="text-[10px] text-[#6E7781] block font-mono">Gross Footprint</span>
               </div>
             </div>
 
             {/* EQUIVALENTS CARD WITH ICONS */}
-            <div className="col-span-2 sm:col-span-1 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
+            <div className="col-span-2 sm:col-span-1 bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl px-4 py-3.5 shadow-card-light dark:shadow-elevation-dark-low flex flex-col gap-2 lg:flex-[1.15] lg:min-w-[165px]">
               <div className="flex items-center justify-between text-[10px] uppercase font-sans font-semibold text-[#6E7781] dark:text-[#8C9DA8]">
-                <span>Equivalents</span>
-                <div className="flex items-center gap-1">
+                <span className="whitespace-nowrap">Equivalents</span>
+                <div className="flex items-center gap-1 shrink-0">
                   <Car className="w-3.5 h-3.5 text-[#6F848F]" />
                   <Trees className="w-3.5 h-3.5 text-[#556B55]" />
                 </div>
               </div>
-              <div className="mt-2 space-y-1.5 text-xs font-mono">
-                <div className="flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-1.5 text-[#6E7781] dark:text-[#8C9DA8]">
-                    <Car className="w-3 h-3 text-[#6F848F]" />
-                    <span>Car Kms:</span>
+              <div className="space-y-1.5 text-xs font-mono">
+                <div className="flex items-center justify-start gap-2 text-[11px]">
+                  <div className="flex items-center gap-1.5 text-[#6E7781] dark:text-[#8C9DA8] shrink-0">
+                    <Car className="w-3 h-3 text-[#6F848F] shrink-0" />
+                    <span className="whitespace-nowrap">Car Kms:</span>
                   </div>
-                  <span className="font-bold text-[#1A1F26] dark:text-[#FAF8F5]">{formatNum(summary.carKmAvoided)}</span>
+                  <span className="font-bold text-[#1A1F26] dark:text-[#FAF8F5] whitespace-nowrap">{formatNum(summary.carKmAvoided)}</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-1.5 text-[#6E7781] dark:text-[#8C9DA8]">
-                    <Trees className="w-3 h-3 text-[#556B55]" />
-                    <span>Trees Planted:</span>
+                <div className="flex items-center justify-start gap-2 text-[11px]">
+                  <div className="flex items-center gap-1.5 text-[#6E7781] dark:text-[#8C9DA8] shrink-0">
+                    <Trees className="w-3 h-3 text-[#556B55] shrink-0" />
+                    <span className="whitespace-nowrap">Trees Planted:</span>
                   </div>
-                  <span className="font-bold text-[#556B55] dark:text-[#7B9B7B]">{formatNum(summary.treesEquivalent)}</span>
+                  <span className="font-bold text-[#556B55] dark:text-[#7B9B7B] whitespace-nowrap">{formatNum(summary.treesEquivalent)}</span>
                 </div>
               </div>
             </div>
