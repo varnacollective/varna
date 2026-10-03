@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // 2. Validate Google credentials
     const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
     const rawPrivateKey = process.env.GOOGLE_PRIVATE_KEY;
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    const folderId = (formData.get("folderId") || formData.get("folder") || process.env.GOOGLE_DRIVE_FOLDER_ID) as string | null;
 
     if (!clientEmail || !rawPrivateKey) {
       console.error("Missing Google Drive API credentials (GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY).");
@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
         body: stream,
       },
       fields: "id, webViewLink, webContentLink, name",
+      supportsAllDrives: true,
     });
 
     const driveFileId = driveResponse.data.id;
@@ -99,6 +100,7 @@ export async function POST(request: NextRequest) {
           role: "reader",
           type: "anyone",
         },
+        supportsAllDrives: true,
       });
     } catch (permError) {
       console.warn("Could not set anyone-reader permission on Drive file:", permError);

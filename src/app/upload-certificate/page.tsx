@@ -22,7 +22,7 @@ function UploadCertificateContent() {
   const searchParams = useSearchParams();
   const rawPartner = searchParams.get("partner") || searchParams.get("partnerName");
   const partnerName = rawPartner ? decodeURIComponent(rawPartner).trim() : "Partner Verification";
-  const folderId = searchParams.get("folderId") || searchParams.get("folder_id") || "";
+  const folderId = searchParams.get("folder") || searchParams.get("folderId") || searchParams.get("folder_id") || "";
 
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
