@@ -114,6 +114,7 @@ export default function AlgorithmPage() {
                 src="/assets/framework1.jpg"
                 alt="Framework Concept with core methodology principles"
                 fill
+                sizes="(max-width: 1024px) 100vw, 33vw"
                 className="object-contain rounded-2xl object-center p-1 transition-transform duration-700 hover:scale-[1.02] dark:brightness-95"
                 priority
               />
@@ -316,6 +317,7 @@ export default function AlgorithmPage() {
                 src="/assets/framework2.jpg"
                 alt="Craftsmanship"
                 fill
+                sizes="(max-width: 1024px) 100vw, 42vw"
                 className="object-cover"
               />
             </div>

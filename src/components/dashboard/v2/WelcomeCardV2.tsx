@@ -123,6 +123,7 @@ export default function WelcomeCardV2({
           src="/assets/Dashboard_Hotel.svg"
           alt="Hotel Showcase Visual"
           fill
+          sizes="(max-width: 1024px) 100vw, 33vw"
           className="object-cover rounded-[24px] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-95"
           priority
         />

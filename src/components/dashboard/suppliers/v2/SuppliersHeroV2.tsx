@@ -74,6 +74,7 @@ export default function SuppliersHeroV2({
           src="/assets/Suppliers_visual.svg"
           alt="Craftsman at work visual with assessment text"
           fill
+          sizes="(max-width: 1024px) 100vw, 33vw"
           className="object-contain rounded-[24px] object-center p-1 transition-transform duration-700 group-hover:scale-[1.02] dark:brightness-95"
           priority
         />
