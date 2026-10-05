@@ -9,10 +9,12 @@ interface DateRangeFilterProps {
   variant?: "pill" | "hero";
 }
 
-const PRESET_OPTIONS: { id: DatePreset; label: string }[] = [
+const PRESET_OPTIONS: { id: DatePreset; label: string; description?: string }[] = [
   { id: "all_time", label: "All time" },
   { id: "this_month", label: "This month" },
   { id: "this_quarter", label: "This quarter" },
+  { id: "this_financial_year", label: "This financial year", description: "Apr – Mar" },
+  { id: "last_12_months", label: "Last 12 months" },
   { id: "last_6_months", label: "Last 6 months" },
   { id: "this_year", label: "This year" },
 ];
@@ -152,8 +154,15 @@ export default function DateRangeFilter({ className = "", variant = "pill" }: Da
                     }
                   `}
                 >
-                  <span>{option.label}</span>
-                  {isSelected && <Check className="w-3.5 h-3.5" />}
+                  <span className="flex items-center gap-2">
+                    {option.label}
+                    {option.description && (
+                      <span className={`text-[10px] font-normal ${isSelected ? "text-[#7D3F1E]/70 dark:text-[#E07A57]/70" : "text-[#9A948A] dark:text-[#6F6A61]"}`}>
+                        {option.description}
+                      </span>
+                    )}
+                  </span>
+                  {isSelected && <Check className="w-3.5 h-3.5 shrink-0" />}
                 </button>
               );
             })}

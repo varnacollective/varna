@@ -13,8 +13,7 @@ export default function PillarTooltip({ content, children }: PillarTooltipProps)
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
-  const enterTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const leaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,41 +35,61 @@ export default function PillarTooltip({ content, children }: PillarTooltipProps)
     setPosition({ top, left });
   }, []);
 
-  const handleMouseEnter = useCallback(() => {
-    if (leaveTimeout.current) {
-      clearTimeout(leaveTimeout.current);
-      leaveTimeout.current = null;
-    }
-    enterTimeout.current = setTimeout(() => {
+  const handleClick = useCallback(() => {
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
       calculatePosition();
       setIsOpen(true);
-    }, 250);
-  }, [calculatePosition]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (enterTimeout.current) {
-      clearTimeout(enterTimeout.current);
-      enterTimeout.current = null;
     }
-    leaveTimeout.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 100);
-  }, []);
+  }, [isOpen, calculatePosition]);
 
+  // Click-outside and Escape key listener
   useEffect(() => {
+    if (!isOpen) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      if (enterTimeout.current) clearTimeout(enterTimeout.current);
-      if (leaveTimeout.current) clearTimeout(leaveTimeout.current);
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isOpen]);
 
   return (
     <>
       <div
         ref={triggerRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className="inline-block cursor-help"
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        onClick={handleClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        className="inline-block cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-[#B85333] rounded"
+        title="Click to view definition"
       >
         {children}
       </div>
@@ -80,6 +99,7 @@ export default function PillarTooltip({ content, children }: PillarTooltipProps)
           <AnimatePresence>
             {isOpen && (
               <motion.div
+                ref={popoverRef}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 4 }}
@@ -89,8 +109,6 @@ export default function PillarTooltip({ content, children }: PillarTooltipProps)
                   damping: 35,
                   mass: 0.6,
                 }}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
                 className="fixed z-[9999] pointer-events-auto"
                 style={{
                   top: position.top,

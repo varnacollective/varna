@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 import { getSubCriteriaForPillar, type SubCriterionItem } from "@/lib/sub-criteria-labels";
 
 export interface PillarBreakdownHoverCardProps {
@@ -33,8 +34,7 @@ export default function PillarBreakdownHoverCard({
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0, placement: "below" as "below" | "above" });
   const triggerRef = useRef<HTMLDivElement>(null);
-  const enterTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const leaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -79,27 +79,6 @@ export default function PillarBreakdownHoverCard({
     setPosition({ top, left, placement });
   }, [CARD_HEIGHT_ESTIMATE]);
 
-  const handleOpen = useCallback(() => {
-    if (leaveTimeout.current) {
-      clearTimeout(leaveTimeout.current);
-      leaveTimeout.current = null;
-    }
-    enterTimeout.current = setTimeout(() => {
-      calculatePosition();
-      setIsOpen(true);
-    }, 150);
-  }, [calculatePosition]);
-
-  const handleClose = useCallback(() => {
-    if (enterTimeout.current) {
-      clearTimeout(enterTimeout.current);
-      enterTimeout.current = null;
-    }
-    leaveTimeout.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 120);
-  }, []);
-
   const handleClick = useCallback(() => {
     if (isOpen) {
       setIsOpen(false);
@@ -109,12 +88,34 @@ export default function PillarBreakdownHoverCard({
     }
   }, [isOpen, calculatePosition]);
 
+  // Click-outside and Escape key listener for accessible dismissal
   useEffect(() => {
+    if (!isOpen) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      if (enterTimeout.current) clearTimeout(enterTimeout.current);
-      if (leaveTimeout.current) clearTimeout(leaveTimeout.current);
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isOpen]);
 
   const defaultTriggerClasses = `inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all duration-200 ${disableScale ? "" : "hover:scale-[1.02]"}`;
 
@@ -125,12 +126,8 @@ export default function PillarBreakdownHoverCard({
         tabIndex={0}
         role="button"
         aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label={`${pillarLabel} pillar score ${isPillarScored ? pillarScore : "not yet scored"}, hover or focus for sub-criteria breakdown`}
-        onMouseEnter={handleOpen}
-        onMouseLeave={handleClose}
-        onFocus={handleOpen}
-        onBlur={handleClose}
+        aria-haspopup="dialog"
+        aria-label={`${pillarLabel} pillar score ${isPillarScored ? pillarScore : "not yet scored"}, click to inspect sub-criteria breakdown`}
         onClick={handleClick}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -148,13 +145,13 @@ export default function PillarBreakdownHoverCard({
           <AnimatePresence>
             {isOpen && (
               <motion.div
+                ref={popoverRef}
                 initial={{ opacity: 0, scale: 0.95, y: position.placement === "above" ? -6 : 6 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: position.placement === "above" ? -4 : 4 }}
                 transition={{ duration: 0.18, ease: "easeOut" }}
-                onMouseEnter={handleOpen}
-                onMouseLeave={handleClose}
-                role="tooltip"
+                role="dialog"
+                aria-label={`${pillarLabel} Breakdown`}
                 className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
                 style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
               >
@@ -181,21 +178,34 @@ export default function PillarBreakdownHoverCard({
                           {pillarLabel} Breakdown
                         </h4>
                       </div>
-                      <div className="flex items-baseline gap-1 font-mono">
-                        {isPillarScored ? (
-                          <>
-                            <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
-                              {Number(pillarScore) % 1 === 0 ? Number(pillarScore) : Number(pillarScore).toFixed(1)}
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex items-baseline gap-1 font-mono">
+                          {isPillarScored ? (
+                            <>
+                              <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
+                                {Number(pillarScore) % 1 === 0 ? Number(pillarScore) : Number(pillarScore).toFixed(1)}
+                              </span>
+                              <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
+                                /100
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-xs text-[#8C9DA8] font-normal italic font-sans">
+                              Not yet scored
                             </span>
-                            <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
-                              /100
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-xs text-[#8C9DA8] font-normal italic font-sans">
-                            Not yet scored
-                          </span>
-                        )}
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsOpen(false);
+                          }}
+                          className="p-1 rounded-md text-[#6E7781] hover:text-[#1A1F26] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                          aria-label="Close"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
 

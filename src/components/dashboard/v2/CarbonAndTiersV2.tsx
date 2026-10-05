@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Leaf, TreePine } from "lucide-react";
+import { Leaf, TreePine, Info } from "lucide-react";
 
 interface CarbonAndTiersV2Props {
   totalCO2eAvoidedKg: number;
@@ -107,12 +107,22 @@ export default function CarbonAndTiersV2({
                 <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
                   CO₂e emissions avoided
                 </span>
-                <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1 tabular-nums">
-                  {totalCO2eAvoidedKg.toLocaleString("en-US")}{" "}
-                  <span className="text-base font-normal uppercase text-[#6F6A61] dark:text-[#9A948A]">
-                    KG
-                  </span>
-                </div>
+                {totalCO2eAvoidedKg > 0 ? (
+                  <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1 tabular-nums">
+                    {totalCO2eAvoidedKg.toLocaleString("en-US")}{" "}
+                    <span className="text-base font-normal uppercase text-[#6F6A61] dark:text-[#9A948A]">
+                      KG
+                    </span>
+                  </div>
+                ) : (
+                  <div className="mt-1">
+                    <span className="text-2xl font-light text-[#6F6A61] dark:text-[#9A948A]">N/A</span>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Info className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57] shrink-0" strokeWidth={1.8} />
+                      <span className="text-[11px] text-[#7D3F1E] dark:text-[#E07A57] font-normal">Carbon data is pending.</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -126,12 +136,19 @@ export default function CarbonAndTiersV2({
                 <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
                   Tree equivalent
                 </span>
-                <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1 tabular-nums">
-                  {treesEquivalent}{" "}
-                  <span className="text-xs font-normal text-[#6F6A61] dark:text-[#9A948A]">
-                    mature trees
-                  </span>
-                </div>
+                {totalCO2eAvoidedKg > 0 ? (
+                  <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1 tabular-nums">
+                    {treesEquivalent}{" "}
+                    <span className="text-xs font-normal text-[#6F6A61] dark:text-[#9A948A]">
+                      mature trees
+                    </span>
+                  </div>
+                ) : (
+                  <div className="mt-1">
+                    <span className="text-2xl font-light text-[#6F6A61] dark:text-[#9A948A]">N/A</span>
+                    <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] block mt-0.5 font-normal">Awaiting carbon data</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

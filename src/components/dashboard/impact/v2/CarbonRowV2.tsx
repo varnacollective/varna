@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Leaf, Trees } from "lucide-react";
+import { Leaf, Trees, Info } from "lucide-react";
 
 interface CarbonRowV2Props {
   totalCO2eAvoidedKg?: number;
@@ -96,8 +96,20 @@ export default function CarbonRowV2({
                 </span>
               </div>
               <div className="text-2xl lg:text-3xl font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums flex items-baseline gap-1">
-                <span>{totalCO2eAvoidedKg.toLocaleString("en-US")}</span>
-                <span className="text-xs font-normal text-[#6F6A61] dark:text-[#9A948A]">KG</span>
+                {totalCO2eAvoidedKg > 0 ? (
+                  <>
+                    <span>{totalCO2eAvoidedKg.toLocaleString("en-US")}</span>
+                    <span className="text-xs font-normal text-[#6F6A61] dark:text-[#9A948A]">KG</span>
+                  </>
+                ) : (
+                  <div>
+                    <span className="text-xl text-[#6F6A61] dark:text-[#9A948A]">N/A</span>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Info className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57] shrink-0" strokeWidth={1.8} />
+                      <span className="text-[11px] text-[#7D3F1E] dark:text-[#E07A57] font-normal">Carbon data is pending.</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -112,10 +124,10 @@ export default function CarbonRowV2({
                 </span>
               </div>
               <div className="text-2xl lg:text-3xl font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
-                {treeCount}
+                {totalCO2eAvoidedKg > 0 ? treeCount : "N/A"}
               </div>
               <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-normal block">
-                mature trees a year
+                {totalCO2eAvoidedKg > 0 ? "mature trees a year" : "Awaiting carbon data"}
               </span>
             </div>
           </div>

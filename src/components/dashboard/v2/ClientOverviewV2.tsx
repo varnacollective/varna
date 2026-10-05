@@ -18,7 +18,7 @@ interface ClientOverviewV2Props {
 
 export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
   const { state: dateState } = useDateRange();
-  const { client, summary, categorySpend, tierDistribution, supplierImpactData } = data;
+  const { client, summary, categorySpend, products, tierDistribution, supplierImpactData } = data;
 
   const filteredOrders = useMemo(() => {
     if (!dateState.startDate && !dateState.endDate) return null;
@@ -87,7 +87,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         varnaScoreData={varnaScoreData}
       />
 
-      {/* 4. Mid Section: Visual + ESG Pillars + Spend by Product Category (W6, W7, W8 & D2, D3) */}
+      {/* 4. Mid Section: Visual + ESG Pillars + Spend by Product (W6, W7, W8 & D2, D3) */}
       <PillarsAndCategoryV2
         eScore={summary.avgEScore}
         sScore={summary.avgSScore}
@@ -95,6 +95,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         cScore={summary.avgCScore}
         pillarBreakdown={summary.pillarBreakdown}
         categorySpend={categorySpend}
+        products={products}
       />
 
       {/* 5. Carbon Impact + Supplier Tier Distribution (W9, W10 & D4, D5) */}

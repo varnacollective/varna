@@ -1,11 +1,14 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Check } from "lucide-react";
 import ImpactPillars from "@/components/dashboard/ImpactPillars";
 import { PerformanceBandsLegend } from "@/components/ui/VarnaScoreBandScale";
-import type { CategorySpend } from "@/lib/mock-data";
+import CategoryChartV2 from "./CategoryChartV2";
+import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
+import { MOCK_PRODUCTS_LIST } from "@/lib/mock-data";
 
 interface PillarsAndCategoryV2Props {
   eScore: number;
@@ -14,6 +17,7 @@ interface PillarsAndCategoryV2Props {
   cScore: number;
   pillarBreakdown?: Record<string, any>;
   categorySpend: CategorySpend[];
+  products?: ProductSpendItem[];
 }
 
 const BRAND_CHART_COLORS = [
@@ -41,7 +45,28 @@ export default function PillarsAndCategoryV2({
   cScore,
   pillarBreakdown,
   categorySpend,
+  products,
 }: PillarsAndCategoryV2Props) {
+  // Action 1, 2, 3: Product-level mapping
+  const effectiveProducts = useMemo(() => {
+    if (products && products.length > 0) return products;
+    return MOCK_PRODUCTS_LIST.filter((p) => p.clientId === "CLT001" || !p.clientId);
+  }, [products]);
+
+  const totalProductSpendInr = useMemo(() => {
+    return effectiveProducts.reduce((sum, p) => sum + p.totalSpend, 0);
+  }, [effectiveProducts]);
+
+  const totalSpendUsd = totalProductSpendInr > 0 ? Math.round(totalProductSpendInr / 83) : 0;
+
+  const topProduct = useMemo(() => {
+    if (!effectiveProducts.length) return null;
+    return [...effectiveProducts].sort((a, b) => b.totalSpend - a.totalSpend)[0];
+  }, [effectiveProducts]);
+
+  const topProductPct = totalProductSpendInr > 0 && topProduct
+    ? Math.round((topProduct.totalSpend / totalProductSpendInr) * 100)
+    : 0;
   const totalCategorySpendInr = categorySpend.reduce((acc, cat) => acc + cat.totalSpend, 0);
   const totalCategorySpendUsd = categorySpend.reduce((acc, cat) => acc + (cat.totalSpend > 0 ? Math.round(cat.totalSpend / 83) : 0), 0);
 
@@ -123,7 +148,7 @@ export default function PillarsAndCategoryV2({
         </motion.div>
       </div>
 
-      {/* 4 Cols: Spend by Product Category Card (W8 & P1-6 fixed) */}
+      {/* 4 Cols: Spend by Product Card (W8 & P1-6 fixed) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -136,84 +161,35 @@ export default function PillarsAndCategoryV2({
         "
       >
         <div>
-          <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
-            Spend by Product Category
-          </h2>
+          <div className="pb-4 border-b border-black/[0.07] dark:border-white/[0.08] mb-4">
+            <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
+              Spend by Product
+            </h2>
 
-          <div className="flex items-baseline gap-2 mt-2 mb-4">
-            <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalCategorySpendUsd.toLocaleString('en-US')}`}>
-              ${totalCategorySpendUsd.toLocaleString('en-US')}
-            </span>
-            <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
-              SUSTAINABLE SPEND
-            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalSpendUsd.toLocaleString('en-US')}`}>
+                ${totalSpendUsd.toLocaleString('en-US')}
+              </span>
+              <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
+                SUSTAINABLE SPEND
+              </span>
+            </div>
           </div>
 
-          {/* 12px Segmented Horizontal Bar */}
-          <div className="w-full h-3 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-4">
-            {categorySpend.map((cat, idx) => {
-              const pct = totalCategorySpendInr > 0 ? (cat.totalSpend / totalCategorySpendInr) * 100 : 0;
-              if (pct <= 0) return null;
-              return (
-                <div
-                  key={cat.categoryName}
-                  style={{
-                    width: `${pct}%`,
-                    backgroundColor: BRAND_CHART_COLORS[idx % BRAND_CHART_COLORS.length],
-                  }}
-                  className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
-                  title={`${cat.categoryName}: ${pct.toFixed(1)}% (${formatRowAmount(cat.totalSpend)})`}
-                />
-              );
-            })}
-          </div>
-
-          {/* Row List for ALL Categories (including 0% ones - P0-4 & W8 fixed) */}
-          <div className="space-y-3 mt-4">
-            {categorySpend.map((cat, idx) => {
-              const pctVal = totalCategorySpendInr > 0 ? (cat.totalSpend / totalCategorySpendInr) * 100 : 0;
-              const pctStr = pctVal % 1 === 0 ? pctVal.toString() : pctVal.toFixed(1);
-              const color = BRAND_CHART_COLORS[idx % BRAND_CHART_COLORS.length];
-              const isZero = cat.totalSpend === 0;
-
-              return (
-                <div
-                  key={cat.categoryName}
-                  className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
-                    }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: color }}
-                    />
-                    <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">
-                      {cat.categoryName}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#6F6A61] dark:text-[#9A948A] font-normal text-sm tabular-nums">
-                      {formatRowAmount(cat.totalSpend)}
-                    </span>
-                    <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[36px] text-right tabular-nums">
-                      {pctStr}%
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+          {/* Horizontal Bar Chart with toggle */}
+          <div className="flex-1 min-h-[280px]">
+            <CategoryChartV2 products={effectiveProducts} categorySpend={categorySpend} />
           </div>
         </div>
 
-        {/* D3 Pinned Footer Insight Tile (W8 & P1-6 fixed) */}
-        {topCategory && (
+        {/* D3 Pinned Footer Insight Tile - Top Product */}
+        {topProduct && (
           <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
-            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
-              Top category: {topCategory.categoryName} ({topPct}% of spend)
+            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57] truncate max-w-[240px]" title={topProduct.productName}>
+              Top product: {topProduct.productName} ({topProductPct}% of spend)
             </span>
-            <span className="text-[#6F6A61] dark:text-[#9A948A] font-light">
-              {activeCatCount} of {categorySpend.length} active
+            <span className="text-[#6F6A61] dark:text-[#9A948A] font-light shrink-0">
+              {effectiveProducts.length} tracked SKUs
             </span>
           </div>
         )}

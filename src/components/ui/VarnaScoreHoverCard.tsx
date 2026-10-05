@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion";
-import { Leaf, Users, Shield, Palette, AlertTriangle } from "lucide-react";
+import { Leaf, Users, Shield, Palette, AlertTriangle, X } from "lucide-react";
 import { POPOVER_ENTRANCE, EASE_SMOOTH, STAGGER_DELAY } from "@/lib/motion";
 import { getPerformanceBand } from "@/lib/motion";
 
@@ -69,8 +69,7 @@ export default function VarnaScoreHoverCard({
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0, placement: "below" as "below" | "above" });
   const triggerRef = useRef<HTMLDivElement>(null);
-  const enterTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const leaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -98,28 +97,43 @@ export default function VarnaScoreHoverCard({
     setPosition({ top, left, placement });
   }, []);
 
-  const handleMouseEnter = useCallback(() => {
-    if (leaveTimeout.current) { clearTimeout(leaveTimeout.current); leaveTimeout.current = null; }
-    enterTimeout.current = setTimeout(() => { calculatePosition(); setIsOpen(true); }, 300);
-  }, [calculatePosition]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (enterTimeout.current) { clearTimeout(enterTimeout.current); enterTimeout.current = null; }
-    leaveTimeout.current = setTimeout(() => { setIsOpen(false); }, 150);
-  }, []);
-
   const handleClick = useCallback(() => {
-    if (isOpen) { setIsOpen(false); return; }
-    calculatePosition();
-    setIsOpen(true);
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      calculatePosition();
+      setIsOpen(true);
+    }
   }, [isOpen, calculatePosition]);
 
+  // Click-outside and Escape key listener for accessible dismissal
   useEffect(() => {
+    if (!isOpen) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      if (enterTimeout.current) clearTimeout(enterTimeout.current);
-      if (leaveTimeout.current) clearTimeout(leaveTimeout.current);
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isOpen]);
 
   // Derived scores
   const readinessScore = Math.round((gScore + cScore) / 2);
@@ -138,10 +152,19 @@ export default function VarnaScoreHoverCard({
     <>
       <div
         ref={triggerRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         onClick={handleClick}
-        className="inline-block cursor-help"
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        className="inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all"
+        title="Click to view Varna Score breakdown"
       >
         {children}
       </div>
@@ -151,9 +174,8 @@ export default function VarnaScoreHoverCard({
           <AnimatePresence>
             {isOpen && (
               <motion.div
+                ref={popoverRef}
                 {...POPOVER_ENTRANCE}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
                 className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
                 style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
               >
@@ -179,19 +201,32 @@ export default function VarnaScoreHoverCard({
                           {supplierName && supplierName !== "Portfolio Average" ? supplierName : "Weighted average across your verified suppliers"}
                         </p>
                       </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <div className="flex items-baseline gap-0.5">
-                          <CountUpNumber
-                            value={score}
-                            className="text-3xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone"
-                          />
-                          <span className="text-xs font-normal text-slate-mist/80 dark:text-warm-stone/60 ml-0.5">
-                            / 100
+                      <div className="flex items-start gap-3">
+                        <div className="flex flex-col items-end gap-1">
+                          <div className="flex items-baseline gap-0.5">
+                            <CountUpNumber
+                              value={score}
+                              className="text-3xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone"
+                            />
+                            <span className="text-xs font-normal text-slate-mist/80 dark:text-warm-stone/60 ml-0.5">
+                              / 100
+                            </span>
+                          </div>
+                          <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${band.bg} ${band.text} ${band.border}`}>
+                            {band.name}
                           </span>
                         </div>
-                        <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${band.bg} ${band.text} ${band.border}`}>
-                          {band.name}
-                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsOpen(false);
+                          }}
+                          className="p-1 rounded-md text-slate-mist hover:text-carbon-ink dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                          aria-label="Close"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
 

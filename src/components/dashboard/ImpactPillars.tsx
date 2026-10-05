@@ -56,7 +56,7 @@ export default function ImpactPillars({
                 criteria={breakdown?.criteria ?? []}
                 color={pillar.color}
               >
-                <div className="cursor-help">
+                <div className="cursor-pointer">
                   <RadialGauge
                     value={score}
                     size={124}

@@ -6,6 +6,8 @@ import DashboardClient from "./DashboardClient";
 import {
   type DashboardData,
   type SupplierDetail,
+  type ProductSpendItem,
+  MOCK_PRODUCTS_LIST,
   getClientLogoFallback,
   getSupplierLogoFallback,
 } from "@/lib/mock-data";
@@ -97,6 +99,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       { data: summaryData, error: summaryError },
       { data: supplierLinks, error: linksError },
       { data: catSpendData, error: catSpendError },
+      { data: orderRegData, error: orderRegError },
     ] = await Promise.all([
       // 1. Fetch Client Master
       supabase
@@ -123,12 +126,19 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         .from("category_spend_by_client")
         .select("category_name, total_spend_inr_auto, total_units_auto")
         .eq("client_id", clientId),
+
+      // 5. Fetch Order Register for individual product-level metrics (Actions 1 & 2)
+      supabase
+        .from("order_register")
+        .select("sku_id, product_name_auto, category_auto, enterprise_name_auto, varna_score_auto, order_value_inr_auto, qty_units, e_score_auto, s_score_auto, g_score_auto, c_score_auto")
+        .eq("client_id", clientId),
     ]);
 
     if (clientError) console.error("Supabase client_master error:", clientError);
     if (summaryError) console.error("Supabase client_summary error:", summaryError);
     if (linksError) console.error("Supabase supplier_detail_by_client error:", linksError);
     if (catSpendError) console.error("Supabase category_spend_by_client error:", catSpendError);
+    if (orderRegError) console.error("Supabase order_register error:", orderRegError);
 
     // ─── Fire global cached queries (cookie-free client inside cache) ─────────
     const [assessmentData, scoresData] = await Promise.all([
@@ -275,6 +285,46 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
     const totalArtisansSupported = summaryData?.total_artisans_supported ?? (fallbackHotel.activeSuppliers * 320);
     const totalSuppliers = summaryData?.no_active_suppliers ?? fallbackHotel.activeSuppliers;
 
+    // Process product-level spend (Action 1 & 2)
+    const productMap: Record<string, ProductSpendItem> = {};
+    if (orderRegData && orderRegData.length > 0) {
+      orderRegData.forEach((row: any) => {
+        const sku = row.sku_id || row.product_name_auto;
+        const spend = Number(row.order_value_inr_auto) || 0;
+        const units = Number(row.qty_units) || 0;
+        const score = Number(row.varna_score_auto) || 0;
+        if (!productMap[sku]) {
+          productMap[sku] = {
+            clientId,
+            skuId: row.sku_id || "SKU-001",
+            productName: row.product_name_auto || sku,
+            categoryName: row.category_auto || "General",
+            supplierName: row.enterprise_name_auto || "Verified Supplier",
+            totalSpend: spend,
+            totalUnits: units,
+            varnaScore: score,
+            eScore: Number(row.e_score_auto) || Math.round(score * 0.9),
+            sScore: Number(row.s_score_auto) || Math.round(score * 1.0),
+            gScore: Number(row.g_score_auto) || Math.round(score * 1.05),
+            cScore: Number(row.c_score_auto) || 0,
+          };
+        } else {
+          const existing = productMap[sku];
+          const newSpend = existing.totalSpend + spend;
+          const weightedScore = newSpend > 0
+            ? (existing.varnaScore * existing.totalSpend + score * spend) / newSpend
+            : existing.varnaScore;
+          existing.totalSpend = newSpend;
+          existing.totalUnits += units;
+          existing.varnaScore = Math.round(weightedScore * 10) / 10;
+        }
+      });
+    }
+
+    const productsList: ProductSpendItem[] = Object.values(productMap).length > 0
+      ? Object.values(productMap)
+      : MOCK_PRODUCTS_LIST.filter((p) => p.clientId === clientId || (!p.clientId && clientId === "CLT-001"));
+
     const dashboardData: DashboardData = {
       client: {
         clientId,
@@ -343,6 +393,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       } as any,
       suppliers: suppliersList,
       categorySpend,
+      products: productsList,
       tierDistribution,
       supplierImpactData,
     };

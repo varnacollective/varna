@@ -169,11 +169,13 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
 function OverviewSection({
   summary,
   categorySpend,
+  products,
   tierDistribution,
   supplierImpactData,
 }: {
   summary: DashboardData["summary"];
   categorySpend: DashboardData["categorySpend"];
+  products?: DashboardData["products"];
   tierDistribution: DashboardData["tierDistribution"];
   supplierImpactData: DashboardData["supplierImpactData"];
 }) {
@@ -270,7 +272,7 @@ function OverviewSection({
 
       {/* 3. Bottom Grid: Spend, Tiers, Impact */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SpendByCategoryChart data={categorySpend} delay={0.35} />
+        <SpendByCategoryChart data={categorySpend} products={products} delay={0.35} />
         <PortfolioMixChart data={tierDistribution} delay={0.4} />
       </div>
 

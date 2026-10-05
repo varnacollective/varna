@@ -11,7 +11,7 @@ import type { SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS } from "@/lib/mock-data";
 import BrandLogo from "@/components/ui/BrandLogo";
 import { getBadgeConfig, type SupplierBadgeItem } from "@/components/dashboard/SupplierProfileCard";
-import { ExternalLink, ShoppingBag, Quote, FileText } from "lucide-react";
+import { ExternalLink, ShoppingBag, Quote, FileText, Info } from "lucide-react";
 import Link from "next/link";
 import { getPartnerReportUrl } from "@/lib/partner-reports";
 import PillarBreakdownHoverCard from "@/components/ui/PillarBreakdownHoverCard";
@@ -185,6 +185,7 @@ export default function SupplierCardV2({
   let strongestPillarName = "Governance";
   let maxPillarVal = 0;
   bars.forEach((b) => {
+    if (b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val)) return;
     if (b.val > maxPillarVal) {
       maxPillarVal = b.val;
       strongestPillarName = b.label;
@@ -360,24 +361,31 @@ export default function SupplierCardV2({
                 color={pillarColor}
                 items={breakdown.items}
                 disableScale={true}
-                className="w-full block cursor-help outline-none group/pillar rounded-lg p-1 -m-1 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+                className="w-full block cursor-pointer outline-none group/pillar rounded-lg p-1 -m-1 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
               >
                 <div className="space-y-1 w-full">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-[#5B564E] dark:text-[#C2BCB0] font-medium group-hover/pillar:text-[#1F1B16] dark:group-hover/pillar:text-white transition-colors">
                       {b.label}
                     </span>
-                    <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-semibold tabular-nums">
-                      {b.val !== null && b.val !== undefined && !isNaN(b.val) ? b.val.toFixed(1) : "—"}
-                    </span>
+                    {b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val) ? (
+                      <span className="inline-flex items-center gap-1 text-[#9A948A] dark:text-[#6F6A61] text-[11px] font-medium" title="Carbon data is pending.">
+                        N/A
+                        <Info className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" />
+                      </span>
+                    ) : (
+                      <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-semibold tabular-nums">
+                        {b.val !== null && b.val !== undefined && !isNaN(b.val) ? b.val.toFixed(1) : "—"}
+                      </span>
+                    )}
                   </div>
 
                   <div className="w-full h-[5px] rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
                     <motion.div
                       className="h-full rounded-full transition-all duration-700"
-                      style={{ backgroundColor: pillarColor, width: `${Math.min(100, Math.max(0, b.val || 0))}%` }}
+                      style={{ backgroundColor: pillarColor, width: b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val) ? "0%" : `${Math.min(100, Math.max(0, b.val || 0))}%` }}
                       initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(100, Math.max(0, b.val || 0))}%` }}
+                      animate={{ width: b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val) ? "0%" : `${Math.min(100, Math.max(0, b.val || 0))}%` }}
                     />
                   </div>
                 </div>

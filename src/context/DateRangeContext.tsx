@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from "react";
 
-export type DatePreset = "all_time" | "this_month" | "this_quarter" | "last_6_months" | "this_year" | "custom";
+export type DatePreset = "all_time" | "this_month" | "this_quarter" | "this_financial_year" | "last_12_months" | "last_6_months" | "this_year" | "custom";
 
 export interface DateRangeState {
   preset: DatePreset;
@@ -35,8 +35,8 @@ export function formatDateForDisplay(dateStr: string): string {
 // Calculate preset date ranges
 export function getPresetDates(preset: DatePreset): { startDate: string | null; endDate: string | null; label: string } {
   const now = new Date();
-  const currentYear = now.getFullYear(); // 2026
-  const currentMonth = now.getMonth();   // 0-indexed
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-indexed
 
   switch (preset) {
     case "this_month": {
@@ -51,7 +51,6 @@ export function getPresetDates(preset: DatePreset): { startDate: string | null; 
       };
     }
     case "this_quarter": {
-      // Q2 2026: Apr 1 - Jun 30, 2026 or current calendar quarter
       const quarterStartMonth = Math.floor(currentMonth / 3) * 3;
       const firstDay = new Date(currentYear, quarterStartMonth, 1);
       const lastDay = new Date(currentYear, quarterStartMonth + 3, 0);
@@ -63,11 +62,34 @@ export function getPresetDates(preset: DatePreset): { startDate: string | null; 
         label: `${formatDateForDisplay(start)} – ${formatDateForDisplay(end)}`,
       };
     }
+    case "this_financial_year": {
+      // Indian financial year: Apr 1 – Mar 31
+      // If current month is Jan/Feb/Mar, FY started last April
+      const fyStartYear = currentMonth >= 3 ? currentYear : currentYear - 1;
+      const start = `${fyStartYear}-04-01`;
+      const end = `${fyStartYear + 1}-03-31`;
+      return {
+        startDate: start,
+        endDate: end,
+        label: `${formatDateForDisplay(start)} – ${formatDateForDisplay(end)}`,
+      };
+    }
+    case "last_12_months": {
+      const twelveMonthsAgo = new Date(currentYear, currentMonth - 11, 1);
+      const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
+      const start = twelveMonthsAgo.toISOString().split("T")[0];
+      const end = endOfMonth.toISOString().split("T")[0];
+      return {
+        startDate: start,
+        endDate: end,
+        label: `${formatDateForDisplay(start)} – ${formatDateForDisplay(end)}`,
+      };
+    }
     case "last_6_months": {
       const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1);
-      const today = new Date(currentYear, currentMonth + 1, 0);
+      const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
       const start = sixMonthsAgo.toISOString().split("T")[0];
-      const end = today.toISOString().split("T")[0];
+      const end = endOfMonth.toISOString().split("T")[0];
       return {
         startDate: start,
         endDate: end,
@@ -109,7 +131,7 @@ export function DateRangeProvider({ children }: { children: ReactNode }) {
     const to = params.get("to");
     const presetParam = params.get("preset") as DatePreset | null;
 
-    if (presetParam && ["all_time", "this_month", "this_quarter", "last_6_months", "this_year"].includes(presetParam)) {
+    if (presetParam && ["all_time", "this_month", "this_quarter", "this_financial_year", "last_12_months", "last_6_months", "this_year"].includes(presetParam)) {
       const presetInfo = getPresetDates(presetParam);
       setState({
         preset: presetParam,

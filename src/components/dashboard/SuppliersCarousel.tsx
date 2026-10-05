@@ -200,7 +200,7 @@ export default function SuppliersCarousel({
                       { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
                       { label: "Social", val: supplier.s_pillar_score ?? 55 },
                       { label: "Governance", val: supplier.g_pillar_score ?? 50 },
-                      { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
+                      { label: "Carbon Impact", val: supplier.c_pillar_score ?? 0 },
                     ]}
                     sdgObjects={supplier.sdg_objects || []}
                     liveConfidenceData={liveConfidenceData}
@@ -292,7 +292,7 @@ export default function SuppliersCarousel({
                   sScore={supplier.s_pillar_score ?? 55}
                   gScore={supplier.g_pillar_score ?? 50}
                   cScore={supplier.c_pillar_score ?? 45}
-                  carbonScore={supplier.c_pillar_score ?? 45}
+                  carbonScore={supplier.c_pillar_score ?? 0}
                   skuCount={isUKHI ? 4 : 2}
                   totalUnits={isUKHI ? 2400 : 1200}
                   confidenceScore={confidencePct}
@@ -302,7 +302,7 @@ export default function SuppliersCarousel({
                     { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
                     { label: "Social", val: supplier.s_pillar_score ?? 55 },
                     { label: "Governance", val: supplier.g_pillar_score ?? 50 },
-                    { label: "Carbon Impact", val: supplier.c_pillar_score ?? 45 },
+                    { label: "Carbon Impact", val: supplier.c_pillar_score ?? 0 },
                   ]}
                   sdgObjects={supplier.sdg_objects || []}
                   liveConfidenceData={liveConfidenceData}

@@ -67,11 +67,27 @@ export interface CategorySpend {
   avgVarnaScore: number;
 }
 
+export interface ProductSpendItem {
+  clientId: string;
+  skuId: string;
+  productName: string;
+  categoryName: string;
+  supplierName: string;
+  totalSpend: number;
+  totalUnits: number;
+  varnaScore: number;
+  eScore: number;
+  sScore: number;
+  gScore: number;
+  cScore?: number;
+}
+
 export interface DashboardData {
   client: ClientMaster;
   summary: ClientSummary;
   suppliers: SupplierDetail[];
   categorySpend: CategorySpend[];
+  products?: ProductSpendItem[];
   tierDistribution: { tier: string; count: number; color: string }[];
   supplierImpactData: { name: string; womenPct: number; wageRatio: number }[];
 }
@@ -730,6 +746,167 @@ export const CLIENT_ORDERS_LIST: ClientOrderItem[] = [
         status: "upcoming",
       },
     ],
+  },
+];
+
+// ──────────────── MOCK_PRODUCTS_LIST (From order_register) ────────────────
+
+export const MOCK_PRODUCTS_LIST: ProductSpendItem[] = [
+  {
+    clientId: "CLT001",
+    skuId: "SKU-001",
+    productName: "Liquid Soap (Fresh Lime Shower Gel)",
+    categoryName: "Bathroom Amenities",
+    supplierName: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+    totalSpend: 148000,
+    totalUnits: 800,
+    varnaScore: 73.5,
+    eScore: 31.8,
+    sScore: 63.8,
+    gScore: 81.6,
+    cScore: 72.0,
+  },
+  {
+    clientId: "CLT001",
+    skuId: "SKU-003",
+    productName: "Liquid Conditioner (Jojoba Aloevera)",
+    categoryName: "Bathroom Amenities",
+    supplierName: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+    totalSpend: 120000,
+    totalUnits: 500,
+    varnaScore: 73.5,
+    eScore: 31.8,
+    sScore: 63.8,
+    gScore: 81.6,
+    cScore: 72.0,
+  },
+  {
+    clientId: "CLT001",
+    skuId: "SKU-012",
+    productName: "Handcrafted Wooden Comb",
+    categoryName: "Amenity Accessories",
+    supplierName: "Kheoni Ventures Pvt Ltd",
+    totalSpend: 33250,
+    totalUnits: 350,
+    varnaScore: 51.3,
+    eScore: 25.4,
+    sScore: 59.1,
+    gScore: 76.5,
+    cScore: 65.0,
+  },
+  {
+    clientId: "CLT001",
+    skuId: "SKU-005",
+    productName: "Drinking Straws",
+    categoryName: "Disposables",
+    supplierName: "UKHI India Private Limited",
+    totalSpend: 7500,
+    totalUnits: 5000,
+    varnaScore: 77.1,
+    eScore: 46.3,
+    sScore: 67.5,
+    gScore: 78.3,
+    cScore: 55.0,
+  },
+  {
+    clientId: "CLT001",
+    skuId: "SKU-007",
+    productName: "Garbage Bags (Flat)",
+    categoryName: "Packaging",
+    supplierName: "UKHI India Private Limited",
+    totalSpend: 4400,
+    totalUnits: 2000,
+    varnaScore: 77.1,
+    eScore: 46.3,
+    sScore: 67.5,
+    gScore: 78.3,
+    cScore: 55.0,
+  },
+  // CLT002
+  {
+    clientId: "CLT002",
+    skuId: "SKU-010",
+    productName: "Natural Face Cream",
+    categoryName: "Spa & Wellness",
+    supplierName: "Kheoni Ventures Pvt Ltd",
+    totalSpend: 135000,
+    totalUnits: 300,
+    varnaScore: 51.3,
+    eScore: 25.4,
+    sScore: 59.1,
+    gScore: 76.5,
+    cScore: 65.0,
+  },
+  {
+    clientId: "CLT002",
+    skuId: "SKU-002",
+    productName: "Liquid Shampoo (Amla Shikakai)",
+    categoryName: "Bathroom Amenities",
+    supplierName: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+    totalSpend: 126000,
+    totalUnits: 600,
+    varnaScore: 73.5,
+    eScore: 31.8,
+    sScore: 63.8,
+    gScore: 81.6,
+    cScore: 72.0,
+  },
+  {
+    clientId: "CLT002",
+    skuId: "SKU-009",
+    productName: "Wellness Soap Bar",
+    categoryName: "Bathroom Amenities",
+    supplierName: "Kheoni Ventures Pvt Ltd",
+    totalSpend: 60000,
+    totalUnits: 400,
+    varnaScore: 51.3,
+    eScore: 25.4,
+    sScore: 59.1,
+    gScore: 76.5,
+    cScore: 65.0,
+  },
+  // CLT003
+  {
+    clientId: "CLT003",
+    skuId: "SKU-011",
+    productName: "Herbal Hair Oil",
+    categoryName: "Spa & Wellness",
+    supplierName: "Kheoni Ventures Pvt Ltd",
+    totalSpend: 95000,
+    totalUnits: 250,
+    varnaScore: 51.3,
+    eScore: 25.4,
+    sScore: 59.1,
+    gScore: 76.5,
+    cScore: 65.0,
+  },
+  {
+    clientId: "CLT003",
+    skuId: "SKU-006",
+    productName: "Cutlery Set (Fork/Spoon/Knife)",
+    categoryName: "Disposables",
+    supplierName: "UKHI India Private Limited",
+    totalSpend: 6750,
+    totalUnits: 1500,
+    varnaScore: 77.1,
+    eScore: 46.3,
+    sScore: 67.5,
+    gScore: 78.3,
+    cScore: 55.0,
+  },
+  {
+    clientId: "CLT003",
+    skuId: "SKU-008",
+    productName: "Carry Bags",
+    categoryName: "Packaging",
+    supplierName: "UKHI India Private Limited",
+    totalSpend: 4500,
+    totalUnits: 2500,
+    varnaScore: 77.1,
+    eScore: 46.3,
+    sScore: 67.5,
+    gScore: 78.3,
+    cScore: 55.0,
   },
 ];
 

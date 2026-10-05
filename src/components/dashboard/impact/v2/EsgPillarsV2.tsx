@@ -131,7 +131,7 @@ export default function EsgPillarsV2({
                     criteria={breakdown?.criteria ?? []}
                     color={score >= 80 ? "#738678" : score >= 70 ? "#6F848F" : "#7A3F1E"}
                   >
-                    <div className="cursor-help transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="cursor-pointer transition-transform duration-200 hover:scale-[1.02]">
                       <RadialGauge
                         value={score}
                         size={176}

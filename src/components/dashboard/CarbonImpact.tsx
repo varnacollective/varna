@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Card from "@/components/ui/Card";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { TreePine, Leaf, Wind, CheckCircle2 } from "lucide-react";
@@ -14,6 +15,7 @@ export default function CarbonImpact({
   totalCO2eAvoidedKg,
   delay = 0,
 }: CarbonImpactProps) {
+  const [activeMilestone, setActiveMilestone] = useState<number | null>(null);
   // 1 tree absorbs ~22 kg CO2 per year (EPA estimate)
   const treesEquivalent = Math.round(totalCO2eAvoidedKg / 22);
 
@@ -135,9 +137,17 @@ export default function CarbonImpact({
                 duration: 0.3,
                 ease: "easeOut",
               }}
-              whileHover={{ scale: 1.25, y: -2 }}
-              className="relative group flex items-center justify-center cursor-help py-1"
-              title={`Milestone ~${icon.treeMilestone} mature trees (${icon.isFilled ? "Achieved" : "Target Capacity"})`}
+              role="button"
+              tabIndex={0}
+              aria-label={`Milestone ~${icon.treeMilestone} mature trees (${icon.isFilled ? "Achieved" : "Target Capacity"})`}
+              onClick={() => setActiveMilestone((prev) => prev === idx ? null : idx)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setActiveMilestone((prev) => prev === idx ? null : idx);
+                }
+              }}
+              className="relative flex items-center justify-center cursor-pointer py-1 outline-none focus-visible:ring-1 focus-visible:ring-[#738678] rounded"
             >
               {icon.isFilled ? (
                 <div className="relative">
@@ -155,12 +165,21 @@ export default function CarbonImpact({
                 />
               )}
 
-              {/* Hover Tooltip */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none z-50 whitespace-nowrap">
-                <span className="text-[8px] font-sans font-medium uppercase tracking-widest text-[#D8CFB8] bg-[#222326] px-2 py-0.5 border border-[#6F848F]/30">
-                  {icon.isFilled ? `✓ Achieved: ~${icon.treeMilestone} trees` : `Target: ~${icon.treeMilestone} trees`}
-                </span>
-              </div>
+              {/* Click Popover */}
+              <AnimatePresence>
+                {activeMilestone === idx && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 2, scale: 0.95 }}
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap"
+                  >
+                    <span className="text-[8px] font-sans font-medium uppercase tracking-widest text-[#D8CFB8] bg-[#222326] px-2 py-0.5 border border-[#6F848F]/30 shadow-lg rounded">
+                      {icon.isFilled ? `✓ Achieved: ~${icon.treeMilestone} trees` : `Target: ~${icon.treeMilestone} trees`}
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>

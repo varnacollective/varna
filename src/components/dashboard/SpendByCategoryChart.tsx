@@ -9,11 +9,12 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import type { CategorySpend } from "@/lib/mock-data";
+import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
 import { PieChart as PieIcon } from "lucide-react";
 
 interface SpendByCategoryChartProps {
   data: CategorySpend[];
+  products?: ProductSpendItem[];
   delay?: number;
 }
 
@@ -91,24 +92,34 @@ function CustomTooltip({
 
 export default function SpendByCategoryChart({
   data,
+  products,
   delay = 0,
 }: SpendByCategoryChartProps) {
-  const totalSpend = data.reduce((sum, d) => sum + d.totalSpend, 0);
+  const displayItems = products && products.length > 0
+    ? products.map((p) => ({
+        categoryName: p.productName.replace(/\s*\([^)]*\)/g, "").trim(),
+        totalSpend: p.totalSpend,
+        totalOrders: p.totalUnits,
+      }))
+    : data;
+
+  const totalSpend = displayItems.reduce((sum, d) => sum + d.totalSpend, 0);
+  const chartTitle = products && products.length > 0 ? "Spend by Product" : "Spend by Product Category";
 
   // Empty state handling
-  if (!data || data.length === 0 || totalSpend === 0) {
+  if (!displayItems || displayItems.length === 0 || totalSpend === 0) {
     return (
       <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
         <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#D8CFB8]/60 mb-2 border-b border-[#6F848F]/20 dark:border-[#2F3C52] pb-3">
-          Spend by Product Category
+          {chartTitle}
         </h3>
         <div className="h-56 flex flex-col items-center justify-center text-center p-6 border border-dashed border-[#6F848F]/30 bg-[#DFD8C2]/20 dark:bg-[#222326]/40">
           <PieIcon className="w-8 h-8 text-[#6F848F]/60 mb-2" strokeWidth={1.5} />
           <p className="text-xs uppercase tracking-wider font-semibold text-[#6F848F]">
-            Awaiting Procurement Category Data
+            Awaiting Procurement Product Data
           </p>
           <p className="text-[11px] text-[#6F848F]/80 font-light mt-1 max-w-xs">
-            Category spend breakdowns will automatically populate upon catalog sync.
+            Product spend breakdowns will automatically populate upon catalog sync.
           </p>
         </div>
       </Card>
@@ -118,7 +129,7 @@ export default function SpendByCategoryChart({
   return (
     <Card delay={delay} variant="chart" hoverEffect={false} className="p-8">
       <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6F848F] dark:text-[#8C9DA8] mb-2 border-b border-[#6F848F]/20 dark:border-[#8C9DA8]/20 pb-3">
-        Spend by Product Category
+        {chartTitle}
       </h3>
       <p className="text-3xl sm:text-4xl font-sans font-medium text-[#7A3F1E] dark:text-[#FAF6EE] tracking-hero mb-6 mt-2">
         {formatCurrency(totalSpend)}{" "}

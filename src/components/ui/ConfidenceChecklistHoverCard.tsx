@@ -238,15 +238,26 @@ export default function ConfidenceChecklistHoverCard({
 
   return (
     <>
-      {/* Trigger: hover or click to open drawer */}
+      {/* Trigger: click to open drawer */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        aria-label={`Evidence confidence breakdown for ${supplierName || "supplier"}, click to inspect`}
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen((prev) => !prev);
         }}
-        onMouseEnter={() => setIsOpen(true)}
-        className="inline-block cursor-pointer transition-transform duration-200 hover:scale-105 group"
-        title="Click or hover to inspect confidence verification"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsOpen((prev) => !prev);
+          }
+        }}
+        className="inline-block cursor-pointer transition-transform duration-200 hover:scale-105 group outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl"
+        title="Click to inspect confidence verification"
       >
         {children}
       </div>
