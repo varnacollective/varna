@@ -201,7 +201,9 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       ? catSpendData.map((row: any) => ({
           clientId,
           categoryName: row.category_name,
+          category_name: row.category_name,
           totalSpend: row.total_spend_inr_auto ?? 0,
+          total_spend: row.total_spend_inr_auto ?? 0,
           totalOrders: row.total_units_auto ?? 0,
           avgVarnaScore: 0,
         }))

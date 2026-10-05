@@ -62,9 +62,17 @@ export interface SupplierDetail {
 export interface CategorySpend {
   clientId: string;
   categoryName: string;
+  category_name?: string;
   totalSpend: number;
+  total_spend?: number;
   totalOrders: number;
   avgVarnaScore: number;
+  eScore?: number;
+  sScore?: number;
+  gScore?: number;
+  E?: number;
+  S?: number;
+  G?: number;
 }
 
 export interface ProductSpendItem {

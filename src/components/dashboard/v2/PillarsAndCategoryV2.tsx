@@ -163,12 +163,12 @@ export default function PillarsAndCategoryV2({
         <div>
           <div className="pb-4 border-b border-black/[0.07] dark:border-white/[0.08] mb-4">
             <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
-              Spend by Product
+              Spend by Product Category
             </h2>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalSpendUsd.toLocaleString('en-US')}`}>
-                ${totalSpendUsd.toLocaleString('en-US')}
+              <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalCategorySpendUsd.toLocaleString('en-US')}`}>
+                ${totalCategorySpendUsd.toLocaleString('en-US')}
               </span>
               <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
                 SUSTAINABLE SPEND
@@ -182,14 +182,14 @@ export default function PillarsAndCategoryV2({
           </div>
         </div>
 
-        {/* D3 Pinned Footer Insight Tile - Top Product */}
-        {topProduct && (
+        {/* D3 Pinned Footer Insight Tile - Top Category */}
+        {topCategory && (
           <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
-            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57] truncate max-w-[240px]" title={topProduct.productName}>
-              Top product: {topProduct.productName} ({topProductPct}% of spend)
+            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
+              Top category: {topCategory.categoryName} ({topPct}% of spend)
             </span>
-            <span className="text-[#6F6A61] dark:text-[#9A948A] font-light shrink-0">
-              {effectiveProducts.length} tracked SKUs
+            <span className="text-[#6F6A61] dark:text-[#9A948A] font-light">
+              {activeCatCount} of {categorySpend.length} active
             </span>
           </div>
         )}
