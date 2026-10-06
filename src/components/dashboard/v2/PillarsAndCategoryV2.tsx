@@ -17,6 +17,7 @@ interface PillarsAndCategoryV2Props {
   pillarBreakdown?: Record<string, any>;
   categorySpend: CategorySpend[];
   products?: ProductSpendItem[];
+  orderRegister?: any[];
 }
 
 const BRAND_CHART_COLORS = [
@@ -45,6 +46,7 @@ export default function PillarsAndCategoryV2({
   pillarBreakdown,
   categorySpend,
   products,
+  orderRegister,
 }: PillarsAndCategoryV2Props) {
   // Action 1, 2, 3: Product-level mapping
   const effectiveProducts = useMemo(() => {
@@ -158,9 +160,20 @@ export default function PillarsAndCategoryV2({
                     </div>
                   ))}
                 </div>
-                {/* Segmented bar */}
-                <div className="w-full">
-                  <VarnaScoreBandScale score={avgScore} legendOrientation="none" />
+                {/* Segmented bar: completely uniform with no active tier indicator */}
+                <div className="w-full my-1 transform-gpu">
+                  <div className="w-full h-2.5 rounded-full overflow-hidden grid grid-cols-5 bg-black/5 dark:bg-white/10 relative p-0.5 gap-0.5">
+                    {SCORE_BANDS.map((band, idx) => (
+                      <div
+                        key={band.id}
+                        className={`h-full transition-opacity hover:opacity-90 ${
+                          idx === 0 ? "rounded-l-full" : ""
+                        } ${idx === SCORE_BANDS.length - 1 ? "rounded-r-full" : ""}`}
+                        style={{ backgroundColor: band.color }}
+                        title={`${band.name}: ${band.rangeLabel}`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             );
@@ -198,7 +211,7 @@ export default function PillarsAndCategoryV2({
 
           {/* Horizontal Bar Chart with toggle */}
           <div className="flex-1 min-h-[280px]">
-            <CategoryChartV2 products={effectiveProducts} categorySpend={categorySpend} />
+            <CategoryChartV2 products={effectiveProducts} categorySpend={categorySpend} orderRegister={orderRegister} />
           </div>
         </div>
 

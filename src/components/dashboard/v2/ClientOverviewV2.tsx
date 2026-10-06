@@ -96,6 +96,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         pillarBreakdown={summary.pillarBreakdown}
         categorySpend={categorySpend}
         products={products}
+        orderRegister={data.orderRegister}
       />
 
       {/* 5. Carbon Impact + Supplier Tier Distribution (W9, W10 & D4, D5) */}

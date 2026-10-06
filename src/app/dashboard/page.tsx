@@ -130,7 +130,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       // 5. Fetch Order Register for individual product-level metrics (Actions 1 & 2)
       supabase
         .from("order_register")
-        .select("sku_id, product_name_auto, category_auto, enterprise_name_auto, varna_score_auto, order_value_inr_auto, qty_units, e_score_auto, s_score_auto, g_score_auto, c_score_auto")
+        .select("order_id, sku_id, product_name_auto, category_auto, enterprise_name_auto, varna_score_auto, order_value_inr_auto, qty_units, e_score_auto, s_score_auto, g_score_auto, c_score_auto, order_date, co2_reduction_pct")
         .eq("client_id", clientId),
     ]);
 
@@ -396,6 +396,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       suppliers: suppliersList,
       categorySpend,
       products: productsList,
+      orderRegister: orderRegData || [],
       tierDistribution,
       supplierImpactData,
     };

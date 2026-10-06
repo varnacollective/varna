@@ -96,6 +96,7 @@ export interface DashboardData {
   suppliers: SupplierDetail[];
   categorySpend: CategorySpend[];
   products?: ProductSpendItem[];
+  orderRegister?: any[];
   tierDistribution: { tier: string; count: number; color: string }[];
   supplierImpactData: { name: string; womenPct: number; wageRatio: number }[];
 }

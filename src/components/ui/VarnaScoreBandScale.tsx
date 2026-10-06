@@ -95,6 +95,7 @@ interface VarnaScoreBandScaleProps {
   score: number;
   className?: string;
   legendOrientation?: "horizontal" | "vertical" | "none";
+  showIndicator?: boolean;
 }
 
 export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
@@ -174,6 +175,7 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
   score,
   className = "",
   legendOrientation = "vertical",
+  showIndicator = true,
 }: VarnaScoreBandScaleProps) {
   const activeBandId = getActiveBandId(score);
   const positionPercent = getScorePositionPercent(score);
@@ -186,17 +188,19 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
       )}
 
       {/* Marker Pin above bar */}
-      <div className="relative w-full h-3">
-        <div
-          className="absolute -top-0.5 flex flex-col items-center -translate-x-1/2 z-20 transition-all duration-300 pointer-events-none"
-          style={{ left: `${positionPercent}%` }}
-          title={`Current Score: ${score.toFixed(1)}`}
-        >
-          <span className="text-[10px] leading-none text-[#7D3F1E] dark:text-[#E07A57] font-bold select-none">
-            ▼
-          </span>
+      {showIndicator && (
+        <div className="relative w-full h-3">
+          <div
+            className="absolute -top-0.5 flex flex-col items-center -translate-x-1/2 z-20 transition-all duration-300 pointer-events-none"
+            style={{ left: `${positionPercent}%` }}
+            title={`Current Score: ${score.toFixed(1)}`}
+          >
+            <span className="text-[10px] leading-none text-[#7D3F1E] dark:text-[#E07A57] font-bold select-none">
+              ▼
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 5 Equal-Width Segments in a 5-Column Grid */}
       <div className="w-full h-2.5 rounded-full overflow-hidden grid grid-cols-5 bg-black/5 dark:bg-white/10 relative p-0.5 gap-0.5">
@@ -212,10 +216,12 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
         ))}
 
         {/* Solid Vertical Marker Line */}
-        <div
-          className="absolute top-0 bottom-0 w-1 bg-[#1F1B16] dark:bg-white shadow-sm -ml-0.5 rounded-full z-10 pointer-events-none"
-          style={{ left: `${positionPercent}%` }}
-        />
+        {showIndicator && (
+          <div
+            className="absolute top-0 bottom-0 w-1 bg-[#1F1B16] dark:bg-white shadow-sm -ml-0.5 rounded-full z-10 pointer-events-none"
+            style={{ left: `${positionPercent}%` }}
+          />
+        )}
       </div>
     </div>
   );
