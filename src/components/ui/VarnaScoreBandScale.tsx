@@ -94,18 +94,49 @@ export function getScorePositionPercent(score: number): number {
 interface VarnaScoreBandScaleProps {
   score: number;
   className?: string;
+  legendOrientation?: "horizontal" | "vertical" | "none";
 }
 
 export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
   activeScore,
   showHeader = false,
   className = "",
+  orientation = "vertical",
 }: {
   activeScore?: number;
   showHeader?: boolean;
   className?: string;
+  orientation?: "horizontal" | "vertical";
 }) {
   const activeBandId = activeScore !== undefined ? getActiveBandId(activeScore) : null;
+
+  if (orientation === "horizontal") {
+    return (
+      <div className={`flex flex-row justify-between text-xs sm:text-sm mt-4 w-full flex-wrap gap-2 ${className}`}>
+        {SCORE_BANDS.map((band) => {
+          const isActive = activeBandId === band.id;
+          return (
+            <div
+              key={band.id}
+              className={`flex items-center gap-1.5 transition-all ${
+                isActive
+                  ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
+                  : "text-[#6F6A61] dark:text-[#9A948A]"
+              }`}
+            >
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: band.color }}
+              />
+              <span className="whitespace-nowrap">
+                {band.name} {band.rangeLabel}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className={`flex flex-col gap-1.5 text-[12px] text-[#6F6A61] dark:text-[#9A948A] ${className}`}>
@@ -139,7 +170,11 @@ export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
   );
 });
 
-const VarnaScoreBandScale = memo(function VarnaScoreBandScale({ score, className = "" }: VarnaScoreBandScaleProps) {
+const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
+  score,
+  className = "",
+  legendOrientation = "vertical",
+}: VarnaScoreBandScaleProps) {
   const activeBandId = getActiveBandId(score);
   const positionPercent = getScorePositionPercent(score);
 
@@ -179,9 +214,11 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({ score, className
       </div>
 
       {/* Shared Performance Bands Dot+Label Legend */}
-      <div className="pt-1.5">
-        <PerformanceBandsLegend activeScore={score} />
-      </div>
+      {legendOrientation !== "none" && (
+        <div className={legendOrientation === "horizontal" ? "pt-1" : "pt-1.5"}>
+          <PerformanceBandsLegend activeScore={score} orientation={legendOrientation} />
+        </div>
+      )}
     </div>
   );
 });

@@ -3,8 +3,30 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Plus, Minus } from "lucide-react";
 import { getSubCriteriaForPillar, type SubCriterionItem } from "@/lib/sub-criteria-labels";
+
+export const SUTRA_FRAMEWORK_DATA = {
+  Environmental: [
+    { id: "carbon", title: "Carbon Impact", question: "How much carbon goes into making one unit?", why: "Shows if switching truly cuts carbon, and feeds your Scope 3.", check: "Materials and manufacturing energy, raw material to factory gate, against the conventional alternative." },
+    { id: "material", title: "Material Sustainability", question: "What is the product actually made of?", why: "Most of a product's impact is set by its materials.", check: "Share of bio-based, recycled or regenerative inputs versus virgin synthetics, and chemical safety compliance." },
+    { id: "circularity", title: "Circularity", question: "What happens to it after use?", why: "Keeps what your guests use out of landfill.", check: "Compostability test reports, take-back or refill schemes, and design for reuse." },
+    { id: "water", title: "Water Management", question: "Is water used and released responsibly?", why: "Protects water in regions already under stress.", check: "Water use records, treatment before discharge, and steps taken to reduce use." },
+    { id: "pollution", title: "Pollution Control", question: "Is it free of harmful substances?", why: "Keeps harmful chemicals away from guests and workers.", check: "Restricted-substance compliance, effluent treatment and waste handling." },
+    { id: "packaging", title: "Packaging", question: "How much packaging is used, and where does it go?", why: "Cuts the waste your property handles every day.", check: "Packaging weight per unit, material type, recyclability and refill formats." }
+  ],
+  Social: [
+    { id: "employment", title: "Employment & livelihood", question: "Does the business create meaningful work?", why: "Your spend sustains real livelihoods, often rural.", check: "Jobs supported, with attention to rural and district-level employment." },
+    { id: "gender", title: "Gender inclusion", question: "Do women share in the work and the ownership?", why: "Directs your spend toward women's economic inclusion.", check: "Workforce gender split, and women-led or women-owned status." },
+    { id: "wages", title: "Fair wages & conditions", question: "Are workers paid fairly, on clear terms?", why: "No one in your supply chain is underpaid.", check: "Wages against state minimums, and written employment contracts." },
+    { id: "health", title: "Health, safety & wellbeing", question: "Are workers protected on the job?", why: "Protects the people making what you buy.", check: "ESI coverage, safety systems and injury records." }
+  ],
+  Governance: [
+    { id: "legal", title: "Legal & regulatory compliance", question: "Is the business properly registered and licensed?", why: "Lowers supply and reputational risk for your property.", check: "Incorporation, GST, Udyam and product licences, and that each one is still valid." },
+    { id: "ethics", title: "Business ethics", question: "Has the business committed to ethical conduct?", why: "Holds the partner accountable for how it operates.", check: "A signed supplier code of conduct, and any audited ethics assessments." },
+    { id: "sourcing", title: "Responsible sourcing", question: "Does it know where its own materials come from?", why: "Extends responsibility deeper into your supply chain.", check: "Sourcing policies and raw-material traceability." }
+  ]
+};
 
 export interface PillarBreakdownHoverCardProps {
   pillarLabel: string;
@@ -32,6 +54,7 @@ export default function PillarBreakdownHoverCard({
   children,
 }: PillarBreakdownHoverCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [position, setPosition] = useState({ top: 0, left: 0, placement: "below" as "below" | "above" });
   const triggerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -48,6 +71,14 @@ export default function PillarBreakdownHoverCard({
     pillarKey === "G" || pillarLabel.toLowerCase().includes("gov") ? "#36424A" :
     color || "#7A3F1E";
 
+  const normalizedPillar =
+    pillarKey === "E" || pillarLabel.toLowerCase().includes("env") ? "Environmental" :
+    pillarKey === "S" || pillarLabel.toLowerCase().includes("soc") ? "Social" :
+    pillarKey === "G" || pillarLabel.toLowerCase().includes("gov") ? "Governance" :
+    null;
+
+  const sutraList = normalizedPillar ? SUTRA_FRAMEWORK_DATA[normalizedPillar] : [];
+
   const itemsToDisplay: SubCriterionItem[] = directItems ?? 
     (pillarKey && scores ? getSubCriteriaForPillar(pillarKey, scores) : []) ??
     (criteria ? criteria.map(c => ({ code: c.name.slice(0, 3).toUpperCase(), name: c.name, score: c.score, color: activeColor })) : []);
@@ -59,8 +90,8 @@ export default function PillarBreakdownHoverCard({
 
   const isPillarScored = pillarScore !== null && pillarScore !== undefined && !isNaN(Number(pillarScore));
 
-  const CARD_WIDTH = 340;
-  const CARD_HEIGHT_ESTIMATE = Math.min(100 + finalItems.length * 48, 480);
+  const CARD_WIDTH = 380;
+  const CARD_HEIGHT_ESTIMATE = Math.min(120 + finalItems.length * 56, 520);
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current) return;
@@ -152,21 +183,21 @@ export default function PillarBreakdownHoverCard({
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 role="dialog"
                 aria-label={`${pillarLabel} Breakdown`}
-                className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
-                style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
+                className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform max-h-[85vh] flex flex-col"
+                style={{ top: position.top, left: position.left, width: CARD_WIDTH, maxWidth: "calc(100vw - 32px)" }}
               >
                 <div
                   className="
                     bg-white/95 dark:bg-[#1E2028]/95 backdrop-blur-xl
                     border border-[#EAE5DC] dark:border-[#8C9DA8]/25
                     shadow-[0_12px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)]
-                    rounded-xl overflow-hidden font-sans select-none transform-gpu
+                    rounded-xl overflow-hidden font-sans select-none transform-gpu max-h-[85vh] flex flex-col
                   "
                 >
                   {/* Accent Top Border */}
-                  <div className="h-1.5 w-full" style={{ backgroundColor: activeColor }} />
+                  <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: activeColor }} />
 
-                  <div className="p-4">
+                  <div className="p-4 overflow-y-auto max-h-[calc(85vh-10px)]">
                     {/* Header */}
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EAE5DC] dark:border-[#8C9DA8]/15">
                       <div className="flex items-center gap-2">
@@ -209,8 +240,8 @@ export default function PillarBreakdownHoverCard({
                       </div>
                     </div>
 
-                    {/* Sub-Criteria Rows */}
-                    <div className="space-y-2.5">
+                    {/* Sub-Criteria Accordion Rows */}
+                    <div className="space-y-2">
                       {finalItems.map((item, idx) => {
                         const isScored = item.score !== null && item.score !== undefined && !isNaN(Number(item.score));
                         const numScore = isScored ? Number(item.score) : 0;
@@ -218,10 +249,27 @@ export default function PillarBreakdownHoverCard({
                           ? (numScore % 1 === 0 ? numScore : numScore.toFixed(1))
                           : "Not yet scored";
 
+                        const sutraEntry = sutraList.find((s) => {
+                          const sTitle = s.title.toLowerCase();
+                          const iName = item.name.toLowerCase();
+                          return (
+                            iName.includes(s.id.toLowerCase()) ||
+                            iName.includes(sTitle) ||
+                            sTitle.includes(iName) ||
+                            iName.includes(sTitle.split(" ")[0])
+                          );
+                        }) || sutraList[idx];
+
+                        const rowKey = item.code || sutraEntry?.id || String(idx);
+                        const isExpanded = expandedRow === rowKey;
+
                         return (
-                          <div key={item.code || idx} className="space-y-1">
-                            <div className="flex items-center justify-between text-xs font-sans">
-                              <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5 truncate max-w-[250px]">
+                          <div
+                            key={rowKey}
+                            className="p-2 rounded-lg transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02] border border-transparent hover:border-black/[0.04] dark:hover:border-white/[0.05]"
+                          >
+                            <div className="flex items-center justify-between text-xs font-sans gap-2">
+                              <span className="text-[#1A1F26] dark:text-[#FAF8F5] font-medium flex items-center gap-1.5 truncate flex-1 min-w-0">
                                 <span
                                   className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 shrink-0"
                                   style={{ color: activeColor }}
@@ -232,18 +280,46 @@ export default function PillarBreakdownHoverCard({
                                   — {item.name}:
                                 </span>
                               </span>
-                              <span className="font-mono font-bold text-xs text-[#1A1F26] dark:text-[#FAF8F5] shrink-0 ml-2">
-                                {isScored ? (
-                                  formattedScore
-                                ) : (
-                                  <span className="text-[10px] font-normal text-[#6E7781] dark:text-[#8C9DA8] italic font-sans">
-                                    Not yet scored
-                                  </span>
-                                )}
-                              </span>
+
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span className="font-mono font-bold text-xs text-[#1A1F26] dark:text-[#FAF8F5]">
+                                  {isScored ? (
+                                    formattedScore
+                                  ) : (
+                                    <span className="text-[10px] font-normal text-[#6E7781] dark:text-[#8C9DA8] italic font-sans">
+                                      Not yet scored
+                                    </span>
+                                  )}
+                                </span>
+
+                                {/* + / - Icon Accordion Button */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedRow(isExpanded ? null : rowKey);
+                                  }}
+                                  className={`
+                                    w-5 h-5 rounded flex items-center justify-center transition-colors
+                                    ${isExpanded 
+                                      ? "bg-black/10 dark:bg-white/20 text-[#1A1F26] dark:text-white" 
+                                      : "text-[#6E7781] dark:text-[#8C9DA8] hover:bg-black/5 dark:hover:bg-white/10 hover:text-[#1A1F26] dark:hover:text-white"
+                                    }
+                                  `}
+                                  aria-expanded={isExpanded}
+                                  aria-label={isExpanded ? `Collapse ${item.name} details` : `Expand ${item.name} details`}
+                                >
+                                  {isExpanded ? (
+                                    <Minus className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <Plus className="w-3.5 h-3.5" />
+                                  )}
+                                </button>
+                              </div>
                             </div>
+
                             {/* Micro Progress Bar */}
-                            <div className="h-1.5 w-full bg-[#FAF8F5] dark:bg-[#121316] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15">
+                            <div className="h-1.5 w-full bg-[#FAF8F5] dark:bg-[#121316] rounded-full overflow-hidden border border-[#EAE5DC]/60 dark:border-[#8C9DA8]/15 mt-1.5">
                               <motion.div
                                 className="h-full rounded-full"
                                 style={{ backgroundColor: activeColor }}
@@ -252,6 +328,44 @@ export default function PillarBreakdownHoverCard({
                                 transition={{ duration: 0.4, ease: "easeOut" }}
                               />
                             </div>
+
+                            {/* Dropdown block when expanded: Question, WHY IT MATTERS, WE CHECK */}
+                            <AnimatePresence>
+                              {isExpanded && sutraEntry && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="overflow-hidden mt-2 pt-2 pb-1 border-t border-dashed border-[#EAE5DC] dark:border-[#8C9DA8]/20 space-y-2 text-left"
+                                >
+                                  {/* Question (italicized) */}
+                                  <p className="italic text-xs text-[#1A1F26] dark:text-[#FAF8F5] leading-relaxed">
+                                    &ldquo;{sutraEntry.question}&rdquo;
+                                  </p>
+
+                                  {/* WHY IT MATTERS */}
+                                  <div className="space-y-0.5">
+                                    <span className="text-[9px] font-bold uppercase tracking-wider text-[#7A3F1E] dark:text-[#D4AF37] block">
+                                      WHY IT MATTERS
+                                    </span>
+                                    <p className="text-[11px] text-[#5B564E] dark:text-[#C2BCB0] leading-normal font-sans">
+                                      {sutraEntry.why}
+                                    </p>
+                                  </div>
+
+                                  {/* WE CHECK */}
+                                  <div className="space-y-0.5">
+                                    <span className="text-[9px] font-bold uppercase tracking-wider text-[#7A3F1E] dark:text-[#D4AF37] block">
+                                      WE CHECK
+                                    </span>
+                                    <p className="text-[11px] text-[#5B564E] dark:text-[#C2BCB0] leading-normal font-sans">
+                                      {sutraEntry.check}
+                                    </p>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                         );
                       })}

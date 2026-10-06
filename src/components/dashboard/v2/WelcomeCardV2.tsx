@@ -32,19 +32,19 @@ export default function WelcomeCardV2({
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 8 Cols: Welcome Card (Cream #F4EACF; Dark: #2B2720) */}
+    <div className="flex flex-col lg:flex-row gap-6 mb-6 items-stretch">
+      {/* Welcome Card (Cream #F4EACF; Dark: #2B2720) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="
-          lg:col-span-8
+          flex-1
           bg-[#F4EACF] dark:bg-[#2B2720]
           border border-[#E8DFC5] dark:border-[#F4EACF]/14
-          p-7 lg:p-9 rounded-[24px] shadow-sm
-          flex flex-col sm:flex-row items-center sm:items-center gap-7 lg:gap-9
-          relative overflow-hidden min-h-[300px] justify-center
+          p-6 lg:p-7 rounded-[24px] shadow-sm
+          flex flex-col sm:flex-row items-center gap-6 lg:gap-8
+          relative overflow-hidden min-h-[180px] lg:min-h-[200px] justify-center
         "
       >
         {/* Faint Decorative Background SVG (Concentric Arcs / Leaf Art) */}
@@ -56,10 +56,10 @@ export default function WelcomeCardV2({
           </svg>
         </div>
 
-        {/* Circular Logo Container */}
+        {/* Circular Logo Container - w-24 h-24 standard size */}
         <div
           className={`
-            w-32 h-32 lg:w-36 lg:h-36 rounded-full
+            w-24 h-24 rounded-full
             ${isAstorDubai ? "bg-black dark:bg-black border border-[#D4AF37]/35 dark:border-[#D4AF37]/40 shadow-lg" : "bg-white dark:bg-white border border-black/10 shadow-md"}
             flex items-center justify-center shrink-0 relative z-10 overflow-hidden
           `}
@@ -77,53 +77,43 @@ export default function WelcomeCardV2({
           />
         </div>
 
-        {/* Vertically Centered Text Stack (P1-6 fixed) */}
-        <div className="flex flex-col justify-center text-center sm:text-left flex-1 min-w-0 relative z-10 py-1">
-          <p className="text-[18px] font-normal text-[#5B564E] dark:text-[#C2BCB0] mb-1">
+        {/* Vertically Centered Text Stack - tightly grouped with gap-1 and py stripped */}
+        <div className="flex flex-col justify-center text-center sm:text-left flex-1 min-w-0 relative z-10 py-0 gap-1">
+          <p className="text-[15px] sm:text-[16px] font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-tight m-0">
             Your Procurement Impact explained
           </p>
 
           {/* Dynamic Display Title with Clamp */}
-          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-[1.05] text-[#1F1B16] dark:text-[#F1E6C8] text-[32px] sm:text-[40px] lg:text-[48px] xl:text-[56px] text-balance break-words my-1.5">
+          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-tight text-[#1F1B16] dark:text-[#F1E6C8] text-[28px] sm:text-[36px] lg:text-[42px] xl:text-[46px] text-balance break-words m-0">
             {clientName}
           </h1>
 
-          {/* Meta Row: Sector + Active Assessment Interval with Softly Pulsing Dot */}
-          <div className="flex items-center justify-center sm:justify-start gap-3 mt-2 flex-wrap">
-            <span className="text-sm font-normal text-[#5B564E] dark:text-[#C2BCB0]">
+          {/* Meta Row: Sector */}
+          <div className="flex items-center justify-center sm:justify-start gap-2 mt-0.5 flex-wrap">
+            <span className="text-sm font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-none">
               {industry}
             </span>
-
           </div>
-
-          {/* D6 Derived Insight Chips (At a Glance) */}
-          {/* <div className="flex items-center justify-center sm:justify-start gap-2.5 mt-4 flex-wrap pt-3 border-t border-[#7D3F1E]/12 dark:border-[#F1E6C8]/15">
-
-
-            <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 text-[#6F8391] dark:text-[#93A9B8]">
-              {ratingBand}
-            </span>
-          </div> */}
         </div>
       </motion.div>
 
-      {/* 4 Cols: Hero Hotel Image Card (W3 & P1-8 fixed) */}
+      {/* Building Image Card on right - constrained to max w-1/4 or max-w-[300px] */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="
-          lg:col-span-4
-          rounded-[24px] overflow-hidden relative min-h-[300px]
+          w-full lg:w-1/4 lg:max-w-[300px] shrink-0
+          rounded-[24px] overflow-hidden relative min-h-[180px] lg:min-h-[200px]
           border border-black/[0.07] dark:border-white/[0.12] shadow-sm
-          bg-[#1F1B16] group flex flex-col justify-end p-6
+          bg-[#1F1B16] group flex flex-col justify-end p-5
         "
       >
         <Image
           src="/assets/Dashboard_Hotel.svg"
           alt="Hotel Showcase Visual"
           fill
-          sizes="(max-width: 1024px) 100vw, 33vw"
+          sizes="(max-width: 1024px) 100vw, 300px"
           className="object-cover rounded-[24px] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-95"
           priority
         />

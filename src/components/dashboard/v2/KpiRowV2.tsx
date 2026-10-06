@@ -23,98 +23,101 @@ export default function KpiRowV2({
 }: KpiRowV2Props) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 8 Cols: 3 Equal-Width KPI Cards (P1-5 fixed) */}
+      {/* 8 Cols: Restructured KPI Cards (Stacked Spend & Orders + Expanded Varna Score) */}
       <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6 items-stretch">
-        {/* KPI 1: Total Spend */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="
-            bg-white dark:bg-[#20242B]
-            border border-black/[0.07] dark:border-white/[0.08]
-            shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
-            dark:shadow-none dark:border-t-white/[0.12]
-            p-5 lg:p-[22px] rounded-[24px]
-            flex flex-col justify-between min-h-[160px] h-full
-            hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
-          "
-        >
-          {/* Top Row: Eyebrow + 30px Tinted Icon Chip */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              Sustainable Spend
-            </span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0]">
-              <Wallet className="w-3.5 h-3.5" strokeWidth={1.8} />
+        {/* Stack: Single flex flex-col gap-4 container wrapping Sustainable Spend & Total Orders */}
+        <div className="col-span-1 flex flex-col gap-4 h-full justify-between">
+          {/* KPI 1: Sustainable Spend */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="
+              bg-white dark:bg-[#20242B]
+              border border-black/[0.07] dark:border-white/[0.08]
+              shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+              dark:shadow-none dark:border-t-white/[0.12]
+              p-3.5 lg:p-4 rounded-[20px]
+              flex flex-col justify-between flex-1
+              hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
+            "
+          >
+            {/* Top Row: Eyebrow + Icon Chip */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                Sustainable Spend
+              </span>
+              <div className="w-7 h-7 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0]">
+                <Wallet className="w-3.5 h-3.5" strokeWidth={1.8} />
+              </div>
             </div>
-          </div>
 
-          {/* Display Number (Text-Safe Sage #55705A / #9DB4A0) */}
-          <div className="text-2xl lg:text-[32px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-2 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend / 83).toLocaleString('en-US')}`}>
-            {totalOrders === 0 ? (
-              <span className="text-xl text-[#6F6A61] dark:text-[#9A948A] font-medium">$0</span>
-            ) : (
-              <AnimatedCounter
-                value={Math.round(totalSpend / 83)}
-                prefix="$"
-                delay={0.2}
-              />
-            )}
-          </div>
-
-          {/* Caption */}
-          <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            {totalOrders === 0 ? "No data in this period" : " "}
-          </p>
-        </motion.div>
-
-        {/* KPI 2: Total Orders */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="
-            bg-white dark:bg-[#20242B]
-            border border-black/[0.07] dark:border-white/[0.08]
-            shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
-            dark:shadow-none dark:border-t-white/[0.12]
-            p-5 lg:p-[22px] rounded-[24px]
-            flex flex-col justify-between min-h-[160px] h-full
-            hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
-          "
-        >
-          {/* Top Row: Eyebrow + Icon Chip */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              Total Orders
-            </span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 flex items-center justify-center text-[#6F8391] dark:text-[#93A9B8]">
-              <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.8} />
+            {/* Display Number */}
+            <div className="text-xl lg:text-2xl font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend / 83).toLocaleString('en-US')}`}>
+              {totalOrders === 0 ? (
+                <span className="text-lg text-[#6F6A61] dark:text-[#9A948A] font-medium">$0</span>
+              ) : (
+                <AnimatedCounter
+                  value={Math.round(totalSpend / 83)}
+                  prefix="$"
+                  delay={0.2}
+                />
+              )}
             </div>
-          </div>
 
-          {/* Display Number */}
-          <div className="text-2xl lg:text-[32px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-2 tabular-nums">
-            {totalOrders === 0 ? (
-              <span className="text-xl text-[#6F6A61] dark:text-[#9A948A] font-medium">0</span>
-            ) : (
-              <AnimatedCounter value={totalOrders} delay={0.25} />
-            )}
-          </div>
+            {/* Caption */}
+            <p className="text-[12px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
+              {totalOrders === 0 ? "No data in this period" : "Verified sustainable"}
+            </p>
+          </motion.div>
 
-          {/* Caption */}
-          <p className="text-[13px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            {totalOrders === 0 ? "No data in this period" : ` `}
-          </p>
-        </motion.div>
+          {/* KPI 2: Total Orders */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="
+              bg-white dark:bg-[#20242B]
+              border border-black/[0.07] dark:border-white/[0.08]
+              shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+              dark:shadow-none dark:border-t-white/[0.12]
+              p-3.5 lg:p-4 rounded-[20px]
+              flex flex-col justify-between flex-1
+              hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
+            "
+          >
+            {/* Top Row: Eyebrow + Icon Chip */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                Total Orders
+              </span>
+              <div className="w-7 h-7 rounded-full bg-[#6F8391]/15 dark:bg-[#93A9B8]/20 flex items-center justify-center text-[#6F8391] dark:text-[#93A9B8]">
+                <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.8} />
+              </div>
+            </div>
 
-        {/* KPI 3: Average Varna Score with Hover Breakdown (NO TRANSFORM to prevent clipping! - P1-4 & Constraint 4) */}
+            {/* Display Number */}
+            <div className="text-xl lg:text-2xl font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums">
+              {totalOrders === 0 ? (
+                <span className="text-lg text-[#6F6A61] dark:text-[#9A948A] font-medium">0</span>
+              ) : (
+                <AnimatedCounter value={totalOrders} delay={0.25} />
+              )}
+            </div>
+
+            {/* Caption */}
+            <p className="text-[12px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
+              {totalOrders === 0 ? "No data in this period" : "Delivered procurement batches"}
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Expand: Average Varna Score card spanning col-span-2 with horizontal bands */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full"
+          className="sm:col-span-2 h-full flex flex-col"
         >
           <VarnaScoreHoverCard {...varnaScoreData}>
             <div
@@ -123,8 +126,8 @@ export default function KpiRowV2({
                 border border-black/[0.07] dark:border-white/[0.08]
                 shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
                 dark:shadow-none dark:border-t-white/[0.12]
-                p-5 lg:p-[22px] rounded-[24px]
-                flex flex-col justify-between min-h-[160px] h-full cursor-help
+                p-5 lg:p-6 rounded-[24px]
+                flex flex-col justify-between min-h-[180px] h-full cursor-help
                 hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
                 hover:shadow-md transition-all duration-200
               "
@@ -151,8 +154,8 @@ export default function KpiRowV2({
                 </span>
               </div>
 
-              {/* Redesigned 5-Segment Performance Band Indicator */}
-              <VarnaScoreBandScale score={avgVarnaScore} />
+              {/* 5-Segment Performance Band Indicator with horizontal inline bands list */}
+              <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="horizontal" />
             </div>
           </VarnaScoreHoverCard>
         </motion.div>
