@@ -676,10 +676,10 @@ export default function VarnaReportPDF({ data }: VarnaReportPDFProps) {
             </Text>
           </View>
 
-          {/* Card 3: Average Varna Score (75.3 / 100) */}
+          {/* Card 3: Sutra Verified Score (75.3 / 100) */}
           <View style={[S.kpiCard, { borderTopWidth: 2, borderTopColor: C.brandBrown }]}>
             <View style={S.kpiTop}>
-              <Text style={S.kpiLabel}>Average Varna Score</Text>
+              <Text style={S.kpiLabel}>Sutra Verified Score</Text>
               <View style={[S.kpiChip, { backgroundColor: band.bg }]}>
                 <Text style={[S.kpiChipText, { color: band.color }]}>{band.name}</Text>
               </View>

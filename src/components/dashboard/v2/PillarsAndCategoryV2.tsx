@@ -3,9 +3,8 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Check } from "lucide-react";
 import ImpactPillars from "@/components/dashboard/ImpactPillars";
-import { PerformanceBandsLegend } from "@/components/ui/VarnaScoreBandScale";
+import VarnaScoreBandScale, { SCORE_BANDS, getActiveBandId } from "@/components/ui/VarnaScoreBandScale";
 import CategoryChartV2 from "./CategoryChartV2";
 import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
 import { MOCK_PRODUCTS_LIST } from "@/lib/mock-data";
@@ -114,26 +113,20 @@ export default function PillarsAndCategoryV2({
             md:col-span-8
             bg-white dark:bg-[#20242B]
             rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
-            shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]
+            shadow-sm flex flex-col justify-between p-4 lg:p-5
           "
         >
-          {/* Header Row: Single Line Title + Nowrap Pill (P1-7 fixed) */}
-          <div className="flex items-center justify-between pb-4 border-b border-black/[0.07] dark:border-white/[0.08] gap-4">
+          {/* Header Row */}
+          <div className="flex items-center justify-between pb-3 border-b border-black/[0.07] dark:border-white/[0.08] gap-4">
             <div className="flex items-baseline gap-2 truncate">
               <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em] whitespace-nowrap">
                 ESG Performance Pillars
               </h2>
-
             </div>
-
-            {/* <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 text-[#55705A] dark:text-[#9DB4A0] text-xs font-medium whitespace-nowrap shrink-0">
-              <Check className="w-3.5 h-3.5 text-[#55705A] dark:text-[#9DB4A0]" strokeWidth={2.5} />
-              <span>Framework Calibrated</span>
-            </div> */}
           </div>
 
-          {/* Body: Circular Gauges Container (ImpactPillars renders circular RadialGauge SVGs) */}
-          <div className="my-auto py-4">
+          {/* Body: Circular Gauges */}
+          <div className="my-auto py-3">
             <ImpactPillars
               eScore={eScore}
               sScore={sScore}
@@ -143,8 +136,43 @@ export default function PillarsAndCategoryV2({
             />
           </div>
 
-          {/* Shared Performance Bands Legend */}
-          <PerformanceBandsLegend showHeader={true} className="pt-4 border-t border-black/[0.07] dark:border-white/[0.08]" />
+          {/* Bottom: Segmented Score Chart mirroring the Sutra Verified Score card */}
+          {(() => {
+            const avgScore = (eScore + sScore + gScore + cScore) / 4;
+            const activeBandId = getActiveBandId(avgScore);
+            return (
+              <div className="pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
+                {/* Horizontal legend */}
+                <div className="flex flex-row items-center justify-between w-full gap-x-4 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-2">
+                  {SCORE_BANDS.map((band) => {
+                    const isActive = activeBandId === band.id;
+                    return (
+                      <div
+                        key={band.id}
+                        className={`flex items-center gap-1.5 transition-all shrink-0 ${
+                          isActive
+                            ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2"
+                            : "text-[#6F6A61] dark:text-[#9A948A]"
+                        }`}
+                      >
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: band.color }}
+                        />
+                        <span className="whitespace-nowrap">
+                          {band.name} {band.rangeLabel}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Segmented bar */}
+                <div className="w-full">
+                  <VarnaScoreBandScale score={avgScore} legendOrientation="none" />
+                </div>
+              </div>
+            );
+          })()}
         </motion.div>
       </div>
 
@@ -163,7 +191,7 @@ export default function PillarsAndCategoryV2({
         <div>
           <div className="pb-4 border-b border-black/[0.07] dark:border-white/[0.08] mb-4">
             <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
-              Spend by Product Category
+              Category Level Metrics
             </h2>
 
             <div className="flex items-baseline gap-2 mt-2">

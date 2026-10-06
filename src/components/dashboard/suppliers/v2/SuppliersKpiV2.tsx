@@ -157,7 +157,7 @@ export default function SuppliersKpiV2({
 
       </motion.div>
 
-      {/* KPI 4: Average Varna Score with Hover Breakdown (NO TRANSFORM to prevent popover clipping!) */}
+      {/* KPI 4: Sutra Verified Score with Hover Breakdown (NO TRANSFORM to prevent popover clipping!) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -179,7 +179,7 @@ export default function SuppliersKpiV2({
           >
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-                Avg. Varna Score
+                Sutra Verified Score
               </span>
 
               {/* D1 Band Rating Pill */}

@@ -39,11 +39,11 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
   const currentTotalSpend = filteredOrders ? filteredOrders.reduce((acc, o) => acc + o.orderValue, 0) : summary.totalSpend;
 
   const varnaScoreData = {
-    score: Math.round(summary.avgVarnaScore),
-    eScore: Math.round(summary.avgEScore),
-    sScore: Math.round(summary.avgSScore),
-    gScore: Math.round(summary.avgGScore),
-    cScore: Math.round(summary.avgCScore),
+    score: summary.avgVarnaScore,
+    eScore: summary.avgEScore,
+    sScore: summary.avgSScore,
+    gScore: summary.avgGScore,
+    cScore: summary.avgCScore,
     supplierName: "Weighted average across your verified partners",
   };
 

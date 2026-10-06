@@ -157,7 +157,7 @@ export default function GroupOverallScorePopover({
         role="button"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-label={`Group average Varna score ${score.toFixed(1)}, hover for pillar breakdown`}
+        aria-label={`Group average Sutra Verified Score ${score.toFixed(1)}, hover for pillar breakdown`}
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
         onFocus={handleOpen}

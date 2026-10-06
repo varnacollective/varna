@@ -32,36 +32,37 @@ export default function WelcomeCardV2({
   );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 mb-6 items-stretch">
-      {/* Welcome Card (Cream #F4EACF; Dark: #2B2720) */}
+    // Use the same grid-cols-12 + gap-6 as KpiRowV2 so left edges align
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
+      {/* Left: Cream Welcome Card — col-span-9 matches (3 Spend/Orders + 6 Score) below */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="
-          flex-1
+          col-span-12 lg:col-span-9
           bg-[#F4EACF] dark:bg-[#2B2720]
           border border-[#E8DFC5] dark:border-[#F4EACF]/14
-          p-6 lg:p-7 rounded-[24px] shadow-sm
-          flex flex-col sm:flex-row items-center gap-6 lg:gap-8
-          relative overflow-hidden min-h-[180px] lg:min-h-[200px] justify-center
+          p-4 lg:p-5 rounded-[24px] shadow-sm
+          flex flex-row items-center gap-5 lg:gap-6
+          relative overflow-hidden min-h-[130px] lg:min-h-[150px]
         "
       >
-        {/* Faint Decorative Background SVG (Concentric Arcs / Leaf Art) */}
-        <div className="absolute right-0 bottom-0 opacity-[0.06] pointer-events-none transform translate-x-1/6 translate-y-1/6 select-none">
-          <svg width="340" height="340" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Faint Decorative Background SVG */}
+        <div className="absolute right-0 bottom-0 opacity-[0.07] pointer-events-none transform translate-x-1/6 translate-y-1/6 select-none">
+          <svg width="320" height="320" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="100" cy="100" r="90" stroke="#7D3F1E" strokeWidth="2" strokeDasharray="4 4" />
             <circle cx="100" cy="100" r="65" stroke="#7D3F1E" strokeWidth="2" />
             <path d="M100 10 L100 190 M10 100 L190 100" stroke="#7D3F1E" strokeWidth="1.5" />
           </svg>
         </div>
 
-        {/* Circular Logo Container - w-24 h-24 standard size */}
+        {/* Circular Logo Container */}
         <div
           className={`
-            w-24 h-24 rounded-full
+            w-20 h-20 lg:w-24 lg:h-24 rounded-full shrink-0
             ${isAstorDubai ? "bg-black dark:bg-black border border-[#D4AF37]/35 dark:border-[#D4AF37]/40 shadow-lg" : "bg-white dark:bg-white border border-black/10 shadow-md"}
-            flex items-center justify-center shrink-0 relative z-10 overflow-hidden
+            flex items-center justify-center relative z-10 overflow-hidden
           `}
         >
           <BrandLogo
@@ -77,19 +78,17 @@ export default function WelcomeCardV2({
           />
         </div>
 
-        {/* Vertically Centered Text Stack - tightly grouped with gap-1 and py stripped */}
-        <div className="flex flex-col justify-center text-center sm:text-left flex-1 min-w-0 relative z-10 py-0 gap-1">
-          <p className="text-[15px] sm:text-[16px] font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-tight m-0">
+        {/* Vertically Centered Text Stack */}
+        <div className="flex flex-col justify-center text-left flex-1 min-w-0 relative z-10 gap-1">
+          <p className="text-[14px] sm:text-[15px] font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-tight m-0">
             Your Procurement Impact explained
           </p>
 
-          {/* Dynamic Display Title with Clamp */}
-          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-tight text-[#1F1B16] dark:text-[#F1E6C8] text-[28px] sm:text-[36px] lg:text-[42px] xl:text-[46px] text-balance break-words m-0">
+          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-tight text-[#1F1B16] dark:text-[#F1E6C8] text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[44px] text-balance break-words m-0">
             {clientName}
           </h1>
 
-          {/* Meta Row: Sector */}
-          <div className="flex items-center justify-center sm:justify-start gap-2 mt-0.5 flex-wrap">
+          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
             <span className="text-sm font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-none">
               {industry}
             </span>
@@ -97,14 +96,14 @@ export default function WelcomeCardV2({
         </div>
       </motion.div>
 
-      {/* Building Image Card on right - constrained to max w-1/4 or max-w-[300px] */}
+      {/* Right: Building Image Card — col-span-3 matches the Quote Box below */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="
-          w-full lg:w-1/4 lg:max-w-[300px] shrink-0
-          rounded-[24px] overflow-hidden relative min-h-[180px] lg:min-h-[200px]
+          col-span-12 lg:col-span-3
+          rounded-[24px] overflow-hidden relative min-h-[130px] lg:min-h-[150px]
           border border-black/[0.07] dark:border-white/[0.12] shadow-sm
           bg-[#1F1B16] group flex flex-col justify-end p-5
         "
@@ -118,10 +117,10 @@ export default function WelcomeCardV2({
           priority
         />
 
-        {/* Gradient Scrim (Transparent → rgba(0,0,0,0.5)) */}
+        {/* Gradient Scrim */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none rounded-[24px]" />
 
-        {/* Brand Brown Pill Export Button Overlaid Bottom Left */}
+        {/* Export Button */}
         <div className="relative z-10">
           {dashboardData ? (
             <ExportButton data={dashboardData} variant="topbar" />

@@ -112,7 +112,7 @@ export default function KpiRowV2({
         </motion.div>
       </div>
 
-      {/* 2) Col 2: Average Varna Score Card (col-span-12 lg:col-span-6) */}
+      {/* 2) Col 2: Sutra Verified Score Card (col-span-12 lg:col-span-6) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ export default function KpiRowV2({
             {/* Top Row: Eyebrow + Icon Chip */}
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-                Average Varna Score
+                Sutra Verified Score
               </span>
               <div className="w-[30px] h-[30px] rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
                 <Award className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -154,17 +154,17 @@ export default function KpiRowV2({
               </span>
             </div>
 
-            {/* Performance Bands Legend Container (Top Legend directly above the line chart) */}
-            <div className="flex flex-row flex-wrap justify-between items-center w-full text-[11px] sm:text-xs text-gray-600 mb-3">
+            {/* Performance Bands Legend (above the segmented bar) — generous even spacing */}
+            <div className="flex flex-row items-center justify-between w-full gap-x-4 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-3">
               {SCORE_BANDS.map((band) => {
                 const isActive = activeBandId === band.id;
                 return (
                   <div
                     key={band.id}
-                    className={`flex items-center gap-1.5 transition-all ${
+                    className={`flex items-center gap-1.5 transition-all shrink-0 ${
                       isActive
                         ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
-                        : "text-gray-600 dark:text-gray-400"
+                        : "text-[#6F6A61] dark:text-[#9A948A]"
                     }`}
                   >
                     <span

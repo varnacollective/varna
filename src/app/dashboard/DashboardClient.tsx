@@ -201,7 +201,7 @@ function OverviewSection({
           subtitle={` `}
         />
         <KPICard
-          title="Avg Varna Score"
+          title="Sutra Verified Score"
           value={summary.avgVarnaScore}
           decimals={1}
           icon={Award}

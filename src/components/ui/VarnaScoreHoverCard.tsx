@@ -164,7 +164,7 @@ export default function VarnaScoreHoverCard({
           }
         }}
         className="inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all"
-        title="Click to view Varna Score breakdown"
+        title="Click to view Sutra Verified Score breakdown"
       >
         {children}
       </div>

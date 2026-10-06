@@ -338,7 +338,7 @@ export default function GroupPropertiesPage() {
 
         <div className="bg-white dark:bg-[#1E2028] border border-[#EAE5DC] dark:border-[#8C9DA8]/20 rounded-xl p-4 shadow-card-light dark:shadow-elevation-dark-low flex flex-col justify-between">
           <span className="text-[10px] font-sans uppercase tracking-widest text-[#6E7781] dark:text-[#8C9DA8] font-medium block mb-1">
-            Avg. Varna Score
+            Sutra Verified Score
           </span>
           <div className="flex items-baseline justify-between mt-1">
             <span className="text-2xl sm:text-3xl font-sans font-medium text-[#B85333] dark:text-[#D4705A]">

@@ -362,7 +362,7 @@ export default function GroupDashboardClient({ initialData }: GroupDashboardClie
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[10px] uppercase font-sans font-bold tracking-wider text-[#B85333] dark:text-[#D4705A]">
                     <Award className="w-4 h-4 text-[#B85333] shrink-0" />
-                    <span className="whitespace-nowrap">Group Avg Varna Score</span>
+                    <span className="whitespace-nowrap">Group Sutra Verified Score</span>
                   </div>
 
                 </div>
