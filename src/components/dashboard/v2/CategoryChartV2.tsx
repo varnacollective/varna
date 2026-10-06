@@ -63,8 +63,8 @@ export default function CategoryChartV2({
       categorySpend && categorySpend.length > 0
         ? categorySpend
         : data && data.length > 0
-        ? data
-        : DEFAULT_CATEGORIES;
+          ? data
+          : DEFAULT_CATEGORIES;
 
     return rawList.map((cat: any, idx: number) => {
       const name: string =
@@ -111,24 +111,22 @@ export default function CategoryChartV2({
         <button
           type="button"
           onClick={() => setActiveToggle("spend")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
-            activeToggle === "spend"
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${activeToggle === "spend"
               ? "bg-white dark:bg-[#272C34] text-[#1F1B16] dark:text-[#F3EFE7] shadow-sm"
               : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
-          }`}
+            }`}
         >
-          Spend by Product
+          Spend by Category
         </button>
         <button
           type="button"
           onClick={() => setActiveToggle("impact")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
-            activeToggle === "impact"
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${activeToggle === "impact"
               ? "bg-white dark:bg-[#272C34] text-[#1F1B16] dark:text-[#F3EFE7] shadow-sm"
               : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
-          }`}
+            }`}
         >
-          Impact by Product
+          Impact by Category
         </button>
       </div>
 
@@ -164,9 +162,8 @@ export default function CategoryChartV2({
               return (
                 <div
                   key={cat.category_name}
-                  className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
-                    isZero ? "opacity-45" : "opacity-100"
-                  }`}
+                  className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
+                    }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-[140px]">
                     <span
