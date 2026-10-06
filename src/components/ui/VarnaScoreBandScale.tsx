@@ -112,7 +112,7 @@ export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
 
   if (orientation === "horizontal") {
     return (
-      <div className={`flex flex-row justify-between text-xs sm:text-sm mt-4 w-full flex-wrap gap-2 ${className}`}>
+      <div className={`flex flex-row flex-wrap items-center gap-x-4 gap-y-2 text-[11px] sm:text-xs mb-4 mt-2 w-full text-gray-500 ${className}`}>
         {SCORE_BANDS.map((band) => {
           const isActive = activeBandId === band.id;
           return (
@@ -121,7 +121,7 @@ export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
               className={`flex items-center gap-1.5 transition-all ${
                 isActive
                   ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
-                  : "text-[#6F6A61] dark:text-[#9A948A]"
+                  : "text-gray-500 dark:text-gray-400"
               }`}
             >
               <span
@@ -180,6 +180,11 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
 
   return (
     <div className={`w-full my-1 space-y-1 transform-gpu ${className}`}>
+      {/* Top Legend above segmented line chart */}
+      {legendOrientation !== "none" && (
+        <PerformanceBandsLegend activeScore={score} orientation={legendOrientation} />
+      )}
+
       {/* Marker Pin above bar */}
       <div className="relative w-full h-3">
         <div
@@ -212,13 +217,6 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
           style={{ left: `${positionPercent}%` }}
         />
       </div>
-
-      {/* Shared Performance Bands Dot+Label Legend */}
-      {legendOrientation !== "none" && (
-        <div className={legendOrientation === "horizontal" ? "pt-1" : "pt-1.5"}>
-          <PerformanceBandsLegend activeScore={score} orientation={legendOrientation} />
-        </div>
-      )}
     </div>
   );
 });

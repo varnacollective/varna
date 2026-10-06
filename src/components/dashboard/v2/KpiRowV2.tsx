@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Wallet, ShoppingBag, Award, Quote } from "lucide-react";
 import VarnaScoreHoverCard, { type VarnaScoreData } from "@/components/ui/VarnaScoreHoverCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
-import VarnaScoreBandScale from "@/components/ui/VarnaScoreBandScale";
+import VarnaScoreBandScale, { SCORE_BANDS, getActiveBandId } from "@/components/ui/VarnaScoreBandScale";
 
 interface KpiRowV2Props {
   totalSpend: number;
@@ -21,6 +21,8 @@ export default function KpiRowV2({
   totalSuppliers,
   varnaScoreData,
 }: KpiRowV2Props) {
+  const activeBandId = getActiveBandId(avgVarnaScore);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
       {/* 8 Cols: Restructured KPI Cards (Stacked Spend & Orders + Expanded Varna Score) */}
@@ -112,7 +114,7 @@ export default function KpiRowV2({
           </motion.div>
         </div>
 
-        {/* Expand: Average Varna Score card spanning col-span-2 with horizontal bands */}
+        {/* Expand: Average Varna Score card spanning col-span-2 with top legend */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -154,8 +156,35 @@ export default function KpiRowV2({
                 </span>
               </div>
 
-              {/* 5-Segment Performance Band Indicator with horizontal inline bands list */}
-              <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="horizontal" />
+              {/* Performance Bands Legend Container (Top Legend directly above the line chart) */}
+              <div className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 text-[11px] sm:text-xs mb-4 mt-2 w-full text-gray-500">
+                {SCORE_BANDS.map((band) => {
+                  const isActive = activeBandId === band.id;
+                  return (
+                    <div
+                      key={band.id}
+                      className={`flex items-center gap-1.5 transition-all ${
+                        isActive
+                          ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
+                          : "text-gray-500 dark:text-gray-400"
+                      }`}
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: band.color }}
+                      />
+                      <span className="whitespace-nowrap">
+                        {band.name} {band.rangeLabel}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Segmented Horizontal Line Chart */}
+              <div className="w-full">
+                <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="none" />
+              </div>
             </div>
           </VarnaScoreHoverCard>
         </motion.div>
