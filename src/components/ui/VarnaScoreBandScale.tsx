@@ -112,7 +112,7 @@ export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
 
   if (orientation === "horizontal") {
     return (
-      <div className={`flex flex-row flex-wrap items-center gap-x-4 gap-y-2 text-[11px] sm:text-xs mb-4 mt-2 w-full text-gray-500 ${className}`}>
+      <div className={`flex flex-row flex-wrap justify-between items-center w-full text-[11px] sm:text-xs text-gray-600 mb-3 ${className}`}>
         {SCORE_BANDS.map((band) => {
           const isActive = activeBandId === band.id;
           return (
