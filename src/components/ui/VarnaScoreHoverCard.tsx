@@ -20,6 +20,7 @@ export interface VarnaScoreData {
 
 interface VarnaScoreHoverCardProps extends VarnaScoreData {
   children: ReactNode;
+  className?: string;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -65,6 +66,7 @@ export default function VarnaScoreHoverCard({
   cScore,
   supplierName,
   children,
+  className,
 }: VarnaScoreHoverCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0, placement: "below" as "below" | "above" });
@@ -163,7 +165,7 @@ export default function VarnaScoreHoverCard({
             handleClick();
           }
         }}
-        className="inline-block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all"
+        className={`cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#B85333] focus-visible:ring-offset-2 rounded-xl transition-all ${className ?? "inline-block"}`}
         title="Click to view Sutra Verified Score breakdown"
       >
         {children}

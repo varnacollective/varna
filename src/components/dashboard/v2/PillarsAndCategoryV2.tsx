@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import ImpactPillars from "@/components/dashboard/ImpactPillars";
-import VarnaScoreBandScale, { SCORE_BANDS, getActiveBandId } from "@/components/ui/VarnaScoreBandScale";
+import VarnaScoreBandScale, { SCORE_BANDS } from "@/components/ui/VarnaScoreBandScale";
 import CategoryChartV2 from "./CategoryChartV2";
 import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
 import { MOCK_PRODUCTS_LIST } from "@/lib/mock-data";
@@ -126,7 +126,7 @@ export default function PillarsAndCategoryV2({
           </div>
 
           {/* Body: Circular Gauges */}
-          <div className="my-auto py-3">
+          <div className="py-2">
             <ImpactPillars
               eScore={eScore}
               sScore={sScore}
@@ -139,32 +139,24 @@ export default function PillarsAndCategoryV2({
           {/* Bottom: Segmented Score Chart mirroring the Sutra Verified Score card */}
           {(() => {
             const avgScore = (eScore + sScore + gScore + cScore) / 4;
-            const activeBandId = getActiveBandId(avgScore);
             return (
-              <div className="pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
+              <div className="mt-4 pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
                 {/* Horizontal legend */}
                 <div className="flex flex-row items-center justify-between w-full gap-x-4 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-2">
-                  {SCORE_BANDS.map((band) => {
-                    const isActive = activeBandId === band.id;
-                    return (
-                      <div
-                        key={band.id}
-                        className={`flex items-center gap-1.5 transition-all shrink-0 ${
-                          isActive
-                            ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2"
-                            : "text-[#6F6A61] dark:text-[#9A948A]"
-                        }`}
-                      >
-                        <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ backgroundColor: band.color }}
-                        />
-                        <span className="whitespace-nowrap">
-                          {band.name} {band.rangeLabel}
-                        </span>
-                      </div>
-                    );
-                  })}
+                  {SCORE_BANDS.map((band) => (
+                    <div
+                      key={band.id}
+                      className="flex items-center gap-1.5 shrink-0 text-[#6F6A61] dark:text-[#9A948A] font-normal"
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: band.color }}
+                      />
+                      <span className="whitespace-nowrap">
+                        {band.name} {band.rangeLabel}
+                      </span>
+                    </div>
+                  ))}
                 </div>
                 {/* Segmented bar */}
                 <div className="w-full">

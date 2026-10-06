@@ -37,8 +37,8 @@ export default function KpiRowV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-3.5 lg:p-4 rounded-[20px]
-            flex flex-col justify-between flex-1
+            p-4 lg:p-5 rounded-[20px]
+            flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
         >
@@ -81,8 +81,8 @@ export default function KpiRowV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-3.5 lg:p-4 rounded-[20px]
-            flex flex-col justify-between flex-1
+            p-4 lg:p-5 rounded-[20px]
+            flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
         >
@@ -119,7 +119,7 @@ export default function KpiRowV2({
         transition={{ duration: 0.45, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
         className="col-span-12 lg:col-span-6 h-full flex flex-col"
       >
-        <VarnaScoreHoverCard {...varnaScoreData}>
+        <VarnaScoreHoverCard {...varnaScoreData} className="h-full w-full flex flex-col">
           <div
             className="
               bg-white dark:bg-[#20242B]
@@ -127,61 +127,67 @@ export default function KpiRowV2({
               shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
               dark:shadow-none dark:border-t-white/[0.12]
               p-5 lg:p-6 rounded-[24px]
-              flex flex-col justify-between min-h-[180px] h-full cursor-help
+              flex flex-col justify-between h-full cursor-help
               hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
               hover:shadow-md transition-all duration-200
             "
           >
-            {/* Top Row: Eyebrow + Icon Chip */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-                Sutra Verified Score
-              </span>
-              <div className="w-[30px] h-[30px] rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
-                <Award className="w-3.5 h-3.5" strokeWidth={1.8} />
+            {/* Top Section: Title & Number */}
+            <div>
+              {/* Top Row: Eyebrow + Icon Chip */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
+                  Sutra Verified Score
+                </span>
+                <div className="w-[30px] h-[30px] rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
+                  <Award className="w-3.5 h-3.5" strokeWidth={1.8} />
+                </div>
+              </div>
+
+              {/* Display Number (Brown #7D3F1E / #E07A57) */}
+              <div className="text-2xl lg:text-[32px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none mt-2 flex items-baseline tabular-nums">
+                <AnimatedCounter
+                  value={avgVarnaScore}
+                  decimals={1}
+                  delay={0.3}
+                />
+                <span className="text-base text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-1 font-normal">
+                  /100
+                </span>
               </div>
             </div>
 
-            {/* Display Number (Brown #7D3F1E / #E07A57) */}
-            <div className="text-2xl lg:text-[32px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none my-2 flex items-baseline tabular-nums">
-              <AnimatedCounter
-                value={avgVarnaScore}
-                decimals={1}
-                delay={0.3}
-              />
-              <span className="text-base text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-1 font-normal">
-                /100
-              </span>
-            </div>
+            {/* Bottom Section: Legend & Segmented Chart */}
+            <div className="w-full mt-4">
+              {/* Performance Bands Legend (above the segmented bar) — generous even spacing */}
+              <div className="flex flex-row items-center justify-between w-full gap-x-6 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-3">
+                {SCORE_BANDS.map((band) => {
+                  const isActive = activeBandId === band.id;
+                  return (
+                    <div
+                      key={band.id}
+                      className={`flex items-center gap-1.5 transition-all shrink-0 ${
+                        isActive
+                          ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
+                          : "text-[#6F6A61] dark:text-[#9A948A]"
+                      }`}
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: band.color }}
+                      />
+                      <span className="whitespace-nowrap">
+                        {band.name} {band.rangeLabel}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
 
-            {/* Performance Bands Legend (above the segmented bar) — generous even spacing */}
-            <div className="flex flex-row items-center justify-between w-full gap-x-4 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-3">
-              {SCORE_BANDS.map((band) => {
-                const isActive = activeBandId === band.id;
-                return (
-                  <div
-                    key={band.id}
-                    className={`flex items-center gap-1.5 transition-all shrink-0 ${
-                      isActive
-                        ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
-                        : "text-[#6F6A61] dark:text-[#9A948A]"
-                    }`}
-                  >
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: band.color }}
-                    />
-                    <span className="whitespace-nowrap">
-                      {band.name} {band.rangeLabel}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Segmented Horizontal Line Chart */}
-            <div className="w-full">
-              <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="none" />
+              {/* Segmented Horizontal Line Chart */}
+              <div className="w-full">
+                <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="none" />
+              </div>
             </div>
           </div>
         </VarnaScoreHoverCard>
