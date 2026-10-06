@@ -67,7 +67,7 @@ const getCachedEnterpriseMaster = unstable_cache(
     const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("enterprise_master")
-      .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number");
+      .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number, district, state, country, latitude, longitude");
     if (error) console.error("Supabase enterprise_master error:", error);
     return data || [];
   },
@@ -269,8 +269,19 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       );
 
       const lowerSupplier = name.toLowerCase();
-      const city = lowerSupplier.includes("bare") ? "Bengaluru" : lowerSupplier.includes("ukhi") ? "Faridabad" : lowerSupplier.includes("kheoni") ? "Indore" : "Bengaluru";
-      const state = lowerSupplier.includes("bare") ? "Karnataka" : lowerSupplier.includes("ukhi") ? "Haryana" : lowerSupplier.includes("kheoni") ? "Madhya Pradesh" : "Karnataka";
+      const fallback = lowerSupplier.includes("bare")
+        ? { city: "Bengaluru", state: "Karnataka", lat: 12.9767936, lng: 77.590082, country: "India" }
+        : lowerSupplier.includes("ukhi")
+        ? { city: "Faridabad", state: "Haryana", lat: 28.4031478, lng: 77.3105561, country: "India" }
+        : lowerSupplier.includes("kheoni")
+        ? { city: "Indore", state: "Madhya Pradesh", lat: 22.7203616, lng: 75.8681996, country: "India" }
+        : { city: "Bengaluru", state: "Karnataka", lat: 12.9767936, lng: 77.590082, country: "India" };
+
+      const city = masterRow?.district || fallback.city;
+      const state = masterRow?.state || fallback.state;
+      const country = masterRow?.country || fallback.country;
+      const latitude = masterRow?.latitude ?? fallback.lat;
+      const longitude = masterRow?.longitude ?? fallback.lng;
 
       return {
         enterprise_id: scoreRow.enterprise_id,
@@ -278,6 +289,9 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
         logo_path: logoPath,
         city,
         state,
+        country,
+        latitude,
+        longitude,
         final_varna_score: scoreRow.final_varna_score ?? 0,
         e_pillar_score: scoreRow.e_pillar_score ?? 0,
         s_pillar_score: scoreRow.s_pillar_score ?? 0,

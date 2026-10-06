@@ -4,8 +4,9 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft, ChevronRight, SortAsc, Filter, X, Map, List,
-  MapPin, Search, ChevronDown
+  MapPin, Search, ChevronDown, Check
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import FooterDisclaimerV2 from "@/components/dashboard/v2/FooterDisclaimerV2";
 import SuppliersHeroV2 from "./SuppliersHeroV2";
@@ -13,6 +14,21 @@ import SuppliersKpiV2 from "./SuppliersKpiV2";
 import SupplierCardV2 from "./SupplierCardV2";
 import type { DashboardData, SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS, getClientLogoFallback } from "@/lib/mock-data";
+
+const RealPartnerMapView = dynamic(
+  () => import("./RealPartnerMapView"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[520px] md:h-[580px] rounded-[24px] bg-[#F7F3EA] dark:bg-[#1A1E26] border border-black/[0.07] dark:border-white/[0.08] flex items-center justify-center">
+        <div className="flex items-center gap-2.5 text-xs text-[#6F6A61] dark:text-[#9A948A] font-medium">
+          <span className="w-4 h-4 rounded-full border-2 border-[#7D3F1E] dark:border-[#E07A57] border-t-transparent animate-spin" />
+          <span>Loading OpenStreetMap...</span>
+        </div>
+      </div>
+    ),
+  }
+);
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 interface ClientSuppliersV2Props {
@@ -42,140 +58,168 @@ function getVarnaBand(score: number): string {
   return "Foundational";
 }
 
-// ─── Map Pin Component (pure CSS, no map library needed) ────────────────────
-// Using a react-simple-maps-style SVG approach but without external dependencies
-function PartnerMapView({ suppliers, onPinClick }: {
-  suppliers: any[];
-  onPinClick: (supplier: any) => void;
+const BAND_COLORS: Record<string, string> = {
+  Leader: "#55705A",
+  Advanced: "#7D3F1E",
+  Emerging: "#6F8391",
+  Foundational: "#9C7A58",
+};
+
+interface FilterOption {
+  id: string;
+  label: string;
+  count?: number;
+  color?: string;
+}
+
+// ─── MakeMyTrip-Style MultiSelect Dropdown ──────────────────────────────────
+function MultiSelectDropdown({
+  labelPrefix,
+  options,
+  selected,
+  onChange,
+  icon: Icon,
+}: {
+  labelPrefix: string;
+  options: FilterOption[];
+  selected: string[];
+  onChange: (selected: string[]) => void;
+  icon?: any;
 }) {
-  // Map of India state centroids (rough lat/lng -> SVG coordinates in a 500x560 box)
-  const STATE_COORDS: Record<string, [number, number]> = {
-    "Maharashtra": [220, 340],
-    "Karnataka": [200, 390],
-    "Tamil Nadu": [235, 420],
-    "Rajasthan": [165, 220],
-    "Gujarat": [130, 290],
-    "Uttar Pradesh": [270, 230],
-    "West Bengal": [355, 280],
-    "Madhya Pradesh": [220, 285],
-    "Haryana": [185, 195],
-    "Kerala": [200, 445],
-    "Tripura": [390, 280],
-    "Uttarakhand": [220, 190],
-    "Andhra Pradesh": [240, 390],
-    "Bihar": [320, 245],
-    "Jharkhand": [320, 290],
-    "Odisha": [315, 340],
-    "Punjab": [170, 175],
-    "Himachal Pradesh": [200, 175],
+  const [open, setOpen] = useState(false);
+  const [staged, setStaged] = useState<string[]>(selected);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setStaged(selected);
+  }, [selected, open]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const isFiltered = selected.length > 0;
+
+  let triggerLabel = `${labelPrefix}: All`;
+  if (selected.length === 1) {
+    triggerLabel = `${labelPrefix}: ${selected[0]}`;
+  } else if (selected.length > 1) {
+    triggerLabel = `${labelPrefix} (${selected.length})`;
+  }
+
+  const handleToggle = (id: string) => {
+    setStaged((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
   };
 
-  const BAND_COLORS: Record<string, string> = {
-    Leader: "#55705A",
-    Advanced: "#7D3F1E",
-    Emerging: "#6F8391",
-    Foundational: "#9C7A58",
+  const handleApply = () => {
+    onChange(staged);
+    setOpen(false);
+  };
+
+  const handleClear = () => {
+    setStaged([]);
+    onChange([]);
+    setOpen(false);
   };
 
   return (
-    <div className="relative w-full">
-      {/* India Map SVG background */}
-      <div className="bg-[#F7F3EA] dark:bg-[#20242B] rounded-[24px] border border-black/[0.07] dark:border-white/[0.08] overflow-hidden min-h-[520px] relative">
-        {/* Simplified India outline - just a rectangle placeholder with grid */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-full h-full max-w-[500px] mx-auto">
-            {/* India shape hint */}
-            <svg viewBox="0 0 500 560" className="w-full h-full opacity-10 dark:opacity-20">
-              <path d="M120,60 L380,60 L420,120 L440,200 L400,300 L380,360 L340,420 L280,480 L240,520 L200,480 L160,420 L120,360 L80,280 L80,180 L100,120 Z" fill="#7D3F1E" />
-            </svg>
-            {/* Partner pins */}
-            {suppliers.map((supplier, idx) => {
-              const state = supplier.state || "Maharashtra";
-              const coords = STATE_COORDS[state] || [240 + (idx * 20) % 60, 320 + (idx * 15) % 60];
-              const band = getVarnaBand(supplier.varnaScore ?? supplier.final_varna_score ?? 72);
-              const pinColor = BAND_COLORS[band] || "#7D3F1E";
-              const spend = supplier.totalSpend ?? supplier.spend ?? 500000;
-              const pinSize = Math.max(18, Math.min(38, 18 + (spend / 500000) * 8));
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`
+          flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer border
+          ${isFiltered
+            ? "bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 border-[#7D3F1E] dark:border-[#E07A57] text-[#7D3F1E] dark:text-[#E07A57] font-semibold shadow-xs"
+            : "bg-white dark:bg-[#20242B] border-black/[0.10] dark:border-white/[0.12] text-[#5B564E] dark:text-[#C2BCB0] hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50"
+          }
+        `}
+      >
+        {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}
+        <span>{triggerLabel}</span>
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
 
+      {open && (
+        <div className="absolute top-full mt-2 left-0 bg-white dark:bg-[#20242B] border border-black/[0.10] dark:border-white/[0.12] rounded-2xl shadow-xl z-40 w-64 p-3.5 space-y-3">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
+            <span className="text-xs font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
+              Filter by {labelPrefix}
+            </span>
+            {staged.length > 0 && (
+              <span className="text-[11px] font-medium text-[#7D3F1E] dark:text-[#E07A57]">
+                {staged.length} selected
+              </span>
+            )}
+          </div>
+
+          {/* Options Checklist */}
+          <div className="max-h-56 overflow-y-auto space-y-1 pr-1">
+            {options.map((opt) => {
+              const checked = staged.includes(opt.id);
               return (
-                <motion.button
-                  key={supplier.enterprise_id || idx}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: idx * 0.08, type: "spring", damping: 14 }}
-                  whileHover={{ scale: 1.25, zIndex: 20 }}
-                  onClick={() => onPinClick(supplier)}
-                  style={{
-                    position: "absolute",
-                    left: `${(coords[0] / 500) * 100}%`,
-                    top: `${(coords[1] / 560) * 100}%`,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                  className="group focus:outline-none z-10"
-                  title={`${supplier.enterprise_name || supplier.name} — ${band} · Click to view profile`}
+                <label
+                  key={opt.id}
+                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl cursor-pointer transition-colors text-xs select-none ${
+                    checked
+                      ? "bg-[#7D3F1E]/8 dark:bg-[#E07A57]/12 text-[#1F1B16] dark:text-[#F3EFE7] font-medium"
+                      : "text-[#5B564E] dark:text-[#C2BCB0] hover:bg-black/5 dark:hover:bg-white/5"
+                  }`}
                 >
-                  <div
-                    className="rounded-full flex items-center justify-center text-white font-bold shadow-lg border-2 border-white dark:border-[#20242B] transition-all duration-200"
-                    style={{
-                      width: `${pinSize}px`,
-                      height: `${pinSize}px`,
-                      backgroundColor: pinColor,
-                      fontSize: `${Math.max(8, pinSize * 0.3)}px`,
-                    }}
-                  >
-                    {(supplier.enterprise_name || supplier.name || "?")[0]}
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => handleToggle(opt.id)}
+                      className="w-3.5 h-3.5 rounded accent-[#7D3F1E] dark:accent-[#E07A57] cursor-pointer"
+                    />
+                    {opt.color && (
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: opt.color }}
+                      />
+                    )}
+                    <span>{opt.label}</span>
                   </div>
-                  {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-xl bg-[#1F1B16] dark:bg-white text-white dark:text-[#1F1B16] text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 shadow-lg">
-                    <span className="block font-semibold">{supplier.enterprise_name || supplier.name}</span>
-                    <span className="block text-[9px] opacity-70">{state} · Score: {supplier.varnaScore ?? supplier.final_varna_score ?? 72}</span>
-                  </div>
-                </motion.button>
+                  {opt.count !== undefined && (
+                    <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">
+                      {opt.count}
+                    </span>
+                  )}
+                </label>
               );
             })}
           </div>
-        </div>
 
-        {/* Map Legend */}
-        <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-[#1A1E26]/90 backdrop-blur-sm rounded-2xl p-3 border border-black/[0.07] dark:border-white/[0.08] shadow-sm">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] mb-2">Score Band</p>
-          <div className="space-y-1.5">
-            {Object.entries(BAND_COLORS).map(([band, color]) => (
-              <div key={band} className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                <span className="text-[11px] text-[#5B564E] dark:text-[#C2BCB0] font-normal">{band}</span>
-              </div>
-            ))}
+          {/* Actions */}
+          <div className="flex items-center justify-between pt-2 border-t border-black/[0.06] dark:border-white/[0.08] gap-2">
+            <button
+              type="button"
+              onClick={handleClear}
+              className="text-xs font-medium text-[#6F6A61] dark:text-[#9A948A] hover:text-[#7D3F1E] dark:hover:text-[#E07A57] px-2 py-1 transition-colors"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={handleApply}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-[#7D3F1E] dark:bg-[#E07A57] text-white shadow-xs hover:opacity-90 transition-opacity"
+            >
+              Apply
+            </button>
           </div>
         </div>
-
-        {/* Map caption */}
-        <div className="absolute bottom-4 right-4">
-          <p className="text-[10px] text-[#9A948A] bg-white/80 dark:bg-[#1A1E26]/80 backdrop-blur-sm px-2 py-1 rounded-lg">
-            Locations show registered office. Manufacturing locations coming soon.
-          </p>
-        </div>
-      </div>
+      )}
     </div>
-  );
-}
-
-// ─── Filter Chip ────────────────────────────────────────────────────────────
-function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`
-        px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 cursor-pointer
-        ${active
-          ? "bg-[#7D3F1E] border-[#7D3F1E] text-white dark:bg-[#E07A57] dark:border-[#E07A57]"
-          : "bg-white dark:bg-[#20242B] border-black/[0.10] dark:border-white/[0.12] text-[#5B564E] dark:text-[#C2BCB0] hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50"
-        }
-      `}
-    >
-      {label}
-    </button>
   );
 }
 
@@ -242,6 +286,7 @@ export default function ClientSuppliersV2({
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [filterBand, setFilterBand] = useState<string[]>([]);
   const [filterState, setFilterState] = useState<string[]>([]);
+  const [filterCountry, setFilterCountry] = useState<string>("India");
 
   // ── Derive filter options from data ────────────────────────────────────────
   const allStates = useMemo(() => {
@@ -252,6 +297,37 @@ export default function ClientSuppliersV2({
     });
     return Array.from(states).sort();
   }, [suppliersData]);
+
+  const BAND_OPTIONS = ["Leader", "Advanced", "Emerging", "Foundational"];
+
+  const bandOptions = useMemo(() => {
+    return BAND_OPTIONS.map((band) => {
+      const count = suppliersData.filter((s) => {
+        const score = s.final_varna_score ?? s.varnaScore ?? 72;
+        return getVarnaBand(score) === band;
+      }).length;
+      return {
+        id: band,
+        label: band,
+        count,
+        color: BAND_COLORS[band],
+      };
+    });
+  }, [suppliersData]);
+
+  const stateOptions = useMemo(() => {
+    return allStates.map((st) => {
+      const count = suppliersData.filter((s) => {
+        const stateName = s.state || (s.enterprise_name?.toLowerCase().includes("ukhi") ? "Haryana" : s.enterprise_name?.toLowerCase().includes("bare") ? "Karnataka" : "Madhya Pradesh");
+        return stateName === st;
+      }).length;
+      return {
+        id: st,
+        label: st,
+        count,
+      };
+    });
+  }, [allStates, suppliersData]);
 
   // ── Filter & Sort pipeline ─────────────────────────────────────────────────
   const processedSuppliers = useMemo(() => {
@@ -371,8 +447,6 @@ export default function ClientSuppliersV2({
     supplierName: "Weighted average across your verified partners",
   };
 
-  const BAND_OPTIONS = ["Leader", "Advanced", "Emerging", "Foundational"];
-
   return (
     <div className="client-suppliers-v2 w-full max-w-[1760px] mx-auto space-y-6 pb-32">
       {/* 1. Top Bar */}
@@ -451,41 +525,29 @@ export default function ClientSuppliersV2({
           </div>
         </div>
 
-        {/* ── Control Bar: Sort + Filter Chips ─────────────────────────────── */}
-        <div className="flex flex-wrap items-start gap-3">
-          {/* Sort dropdown */}
+        {/* ── Control Bar: Sort + MultiSelect Dropdowns (MakeMyTrip-Style) ── */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* 1. Sort dropdown */}
           <SortDropdown value={sortBy} onChange={setSortBy} />
 
-          {/* Band filter chips */}
-          <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-[#9A948A] flex items-center gap-1">
-              <Filter className="w-3 h-3" /> Band:
-            </span>
-            {BAND_OPTIONS.map((band) => (
-              <FilterChip
-                key={band}
-                label={band}
-                active={filterBand.includes(band)}
-                onClick={() => setFilterBand((prev) => prev.includes(band) ? prev.filter((b) => b !== band) : [...prev, band])}
-              />
-            ))}
-          </div>
+          {/* 2. Band dropdown */}
+          <MultiSelectDropdown
+            labelPrefix="Band"
+            options={bandOptions}
+            selected={filterBand}
+            onChange={setFilterBand}
+            icon={Filter}
+          />
 
-          {/* State filter chips */}
+          {/* 3. State dropdown */}
           {allStates.length > 0 && (
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-[#9A948A]">
-                State:
-              </span>
-              {allStates.slice(0, 5).map((state) => (
-                <FilterChip
-                  key={state}
-                  label={state}
-                  active={filterState.includes(state)}
-                  onClick={() => setFilterState((prev) => prev.includes(state) ? prev.filter((s) => s !== state) : [...prev, state])}
-                />
-              ))}
-            </div>
+            <MultiSelectDropdown
+              labelPrefix="State"
+              options={stateOptions}
+              selected={filterState}
+              onChange={setFilterState}
+              icon={MapPin}
+            />
           )}
 
           {/* Clear filters */}
@@ -493,9 +555,9 @@ export default function ClientSuppliersV2({
             <button
               type="button"
               onClick={clearFilters}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#7D3F1E] dark:text-[#E07A57] border border-[#7D3F1E]/30 dark:border-[#E07A57]/30 hover:bg-[#7D3F1E]/10 dark:hover:bg-[#E07A57]/10 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-[#7D3F1E] dark:text-[#E07A57] border border-[#7D3F1E]/30 dark:border-[#E07A57]/30 hover:bg-[#7D3F1E]/10 dark:hover:bg-[#E07A57]/10 transition-colors cursor-pointer"
             >
-              <X className="w-3 h-3" /> Clear filters
+              <X className="w-3.5 h-3.5" /> Clear filters
             </button>
           )}
         </div>
@@ -511,14 +573,22 @@ export default function ClientSuppliersV2({
           </div>
         )}
 
-        {/* ── Map View ─────────────────────────────────────────────────────── */}
+        {/* ── Map View (Genuine Leaflet + OSM) ───────────────────────────────── */}
         {viewMode === "map" && totalFiltered > 0 && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            <PartnerMapView
+            <RealPartnerMapView
               suppliers={processedSuppliers}
+              allSuppliers={suppliersData}
+              selectedCountry={filterCountry}
+              onCountryChange={setFilterCountry}
               onPinClick={(s) => {
-                // Switch to list and highlight — for now just switch to list view
                 setViewMode("list");
+                setTimeout(() => {
+                  const card = document.getElementById(`partner-card-${s.enterprise_id || s.name}`);
+                  if (card) {
+                    card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                  }
+                }, 150);
               }}
             />
           </motion.div>
@@ -553,6 +623,7 @@ export default function ClientSuppliersV2({
                 return (
                   <div
                     key={supplier.enterprise_id || name}
+                    id={`partner-card-${supplier.enterprise_id || name}`}
                     className="varna-partner-card-wrapper w-full md:w-[calc((100%-28px)/2)] md:max-w-[650px] snap-start shrink-0 flex items-stretch"
                   >
                     <SupplierCardV2
