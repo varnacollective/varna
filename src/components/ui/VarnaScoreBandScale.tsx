@@ -113,7 +113,7 @@ export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
 
   if (orientation === "horizontal") {
     return (
-      <div className={`grid grid-cols-5 gap-1 w-full text-[10px] sm:text-[11px] mb-2.5 ${className}`}>
+      <div className={`grid grid-cols-5 gap-1 w-full text-[10px] sm:text-[11px] ${className}`}>
         {SCORE_BANDS.map((band) => {
           const isActive = activeBandId === band.id;
           return (
@@ -181,7 +181,7 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
   const positionPercent = getScorePositionPercent(score);
 
   return (
-    <div className={`w-full my-1 space-y-1 transform-gpu ${className}`}>
+    <div className={`w-full transform-gpu ${className}`}>
       {/* Top Legend above segmented line chart */}
       {legendOrientation !== "none" && (
         <PerformanceBandsLegend activeScore={score} orientation={legendOrientation} />
@@ -189,13 +189,13 @@ const VarnaScoreBandScale = memo(function VarnaScoreBandScale({
 
       {/* Marker Pin above bar */}
       {showIndicator && (
-        <div className="relative w-full h-3">
+        <div className="relative w-full h-1.5 -mb-0.5">
           <div
-            className="absolute -top-0.5 flex flex-col items-center -translate-x-1/2 z-20 transition-all duration-300 pointer-events-none"
+            className="absolute -top-1 flex flex-col items-center -translate-x-1/2 z-20 transition-all duration-300 pointer-events-none"
             style={{ left: `${positionPercent}%` }}
             title={`Current Score: ${score.toFixed(1)}`}
           >
-            <span className="text-[10px] leading-none text-[#7D3F1E] dark:text-[#E07A57] font-bold select-none">
+            <span className="text-[8px] leading-none text-[#7D3F1E] dark:text-[#E07A57] font-bold select-none">
               ▼
             </span>
           </div>

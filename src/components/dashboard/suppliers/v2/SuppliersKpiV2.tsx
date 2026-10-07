@@ -55,9 +55,9 @@ export default function SuppliersKpiV2({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 1) Column 1: Vertical Stack of Active Partners & Total Orders (narrow column) */}
-      <div className="col-span-12 lg:col-span-3 xl:col-span-2 flex flex-col gap-3">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6 items-stretch">
+      {/* 1) Column 1: Vertical Stack of Active Partners & Total Orders */}
+      <div className="col-span-12 lg:col-span-3 xl:col-span-2 flex flex-col gap-4 h-full">
         {/* KPI 1: Active Partners */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -68,7 +68,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-4 rounded-[20px]
+            p-4 rounded-[20px] flex-1
             flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -97,7 +97,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-4 rounded-[20px]
+            p-4 rounded-[20px] flex-1
             flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -118,7 +118,7 @@ export default function SuppliersKpiV2({
       </div>
 
       {/* 2) Column 2: Sustainable Spend above Sutra Verified Score stack */}
-      <div className="col-span-12 lg:col-span-9 xl:col-span-10 flex flex-col gap-4">
+      <div className="col-span-12 lg:col-span-9 xl:col-span-10 flex flex-col gap-4 h-full">
         {/* KPI 3: Sustainable Spend */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -129,7 +129,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            px-4 py-3 sm:px-5 sm:py-3.5 rounded-[20px]
+            p-4 rounded-[20px]
             flex items-center justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -138,8 +138,8 @@ export default function SuppliersKpiV2({
             <div className="w-7 h-7 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0] shrink-0">
               <Wallet className="w-3.5 h-3.5" strokeWidth={1.8} />
             </div>
-            <div>
-              <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
                 Sustainable Spend
               </span>
               <span className="text-xs text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-none">
@@ -158,7 +158,7 @@ export default function SuppliersKpiV2({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="flex-1 flex flex-col"
+          className="flex-1 flex flex-col min-h-0"
         >
           <VarnaScoreHoverCard {...varnaScoreData} className="h-full w-full flex flex-col">
             <div
@@ -167,7 +167,7 @@ export default function SuppliersKpiV2({
                 border border-black/[0.07] dark:border-white/[0.08]
                 shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
                 dark:shadow-none dark:border-t-white/[0.12]
-                p-4 sm:p-5 rounded-[20px]
+                py-3 px-4 rounded-[20px]
                 flex flex-col justify-between h-full cursor-help
                 hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
                 hover:shadow-md transition-all duration-200
@@ -175,32 +175,34 @@ export default function SuppliersKpiV2({
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
+                  <span className="text-xs font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight uppercase">
                     Sutra Verified Score
                   </span>
 
                   {/* Band Rating Pill */}
-                  <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 text-[#7D3F1E] dark:text-[#E07A57] text-[11px] font-medium">
+                  <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 text-[#7D3F1E] dark:text-[#E07A57] text-[10px] font-medium">
                     {bandLabel}
                   </div>
                 </div>
 
-                <div className="text-2xl sm:text-3xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
+                <div className="text-2xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
                   <AnimatedCounter
                     value={avgVarnaScore}
                     decimals={1}
                     delay={0.35}
                   />
-                  <span className="text-sm text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-1 font-normal">
+                  <span className="text-xs text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-0.5 font-normal">
                     /100
                   </span>
                 </div>
               </div>
 
-              {/* Bottom Section: Row-aligned 5-Band Legend & Segmented Scale matching Overview exactly */}
-              <div className="w-full mt-3">
-                <PerformanceBandsLegend activeScore={avgVarnaScore} orientation="horizontal" className="mb-1.5" />
-                <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="none" />
+              {/* Bottom Section: Flushed Legend directly over Segmented Line Chart */}
+              <div className="w-full mt-1.5 flex flex-col">
+                <PerformanceBandsLegend activeScore={avgVarnaScore} orientation="horizontal" className="mb-0" />
+                <div className="w-full mt-0 pt-0">
+                  <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="none" className="my-0 mt-0 pt-0" />
+                </div>
               </div>
             </div>
           </VarnaScoreHoverCard>
