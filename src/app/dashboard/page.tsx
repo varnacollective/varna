@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { unstable_cache } from "next/cache";
-import { createClient, createAnonClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import DashboardClient from "./DashboardClient";
 import {
   type DashboardData,
@@ -12,44 +11,11 @@ import {
   getSupplierLogoFallback,
 } from "@/lib/mock-data";
 import { resolveHotelProperty } from "@/lib/properties-data";
+import { getAuthoritativePartnersForClient } from "@/lib/partners-service";
 
 interface DashboardPageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
-
-// ─── Cached data fetchers ─────────────────────────────────────────────────────
-// These read global/shared tables that don't change per client request.
-// We use createAnonClient() INSIDE the cache factory — do NOT pass the Supabase
-// client as an argument, because unstable_cache serialises arguments and the
-// Supabase client object has circular references that cause JSON.stringify to throw.
-
-const getCachedAssessmentInputs = unstable_cache(
-  async () => {
-    const supabase = createAnonClient();
-    const { data, error } = await supabase
-      .from("assessment_inputs")
-      .select("enterprise_name_auto, tier_used_auto, s2_gender_input_pct_women, s3_wages_input_wage_ratio");
-    if (error) console.error("Supabase assessment_inputs error:", error);
-    return data || [];
-  },
-  ["assessment_inputs_global"],
-  { revalidate: 300, tags: ["assessment_inputs"] }
-);
-
-const getCachedScoresSummary = unstable_cache(
-  async () => {
-    const supabase = createAnonClient();
-    const { data, error } = await supabase
-      .from("scores_summary")
-      .select(
-        "enterprise_id, enterprise_name, logo_path, final_varna_score, e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score"
-      );
-    if (error) console.error("Supabase scores_summary error:", error);
-    return data || [];
-  },
-  ["scores_summary_global"],
-  { revalidate: 300, tags: ["scores_summary"] }
-);
 
 export default async function DashboardServerPage({ searchParams }: DashboardPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
@@ -140,62 +106,14 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
     if (catSpendError) console.error("Supabase category_spend_by_client error:", catSpendError);
     if (orderRegError) console.error("Supabase order_register error:", orderRegError);
 
-    // ─── Fire global cached queries (cookie-free client inside cache) ─────────
-    const [assessmentData, scoresData] = await Promise.all([
-      getCachedAssessmentInputs(),
-      getCachedScoresSummary(),
-    ]);
-
-    // Calculate Average Gender Representation (% Women) in TypeScript
-    const validGenderPctValues = assessmentData
-      .map((row: any) => row.s2_gender_input_pct_women)
-      .filter((val: any) => val !== null && val !== undefined && val !== "" && !isNaN(Number(val)))
-      .map((val: any) => Number(val));
-
-    const calculatedAvgGenderPct = validGenderPctValues.length > 0
-      ? Math.round(validGenderPctValues.reduce((acc, curr) => acc + curr, 0) / validGenderPctValues.length)
-      : 68;
-
-    // Process Supplier Tier Distribution
-    let platinum = 0, gold = 0, silver = 0;
-
-    assessmentData?.forEach((row: any) => {
-      const tier = (row.tier_used_auto || "").toLowerCase();
-      if (tier.includes("platinum") || tier.includes("medium")) { platinum++; }
-      else if (tier.includes("gold") || tier.includes("small")) { gold++; }
-      else { silver++; }
-    });
-
-    const tierDistribution = [
-      {
-        tier: "Platinum",
-        count: fallbackHotel.varnaLeaders > 0 ? fallbackHotel.varnaLeaders : (platinum > 0 ? platinum : 2),
-        color: "#7A3F1E",
-      },
-      {
-        tier: "Gold",
-        count: Math.max(1, fallbackHotel.activeSuppliers - (fallbackHotel.varnaLeaders || 0)),
-        color: "#738678",
-      },
-      {
-        tier: "Silver",
-        count: silver > 0 ? silver : 1,
-        color: "#6F848F",
-      },
-    ];
-
-    // Calculate Impact Metrics (Gender & Wages)
-    const supplierImpactData = assessmentData && assessmentData.length > 0
-      ? assessmentData.map((row: any) => ({
-          name: row.enterprise_name_auto,
-          womenPct: Number(row.s2_gender_input_pct_women) || 0,
-          wageRatio: Number(row.s3_wages_input_wage_ratio) || 0,
-        }))
-      : [
-          { name: "Bare Necessities", womenPct: 82, wageRatio: 1.8 },
-          { name: "UKHI India", womenPct: 65, wageRatio: 1.4 },
-          { name: "Kheoni Ventures", womenPct: 75, wageRatio: 1.6 },
-        ];
+    // ─── Single Source of Truth for Authoritative Partners ───────────────────
+    const {
+      partners: authoritativePartners,
+      totalPartners,
+      tierDistribution,
+      supplierImpactData,
+      avgGenderPct,
+    } = await getAuthoritativePartnersForClient(clientId, supplierLinks || []);
 
     const categorySpend = catSpendData && catSpendData.length > 0
       ? catSpendData.map((row: any) => ({
@@ -238,64 +156,34 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
           },
         ];
 
-    // 6. Build supplier list from client-scoped supplier_detail_by_client
-    const suppliersList: SupplierDetail[] = (supplierLinks && supplierLinks.length > 0)
-      ? supplierLinks.map((s: any) => {
-          const name = s.enterprise_name_auto || "";
-          const lower = name.toLowerCase();
-          const isBare = lower.includes("bare");
-          const isUKHI = lower.includes("ukhi");
-          const tier = s.tier_auto || (isBare ? "Micro B" : isUKHI ? "Small" : "Micro A");
+    // 6. Build supplier list from authoritative partners with client order values merged
+    const suppliersList: SupplierDetail[] = authoritativePartners.map((p) => {
+      const name = p.enterprise_name || "";
+      const lower = name.toLowerCase();
+      const isBare = lower.includes("bare");
+      const isUKHI = lower.includes("ukhi");
 
-          return {
-            clientId,
-            enterpriseId: s.enterprise_id || name,
-            enterpriseName: name,
-            tier,
-            varnaScore: Number(s.varna_score_auto) || 70,
-            eScore: Number(s.e_score_auto) || 50,
-            sScore: Number(s.s_score_auto) || 60,
-            gScore: Number(s.g_score_auto) || 75,
-            cScore: Number(s.c_score_auto) || 0,
-            totalSpend: Number(s.orders_inr_ytd_auto) || 0,
-            totalOrders: Number(s.units_ytd_auto) || (isBare ? 12 : isUKHI ? 8 : 5),
-            city: isBare ? "Bengaluru" : isUKHI ? "Faridabad" : "Indore",
-            state: isBare ? "Karnataka" : isUKHI ? "Haryana" : "Madhya Pradesh",
-            artisansEmployed: isBare ? 45 : isUKHI ? 120 : 30,
-            womenPercent: isBare ? 82 : isUKHI ? 65 : 75,
-            logoPath: getSupplierLogoFallback(name),
-          };
-        })
-      : (scoresData && scoresData.length > 0 ? scoresData : [
-          { enterprise_name: "Bare Necessities Zero Waste Solutions Pvt. Ltd.", enterprise_id: "ENT-001", final_varna_score: 78, e_pillar_score: 75, s_pillar_score: 80, g_pillar_score: 70, c_pillar_score: 72 },
-          { enterprise_name: "UKHI INDIA PRIVATE LIMITED", enterprise_id: "ENT-002", final_varna_score: 56, e_pillar_score: 60, s_pillar_score: 55, g_pillar_score: 50, c_pillar_score: 45 },
-          { enterprise_name: "Kheoni Ventures Pvt Ltd", enterprise_id: "ENT-003", final_varna_score: 42, e_pillar_score: 40, s_pillar_score: 45, g_pillar_score: 40, c_pillar_score: 35 },
-        ]).map((s: any) => {
-          const name = s.enterprise_name || "";
-          const lower = name.toLowerCase();
-          const isBare = lower.includes("bare");
-          const isUKHI = lower.includes("ukhi");
-          const tier = isBare ? "Micro B" : isUKHI ? "Small" : "Micro A";
-
-          return {
-            clientId,
-            enterpriseId: s.enterprise_id || name,
-            enterpriseName: name,
-            tier,
-            varnaScore: s.final_varna_score ?? 0,
-            eScore: s.e_pillar_score ?? 0,
-            sScore: s.s_pillar_score ?? 0,
-            gScore: s.g_pillar_score ?? 0,
-            cScore: s.c_pillar_score ?? 0,
-            totalSpend: isBare ? 268000 : isUKHI ? 11900 : 33250,
-            totalOrders: isBare ? 12 : isUKHI ? 8 : 5,
-            city: isBare ? "Bengaluru" : isUKHI ? "Faridabad" : "Indore",
-            state: isBare ? "Karnataka" : isUKHI ? "Haryana" : "Madhya Pradesh",
-            artisansEmployed: isBare ? 45 : isUKHI ? 120 : 30,
-            womenPercent: isBare ? 82 : isUKHI ? 65 : 75,
-            logoPath: s.logo_path || getSupplierLogoFallback(name),
-          };
-        });
+      return {
+        clientId,
+        enterpriseId: p.enterprise_id,
+        enterpriseName: name,
+        tier: p.tier,
+        varnaScore: p.final_varna_score,
+        eScore: p.e_pillar_score,
+        sScore: p.s_pillar_score,
+        gScore: p.g_pillar_score,
+        cScore: p.c_pillar_score,
+        totalSpend: p.totalSpend || 0,
+        totalOrders: p.totalOrders || (isBare ? 12 : isUKHI ? 8 : 5),
+        city: p.city,
+        state: p.state,
+        artisansEmployed: p.artisansEmployed || (isBare ? 45 : isUKHI ? 120 : 30),
+        womenPercent: p.womenPercent || (isBare ? 82 : isUKHI ? 65 : 75),
+        logoPath: p.logo_path || getSupplierLogoFallback(name),
+        isCraftLed: p.badges?.includes("Craft-Led"),
+        badges: p.badges,
+      };
+    });
 
     const resolvedClientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
     const clientLogo = clientData?.logo_path || getClientLogoFallback(resolvedClientName);
@@ -309,8 +197,8 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
     const avgGScore = summaryData?.avg_g_score ?? fallbackHotel.gScore;
     const avgCScore = 0; // Cultural pillar is disabled (score 0)
     const totalCO2eAvoidedKg = summaryData?.total_co2e_avoided_kg_auto ?? fallbackHotel.co2eAvoidedKg;
-    const totalArtisansSupported = summaryData?.total_artisans_supported ?? (fallbackHotel.activeSuppliers * 320);
-    const totalSuppliers = summaryData?.no_active_suppliers ?? fallbackHotel.activeSuppliers;
+    const totalArtisansSupported = summaryData?.total_artisans_supported ?? (totalPartners * 32);
+    const totalSuppliers = totalPartners; // Authoritative partner count: 10
 
     // Process product-level spend (Action 1 & 2)
     const productMap: Record<string, ProductSpendItem> = {};
@@ -375,7 +263,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         avgCScore,
         totalCO2eAvoidedKg,
         totalArtisansSupported,
-        womenWorkforcePercent: calculatedAvgGenderPct,
+        womenWorkforcePercent: avgGenderPct,
         totalSuppliers,
         avgLeadTimeDays: 12,
         pillarBreakdown: {

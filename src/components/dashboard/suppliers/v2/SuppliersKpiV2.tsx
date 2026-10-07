@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Building, ShoppingBag, Wallet, Award } from "lucide-react";
 import VarnaScoreHoverCard, { type VarnaScoreData } from "@/components/ui/VarnaScoreHoverCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
-import VarnaScoreBandScale from "@/components/ui/VarnaScoreBandScale";
+import VarnaScoreBandScale, { PerformanceBandsLegend } from "@/components/ui/VarnaScoreBandScale";
 
 interface SuppliersKpiV2Props {
   totalSuppliers: number;
@@ -27,7 +27,7 @@ export default function SuppliersKpiV2({
   totalSuppliers = 3,
   totalOrders = 5,
   totalSpend = 3773,
-  avgVarnaScore = 75.3,
+  avgVarnaScore = 67.6,
   supplierNames = ["Bare Necessities", "Kheoni Ventures", "UKHI India"],
   varnaScoreData,
 }: SuppliersKpiV2Props) {
@@ -55,9 +55,9 @@ export default function SuppliersKpiV2({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 items-stretch">
-      {/* 1) Col 1: Vertical Stack of Active Partners & Total Orders */}
-      <div className="col-span-1 lg:col-span-1 flex flex-col gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
+      {/* 1) Column 1: Vertical Stack of Active Partners & Total Orders */}
+      <div className="col-span-12 lg:col-span-4 flex flex-col gap-4">
         {/* KPI 1: Active Partners */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -68,7 +68,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-4 rounded-[20px]
+            p-4 rounded-[20px] flex-1
             flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -82,7 +82,7 @@ export default function SuppliersKpiV2({
             </div>
           </div>
 
-          <div className="text-2xl font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-1.5 tabular-nums">
+          <div className="text-2xl font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1.5 tabular-nums">
             <AnimatedCounter value={totalSuppliers} delay={0.2} />
           </div>
         </motion.div>
@@ -97,7 +97,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-4 rounded-[20px]
+            p-4 rounded-[20px] flex-1
             flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -111,95 +111,101 @@ export default function SuppliersKpiV2({
             </div>
           </div>
 
-          <div className="text-2xl font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums">
+          <div className="text-2xl font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none mt-1.5 tabular-nums">
             <AnimatedCounter value={totalOrders} delay={0.25} />
           </div>
         </motion.div>
       </div>
 
-      {/* 2) Col 2: Sustainable Spend (Relocated next to stack) */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        className="
-          col-span-1 lg:col-span-1
-          bg-white dark:bg-[#20242B]
-          border border-black/[0.07] dark:border-white/[0.08]
-          shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
-          dark:shadow-none dark:border-t-white/[0.12]
-          p-5 lg:p-6 rounded-[24px]
-          flex flex-col justify-between h-full
-          hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
-        "
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-            Sustainable Spend
-          </span>
-          <div className="w-[30px] h-[30px] rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0]">
-            <Wallet className="w-3.5 h-3.5" strokeWidth={1.8} />
+      {/* 2) Column 2: Sustainable Spend above Sutra Verified Score stack */}
+      <div className="col-span-12 lg:col-span-8 flex flex-col gap-4">
+        {/* KPI 3: Sustainable Spend */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="
+            bg-white dark:bg-[#20242B]
+            border border-black/[0.07] dark:border-white/[0.08]
+            shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+            dark:shadow-none dark:border-t-white/[0.12]
+            px-4 py-3 sm:px-5 sm:py-3.5 rounded-[20px]
+            flex items-center justify-between
+            hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
+          "
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0] shrink-0">
+              <Wallet className="w-3.5 h-3.5" strokeWidth={1.8} />
+            </div>
+            <div>
+              <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
+                Sustainable Spend
+              </span>
+              <span className="text-xs text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-none">
+                Verified procurement spend
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className="my-auto py-2">
-          <div className="text-2xl lg:text-[32px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none tabular-nums" aria-label={`Total spend $${Math.round(totalSpend).toLocaleString('en-US')}`}>
+          <div className="text-2xl sm:text-[26px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none tabular-nums" aria-label={`Total spend $${Math.round(totalSpend).toLocaleString('en-US')}`}>
             <AnimatedCounter value={Math.round(totalSpend)} prefix="$" delay={0.3} />
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* 3) Col 3-4: Enlarged Sutra Verified Score */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="col-span-1 md:col-span-2 lg:col-span-2 h-full flex flex-col"
-      >
-        <VarnaScoreHoverCard {...varnaScoreData} className="h-full w-full flex flex-col">
-          <div
-            className="
-              bg-white dark:bg-[#20242B]
-              border border-black/[0.07] dark:border-white/[0.08]
-              shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
-              dark:shadow-none dark:border-t-white/[0.12]
-              p-5 lg:p-6 rounded-[24px]
-              flex flex-col justify-between h-full cursor-help
-              hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
-              hover:shadow-md transition-all duration-200
-            "
-          >
-            <div>
+        {/* KPI 4: Sutra Verified Score */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex-1 flex flex-col"
+        >
+          <VarnaScoreHoverCard {...varnaScoreData} className="h-full w-full flex flex-col">
+            <div
+              className="
+                bg-white dark:bg-[#20242B]
+                border border-black/[0.07] dark:border-white/[0.08]
+                shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+                dark:shadow-none dark:border-t-white/[0.12]
+                p-4 sm:p-5 rounded-[20px]
+                flex flex-col justify-between h-full cursor-help
+                hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
+                hover:shadow-md transition-all duration-200
+              "
+            >
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
-                  Sutra Verified Score
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight">
+                    Sutra Verified Score
+                  </span>
 
-                {/* Band Rating Pill */}
-                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 text-[#7D3F1E] dark:text-[#E07A57] text-xs font-medium">
-                  {bandLabel}
+                  {/* Band Rating Pill */}
+                  <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 text-[#7D3F1E] dark:text-[#E07A57] text-[11px] font-medium">
+                    {bandLabel}
+                  </div>
+                </div>
+
+                <div className="text-2xl sm:text-3xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
+                  <AnimatedCounter
+                    value={avgVarnaScore}
+                    decimals={1}
+                    delay={0.35}
+                  />
+                  <span className="text-sm text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-1 font-normal">
+                    /100
+                  </span>
                 </div>
               </div>
 
-              <div className="text-5xl lg:text-6xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none my-3 flex items-baseline tabular-nums">
-                <AnimatedCounter
-                  value={avgVarnaScore}
-                  decimals={1}
-                  delay={0.35}
-                />
-                <span className="text-xl lg:text-2xl text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-2 font-normal">
-                  /100
-                </span>
+              {/* Bottom Section: Row-aligned 5-Band Legend & Segmented Scale matching Overview exactly */}
+              <div className="w-full mt-3">
+                <PerformanceBandsLegend activeScore={avgVarnaScore} orientation="horizontal" className="mb-1.5" />
+                <VarnaScoreBandScale score={avgVarnaScore} legendOrientation="none" />
               </div>
             </div>
-
-            {/* Redesigned 5-Segment Performance Band Indicator */}
-            <div className="w-full mt-2">
-              <VarnaScoreBandScale score={avgVarnaScore} />
-            </div>
-          </div>
-        </VarnaScoreHoverCard>
-      </motion.div>
+          </VarnaScoreHoverCard>
+        </motion.div>
+      </div>
     </div>
   );
 }

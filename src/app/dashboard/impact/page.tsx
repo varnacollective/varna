@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import ImpactClient from "./ImpactClient";
 import type { DashboardData } from "@/lib/mock-data";
 import { resolveHotelProperty } from "@/lib/properties-data";
+import { getAuthoritativePartnersForClient } from "@/lib/partners-service";
 
 interface PageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -45,94 +46,37 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
   const supabase = await createClient();
 
   try {
-    const { data: clientData } = await supabase
-      .from("client_master")
-      .select("*")
-      .eq("client_id", clientId)
-      .maybeSingle();
+    const [
+      { data: clientData },
+      { data: summaryData },
+      { data: supplierLinks },
+    ] = await Promise.all([
+      supabase.from("client_master").select("*").eq("client_id", clientId).maybeSingle(),
+      supabase.from("client_summary").select("*").eq("client_id", clientId).maybeSingle(),
+      supabase.from("supplier_detail_by_client").select("*").eq("client_id", clientId),
+    ]);
 
-    const { data: summaryData } = await supabase
-      .from("client_summary")
-      .select("*")
-      .eq("client_id", clientId)
-      .maybeSingle();
+    const {
+      partners: authoritativePartners,
+      totalPartners,
+      tierDistribution,
+      supplierImpactData,
+      avgGenderPct,
+    } = await getAuthoritativePartnersForClient(clientId, supplierLinks || []);
 
-    const { data: assessmentData } = await supabase
-      .from("assessment_inputs")
-      .select("enterprise_name_auto, s2_gender_input_pct_women, s3_wages_input_wage_ratio");
-
-    const supplierImpactData = assessmentData && assessmentData.length > 0
-      ? assessmentData.map((row: any) => ({
-          name: row.enterprise_name_auto,
-          womenPct: Number(row.s2_gender_input_pct_women) || 0,
-          wageRatio: Number(row.s3_wages_input_wage_ratio) || 0,
-        }))
-      : [
-          { name: "Bare Necessities", womenPct: 82, wageRatio: 1.8 },
-          { name: "UKHI India", womenPct: 65, wageRatio: 1.4 },
-          { name: "Kheoni Ventures", womenPct: 75, wageRatio: 1.6 },
-        ];
-
-    const { data: supplierLinks } = await supabase
-      .from("supplier_detail_by_client")
-      .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto")
-      .eq("client_id", clientId);
-
-    const suppliersList = (supplierLinks && supplierLinks.length > 0)
-      ? supplierLinks.map((s: any) => ({
-          clientId,
-          enterpriseId: s.enterprise_id || s.enterprise_name_auto,
-          enterpriseName: s.enterprise_name_auto,
-          tier: s.tier_auto || "Micro B",
-          varnaScore: Number(s.varna_score_auto) || 70,
-          eScore: Number(s.e_score_auto) || 50,
-          sScore: Number(s.s_score_auto) || 60,
-          gScore: Number(s.g_score_auto) || 75,
-          cScore: Number(s.c_score_auto) || 0,
-          totalSpend: Number(s.orders_inr_ytd_auto) || 0,
-          totalOrders: Number(s.units_ytd_auto) || 5,
-        }))
-      : [
-          {
-            clientId,
-            enterpriseId: "ENT-001",
-            enterpriseName: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
-            tier: "Micro B",
-            varnaScore: 74.3,
-            eScore: 31.8,
-            sScore: 63.8,
-            gScore: 85.3,
-            cScore: 0,
-            totalSpend: 268000,
-            totalOrders: 1300,
-          },
-          {
-            clientId,
-            enterpriseId: "ENT-002",
-            enterpriseName: "UKHI India Private Limited",
-            tier: "Small",
-            varnaScore: 77.1,
-            eScore: 46.3,
-            sScore: 67.5,
-            gScore: 78.3,
-            cScore: 0,
-            totalSpend: 11900,
-            totalOrders: 7000,
-          },
-          {
-            clientId,
-            enterpriseId: "ENT-003",
-            enterpriseName: "Kheoni Ventures Pvt Ltd",
-            tier: "Micro A",
-            varnaScore: 51.3,
-            eScore: 25.4,
-            sScore: 59.1,
-            gScore: 76.5,
-            cScore: 0,
-            totalSpend: 33250,
-            totalOrders: 350,
-          },
-        ];
+    const suppliersList = authoritativePartners.map((p) => ({
+      clientId,
+      enterpriseId: p.enterprise_id,
+      enterpriseName: p.enterprise_name,
+      tier: p.tier,
+      varnaScore: p.final_varna_score,
+      eScore: p.e_pillar_score,
+      sScore: p.s_pillar_score,
+      gScore: p.g_pillar_score,
+      cScore: p.c_pillar_score,
+      totalSpend: p.totalSpend || 0,
+      totalOrders: p.totalOrders || 5,
+    }));
 
     const resolvedClientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
 
@@ -158,16 +102,16 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
         avgGScore: summaryData?.avg_g_score ?? fallbackHotel.gScore,
         avgCScore: summaryData?.avg_c_score_craft_only ?? fallbackHotel.cScore,
         totalCO2eAvoidedKg: summaryData?.total_co2e_avoided_kg_auto ?? fallbackHotel.co2eAvoidedKg,
-        totalArtisansSupported: summaryData?.total_artisans_supported ?? (fallbackHotel.activeSuppliers * 320),
-        womenWorkforcePercent: 78,
-        totalSuppliers: summaryData?.no_active_suppliers ?? fallbackHotel.activeSuppliers,
+        totalArtisansSupported: summaryData?.total_artisans_supported ?? (totalPartners * 32),
+        womenWorkforcePercent: avgGenderPct,
+        totalSuppliers: totalPartners,
         avgLeadTimeDays: 14,
         pillarBreakdown: {} as any,
         sdgImpact: [],
       } as any,
       suppliers: suppliersList as any,
       categorySpend: [],
-      tierDistribution: [],
+      tierDistribution,
       supplierImpactData,
     };
 
