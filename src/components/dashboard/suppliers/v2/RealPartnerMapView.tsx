@@ -403,8 +403,8 @@ export default function RealPartnerMapView({
           <MapPin className="w-4 h-4 text-[#7D3F1E] dark:text-[#E07A57] shrink-0" />
           <span className="font-medium text-[#1F1B16] dark:text-[#F3EFE7] text-xs sm:text-sm">
             {localPartnersCount > 0
-              ? `Local Sourcing: ${localPartnersPct}% of partners sourced from ${activeCountry}`
-              : `Local Sourcing: 0% — no partners currently sourced from ${activeCountry}`}
+              ? `Local Procurement is ${localPartnersPct}% `
+              : `Local Procurement is 0% — no partners`}
           </span>
         </div>
         <div className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-light flex items-center gap-2 flex-wrap">
