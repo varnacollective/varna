@@ -38,7 +38,7 @@ export interface SupplierDetail {
   clientId: string;
   enterpriseId: string;
   enterpriseName: string;
-  tier: "Platinum" | "Gold" | "Silver" | "Bronze";
+  tier: "Platinum" | "Gold" | "Silver" | "Bronze" | "Micro A" | "Micro B" | "Small" | "Medium" | string;
   varnaScore: number;
   eScore: number;
   sScore: number;

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Wallet, ShoppingBag, Award, Quote } from "lucide-react";
 import VarnaScoreHoverCard, { type VarnaScoreData } from "@/components/ui/VarnaScoreHoverCard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
-import VarnaScoreBandScale, { SCORE_BANDS, getActiveBandId } from "@/components/ui/VarnaScoreBandScale";
+import VarnaScoreBandScale, { SCORE_BANDS, getActiveBandId, PerformanceBandsLegend } from "@/components/ui/VarnaScoreBandScale";
 
 interface KpiRowV2Props {
   totalSpend: number;
@@ -159,30 +159,8 @@ export default function KpiRowV2({
 
             {/* Bottom Section: Legend & Segmented Chart */}
             <div className="w-full mt-4">
-              {/* Performance Bands Legend (above the segmented bar) — generous even spacing */}
-              <div className="flex flex-row items-center justify-between w-full gap-x-6 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-3">
-                {SCORE_BANDS.map((band) => {
-                  const isActive = activeBandId === band.id;
-                  return (
-                    <div
-                      key={band.id}
-                      className={`flex items-center gap-1.5 transition-all shrink-0 ${
-                        isActive
-                          ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
-                          : "text-[#6F6A61] dark:text-[#9A948A]"
-                      }`}
-                    >
-                      <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
-                        style={{ backgroundColor: band.color }}
-                      />
-                      <span className="whitespace-nowrap">
-                        {band.name} {band.rangeLabel}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Performance Bands Legend aligned 1-to-1 in 5-columns directly over the 5 bar segments */}
+              <PerformanceBandsLegend activeScore={avgVarnaScore} orientation="horizontal" className="mb-2" />
 
               {/* Segmented Horizontal Line Chart */}
               <div className="w-full">

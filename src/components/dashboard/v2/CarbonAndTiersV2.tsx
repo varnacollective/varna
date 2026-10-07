@@ -1,12 +1,20 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Leaf, TreePine, Info } from "lucide-react";
+import {
+  computeSmeSpendData,
+  formatUsd,
+  MSME_COLORS,
+} from "@/components/dashboard/impact/v2/SMESpendCard";
 
 interface CarbonAndTiersV2Props {
   totalCO2eAvoidedKg: number;
   totalSuppliers: number;
   tierDistribution: { tier: string; count: number; color: string }[];
+  suppliers?: any[];
+  totalSpend?: number;
 }
 
 const KG_PER_TREE = 22;
@@ -22,7 +30,14 @@ export default function CarbonAndTiersV2({
   totalCO2eAvoidedKg,
   totalSuppliers = 3,
   tierDistribution,
+  suppliers = [],
+  totalSpend = 0,
 }: CarbonAndTiersV2Props) {
+  const [tierViewMode, setTierViewMode] = useState<"count" | "spend">("count");
+
+  const smeData = useMemo(() => {
+    return computeSmeSpendData(suppliers, totalSpend);
+  }, [suppliers, totalSpend]);
   // Tree calculation
   const treesEquivalent = Math.round(totalCO2eAvoidedKg / KG_PER_TREE); // 98 trees
 
@@ -225,89 +240,206 @@ export default function CarbonAndTiersV2({
         "
       >
         <div>
-          <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
-            Partner Tier Distribution
-          </h2>
-          <p className="text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
-            Partners by enterprise size
-          </p>
+          {/* Header with Toggle Pills */}
+          <div className="flex items-start justify-between pb-3 border-b border-black/[0.07] dark:border-white/[0.08] mb-3 gap-2">
+            <div>
+              <h2 className="text-[20px] lg:text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
+                {tierViewMode === "count" ? "Partner Tier Distribution" : "SME Spend"}
+              </h2>
+              <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
+                {tierViewMode === "count" ? "Partners by enterprise size" : "Spend with small and micro businesses"}
+              </p>
+            </div>
 
-          <div className="flex items-baseline gap-2 my-3">
-            {/* P0-1 FIXED: Shows 3 TOTAL PARTNERS */}
-            <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
-              {correctTotalSuppliers}
-            </span>
-            <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
-              TOTAL PARTNERS
-            </span>
+            {/* Toggle Pills: By Count / By Spend */}
+            <div className="flex items-center p-0.5 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] shrink-0 mt-0.5">
+              <button
+                type="button"
+                onClick={() => setTierViewMode("count")}
+                className={`px-2.5 py-1 text-xs rounded-lg transition-all cursor-pointer ${
+                  tierViewMode === "count"
+                    ? "bg-white dark:bg-[#20242B] text-[#1F1B16] dark:text-[#F3EFE7] shadow-xs font-semibold"
+                    : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7] font-medium"
+                }`}
+              >
+                By Count
+              </button>
+              <button
+                type="button"
+                onClick={() => setTierViewMode("spend")}
+                className={`px-2.5 py-1 text-xs rounded-lg transition-all cursor-pointer ${
+                  tierViewMode === "spend"
+                    ? "bg-white dark:bg-[#20242B] text-[#1F1B16] dark:text-[#F3EFE7] shadow-xs font-semibold"
+                    : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7] font-medium"
+                }`}
+              >
+                By Spend
+              </button>
+            </div>
           </div>
 
-          {/* 12px Segmented Horizontal Bar */}
-          <div className="w-full h-3 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-4">
-            {TIER_CONFIG.map((tier) => {
-              const count = tierCounts[tier.key] || 0;
-              const pct = (count / correctTotalSuppliers) * 100;
-              if (pct <= 0) return null;
-              return (
-                <div
-                  key={tier.key}
-                  style={{
-                    width: `${pct}%`,
-                    backgroundColor: tier.color,
-                  }}
-                  className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
-                  title={`${tier.label}: ${count} (${pct.toFixed(0)}%)`}
-                />
-              );
-            })}
-          </div>
+          {tierViewMode === "count" ? (
+            <>
+              {/* Count View KPI */}
+              <div className="flex items-baseline gap-2 my-3">
+                <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
+                  {correctTotalSuppliers}
+                </span>
+                <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
+                  TOTAL PARTNERS
+                </span>
+              </div>
 
-          {/* Tier Row List (including 0s) */}
-          <div className="space-y-3 mt-4">
-            {TIER_CONFIG.map((tier) => {
-              const count = tierCounts[tier.key] || 0;
-              const pct = Math.round((count / correctTotalSuppliers) * 100);
-              const isZero = count === 0;
-
-              return (
-                <div
-                  key={tier.key}
-                  className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
-                    }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: tier.color }}
+              {/* 12px Segmented Horizontal Bar */}
+              <div className="w-full h-3 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-4">
+                {TIER_CONFIG.map((tier) => {
+                  const count = tierCounts[tier.key] || 0;
+                  const pct = (count / correctTotalSuppliers) * 100;
+                  if (pct <= 0) return null;
+                  return (
+                    <div
+                      key={tier.key}
+                      style={{
+                        width: `${pct}%`,
+                        backgroundColor: tier.color,
+                      }}
+                      className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
+                      title={`${tier.label}: ${count} (${pct.toFixed(0)}%)`}
                     />
-                    <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">
-                      {tier.label}
-                    </span>
-                  </div>
+                  );
+                })}
+              </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className="text-[#6F6A61] dark:text-[#9A948A] text-xs font-normal">
-                      ({pct}%)
-                    </span>
-                    <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[20px] text-right tabular-nums">
-                      {count}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+              {/* Tier Row List (including 0s) */}
+              <div className="space-y-3 mt-4">
+                {TIER_CONFIG.map((tier) => {
+                  const count = tierCounts[tier.key] || 0;
+                  const pct = Math.round((count / correctTotalSuppliers) * 100);
+                  const isZero = count === 0;
+
+                  return (
+                    <div
+                      key={tier.key}
+                      className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
+                        isZero ? "opacity-45" : "opacity-100"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: tier.color }}
+                        />
+                        <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">
+                          {tier.label}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#6F6A61] dark:text-[#9A948A] text-xs font-normal">
+                          ({pct}%)
+                        </span>
+                        <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[20px] text-right tabular-nums">
+                          {count}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Spend View KPI */}
+              <div className="flex items-baseline gap-2 my-3">
+                <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
+                  {formatUsd(smeData.totalSMEUsd)}
+                </span>
+                <span className="text-xs font-semibold text-[#7D3F1E] dark:text-[#E07A57] uppercase tracking-wider">
+                  {smeData.smePct.toFixed(1)}% OF TOTAL SPEND
+                </span>
+              </div>
+
+              {/* 12px Segmented Horizontal Bar by Spend */}
+              <div className="w-full h-3 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-4">
+                {(["Micro", "Small", "Medium"] as const).map((tier) => {
+                  const amount = smeData.breakdownUsd[tier];
+                  const pct = smeData.totalSMEUsd > 0 ? (amount / smeData.totalSMEUsd) * 100 : 0;
+                  if (pct <= 0) return null;
+                  return (
+                    <div
+                      key={tier}
+                      style={{
+                        width: `${pct}%`,
+                        backgroundColor: MSME_COLORS[tier],
+                      }}
+                      className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
+                      title={`${tier}: ${formatUsd(amount)} (${pct.toFixed(1)}%)`}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* MSME Row List */}
+              <div className="space-y-3 mt-4">
+                {(["Micro", "Small", "Medium"] as const).map((tier) => {
+                  const amount = smeData.breakdownUsd[tier];
+                  const pct = smeData.totalSMEUsd > 0 ? (amount / smeData.totalSMEUsd) * 100 : 0;
+                  const isZero = amount === 0;
+
+                  return (
+                    <div
+                      key={tier}
+                      className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
+                        isZero ? "opacity-45" : "opacity-100"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: MSME_COLORS[tier] }}
+                        />
+                        <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">
+                          {tier}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#6F6A61] dark:text-[#9A948A] text-xs font-normal">
+                          ({pct.toFixed(1)}%)
+                        </span>
+                        <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[20px] text-right tabular-nums">
+                          {formatUsd(amount)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Pinned Footer Insight Tile */}
+        {tierViewMode === "count" ? (
+          <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
+            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
+              Largest tier: {largestTierName} ({largestTierCount} of {correctTotalSuppliers} partners)
+            </span>
+            <span className="text-[#6F6A61] dark:text-[#9A948A]">
+              {Math.round((largestTierCount / correctTotalSuppliers) * 100)}% share
+            </span>
           </div>
-        </div>
-
-        {/* D4 Pinned Footer Insight Tile (W10 fixed) */}
-        <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
-          <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
-            Largest tier: {largestTierName} ({largestTierCount} of {correctTotalSuppliers} partners)
-          </span>
-          <span className="text-[#6F6A61] dark:text-[#9A948A]">
-            {Math.round((largestTierCount / correctTotalSuppliers) * 100)}% share
-          </span>
-        </div>
+        ) : (
+          <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
+            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57] flex items-center gap-1.5 truncate">
+              <Info className="w-3.5 h-3.5 shrink-0" strokeWidth={1.8} />
+              Udyam MSME classification
+            </span>
+            <span className="text-[#6F6A61] dark:text-[#9A948A] shrink-0">
+              Per MSME Act 2006
+            </span>
+          </div>
+        )}
       </motion.div>
     </div>
   );

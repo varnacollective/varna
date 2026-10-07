@@ -55,8 +55,8 @@ export const SCORE_BANDS: ScoreBand[] = [
     rangeLabel: "85+",
     minScore: 85,
     maxScore: 100,
-    color: "#556B55", // Sage Olive / Green (Leader)
-    activeTextColor: "text-[#47574B] dark:text-[#8AAE8A]",
+    color: "#4E7C59", // Clear Forest Sage Green (Leader)
+    activeTextColor: "text-[#3D6646] dark:text-[#8AAE8A]",
   },
 ];
 
@@ -113,24 +113,24 @@ export const PerformanceBandsLegend = memo(function PerformanceBandsLegend({
 
   if (orientation === "horizontal") {
     return (
-      <div className={`flex flex-row flex-wrap justify-between items-center w-full text-[11px] sm:text-xs text-gray-600 mb-3 ${className}`}>
+      <div className={`grid grid-cols-5 gap-1 w-full text-[10px] sm:text-[11px] mb-2.5 ${className}`}>
         {SCORE_BANDS.map((band) => {
           const isActive = activeBandId === band.id;
           return (
             <div
               key={band.id}
-              className={`flex items-center gap-1.5 transition-all ${
+              className={`flex flex-col sm:flex-row items-center justify-center text-center sm:text-left gap-1 transition-all ${
                 isActive
                   ? "font-bold text-[#1F1B16] dark:text-[#F3EFE7] underline decoration-2 underline-offset-2 scale-[1.02]"
-                  : "text-gray-500 dark:text-gray-400"
+                  : "text-[#6F6A61] dark:text-[#9A948A] font-normal"
               }`}
             >
               <span
-                className="w-2.5 h-2.5 rounded-full shrink-0"
+                className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: band.color }}
               />
-              <span className="whitespace-nowrap">
-                {band.name} {band.rangeLabel}
+              <span className="truncate whitespace-nowrap">
+                {band.name} <span className="opacity-80 text-[9px] sm:text-[10px]">{band.rangeLabel}</span>
               </span>
             </div>
           );

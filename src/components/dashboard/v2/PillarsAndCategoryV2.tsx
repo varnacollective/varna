@@ -2,9 +2,8 @@
 
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import ImpactPillars from "@/components/dashboard/ImpactPillars";
-import VarnaScoreBandScale, { SCORE_BANDS } from "@/components/ui/VarnaScoreBandScale";
+import { SCORE_BANDS, PerformanceBandsLegend } from "@/components/ui/VarnaScoreBandScale";
 import CategoryChartV2 from "./CategoryChartV2";
 import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
 import { MOCK_PRODUCTS_LIST } from "@/lib/mock-data";
@@ -80,114 +79,68 @@ export default function PillarsAndCategoryV2({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 8 Cols: Visual Image + ESG Performance Pillars */}
-      <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-        {/* Left ~30% of 8 cols: Visual Amenity Image Card (W7 & P1-6 fixed) */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="
-            md:col-span-4
-            bg-white dark:bg-[#20242B]
-            rounded-[24px] overflow-hidden
-            border border-black/[0.07] dark:border-white/[0.08]
-            shadow-sm min-h-[380px] relative group
-          "
-        >
-          <Image
-            src="/assets/Dashboard_visual_2.svg"
-            alt="Artisanal Amenities Visual"
-            fill
-            loading="lazy"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-            className="object-cover rounded-[24px] object-[50%_60%] transition-transform duration-700 group-hover:scale-[1.03] dark:brightness-90"
-          />
-          <div className="absolute inset-0 bg-black/5 dark:bg-black/20 pointer-events-none rounded-[24px]" />
-        </motion.div>
+      {/* 5 Cols: ESG Performance Pillars Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="
+          col-span-12 lg:col-span-5
+          bg-white dark:bg-[#20242B]
+          rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
+          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]
+        "
+      >
+        {/* Header Row */}
+        <div className="flex items-center justify-between pb-3 border-b border-black/[0.07] dark:border-white/[0.08] gap-4">
+          <div className="flex items-baseline gap-2 truncate">
+            <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em] whitespace-nowrap">
+              ESG Performance Pillars
+            </h2>
+          </div>
+        </div>
 
-        {/* Right ~70% of 8 cols: ESG Pillars Card (NO NESTED DOUBLE FRAME - P1-7 fixed) */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="
-            md:col-span-8
-            bg-white dark:bg-[#20242B]
-            rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
-            shadow-sm flex flex-col justify-between p-4 lg:p-5
-          "
-        >
-          {/* Header Row */}
-          <div className="flex items-center justify-between pb-3 border-b border-black/[0.07] dark:border-white/[0.08] gap-4">
-            <div className="flex items-baseline gap-2 truncate">
-              <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em] whitespace-nowrap">
-                ESG Performance Pillars
-              </h2>
+        {/* Body: Circular Gauges */}
+        <div className="py-2">
+          <ImpactPillars
+            eScore={eScore}
+            sScore={sScore}
+            gScore={gScore}
+            cScore={cScore}
+            pillarBreakdown={pillarBreakdown}
+          />
+        </div>
+
+        {/* Bottom: Segmented Score Chart mirroring the Sutra Verified Score card */}
+        <div className="mt-4 pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
+          {/* Performance Bands Legend aligned 1-to-1 in 5-columns directly over the 5 bar segments */}
+          <PerformanceBandsLegend orientation="horizontal" className="mb-2" />
+
+          {/* Segmented bar: completely uniform matching 5 columns */}
+          <div className="w-full my-1 transform-gpu">
+            <div className="w-full h-2.5 rounded-full overflow-hidden grid grid-cols-5 bg-black/5 dark:bg-white/10 relative p-0.5 gap-0.5">
+              {SCORE_BANDS.map((band, idx) => (
+                <div
+                  key={band.id}
+                  className={`h-full transition-opacity hover:opacity-90 ${
+                    idx === 0 ? "rounded-l-full" : ""
+                  } ${idx === SCORE_BANDS.length - 1 ? "rounded-r-full" : ""}`}
+                  style={{ backgroundColor: band.color }}
+                  title={`${band.name}: ${band.rangeLabel}`}
+                />
+              ))}
             </div>
           </div>
+        </div>
+      </motion.div>
 
-          {/* Body: Circular Gauges */}
-          <div className="py-2">
-            <ImpactPillars
-              eScore={eScore}
-              sScore={sScore}
-              gScore={gScore}
-              cScore={cScore}
-              pillarBreakdown={pillarBreakdown}
-            />
-          </div>
-
-          {/* Bottom: Segmented Score Chart mirroring the Sutra Verified Score card */}
-          {(() => {
-            const avgScore = (eScore + sScore + gScore + cScore) / 4;
-            return (
-              <div className="mt-4 pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
-                {/* Horizontal legend */}
-                <div className="flex flex-row items-center justify-between w-full gap-x-4 gap-y-1 flex-wrap text-[11px] sm:text-xs mb-2">
-                  {SCORE_BANDS.map((band) => (
-                    <div
-                      key={band.id}
-                      className="flex items-center gap-1.5 shrink-0 text-[#6F6A61] dark:text-[#9A948A] font-normal"
-                    >
-                      <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
-                        style={{ backgroundColor: band.color }}
-                      />
-                      <span className="whitespace-nowrap">
-                        {band.name} {band.rangeLabel}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                {/* Segmented bar: completely uniform with no active tier indicator */}
-                <div className="w-full my-1 transform-gpu">
-                  <div className="w-full h-2.5 rounded-full overflow-hidden grid grid-cols-5 bg-black/5 dark:bg-white/10 relative p-0.5 gap-0.5">
-                    {SCORE_BANDS.map((band, idx) => (
-                      <div
-                        key={band.id}
-                        className={`h-full transition-opacity hover:opacity-90 ${
-                          idx === 0 ? "rounded-l-full" : ""
-                        } ${idx === SCORE_BANDS.length - 1 ? "rounded-r-full" : ""}`}
-                        style={{ backgroundColor: band.color }}
-                        title={`${band.name}: ${band.rangeLabel}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-        </motion.div>
-      </div>
-
-      {/* 4 Cols: Spend by Product Card (W8 & P1-6 fixed) */}
+      {/* 7 Cols: Category Level Metrics Card (Widened for ample breathing room) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="
-          lg:col-span-4
+          col-span-12 lg:col-span-7
           bg-white dark:bg-[#20242B]
           rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
           shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]

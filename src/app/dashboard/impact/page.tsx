@@ -73,6 +73,67 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
           { name: "Kheoni Ventures", womenPct: 75, wageRatio: 1.6 },
         ];
 
+    const { data: supplierLinks } = await supabase
+      .from("supplier_detail_by_client")
+      .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto")
+      .eq("client_id", clientId);
+
+    const suppliersList = (supplierLinks && supplierLinks.length > 0)
+      ? supplierLinks.map((s: any) => ({
+          clientId,
+          enterpriseId: s.enterprise_id || s.enterprise_name_auto,
+          enterpriseName: s.enterprise_name_auto,
+          tier: s.tier_auto || "Micro B",
+          varnaScore: Number(s.varna_score_auto) || 70,
+          eScore: Number(s.e_score_auto) || 50,
+          sScore: Number(s.s_score_auto) || 60,
+          gScore: Number(s.g_score_auto) || 75,
+          cScore: Number(s.c_score_auto) || 0,
+          totalSpend: Number(s.orders_inr_ytd_auto) || 0,
+          totalOrders: Number(s.units_ytd_auto) || 5,
+        }))
+      : [
+          {
+            clientId,
+            enterpriseId: "ENT-001",
+            enterpriseName: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+            tier: "Micro B",
+            varnaScore: 74.3,
+            eScore: 31.8,
+            sScore: 63.8,
+            gScore: 85.3,
+            cScore: 0,
+            totalSpend: 268000,
+            totalOrders: 1300,
+          },
+          {
+            clientId,
+            enterpriseId: "ENT-002",
+            enterpriseName: "UKHI India Private Limited",
+            tier: "Small",
+            varnaScore: 77.1,
+            eScore: 46.3,
+            sScore: 67.5,
+            gScore: 78.3,
+            cScore: 0,
+            totalSpend: 11900,
+            totalOrders: 7000,
+          },
+          {
+            clientId,
+            enterpriseId: "ENT-003",
+            enterpriseName: "Kheoni Ventures Pvt Ltd",
+            tier: "Micro A",
+            varnaScore: 51.3,
+            eScore: 25.4,
+            sScore: 59.1,
+            gScore: 76.5,
+            cScore: 0,
+            totalSpend: 33250,
+            totalOrders: 350,
+          },
+        ];
+
     const resolvedClientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
 
     const dashboardData: DashboardData = {
@@ -104,7 +165,7 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
         pillarBreakdown: {} as any,
         sdgImpact: [],
       } as any,
-      suppliers: [],
+      suppliers: suppliersList as any,
       categorySpend: [],
       tierDistribution: [],
       supplierImpactData,

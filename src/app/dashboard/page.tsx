@@ -115,10 +115,10 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         .eq("client_id", clientId)
         .maybeSingle(),
 
-      // 3. Get the list of supplier IDs for this client
+      // 3. Get the list of supplier details for this client
       supabase
         .from("supplier_detail_by_client")
-        .select("enterprise_id")
+        .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto")
         .eq("client_id", clientId),
 
       // 4. Fetch Category Spend (explicit columns only — no SELECT *)
@@ -238,39 +238,64 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
           },
         ];
 
-    // 6. Build supplier list from cached scores_summary
-    const suppliersList: SupplierDetail[] = (scoresData && scoresData.length > 0 ? scoresData : [
-      { enterprise_name: "Bare Necessities Zero Waste Solutions Pvt. Ltd.", enterprise_id: "ENT-001", final_varna_score: 78, e_pillar_score: 75, s_pillar_score: 80, g_pillar_score: 70, c_pillar_score: 72 },
-      { enterprise_name: "UKHI INDIA PRIVATE LIMITED", enterprise_id: "ENT-002", final_varna_score: 56, e_pillar_score: 60, s_pillar_score: 55, g_pillar_score: 50, c_pillar_score: 45 },
-      { enterprise_name: "Kheoni Ventures Pvt Ltd", enterprise_id: "ENT-003", final_varna_score: 42, e_pillar_score: 40, s_pillar_score: 45, g_pillar_score: 40, c_pillar_score: 35 },
-      { enterprise_name: "Greensole Footwear Pvt Ltd", enterprise_id: "ENT-004", final_varna_score: 72, e_pillar_score: 70, s_pillar_score: 75, g_pillar_score: 68, c_pillar_score: 65 },
-      { enterprise_name: "Marikar Green Earth Private Limited", enterprise_id: "ENT-005", final_varna_score: 64, e_pillar_score: 62, s_pillar_score: 65, g_pillar_score: 60, c_pillar_score: 58 },
-    ]).map((s: any) => {
-      const name = s.enterprise_name || "";
-      const lower = name.toLowerCase();
-      const isBare = lower.includes("bare");
-      const isUKHI = lower.includes("ukhi");
-      const tier = isBare ? "Platinum" : isUKHI ? "Gold" : "Silver";
+    // 6. Build supplier list from client-scoped supplier_detail_by_client
+    const suppliersList: SupplierDetail[] = (supplierLinks && supplierLinks.length > 0)
+      ? supplierLinks.map((s: any) => {
+          const name = s.enterprise_name_auto || "";
+          const lower = name.toLowerCase();
+          const isBare = lower.includes("bare");
+          const isUKHI = lower.includes("ukhi");
+          const tier = s.tier_auto || (isBare ? "Micro B" : isUKHI ? "Small" : "Micro A");
 
-      return {
-        clientId,
-        enterpriseId: s.enterprise_id || name,
-        enterpriseName: name,
-        tier,
-        varnaScore: s.final_varna_score ?? 0,
-        eScore: s.e_pillar_score ?? 0,
-        sScore: s.s_pillar_score ?? 0,
-        gScore: s.g_pillar_score ?? 0,
-        cScore: s.c_pillar_score ?? 0,
-        totalSpend: isBare ? 1680000 : isUKHI ? 960000 : 800000,
-        totalOrders: isBare ? 12 : isUKHI ? 8 : 5,
-        city: isBare ? "Bengaluru" : isUKHI ? "Faridabad" : "Indore",
-        state: isBare ? "Karnataka" : isUKHI ? "Haryana" : "Madhya Pradesh",
-        artisansEmployed: isBare ? 45 : isUKHI ? 120 : 30,
-        womenPercent: isBare ? 82 : isUKHI ? 65 : 75,
-        logoPath: s.logo_path || getSupplierLogoFallback(name),
-      };
-    });
+          return {
+            clientId,
+            enterpriseId: s.enterprise_id || name,
+            enterpriseName: name,
+            tier,
+            varnaScore: Number(s.varna_score_auto) || 70,
+            eScore: Number(s.e_score_auto) || 50,
+            sScore: Number(s.s_score_auto) || 60,
+            gScore: Number(s.g_score_auto) || 75,
+            cScore: Number(s.c_score_auto) || 0,
+            totalSpend: Number(s.orders_inr_ytd_auto) || 0,
+            totalOrders: Number(s.units_ytd_auto) || (isBare ? 12 : isUKHI ? 8 : 5),
+            city: isBare ? "Bengaluru" : isUKHI ? "Faridabad" : "Indore",
+            state: isBare ? "Karnataka" : isUKHI ? "Haryana" : "Madhya Pradesh",
+            artisansEmployed: isBare ? 45 : isUKHI ? 120 : 30,
+            womenPercent: isBare ? 82 : isUKHI ? 65 : 75,
+            logoPath: getSupplierLogoFallback(name),
+          };
+        })
+      : (scoresData && scoresData.length > 0 ? scoresData : [
+          { enterprise_name: "Bare Necessities Zero Waste Solutions Pvt. Ltd.", enterprise_id: "ENT-001", final_varna_score: 78, e_pillar_score: 75, s_pillar_score: 80, g_pillar_score: 70, c_pillar_score: 72 },
+          { enterprise_name: "UKHI INDIA PRIVATE LIMITED", enterprise_id: "ENT-002", final_varna_score: 56, e_pillar_score: 60, s_pillar_score: 55, g_pillar_score: 50, c_pillar_score: 45 },
+          { enterprise_name: "Kheoni Ventures Pvt Ltd", enterprise_id: "ENT-003", final_varna_score: 42, e_pillar_score: 40, s_pillar_score: 45, g_pillar_score: 40, c_pillar_score: 35 },
+        ]).map((s: any) => {
+          const name = s.enterprise_name || "";
+          const lower = name.toLowerCase();
+          const isBare = lower.includes("bare");
+          const isUKHI = lower.includes("ukhi");
+          const tier = isBare ? "Micro B" : isUKHI ? "Small" : "Micro A";
+
+          return {
+            clientId,
+            enterpriseId: s.enterprise_id || name,
+            enterpriseName: name,
+            tier,
+            varnaScore: s.final_varna_score ?? 0,
+            eScore: s.e_pillar_score ?? 0,
+            sScore: s.s_pillar_score ?? 0,
+            gScore: s.g_pillar_score ?? 0,
+            cScore: s.c_pillar_score ?? 0,
+            totalSpend: isBare ? 268000 : isUKHI ? 11900 : 33250,
+            totalOrders: isBare ? 12 : isUKHI ? 8 : 5,
+            city: isBare ? "Bengaluru" : isUKHI ? "Faridabad" : "Indore",
+            state: isBare ? "Karnataka" : isUKHI ? "Haryana" : "Madhya Pradesh",
+            artisansEmployed: isBare ? 45 : isUKHI ? 120 : 30,
+            womenPercent: isBare ? 82 : isUKHI ? 65 : 75,
+            logoPath: s.logo_path || getSupplierLogoFallback(name),
+          };
+        });
 
     const resolvedClientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
     const clientLogo = clientData?.logo_path || getClientLogoFallback(resolvedClientName);

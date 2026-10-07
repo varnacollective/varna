@@ -104,6 +104,8 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         totalCO2eAvoidedKg={summary.totalCO2eAvoidedKg}
         totalSuppliers={summary.totalSuppliers}
         tierDistribution={tierDistribution}
+        suppliers={data.suppliers}
+        totalSpend={currentTotalSpend}
       />
 
       {/* 6. Social Livelihood Impact (W11) */}

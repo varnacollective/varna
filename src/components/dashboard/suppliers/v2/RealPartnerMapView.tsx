@@ -306,8 +306,20 @@ export default function RealPartnerMapView({
     }
   };
 
+  // ─── Local Sourcing Metric Computations ────────────────────────────────────
+  const totalPartnersList = allSuppliers.length > 0 ? allSuppliers : suppliers;
+  const totalPartnersCount = totalPartnersList.length;
+  const localPartnersCount = countrySuppliers.length;
+  const localPartnersPct = totalPartnersCount > 0 ? Math.round((localPartnersCount / totalPartnersCount) * 100) : 0;
+
+  const totalSpendInr = totalPartnersList.reduce((sum, s) => sum + (s.totalSpend || s.spend || s.orders_inr_ytd_auto || 0), 0);
+  const localSpendInr = countrySuppliers.reduce((sum, s) => sum + (s.totalSpend || s.spend || s.orders_inr_ytd_auto || 0), 0);
+  const localSpendUsd = localSpendInr > 0 ? Math.round(localSpendInr / 83) : 0;
+  const totalSpendUsd = totalSpendInr > 0 ? Math.round(totalSpendInr / 83) : 0;
+  const localSpendPct = totalSpendInr > 0 ? ((localSpendInr / totalSpendInr) * 100).toFixed(1) : "0.0";
+
   return (
-    <div className="relative w-full rounded-[24px] overflow-hidden border border-black/[0.07] dark:border-white/[0.08] shadow-sm bg-[#F7F3EA] dark:bg-[#1A1E26]">
+    <div className="relative w-full rounded-[24px] overflow-hidden border border-black/[0.07] dark:border-white/[0.08] shadow-sm bg-[#F7F3EA] dark:bg-[#1A1E26] flex flex-col">
       {/* ── Top Bar Controls: Country Selector + Title ── */}
       <div className="absolute top-4 right-4 z-[1000] flex items-center gap-2 flex-wrap">
         {/* Country Selector Dropdown */}
@@ -330,56 +342,84 @@ export default function RealPartnerMapView({
         </div>
       </div>
 
-      {/* ── Leaflet Map DOM Container ── */}
-      <div
-        ref={mapContainerRef}
-        className="w-full h-[520px] md:h-[580px] z-10"
-        tabIndex={0}
-        aria-label="Interactive Partner Locations Map"
-      />
+      {/* ── Relative Map Container ── */}
+      <div className="relative w-full">
+        {/* Leaflet Map DOM Container */}
+        <div
+          ref={mapContainerRef}
+          className="w-full h-[480px] md:h-[530px] z-10"
+          tabIndex={0}
+          aria-label="Interactive Partner Locations Map"
+        />
 
-      {/* ── Empty State Overlay (if 0 partners in selected country) ── */}
-      {countrySuppliers.length === 0 && (
-        <div className="absolute inset-0 z-[500] bg-white/70 dark:bg-[#1A1E26]/75 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57] mb-3">
-            <AlertCircle className="w-6 h-6" />
-          </div>
-          <h3 className="text-base font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
-            No partners in {activeCountry} yet
-          </h3>
-          <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] max-w-sm mt-1">
-            Currently all verified partners are located in India. Switch back to India to see active registered locations.
-          </p>
-          <button
-            type="button"
-            onClick={() => handleCountrySelect("India")}
-            className="mt-3 px-3.5 py-1.5 rounded-xl bg-[#7D3F1E] dark:bg-[#E07A57] text-white text-xs font-medium shadow-sm hover:opacity-90 transition-opacity"
-          >
-            Switch to India
-          </button>
-        </div>
-      )}
-
-      {/* ── Score Band Legend (Bottom-Left) ── */}
-      <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 dark:bg-[#1A1E26]/95 backdrop-blur-md rounded-2xl p-3 border border-black/[0.08] dark:border-white/[0.12] shadow-md pointer-events-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] mb-2">
-          Score Band
-        </p>
-        <div className="space-y-1.5">
-          {Object.entries(BAND_COLORS).map(([band, color]) => (
-            <div key={band} className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
-              <span className="text-[11px] text-[#5B564E] dark:text-[#C2BCB0] font-normal">{band}</span>
+        {/* Empty State Overlay (if 0 partners in selected country) */}
+        {countrySuppliers.length === 0 && (
+          <div className="absolute inset-0 z-[500] bg-white/70 dark:bg-[#1A1E26]/75 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57] mb-3">
+              <AlertCircle className="w-6 h-6" />
             </div>
-          ))}
+            <h3 className="text-base font-semibold text-[#1F1B16] dark:text-[#F3EFE7]">
+              No partners in {activeCountry} yet
+            </h3>
+            <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] max-w-sm mt-1">
+              Currently all verified partners are located in India. Switch back to India to see active registered locations.
+            </p>
+            <button
+              type="button"
+              onClick={() => handleCountrySelect("India")}
+              className="mt-3 px-3.5 py-1.5 rounded-xl bg-[#7D3F1E] dark:bg-[#E07A57] text-white text-xs font-medium shadow-sm hover:opacity-90 transition-opacity"
+            >
+              Switch to India
+            </button>
+          </div>
+        )}
+
+        {/* Score Band Legend (Bottom-Left) */}
+        <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 dark:bg-[#1A1E26]/95 backdrop-blur-md rounded-2xl p-3 border border-black/[0.08] dark:border-white/[0.12] shadow-md pointer-events-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] mb-2">
+            Score Band
+          </p>
+          <div className="space-y-1.5">
+            {Object.entries(BAND_COLORS).map(([band, color]) => (
+              <div key={band} className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                <span className="text-[11px] text-[#5B564E] dark:text-[#C2BCB0] font-normal">{band}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Map Disclaimer (Bottom-Right, above OSM attribution) */}
+        <div className="absolute bottom-4 right-4 z-[990] hidden sm:block pointer-events-none">
+          <p className="text-[10px] text-[#5B564E] dark:text-[#C2BCB0] bg-white/90 dark:bg-[#1A1E26]/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-black/[0.07] dark:border-white/[0.08] shadow-xs">
+            Locations show registered office. Manufacturing locations coming soon.
+          </p>
         </div>
       </div>
 
-      {/* ── Map Disclaimer (Bottom-Right, above OSM attribution) ── */}
-      <div className="absolute bottom-6 right-4 z-[990] hidden sm:block pointer-events-none">
-        <p className="text-[10px] text-[#5B564E] dark:text-[#C2BCB0] bg-white/90 dark:bg-[#1A1E26]/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-black/[0.07] dark:border-white/[0.08] shadow-xs">
-          Locations show registered office. Manufacturing locations coming soon.
-        </p>
+      {/* ── Local Sourcing Metric Panel / Footer Bar ── */}
+      <div className="relative z-20 px-5 py-3.5 bg-white dark:bg-[#20242B] border-t border-black/[0.07] dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-[#7D3F1E] dark:text-[#E07A57] shrink-0" />
+          <span className="font-medium text-[#1F1B16] dark:text-[#F3EFE7] text-xs sm:text-sm">
+            {localPartnersCount > 0
+              ? `Local Sourcing: ${localPartnersPct}% of partners sourced from ${activeCountry}`
+              : `Local Sourcing: 0% — no partners currently sourced from ${activeCountry}`}
+          </span>
+        </div>
+        <div className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-light flex items-center gap-2 flex-wrap">
+          <span>
+            {localPartnersCount} of {totalPartnersCount} verified partners
+          </span>
+          {totalSpendUsd > 0 && localPartnersCount > 0 && (
+            <>
+              <span>·</span>
+              <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
+                ${localSpendUsd.toLocaleString('en-US')} spend ({localSpendPct}% of total)
+              </span>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
