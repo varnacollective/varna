@@ -49,11 +49,13 @@ export default function SuppliersClient({
   liveConfidenceData,
   clientName,
   logoPath,
+  dashboardData,
 }: {
   suppliersData: any[];
   liveConfidenceData: Record<string, SupplierConfidenceData>;
   clientName?: string;
   logoPath?: string;
+  dashboardData?: any;
 }) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
@@ -98,6 +100,7 @@ export default function SuppliersClient({
             liveConfidenceData={liveConfidenceData}
             clientName={clientName}
             logoPath={logoPath}
+            dashboardData={dashboardData}
           />
         </main>
 

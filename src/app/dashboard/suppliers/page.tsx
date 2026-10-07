@@ -152,6 +152,7 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
     // are served from the 5-minute server cache (cookie-free anon client inside).
     const [
       clientData,
+      summaryData,
       scoresData,
       confidenceSummaryData,
       confidenceScoringData,
@@ -163,6 +164,12 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
       supabase
         .from("client_master")
         .select("client_name, logo_path, property_type")
+        .eq("client_id", clientId)
+        .maybeSingle()
+        .then((r) => r.data),
+      supabase
+        .from("client_summary")
+        .select("*")
         .eq("client_id", clientId)
         .maybeSingle()
         .then((r) => r.data),
@@ -350,12 +357,38 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
     const clientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
     const logoPath = clientData?.logo_path || getClientLogoFallback(clientName);
 
+    const dashboardData = {
+      client: {
+        clientId,
+        clientName,
+        industry: clientData?.property_type || fallbackHotel.propertyType || "Luxury Hospitality",
+        city: fallbackHotel.city || "Dubai",
+        state: fallbackHotel.country || "UAE",
+        onboardingDate: "2024-01-15",
+        status: "Active",
+        logoPath,
+      },
+      summary: {
+        clientId,
+        clientName,
+        totalSpend: summaryData?.total_spend_inr_auto != null ? Number(summaryData.total_spend_inr_auto) : fallbackHotel.totalSpendInr,
+        totalOrders: summaryData?.total_orders_auto != null ? Number(summaryData.total_orders_auto) : fallbackHotel.totalOrders,
+        avgVarnaScore: summaryData?.avg_varna_score != null ? Number(summaryData.avg_varna_score) : 67.6,
+        avgEScore: summaryData?.avg_e_score != null ? Number(summaryData.avg_e_score) : 34.5,
+        avgSScore: summaryData?.avg_s_score != null ? Number(summaryData.avg_s_score) : 63.5,
+        avgGScore: summaryData?.avg_g_score != null ? Number(summaryData.avg_g_score) : 80.0,
+        avgCScore: 0,
+        totalSuppliers: summaryData?.no_active_suppliers != null ? Number(summaryData.no_active_suppliers) : 3,
+      },
+    };
+
     return (
       <SuppliersClient
         suppliersData={mergedSuppliers}
         liveConfidenceData={liveConfidenceData}
         clientName={clientName}
         logoPath={logoPath}
+        dashboardData={dashboardData}
       />
     );
   } catch (error) {

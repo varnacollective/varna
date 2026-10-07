@@ -442,8 +442,23 @@ export default function ClientSuppliersV2({
   const canScrollPrev = currentPage > 0;
   const canScrollNext = currentPage < totalPages - 1;
 
+  const summaryScore = dashboardData?.summary?.avgVarnaScore ?? 67.6;
+  const summaryEScore = dashboardData?.summary?.avgEScore ?? 34.5;
+  const summarySScore = dashboardData?.summary?.avgSScore ?? 63.5;
+  const summaryGScore = dashboardData?.summary?.avgGScore ?? 80.0;
+  const summaryCScore = dashboardData?.summary?.avgCScore ?? 0;
+  const summaryTotalSpend = dashboardData?.summary?.totalSpend != null
+    ? Math.round(dashboardData.summary.totalSpend / 83)
+    : 3773;
+  const summaryTotalOrders = dashboardData?.summary?.totalOrders ?? 5;
+  const summaryTotalSuppliers = dashboardData?.summary?.totalSuppliers ?? suppliersData.length;
+
   const varnaScoreData = {
-    score: 75.3, eScore: 78, sScore: 76, gScore: 72, cScore: 74,
+    score: summaryScore,
+    eScore: summaryEScore,
+    sScore: summarySScore,
+    gScore: summaryGScore,
+    cScore: summaryCScore,
     supplierName: "Weighted average across your verified partners",
   };
 
@@ -462,10 +477,10 @@ export default function ClientSuppliersV2({
 
       {/* 3. KPI Row */}
       <SuppliersKpiV2
-        totalSuppliers={3}
-        totalOrders={5}
-        totalSpend={3773}
-        avgVarnaScore={75.3}
+        totalSuppliers={summaryTotalSuppliers}
+        totalOrders={summaryTotalOrders}
+        totalSpend={summaryTotalSpend}
+        avgVarnaScore={summaryScore}
         supplierNames={suppliersData.map((s) => s.enterprise_name || "")}
         varnaScoreData={varnaScoreData}
       />

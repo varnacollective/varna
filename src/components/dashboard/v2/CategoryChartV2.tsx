@@ -628,11 +628,11 @@ export default function CategoryChartV2({
                     Order Spend
                   </span>
                 </div>
-                <div className="h-28 w-full">
+                <div className="h-36 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                       data={filteredTimeSeriesData}
-                      margin={{ top: 6, right: 10, left: -10, bottom: 0 }}
+                      margin={{ top: 20, right: 20, bottom: 25, left: 20 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
                       <XAxis
@@ -688,11 +688,11 @@ export default function CategoryChartV2({
                     Reduction %
                   </span>
                 </div>
-                <div className="h-28 w-full">
+                <div className="h-36 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                       data={filteredTimeSeriesData}
-                      margin={{ top: 6, right: 10, left: -15, bottom: 0 }}
+                      margin={{ top: 20, right: 20, bottom: 25, left: 20 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
                       <XAxis

@@ -64,11 +64,6 @@ export default function KpiRowV2({
               />
             )}
           </div>
-
-          {/* Caption */}
-          <p className="text-[12px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            {totalOrders === 0 ? "No data in this period" : "Verified sustainable"}
-          </p>
         </motion.div>
 
         {/* KPI 2: Total Orders */}
@@ -104,11 +99,6 @@ export default function KpiRowV2({
               <AnimatedCounter value={totalOrders} delay={0.25} />
             )}
           </div>
-
-          {/* Caption */}
-          <p className="text-[12px] text-[#5B564E] dark:text-[#C2BCB0] font-normal leading-snug">
-            {totalOrders === 0 ? "No data in this period" : "Delivered procurement batches"}
-          </p>
         </motion.div>
       </div>
 
