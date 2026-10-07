@@ -79,13 +79,13 @@ export default function PillarsAndCategoryV2({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 7 Cols: ESG Performance Pillars Card (Increased width for dials & scale) */}
+      {/* 6 Cols: ESG Performance Pillars Card */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className="
-          col-span-12 lg:col-span-7
+          col-span-12 lg:col-span-6
           bg-white dark:bg-[#20242B]
           rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
           shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]
@@ -134,13 +134,13 @@ export default function PillarsAndCategoryV2({
         </div>
       </motion.div>
 
-      {/* 5 Cols: Category Level Metrics Card */}
+      {/* 6 Cols: Category Level Metrics Card */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="
-          col-span-12 lg:col-span-5
+          col-span-12 lg:col-span-6
           bg-white dark:bg-[#20242B]
           rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
           shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]

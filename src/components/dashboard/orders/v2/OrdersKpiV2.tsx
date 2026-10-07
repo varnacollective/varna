@@ -18,7 +18,7 @@ export default function OrdersKpiV2({
   vettedSuppliersCount = 2,
 }: OrdersKpiV2Props) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 items-stretch">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 items-stretch">
       {/* KPI 1: Total Orders */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -29,8 +29,8 @@ export default function OrdersKpiV2({
           border border-black/[0.07] dark:border-white/[0.08]
           shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
           dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-5 lg:p-[22px]
-          flex flex-col justify-between min-h-[160px] h-full
+          rounded-[20px] p-4 max-w-xs w-full
+          flex flex-col justify-between
           hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         "
       >
@@ -43,13 +43,9 @@ export default function OrdersKpiV2({
           </div>
         </div>
 
-        <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-2 tabular-nums">
+        <div className="text-2xl lg:text-[32px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-2 tabular-nums">
           {totalOrders}
         </div>
-
-        <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
-          Across 3 partners
-        </p>
       </motion.div>
 
       {/* KPI 2: Total Spend */}
@@ -62,8 +58,8 @@ export default function OrdersKpiV2({
           border border-black/[0.07] dark:border-white/[0.08]
           shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
           dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-5 lg:p-[22px]
-          flex flex-col justify-between min-h-[160px] h-full
+          rounded-[20px] p-4 max-w-xs w-full
+          flex flex-col justify-between
           hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         "
       >
@@ -77,13 +73,11 @@ export default function OrdersKpiV2({
         </div>
 
         <div
-          className="text-2xl lg:text-[32px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-2 tabular-nums flex items-baseline gap-1"
+          className="text-2xl lg:text-[32px] font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none mt-2 tabular-nums flex items-baseline gap-1"
           aria-label={`Total spend $${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}`}
         >
           <span>${Math.round(totalSpend > 10000 ? totalSpend / 83 : totalSpend).toLocaleString("en-US")}</span>
         </div>
-
-
       </motion.div>
 
       {/* KPI 3: Vetted Suppliers */}
@@ -96,8 +90,8 @@ export default function OrdersKpiV2({
           border border-black/[0.07] dark:border-white/[0.08]
           shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
           dark:shadow-none dark:border-t-white/[0.12]
-          rounded-[24px] p-5 lg:p-[22px]
-          flex flex-col justify-between min-h-[160px] h-full
+          rounded-[20px] p-4 max-w-xs w-full
+          flex flex-col justify-between
           hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
         "
       >
@@ -110,13 +104,9 @@ export default function OrdersKpiV2({
           </div>
         </div>
 
-        <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none my-2 tabular-nums">
+        <div className="text-2xl lg:text-[32px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-2 tabular-nums">
           {vettedSuppliersCount}
         </div>
-
-        <p className="text-[13px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-snug">
-          Assessed against the Varna framework
-        </p>
       </motion.div>
     </div>
   );

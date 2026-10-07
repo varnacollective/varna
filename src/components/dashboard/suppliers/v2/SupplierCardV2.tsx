@@ -217,10 +217,9 @@ export default function SupplierCardV2({
   const visibleBadges = effectiveBadges.slice(0, 3);
   const hiddenBadges = effectiveBadges.slice(3);
 
-  const isInProgressSupplier =
-    name.toLowerCase().includes("greensole") ||
-    name.toLowerCase().includes("marikar") ||
-    (legalName && (legalName.toLowerCase().includes("greensole") || legalName.toLowerCase().includes("marikar")));
+  const isInactiveSupplier =
+    name.toLowerCase().includes("sundari") ||
+    (legalName && legalName.toLowerCase().includes("sundari"));
 
   return (
     <div
@@ -259,7 +258,7 @@ export default function SupplierCardV2({
                 <h3 className="text-base lg:text-[18px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-snug break-words">
                   {name}
                 </h3>
-                {isInProgressSupplier && (
+                {isInactiveSupplier && (
                   <span className="bg-[#EBE6DA] text-[#717882] dark:bg-white/10 dark:text-[#9A948A] text-xs px-2 py-1 rounded-full ml-3 font-normal whitespace-nowrap border border-black/5 dark:border-white/10">
                     Inactive
                   </span>

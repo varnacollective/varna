@@ -21,12 +21,14 @@ const PILLAR_CONFIG = [
   { key: "E" as const, label: "Environmental", color: "#4C7355" },
   { key: "S" as const, label: "Social", color: "#B85333" },
   { key: "G" as const, label: "Governance", color: "#36424A" },
+  { key: "C" as const, label: "Cultural", color: "#7A3F1E" },
 ];
 
 export default function ImpactPillars({
   eScore,
   sScore,
   gScore,
+  cScore = 0,
   pillarBreakdown,
   delay = 0,
 }: ImpactPillarsProps) {
@@ -34,10 +36,11 @@ export default function ImpactPillars({
     Environmental: eScore,
     Social: sScore,
     Governance: gScore,
+    Cultural: cScore ?? 0,
   };
 
   return (
-    <div className="varna-pillars-container flex items-center justify-around gap-8 w-full py-2">
+    <div className="varna-pillars-container grid grid-cols-2 gap-6 w-full py-2">
       {PILLAR_CONFIG.map((pillar, idx) => {
         const score = scores[pillar.label] ?? 0;
         const breakdown = pillarBreakdown?.[pillar.label] ?? PILLAR_CRITERIA_BREAKDOWN[pillar.label];

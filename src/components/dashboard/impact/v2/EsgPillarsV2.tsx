@@ -10,11 +10,13 @@ interface EsgPillarsV2Props {
   eScore?: number;
   sScore?: number;
   gScore?: number;
+  cScore?: number;
   pillarBreakdown?: Record<string, any>;
   womenWorkforcePercent?: number;
 }
 
-function getBandLabel(score: number): { label: string; bg: string; text: string; border: string } {
+function getBandLabel(score: number, isCultural?: boolean): { label: string; bg: string; text: string; border: string } {
+  if (isCultural && score === 0) return { label: "To Be Assessed", bg: "bg-black/5 dark:bg-white/10", text: "text-[#6F6A61] dark:text-[#9A948A]", border: "border-black/10 dark:border-white/10" };
   if (score >= 85) return { label: "Leader", bg: "bg-[#55705A]/15 dark:bg-[#9DB4A0]/20", text: "text-[#55705A] dark:text-[#9DB4A0]", border: "border-[#55705A]/30" };
   if (score >= 70) return { label: "Advanced", bg: "bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20", text: "text-[#7D3F1E] dark:text-[#E07A57]", border: "border-[#7D3F1E]/30" };
   if (score >= 55) return { label: "Emerging", bg: "bg-[#6F8391]/15 dark:bg-[#93A9B8]/20", text: "text-[#6F8391] dark:text-[#93A9B8]", border: "border-[#6F8391]/30" };
@@ -38,18 +40,25 @@ const PILLARS_DATA = [
     label: "Governance",
     def: "Covers statutory registration, certifications, compliance and business ethics.",
   },
+  {
+    key: "C" as const,
+    label: "Cultural",
+    def: "Covers craft authenticity, endangered skill rarity, Geographical Indication status, and climate-vulnerable communities.",
+  },
 ];
 
 const PILLAR_METER_VALUES: Record<string, number> = {
   Environmental: 39,
   Social: 66,
   Governance: 80,
+  Cultural: 0,
 };
 
 export default function EsgPillarsV2({
   eScore = 39,
   sScore = 66,
   gScore = 80,
+  cScore = 0,
   pillarBreakdown,
   womenWorkforcePercent = 78,
 }: EsgPillarsV2Props) {
@@ -57,6 +66,7 @@ export default function EsgPillarsV2({
     Environmental: eScore,
     Social: sScore,
     Governance: gScore,
+    Cultural: cScore,
   };
 
   // Determine highest scoring pillar for D3 insight
@@ -86,11 +96,12 @@ export default function EsgPillarsV2({
         </div> */}
       </div>
 
-      {/* 3 Pillar Cards Grid (4 cols each) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+      {/* ESG + Cultural Pillar Cards Grid (4 pillars) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
         {PILLARS_DATA.map((p, idx) => {
-          const score = scores[p.label] || 70;
-          const band = getBandLabel(score);
+          const isCultural = p.key === "C";
+          const score = scores[p.label] ?? 0;
+          const band = getBandLabel(score, isCultural);
           const breakdown = pillarBreakdown?.[p.label] ?? PILLAR_CRITERIA_BREAKDOWN[p.label];
           const isHighest = p.label === highestPillarName;
           const meterValue = PILLAR_METER_VALUES[p.label] ?? score;

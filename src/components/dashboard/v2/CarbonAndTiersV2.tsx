@@ -354,9 +354,6 @@ export default function CarbonAndTiersV2({
                 <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
                   {formatUsd(smeData.totalSMEUsd)}
                 </span>
-                <span className="text-xs font-semibold text-[#7D3F1E] dark:text-[#E07A57] uppercase tracking-wider">
-                  {smeData.smePct.toFixed(1)}% OF TOTAL SPEND
-                </span>
               </div>
 
               {/* 12px Segmented Horizontal Bar by Spend */}

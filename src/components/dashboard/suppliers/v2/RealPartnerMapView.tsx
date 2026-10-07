@@ -114,11 +114,44 @@ export default function RealPartnerMapView({
         scrollWheelZoom: true,
       });
 
-      // Add OpenStreetMap standard tiles with obligatory attribution
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+      // Add India-compliant OpenStreetMap tiles (Survey of India compliant boundaries)
+      const indiaTileLayer = L.tileLayer("https://{s}.tile.openstreetmap.in/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://openstreetmap.in" target="_blank" rel="noopener noreferrer">OpenStreetMap India</a> | &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
         maxZoom: 19,
-      }).addTo(map);
+        subdomains: ["a", "b", "c"],
+      });
+
+      // Graceful fallback to standard OSM if local mirror has tile issues
+      indiaTileLayer.on("tileerror", function (error: any) {
+        if (error.tile && !error.tile.dataset.fallbackTried) {
+          error.tile.dataset.fallbackTried = "true";
+          const coords = error.coords;
+          error.tile.src = `https://a.tile.openstreetmap.org/${coords.z}/${coords.x}/${coords.y}.png`;
+        }
+      });
+
+      indiaTileLayer.addTo(map);
+
+      // Overlay official India boundary with thick stroke to delineate official borders
+      fetch("https://raw.githubusercontent.com/datameet/maps/master/Country/india-composite.geojson")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((geoData) => {
+          if (!isCancelled && geoData && mapInstanceRef.current) {
+            L.geoJSON(geoData, {
+              style: {
+                color: "#7D3F1E",
+                weight: 2.5,
+                opacity: 0.85,
+                fillColor: "transparent",
+                fillOpacity: 0,
+              },
+              interactive: false,
+            }).addTo(mapInstanceRef.current);
+          }
+        })
+        .catch(() => {
+          // Non-critical fallback if offline or network request fails
+        });
 
       // Create a layer group for markers
       const markersLayer = L.layerGroup().addTo(map);
@@ -403,8 +436,8 @@ export default function RealPartnerMapView({
           <MapPin className="w-4 h-4 text-[#7D3F1E] dark:text-[#E07A57] shrink-0" />
           <span className="font-medium text-[#1F1B16] dark:text-[#F3EFE7] text-xs sm:text-sm">
             {localPartnersCount > 0
-              ? `Local Procurement is ${localPartnersPct}% `
-              : `Local Procurement is 0% — no partners`}
+              ? `Local Procurement is ${localPartnersPct}%`
+              : `Local Procurement is 0%`}
           </span>
         </div>
         <div className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-light flex items-center gap-2 flex-wrap">

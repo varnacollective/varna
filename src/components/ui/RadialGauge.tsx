@@ -172,7 +172,7 @@ function RadialGaugeComponent({
             animate={{ opacity: 1 }}
             transition={{ delay: delay + 0.4, duration: 0.4 }}
           >
-            {Math.round(value)}
+            {value === 0 ? "NA" : Math.round(value)}
           </motion.span>
 
           {/* Delta indicator */}
@@ -205,12 +205,12 @@ function RadialGaugeComponent({
       <div className="flex flex-col items-center gap-1">
         <span
           className={`
-            px-2.5 py-0.5 rounded-full text-[8px] font-semibold uppercase tracking-[0.14em] shadow-xs
-            ${band.badgeBg} ${band.badgeText} border ${band.badgeBorder}
+            px-2.5 py-0.5 rounded-full text-[8px] font-semibold uppercase tracking-[0.14em] shadow-xs border
+            ${value === 0 ? "bg-black/5 dark:bg-white/10 text-[#6E7781] dark:text-[#8C9DA8] border-black/10 dark:border-white/15" : `${band.badgeBg} ${band.badgeText} ${band.badgeBorder}`}
           `}
-          title={`Framework Band: ${band.name} (${band.range})`}
+          title={value === 0 ? "To Be Assessed" : `Framework Band: ${band.name} (${band.range})`}
         >
-          {band.name}
+          {value === 0 ? "To Be Assessed" : band.name}
         </span>
 
         {label && (

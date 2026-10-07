@@ -145,14 +145,7 @@ export default function SMESpendCard({ suppliers, totalSpend }: SMESpendCardProp
               <span className="text-4xl lg:text-[44px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
                 {formatUsd(totalSMEUsd)}
               </span>
-              <div className="flex flex-col">
-                <span className="text-2xl font-light text-[#7D3F1E] dark:text-[#E07A57] tabular-nums">
-                  {smePct.toFixed(1)}%
-                </span>
-                <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-normal leading-tight">
-                  of total spend
-                </span>
-              </div>
+
             </div>
             <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] mt-2 font-normal">
               with small and micro businesses

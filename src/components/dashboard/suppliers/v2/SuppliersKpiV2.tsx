@@ -56,8 +56,8 @@ export default function SuppliersKpiV2({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 1) Column 1: Vertical Stack of Active Partners & Total Orders */}
-      <div className="col-span-12 lg:col-span-4 flex flex-col gap-4">
+      {/* 1) Column 1: Vertical Stack of Active Partners & Total Orders (narrow column) */}
+      <div className="col-span-12 lg:col-span-3 xl:col-span-2 flex flex-col gap-3">
         {/* KPI 1: Active Partners */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -68,7 +68,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-4 rounded-[20px] flex-1
+            p-4 rounded-[20px]
             flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -97,7 +97,7 @@ export default function SuppliersKpiV2({
             border border-black/[0.07] dark:border-white/[0.08]
             shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
             dark:shadow-none dark:border-t-white/[0.12]
-            p-4 rounded-[20px] flex-1
+            p-4 rounded-[20px]
             flex flex-col justify-between
             hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
@@ -118,7 +118,7 @@ export default function SuppliersKpiV2({
       </div>
 
       {/* 2) Column 2: Sustainable Spend above Sutra Verified Score stack */}
-      <div className="col-span-12 lg:col-span-8 flex flex-col gap-4">
+      <div className="col-span-12 lg:col-span-9 xl:col-span-10 flex flex-col gap-4">
         {/* KPI 3: Sustainable Spend */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}

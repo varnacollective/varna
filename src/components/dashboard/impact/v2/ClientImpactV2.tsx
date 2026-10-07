@@ -57,6 +57,7 @@ export default function ClientImpactV2({
         eScore={eScore}
         sScore={sScore}
         gScore={gScore}
+        cScore={summary?.avgCScore ?? 0}
         pillarBreakdown={pillarBreakdown}
         womenWorkforcePercent={womenWorkforcePercent}
       />

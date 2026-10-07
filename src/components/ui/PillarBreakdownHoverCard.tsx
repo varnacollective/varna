@@ -21,10 +21,15 @@ export const SUTRA_FRAMEWORK_DATA = {
     { id: "wages", title: "Fair wages & conditions", question: "Are workers paid fairly, on clear terms?", why: "No one in your supply chain is underpaid.", check: "Wages against state minimums, and written employment contracts." },
     { id: "health", title: "Health, safety & wellbeing", question: "Are workers protected on the job?", why: "Protects the people making what you buy.", check: "ESI coverage, safety systems and injury records." }
   ],
-  Governance: [
+    Governance: [
     { id: "legal", title: "Legal & regulatory compliance", question: "Is the business properly registered and licensed?", why: "Lowers supply and reputational risk for your property.", check: "Incorporation, GST, Udyam and product licences, and that each one is still valid." },
     { id: "ethics", title: "Business ethics", question: "Has the business committed to ethical conduct?", why: "Holds the partner accountable for how it operates.", check: "A signed supplier code of conduct, and any audited ethics assessments." },
     { id: "sourcing", title: "Responsible sourcing", question: "Does it know where its own materials come from?", why: "Extends responsibility deeper into your supply chain.", check: "Sourcing policies and raw-material traceability." }
+  ],
+  Cultural: [
+    { id: "craft", title: "Craft Authenticity & Process Integrity", question: "Is the craft authentic and handmade using traditional techniques?", why: "Protects indigenous knowledge and living cultural heritage.", check: "Artisan verification, handcraft process documentation, and raw material lineage." },
+    { id: "skill", title: "Skill Rarity & GI Status", question: "Does the craft represent an endangered skill or Geographical Indication?", why: "Preserves rare crafts from extinction and supports GI-certified clusters.", check: "GI certifications, master artisan registers, and rarity indices." },
+    { id: "climate", title: "Climate-Vulnerable Community Context", question: "Are artisan communities vulnerable to climate impacts?", why: "Directs economic resilience to frontline craft communities.", check: "Community geography, climate vulnerability index, and local livelihood dependency." }
   ]
 };
 
@@ -65,16 +70,20 @@ export default function PillarBreakdownHoverCard({
     return () => setMounted(false);
   }, []);
 
+  const isCultural = pillarKey === "C" || pillarLabel.toLowerCase().includes("cult");
+
   const activeColor =
     pillarKey === "E" || pillarLabel.toLowerCase().includes("env") ? "#4C7355" :
     pillarKey === "S" || pillarLabel.toLowerCase().includes("soc") ? "#B85333" :
     pillarKey === "G" || pillarLabel.toLowerCase().includes("gov") ? "#36424A" :
+    isCultural ? "#7A3F1E" :
     color || "#7A3F1E";
 
   const normalizedPillar =
     pillarKey === "E" || pillarLabel.toLowerCase().includes("env") ? "Environmental" :
     pillarKey === "S" || pillarLabel.toLowerCase().includes("soc") ? "Social" :
     pillarKey === "G" || pillarLabel.toLowerCase().includes("gov") ? "Governance" :
+    isCultural ? "Cultural" :
     null;
 
   const sutraList = normalizedPillar ? SUTRA_FRAMEWORK_DATA[normalizedPillar] : [];
@@ -212,17 +221,23 @@ export default function PillarBreakdownHoverCard({
                       <div className="flex items-center gap-2.5">
                         <div className="flex items-baseline gap-1 font-mono">
                           {isPillarScored ? (
-                            <>
+                            isCultural && Number(pillarScore) === 0 ? (
                               <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
-                                {Number(pillarScore) % 1 === 0 ? Number(pillarScore) : Number(pillarScore).toFixed(1)}
+                                NA
                               </span>
-                              <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
-                                /100
-                              </span>
-                            </>
+                            ) : (
+                              <>
+                                <span className="text-base font-bold text-[#1A1F26] dark:text-[#FAF8F5]">
+                                  {Number(pillarScore) % 1 === 0 ? Number(pillarScore) : Number(pillarScore).toFixed(1)}
+                                </span>
+                                <span className="text-[10px] text-[#6E7781] dark:text-[#8C9DA8]">
+                                  /100
+                                </span>
+                              </>
+                            )
                           ) : (
                             <span className="text-xs text-[#8C9DA8] font-normal italic font-sans">
-                              Not yet scored
+                              {isCultural ? "NA" : "Not yet scored"}
                             </span>
                           )}
                         </div>
@@ -245,7 +260,10 @@ export default function PillarBreakdownHoverCard({
                       {finalItems.map((item, idx) => {
                         const isScored = item.score !== null && item.score !== undefined && !isNaN(Number(item.score));
                         const numScore = isScored ? Number(item.score) : 0;
-                        const formattedScore = isScored
+                        const isCulturalUnassessed = isCultural && (numScore === 0 || !isScored);
+                        const formattedScore = isCulturalUnassessed
+                          ? "To Be Assessed"
+                          : isScored
                           ? (numScore % 1 === 0 ? numScore : numScore.toFixed(1))
                           : "Not yet scored";
 
@@ -282,14 +300,8 @@ export default function PillarBreakdownHoverCard({
                               </span>
 
                               <div className="flex items-center gap-2 shrink-0">
-                                <span className="font-mono font-bold text-xs text-[#1A1F26] dark:text-[#FAF8F5]">
-                                  {isScored ? (
-                                    formattedScore
-                                  ) : (
-                                    <span className="text-[10px] font-normal text-[#6E7781] dark:text-[#8C9DA8] italic font-sans">
-                                      Not yet scored
-                                    </span>
-                                  )}
+                                <span className={`font-mono text-xs ${isCulturalUnassessed ? "font-sans font-medium text-[11px] text-[#6E7781] dark:text-[#8C9DA8]" : "font-bold text-[#1A1F26] dark:text-[#FAF8F5]"}`}>
+                                  {formattedScore}
                                 </span>
 
                                 {/* + / - Icon Accordion Button */}
@@ -324,7 +336,7 @@ export default function PillarBreakdownHoverCard({
                                 className="h-full rounded-full"
                                 style={{ backgroundColor: activeColor }}
                                 initial={{ width: 0 }}
-                                animate={{ width: isScored ? `${Math.min(100, Math.max(0, numScore))}%` : "0%" }}
+                                animate={{ width: (!isCulturalUnassessed && isScored) ? `${Math.min(100, Math.max(0, numScore))}%` : "0%" }}
                                 transition={{ duration: 0.4, ease: "easeOut" }}
                               />
                             </div>

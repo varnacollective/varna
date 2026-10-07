@@ -298,9 +298,9 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
           Cultural: {
             pillarScore: avgCScore,
             criteria: [
-              { name: "Craft Authenticity & Process Integrity", score: summaryData?.avg_c1_craft_auth_auto || avgCScore + 1, weight: "40%" },
-              { name: "Skill Rarity & GI Status", score: summaryData?.avg_c2_skill_rarity_auto || avgCScore - 2, weight: "35%" },
-              { name: "Climate-Vulnerable Community Context", score: summaryData?.avg_c3_climatevulnerable_auto || avgCScore, weight: "25%" },
+              { name: "Craft Authenticity & Process Integrity", score: summaryData?.avg_c1_craft_auth_auto ?? (avgCScore > 0 ? avgCScore : 0), weight: "40%" },
+              { name: "Skill Rarity & GI Status", score: summaryData?.avg_c2_skill_rarity_auto ?? (avgCScore > 0 ? avgCScore : 0), weight: "35%" },
+              { name: "Climate-Vulnerable Community Context", score: summaryData?.avg_c3_climatevulnerable_auto ?? (avgCScore > 0 ? avgCScore : 0), weight: "25%" },
             ],
           },
         },
