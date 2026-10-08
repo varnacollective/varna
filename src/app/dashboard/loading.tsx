@@ -8,22 +8,26 @@ export default function DashboardLoading() {
       <Sidebar activeSection="overview" onSectionChange={() => {}} onLogout={() => {}} />
       <main className="flex-1 ml-24 p-8 max-w-[1400px]">
         {/* TopBar Skeleton */}
-        <div className="h-20 bg-[#E4DEC9]/50 dark:bg-[#22252B]/50 animate-pulse rounded-none mb-8 border border-[#6F848F]/20 dark:border-[#8C9DA8]/15" />
+        <div className="h-16 bg-[#EBE6DA]/50 dark:bg-[#20242B]/50 animate-pulse rounded-[20px] mb-8 border border-black/[0.06] dark:border-white/[0.08]" />
         
         {/* KPI Skeleton Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div className="h-32 bg-[#E4DEC9]/40 dark:bg-[#22252B]/40 animate-pulse rounded-none border border-[#6F848F]/15 dark:border-[#8C9DA8]/10" />
-          <div className="h-32 bg-[#E4DEC9]/40 dark:bg-[#22252B]/40 animate-pulse rounded-none border border-[#6F848F]/15 dark:border-[#8C9DA8]/10" />
-          <div className="h-32 bg-[#E4DEC9]/40 dark:bg-[#22252B]/40 animate-pulse rounded-none border border-[#6F848F]/15 dark:border-[#8C9DA8]/10" />
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-8">
+          <div className="h-28 bg-[#EBE6DA]/40 dark:bg-[#20242B]/40 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
+          <div className="h-28 bg-[#EBE6DA]/40 dark:bg-[#20242B]/40 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
+          <div className="h-28 bg-[#EBE6DA]/40 dark:bg-[#20242B]/40 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
+          <div className="h-28 bg-[#EBE6DA]/40 dark:bg-[#20242B]/40 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
         </div>
 
-        {/* Gauges Skeleton */}
-        <div className="h-48 bg-[#E4DEC9]/30 dark:bg-[#22252B]/30 animate-pulse rounded-none mb-8 border border-[#6F848F]/15 dark:border-[#8C9DA8]/10" />
+        {/* Pillars & Category Row (40/60) */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+          <div className="lg:col-span-2 h-[420px] bg-[#EBE6DA]/35 dark:bg-[#20242B]/35 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
+          <div className="lg:col-span-3 h-[420px] bg-[#EBE6DA]/35 dark:bg-[#20242B]/35 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
+        </div>
 
-        {/* Charts Skeleton Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="h-64 bg-[#E4DEC9]/30 dark:bg-[#22252B]/30 animate-pulse rounded-none border border-[#6F848F]/15 dark:border-[#8C9DA8]/10" />
-          <div className="h-64 bg-[#E4DEC9]/30 dark:bg-[#22252B]/30 animate-pulse rounded-none border border-[#6F848F]/15 dark:border-[#8C9DA8]/10" />
+        {/* Impact Bottom Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="h-72 bg-[#EBE6DA]/30 dark:bg-[#20242B]/30 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
+          <div className="h-72 bg-[#EBE6DA]/30 dark:bg-[#20242B]/30 animate-pulse rounded-[24px] border border-black/[0.06] dark:border-white/[0.08]" />
         </div>
       </main>
     </div>

@@ -40,6 +40,7 @@ interface SupplierCardV2Props {
   enterpriseId?: string;
   reportUrl?: string | null;
   scoresSummary?: Record<string, any>;
+  isActive?: boolean;
 }
 
 function getBandLabel(score: number): string {
@@ -141,6 +142,7 @@ export default function SupplierCardV2({
   enterpriseId,
   reportUrl,
   scoresSummary,
+  isActive,
 }: SupplierCardV2Props) {
   const isUKHI = name.toLowerCase().includes("ukhi");
   const isBare = name.toLowerCase().includes("bare");
@@ -218,22 +220,27 @@ export default function SupplierCardV2({
   const hiddenBadges = effectiveBadges.slice(3);
 
   const isInactiveSupplier =
-    name.toLowerCase().includes("sundari") ||
-    (legalName && legalName.toLowerCase().includes("sundari"));
+    isActive !== undefined
+      ? !isActive
+      : name.toLowerCase().includes("sundari") ||
+        Boolean(legalName && legalName.toLowerCase().includes("sundari"));
 
   return (
     <div
-      className="
+      className={`
         varna-supplier-card-v2
-        bg-white dark:bg-[#20242B]
-        border border-black/[0.07] dark:border-white/[0.08]
+        ${isInactiveSupplier
+          ? "bg-[#FAF7F2]/90 dark:bg-[#1B1F26] border-dashed border-black/15 dark:border-white/15 opacity-80 hover:opacity-100"
+          : "bg-white dark:bg-[#20242B] border-black/[0.07] dark:border-white/[0.08]"
+        }
+        border
         shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
         dark:shadow-none dark:border-t-white/[0.12]
         rounded-[24px] p-5
         flex flex-col justify-between h-full w-full max-w-[650px]
-        hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
+        hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-all duration-200
         relative overflow-visible
-      "
+      `}
     >
 
       {/* Top Header Row */}

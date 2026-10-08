@@ -15,6 +15,10 @@ interface ImpactPillarsProps {
   cScore?: number;
   pillarBreakdown?: Record<string, any>;
   delay?: number;
+  compact?: boolean;
+  gaugeSize?: number;
+  gapClassName?: string;
+  className?: string;
 }
 
 const PILLAR_CONFIG = [
@@ -31,6 +35,10 @@ export default function ImpactPillars({
   cScore = 0,
   pillarBreakdown,
   delay = 0,
+  compact = false,
+  gaugeSize,
+  gapClassName,
+  className,
 }: ImpactPillarsProps) {
   const scores: Record<string, number> = {
     Environmental: eScore,
@@ -39,8 +47,11 @@ export default function ImpactPillars({
     Cultural: cScore ?? 0,
   };
 
+  const effectiveGaugeSize = gaugeSize ?? (compact ? 126 : 124);
+  const effectiveGap = gapClassName ?? (compact ? "gap-x-4 gap-y-3 sm:gap-x-5" : "gap-6");
+
   return (
-    <div className="varna-pillars-container grid grid-cols-2 gap-6 w-full py-2">
+    <div className={`varna-pillars-container grid grid-cols-2 ${effectiveGap} w-full justify-items-center ${compact ? "py-1 max-w-[340px] mx-auto" : "py-2"} ${className || ""}`}>
       {PILLAR_CONFIG.map((pillar, idx) => {
         const score = scores[pillar.label] ?? 0;
         const breakdown = pillarBreakdown?.[pillar.label] ?? PILLAR_CRITERIA_BREAKDOWN[pillar.label];
@@ -59,7 +70,7 @@ export default function ImpactPillars({
               <div className="cursor-pointer">
                 <RadialGauge
                   value={score}
-                  size={124}
+                  size={effectiveGaugeSize}
                   strokeWidth={10}
                   pillarKey={pillar.key}
                   delay={delay + 0.08 * idx}

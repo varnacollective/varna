@@ -57,6 +57,13 @@ export interface SupplierDetail {
   roadmapAction1?: string;
   action1UpliftPts?: number;
   action1Effort?: string;
+  totalCo2eKg?: number;
+  co2eAvoidedKg?: number;
+  carKmAvoided?: number;
+  treesEquivalent?: number;
+  hasClientOrders?: boolean;
+  isActive?: boolean;
+  activeStatus?: string;
 }
 
 export interface CategorySpend {
@@ -98,7 +105,9 @@ export interface DashboardData {
   products?: ProductSpendItem[];
   orderRegister?: any[];
   tierDistribution: { tier: string; count: number; color: string }[];
-  supplierImpactData: { name: string; womenPct: number; wageRatio: number }[];
+  supplierImpactData: { name: string; womenPct: number; wageRatio: number; tier?: string; enterpriseId?: string }[];
+  liveConfidenceData?: Record<string, any>;
+  authoritativePartners?: any[];
 }
 
 // ──────────────── 9_CLIENT_MASTER ────────────────

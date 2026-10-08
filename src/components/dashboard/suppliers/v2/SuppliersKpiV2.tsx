@@ -37,10 +37,11 @@ export default function SuppliersKpiV2({
   let supplierNamesCaption = "Across verified artisanal partners";
   if (supplierNames.length > 0) {
     const shortNames = supplierNames.map((name) => {
-      if (name.toLowerCase().includes("bare")) return "Bare Necessities";
-      if (name.toLowerCase().includes("kheoni")) return "Kheoni Ventures";
-      if (name.toLowerCase().includes("ukhi")) return "UKHI India";
-      return name.split(" ")[0];
+      const lower = (name || "").toLowerCase();
+      if (lower.includes("bare")) return "Bare Necessities";
+      if (lower.includes("kheoni")) return "Kheoni Ventures";
+      if (lower.includes("ukhi")) return "UKHI India";
+      return (name || "").split(" ")[0] || "Partner";
     });
 
     try {

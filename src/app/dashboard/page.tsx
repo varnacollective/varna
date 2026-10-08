@@ -67,24 +67,31 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       { data: catSpendData, error: catSpendError },
       { data: orderRegData, error: orderRegError },
     ] = await Promise.all([
-      // 1. Fetch Client Master
+      // 1. Fetch Client Master (explicit columns only — no SELECT *)
       supabase
         .from("client_master")
-        .select("*")
+        .select("client_id, client_name, logo_path, property_type")
         .eq("client_id", clientId)
         .maybeSingle(),
 
-      // 2. Fetch Client Summary (Overview Page KPI Metrics)
+      // 2. Fetch Client Summary (explicit columns only — no SELECT *)
       supabase
         .from("client_summary")
-        .select("*")
+        .select(`
+          client_id, total_spend_inr_auto, total_orders_auto, avg_varna_score, avg_e_score, avg_s_score, avg_g_score,
+          total_co2e_avoided_kg_auto, total_artisans_supported, no_active_suppliers,
+          avg_e1_carbon_auto, avg_e2_material_pct_auto, avg_e3_circularity_auto, avg_e4_water_auto, avg_e5_pollution_auto, avg_e6_packaging_auto,
+          avg_s1_employment_auto, avg_s2_gender_auto, avg_s3_wages_auto, avg_s4_health_auto,
+          avg_g1_legal_auto, avg_g2_ethics_auto, avg_g3_sourcing_auto,
+          avg_c1_craft_auth_auto, avg_c2_skill_rarity_auto, avg_c3_climatevulnerable_auto
+        `)
         .eq("client_id", clientId)
         .maybeSingle(),
 
       // 3. Get the list of supplier details for this client
       supabase
         .from("supplier_detail_by_client")
-        .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto")
+        .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto, total_co2e_kg_auto, co2e_avoided_kg_auto")
         .eq("client_id", clientId),
 
       // 4. Fetch Category Spend (explicit columns only — no SELECT *)
@@ -96,7 +103,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       // 5. Fetch Order Register for individual product-level metrics (Actions 1 & 2)
       supabase
         .from("order_register")
-        .select("order_id, sku_id, product_name_auto, category_auto, enterprise_name_auto, varna_score_auto, order_value_inr_auto, qty_units, e_score_auto, s_score_auto, g_score_auto, c_score_auto, order_date, co2_reduction_pct")
+        .select("order_id, sku_id, product_name_auto, category_auto, enterprise_name_auto, varna_score_auto, order_value_inr_auto, qty_units, e_score_auto, s_score_auto, g_score_auto, c_score_auto, order_date, co2_reduction_pct, car_km_avoided, trees_equivalent")
         .eq("client_id", clientId),
     ]);
 
@@ -113,6 +120,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       tierDistribution,
       supplierImpactData,
       avgGenderPct,
+      liveConfidenceData,
     } = await getAuthoritativePartnersForClient(clientId, supplierLinks || []);
 
     const categorySpend = catSpendData && catSpendData.length > 0
@@ -175,6 +183,11 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         cScore: p.c_pillar_score,
         totalSpend: p.totalSpend || 0,
         totalOrders: p.totalOrders || (isBare ? 12 : isUKHI ? 8 : 5),
+        totalCo2eKg: p.totalCo2eKg || 0,
+        co2eAvoidedKg: p.co2eAvoidedKg || 0,
+        hasClientOrders: p.hasClientOrders,
+        isActive: p.isActive,
+        activeStatus: p.active_status,
         city: p.city,
         state: p.state,
         artisansEmployed: p.artisansEmployed || (isBare ? 45 : isUKHI ? 120 : 30),
@@ -244,11 +257,11 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       client: {
         clientId,
         clientName: resolvedClientName,
-        industry: clientData?.industry || fallbackHotel.propertyType || "Luxury Hospitality",
-        city: clientData?.city || fallbackHotel.city || "Dubai",
-        state: clientData?.state || fallbackHotel.country || "UAE",
-        onboardingDate: clientData?.onboarding_date || "2024-01-15",
-        status: clientData?.status || "Active",
+        industry: clientData?.property_type || fallbackHotel.propertyType || "Luxury Hospitality",
+        city: fallbackHotel.city || "Dubai",
+        state: fallbackHotel.country || "UAE",
+        onboardingDate: "2024-01-15",
+        status: "Active",
         logoPath: clientLogo,
       },
       summary: {
@@ -312,6 +325,8 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       orderRegister: orderRegData || [],
       tierDistribution,
       supplierImpactData,
+      liveConfidenceData,
+      authoritativePartners,
     };
 
     return <DashboardClient initialData={dashboardData} />;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Info, Building2 } from "lucide-react";
 import type { SupplierDetail } from "@/lib/mock-data";
@@ -53,6 +53,7 @@ export function formatUsd(usd: number): string {
 export interface SmeSpendResult {
   breakdown: Record<"Micro" | "Small" | "Medium", number>;
   breakdownUsd: Record<"Micro" | "Small" | "Medium", number>;
+  carbonBreakdownKg: Record<"Micro" | "Small" | "Medium", number>;
   totalSMEInr: number;
   totalSMEUsd: number;
   totalSpendUsd: number;
@@ -66,11 +67,17 @@ export function computeSmeSpendData(suppliers: SupplierDetail[], totalSpendInr: 
     Small: 0,
     Medium: 0,
   };
+  const carbonBreakdownKg: Record<"Micro" | "Small" | "Medium", number> = {
+    Micro: 0,
+    Small: 0,
+    Medium: 0,
+  };
 
   suppliers.forEach((s) => {
     const msme = getMsmeCategory(s.tier);
     if (msme) {
       breakdown[msme] += (s.totalSpend || 0);
+      carbonBreakdownKg[msme] += (s.co2eAvoidedKg ?? s.totalCo2eKg ?? 0);
     }
   });
 
@@ -92,12 +99,95 @@ export function computeSmeSpendData(suppliers: SupplierDetail[], totalSpendInr: 
   return {
     breakdown,
     breakdownUsd,
+    carbonBreakdownKg,
     totalSMEInr,
     totalSMEUsd,
     totalSpendUsd,
     smePct,
     hasSMEData: totalSMEInr > 0,
   };
+}
+
+export interface SmeTierRowProps {
+  tier: "Micro" | "Small" | "Medium";
+  amountUsd: number;
+  pct: number;
+  carbonKg: number;
+  color?: string;
+  isZero?: boolean;
+}
+
+export function SmeTierRow({
+  tier,
+  amountUsd,
+  pct,
+  carbonKg,
+  color,
+  isZero = false,
+}: SmeTierRowProps) {
+  const [showCarbon, setShowCarbon] = useState(false);
+  const rowRef = useRef<HTMLDivElement>(null);
+
+  // Return to percentage on click outside
+  useEffect(() => {
+    if (!showCarbon) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (rowRef.current && !rowRef.current.contains(e.target as Node)) {
+        setShowCarbon(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [showCarbon]);
+
+  const carbonLabel = carbonKg > 0 ? `${carbonKg.toLocaleString("en-US")} kg CO₂e` : "0 kg CO₂e";
+
+  return (
+    <div
+      ref={rowRef}
+      className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
+        }`}
+    >
+      <div className="flex items-center gap-2.5">
+        <span
+          className="w-2.5 h-2.5 rounded-full shrink-0"
+          style={{ backgroundColor: color ?? MSME_COLORS[tier] }}
+        />
+        <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">{tier}</span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        {/* Clickable Percentage with Carbon Equivalent Toggle */}
+        <button
+          type="button"
+          aria-pressed={showCarbon}
+          onClick={() => setShowCarbon((prev) => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setShowCarbon((prev) => !prev);
+            }
+          }}
+          title={showCarbon ? "Click to view spend percentage" : "Click to see carbon equivalent"}
+          className="relative inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-normal text-[#6F6A61] dark:text-[#9A948A] hover:text-[#55705A] dark:hover:text-[#9DB4A0] hover:bg-black/5 dark:hover:bg-white/10 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#55705A]/40"
+        >
+          {showCarbon ? (
+            <span className="font-semibold text-[#55705A] dark:text-[#9DB4A0] tabular-nums underline decoration-dotted underline-offset-2">
+              {carbonLabel}
+            </span>
+          ) : (
+            <span className="tabular-nums">
+              ({pct.toFixed(1)}%)
+            </span>
+          )}
+        </button>
+
+        <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[36px] text-right tabular-nums text-sm">
+          {formatUsd(amountUsd)}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default function SMESpendCard({ suppliers, totalSpend }: SMESpendCardProps) {
@@ -185,26 +275,20 @@ export default function SMESpendCard({ suppliers, totalSpend }: SMESpendCardProp
             })}
           </div>
 
-          {/* Legend rows */}
+          {/* Legend rows with clickable percentage and carbon equivalent */}
           <div className="space-y-2">
             {(["Micro", "Small", "Medium"] as const).map((tier) => {
               const amount = breakdownUsd[tier];
               const pct = totalSMEUsd > 0 ? (amount / totalSMEUsd) * 100 : 0;
               return (
-                <div key={tier} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: MSME_COLORS[tier] }} />
-                    <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">{tier}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[#6F6A61] dark:text-[#9A948A] text-xs tabular-nums">
-                      {formatUsd(amount)}
-                    </span>
-                    <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[36px] text-right tabular-nums text-sm">
-                      {pct.toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
+                <SmeTierRow
+                  key={tier}
+                  tier={tier}
+                  amountUsd={amount}
+                  pct={pct}
+                  carbonKg={smeData.carbonBreakdownKg[tier] || 0}
+                  isZero={amount === 0}
+                />
               );
             })}
           </div>

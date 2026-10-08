@@ -62,7 +62,7 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
         .then((r) => r.data),
       supabase
         .from("supplier_detail_by_client")
-        .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto")
+        .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto, total_co2e_kg_auto, co2e_avoided_kg_auto")
         .eq("client_id", clientId)
         .then((r) => r.data),
     ]);

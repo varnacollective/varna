@@ -30,6 +30,7 @@ import { DateRangeProvider } from "@/context/DateRangeContext";
 import ClientOverviewV2 from "@/components/dashboard/v2/ClientOverviewV2";
 import ClientOrdersV2 from "@/components/dashboard/orders/v2/ClientOrdersV2";
 import ClientImpactV2 from "@/components/dashboard/impact/v2/ClientImpactV2";
+import ClientSuppliersV2 from "@/components/dashboard/suppliers/v2/ClientSuppliersV2";
 
 export default function DashboardClient({ initialData }: { initialData: DashboardData | null }) {
   const router = useRouter();
@@ -51,6 +52,21 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
       setActiveSection(sec);
     }
   }, [initialData, router]);
+
+  // Instant back/forward browser navigation support
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const sec = params.get("section");
+      if (sec && ["overview", "suppliers", "orders", "impact"].includes(sec)) {
+        setActiveSection(sec);
+      } else {
+        setActiveSection("overview");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const handleSectionChange = (section: string) => {
     if (section === "algorithm") {
@@ -145,7 +161,14 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
                 <ClientOverviewV2 data={data} />
               )}
               {activeSection === "suppliers" && (
-                <SuppliersSection data={data} />
+                <ClientSuppliersV2
+                  suppliersData={data.suppliers}
+                  liveConfidenceData={data.liveConfidenceData || {}}
+                  clientName={client.clientName}
+                  industry={client.industry}
+                  logoPath={client.logoPath}
+                  dashboardData={data}
+                />
               )}
               {activeSection === "orders" && (
                 <ClientOrdersV2 dashboardData={data} />

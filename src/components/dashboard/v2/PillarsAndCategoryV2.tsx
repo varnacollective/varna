@@ -19,24 +19,6 @@ interface PillarsAndCategoryV2Props {
   orderRegister?: any[];
 }
 
-const BRAND_CHART_COLORS = [
-  "#7A3F1E", // deep-clay
-  "#6E8471", // sage-mineral
-  "#6F8391", // slate-mist
-  "#2B3A55", // midnight-blue
-  "#9C7A58", // warm clay tint
-];
-
-function formatLakhOrInr(val: number): string {
-  const usd = val > 0 ? Math.round(val / 83) : 0;
-  return `$${usd.toLocaleString('en-US')}`;
-}
-
-function formatRowAmount(val: number): string {
-  const usd = val > 0 ? Math.round(val / 83) : 0;
-  return `$${usd.toLocaleString('en-US')}`;
-}
-
 export default function PillarsAndCategoryV2({
   eScore,
   sScore,
@@ -57,16 +39,6 @@ export default function PillarsAndCategoryV2({
     return effectiveProducts.reduce((sum, p) => sum + p.totalSpend, 0);
   }, [effectiveProducts]);
 
-  const totalSpendUsd = totalProductSpendInr > 0 ? Math.round(totalProductSpendInr / 83) : 0;
-
-  const topProduct = useMemo(() => {
-    if (!effectiveProducts.length) return null;
-    return [...effectiveProducts].sort((a, b) => b.totalSpend - a.totalSpend)[0];
-  }, [effectiveProducts]);
-
-  const topProductPct = totalProductSpendInr > 0 && topProduct
-    ? Math.round((topProduct.totalSpend / totalProductSpendInr) * 100)
-    : 0;
   const totalCategorySpendInr = categorySpend.reduce((acc, cat) => acc + cat.totalSpend, 0);
   const totalCategorySpendUsd = categorySpend.reduce((acc, cat) => acc + (cat.totalSpend > 0 ? Math.round(cat.totalSpend / 83) : 0), 0);
 
@@ -78,17 +50,17 @@ export default function PillarsAndCategoryV2({
   const activeCatCount = categorySpend.filter((c) => c.totalSpend > 0).length;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-stretch">
-      {/* 6 Cols: ESG Performance Pillars Card */}
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6 items-stretch">
+      {/* 2 of 5 Cols (~40%): ESG Performance Pillars Card */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className="
-          col-span-12 lg:col-span-6
+          col-span-1 lg:col-span-2
           bg-white dark:bg-[#20242B]
           rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
-          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]
+          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[400px] h-full
         "
       >
         {/* Header Row */}
@@ -100,14 +72,16 @@ export default function PillarsAndCategoryV2({
           </div>
         </div>
 
-        {/* Body: Circular Gauges */}
-        <div className="py-2">
+        {/* Body: Centered & Tightened Circular Gauges */}
+        <div className="py-2 flex-1 flex flex-col justify-center">
           <ImpactPillars
             eScore={eScore}
             sScore={sScore}
             gScore={gScore}
             cScore={cScore}
             pillarBreakdown={pillarBreakdown}
+            compact={true}
+            gaugeSize={128}
           />
         </div>
 
@@ -134,20 +108,20 @@ export default function PillarsAndCategoryV2({
         </div>
       </motion.div>
 
-      {/* 6 Cols: Category Level Metrics Card */}
+      {/* 3 of 5 Cols (~60%): Category Level Metrics Card */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="
-          col-span-12 lg:col-span-6
+          col-span-1 lg:col-span-3
           bg-white dark:bg-[#20242B]
           rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
-          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[380px]
+          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[400px] h-full
         "
       >
-        <div>
-          <div className="pb-4 border-b border-black/[0.07] dark:border-white/[0.08] mb-4">
+        <div className="flex-1 flex flex-col">
+          <div className="pb-4 border-b border-black/[0.07] dark:border-white/[0.08] mb-3">
             <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
               Category Level Metrics
             </h2>
@@ -162,8 +136,8 @@ export default function PillarsAndCategoryV2({
             </div>
           </div>
 
-          {/* Horizontal Bar Chart with toggle */}
-          <div className="flex-1 min-h-[300px]">
+          {/* Horizontal Bar Chart with toggle & mini donut */}
+          <div className="flex-1 flex flex-col justify-between min-h-[280px]">
             <CategoryChartV2 products={effectiveProducts} categorySpend={categorySpend} orderRegister={orderRegister} />
           </div>
         </div>

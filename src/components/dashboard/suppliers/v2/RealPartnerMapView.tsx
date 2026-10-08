@@ -59,7 +59,8 @@ export default function RealPartnerMapView({
     const set = new Set<string>();
     set.add("India"); // Primary default
     list.forEach((s) => {
-      const c = s.country || (s.enterprise_name?.toLowerCase().includes("dubai") ? "United Arab Emirates" : "India");
+      const name = (s.enterprise_name || s.enterpriseName || s.name || "").toLowerCase();
+      const c = s.country || (name.includes("dubai") ? "United Arab Emirates" : "India");
       if (c) set.add(c);
     });
     return Array.from(set).sort();
@@ -193,8 +194,9 @@ export default function RealPartnerMapView({
       let lat = supplier.latitude ?? supplier.lat;
       let lng = supplier.longitude ?? supplier.lng ?? supplier.lon;
 
-      if ((lat === undefined || lng === undefined) && supplier.enterprise_id) {
-        const fallback = KNOWN_COORDS[supplier.enterprise_id];
+      const enterpriseId = supplier.enterprise_id || supplier.enterpriseId;
+      if ((lat === undefined || lng === undefined) && enterpriseId) {
+        const fallback = KNOWN_COORDS[enterpriseId];
         if (fallback) {
           lat = fallback[0];
           lng = fallback[1];
@@ -203,7 +205,7 @@ export default function RealPartnerMapView({
 
       // Fallback by name if still not found
       if (lat === undefined || lng === undefined) {
-        const name = (supplier.enterprise_name || supplier.name || "").toLowerCase();
+        const name = (supplier.enterprise_name || supplier.enterpriseName || supplier.name || "").toLowerCase();
         if (name.includes("bare")) { lat = 12.9767936; lng = 77.590082; }
         else if (name.includes("ukhi")) { lat = 28.4031478; lng = 77.3105561; }
         else if (name.includes("kheoni")) { lat = 22.7203616; lng = 75.8681996; }
@@ -218,7 +220,7 @@ export default function RealPartnerMapView({
       const score = supplier.final_varna_score ?? supplier.varnaScore ?? 72;
       const band = getVarnaBand(score);
       const pinColor = BAND_COLORS[band] || "#7D3F1E";
-      const name = supplier.enterprise_name || supplier.name || "Partner";
+      const name = supplier.enterprise_name || supplier.enterpriseName || supplier.name || "Partner";
       const initial = name.trim()[0] || "P";
       const locationText = supplier.city && supplier.state
         ? `${supplier.city}, ${supplier.state}`

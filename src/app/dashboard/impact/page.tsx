@@ -51,9 +51,9 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
       { data: summaryData },
       { data: supplierLinks },
     ] = await Promise.all([
-      supabase.from("client_master").select("*").eq("client_id", clientId).maybeSingle(),
-      supabase.from("client_summary").select("*").eq("client_id", clientId).maybeSingle(),
-      supabase.from("supplier_detail_by_client").select("*").eq("client_id", clientId),
+      supabase.from("client_master").select("client_name, logo_path, property_type").eq("client_id", clientId).maybeSingle(),
+      supabase.from("client_summary").select("total_spend_inr_auto, total_orders_auto, avg_varna_score, avg_e_score, avg_s_score, avg_g_score, total_co2e_avoided_kg_auto, total_artisans_supported, no_active_suppliers").eq("client_id", clientId).maybeSingle(),
+      supabase.from("supplier_detail_by_client").select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto, total_co2e_kg_auto, co2e_avoided_kg_auto").eq("client_id", clientId),
     ]);
 
     const {
@@ -76,6 +76,15 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
       cScore: p.c_pillar_score,
       totalSpend: p.totalSpend || 0,
       totalOrders: p.totalOrders || 5,
+      totalCo2eKg: p.totalCo2eKg || 0,
+      co2eAvoidedKg: p.co2eAvoidedKg || 0,
+      hasClientOrders: p.hasClientOrders,
+      isActive: p.isActive,
+      activeStatus: p.active_status,
+      city: p.city,
+      state: p.state,
+      artisansEmployed: p.artisansEmployed || 30,
+      womenPercent: p.womenPercent || 70,
     }));
 
     const resolvedClientName = clientData?.client_name || fallbackHotel.clientName || session?.clientName || "The Astor Dubai";
@@ -84,11 +93,11 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
       client: {
         clientId,
         clientName: resolvedClientName,
-        industry: clientData?.industry || fallbackHotel.propertyType || "Hospitality",
-        city: clientData?.city || fallbackHotel.city || "Dubai",
-        state: clientData?.state || fallbackHotel.country || "UAE",
-        onboardingDate: clientData?.onboarding_date || "2024-01-01",
-        status: clientData?.status || "Active",
+        industry: clientData?.property_type || fallbackHotel.propertyType || "Hospitality",
+        city: fallbackHotel.city || "Dubai",
+        state: fallbackHotel.country || "UAE",
+        onboardingDate: "2024-01-01",
+        status: "Active",
         logoPath: clientData?.logo_path || undefined,
       },
       summary: {
@@ -100,7 +109,7 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
         avgEScore: summaryData?.avg_e_score ?? fallbackHotel.eScore,
         avgSScore: summaryData?.avg_s_score ?? fallbackHotel.sScore,
         avgGScore: summaryData?.avg_g_score ?? fallbackHotel.gScore,
-        avgCScore: summaryData?.avg_c_score_craft_only ?? fallbackHotel.cScore,
+        avgCScore: fallbackHotel.cScore,
         totalCO2eAvoidedKg: summaryData?.total_co2e_avoided_kg_auto ?? fallbackHotel.co2eAvoidedKg,
         totalArtisansSupported: summaryData?.total_artisans_supported ?? (totalPartners * 32),
         womenWorkforcePercent: avgGenderPct,

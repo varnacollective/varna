@@ -16,6 +16,10 @@ export interface AuthoritativePartner {
   totalSpend?: number;
   totalOrders?: number;
   hasClientOrders: boolean;
+  isActive?: boolean;
+  totalCo2eKg?: number;
+  co2eAvoidedKg?: number;
+  active_status?: string;
   final_varna_score: number;
   e_pillar_score: number;
   s_pillar_score: number;
@@ -43,7 +47,7 @@ export interface AuthoritativePartnersResult {
   partners: AuthoritativePartner[];
   totalPartners: number;
   tierDistribution: PartnerTierCount[];
-  supplierImpactData: { name: string; womenPct: number; wageRatio: number }[];
+  supplierImpactData: { name: string; womenPct: number; wageRatio: number; tier?: string; enterpriseId?: string }[];
   avgGenderPct: number;
   liveConfidenceData: Record<string, any>;
 }
@@ -77,7 +81,7 @@ export const getCachedAuthoritativeEnterpriseMaster = unstable_cache(
     const supabase = createAnonClient();
     const { data, error } = await supabase
       .from("enterprise_master")
-      .select("enterprise_id, enterprise_name, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number, district, state, country, latitude, longitude")
+      .select("enterprise_id, enterprise_name, active_status, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number, district, state, country, latitude, longitude")
       .order("enterprise_id", { ascending: true });
     if (error) console.error("Supabase enterprise_master error:", error);
     return data || [];
@@ -103,7 +107,9 @@ export const getCachedAuthoritativeAssessmentInputs = unstable_cache(
 export const getCachedAuthoritativeConfidenceSummary = unstable_cache(
   async () => {
     const supabase = createAnonClient();
-    const { data, error } = await supabase.from("confidence_summary").select("*");
+    const { data, error } = await supabase
+      .from("confidence_summary")
+      .select("supplier, confidence_pct");
     if (error) console.error("Supabase confidence_summary error:", error);
     return data || [];
   },
@@ -276,6 +282,8 @@ export async function getAuthoritativePartnersForClient(
     const hasClientOrders = Boolean(linkRow && (Number(linkRow.orders_inr_ytd_auto) > 0 || Number(linkRow.units_ytd_auto) > 0));
     const totalSpend = linkRow?.orders_inr_ytd_auto != null ? Number(linkRow.orders_inr_ytd_auto) : 0;
     const totalOrders = linkRow?.units_ytd_auto != null ? Number(linkRow.units_ytd_auto) : 0;
+    const totalCo2eKg = linkRow?.total_co2e_kg_auto != null ? Number(linkRow.total_co2e_kg_auto) : 0;
+    const co2eAvoidedKg = linkRow?.co2e_avoided_kg_auto != null ? Number(linkRow.co2e_avoided_kg_auto) : 0;
 
     const masterRow = (enterpriseMasterData || []).find((m: any) => {
       if (scoreRow.enterprise_id && m.enterprise_id === scoreRow.enterprise_id) return true;
@@ -371,6 +379,10 @@ export async function getAuthoritativePartnersForClient(
       totalSpend,
       totalOrders,
       hasClientOrders,
+      isActive: hasClientOrders || totalSpend > 0 || totalOrders > 0,
+      totalCo2eKg,
+      co2eAvoidedKg,
+      active_status: masterRow?.active_status || "Active",
       final_varna_score: scoreRow.final_varna_score ?? 0,
       e_pillar_score: scoreRow.e_pillar_score ?? 0,
       s_pillar_score: scoreRow.s_pillar_score ?? 0,
@@ -418,14 +430,23 @@ export async function getAuthoritativePartnersForClient(
     ? assessmentData
     : partners.map(p => ({
         enterprise_name_auto: p.enterprise_name,
+        enterprise_id: p.enterprise_id,
         s2_gender_input_pct_women: p.womenPercent || 50,
         s3_wages_input_wage_ratio: p.wageRatio || 1.05,
       }))
-  ).map((row: any) => ({
-    name: row.enterprise_name_auto || row.name,
-    womenPct: Number(row.s2_gender_input_pct_women) || 0,
-    wageRatio: Number(row.s3_wages_input_wage_ratio) || 1.05,
-  }));
+  ).map((row: any) => {
+    const partner = partners.find(p => 
+      (row.enterprise_id && p.enterprise_id === row.enterprise_id) || 
+      (row.enterprise_name_auto && p.enterprise_name.toLowerCase().includes(row.enterprise_name_auto.toLowerCase()))
+    );
+    return {
+      name: row.enterprise_name_auto || row.name || partner?.enterprise_name || "",
+      womenPct: Number(row.s2_gender_input_pct_women) || 0,
+      wageRatio: Number(row.s3_wages_input_wage_ratio) || 1.05,
+      tier: partner?.tier || row.tier_used_auto || "Micro A",
+      enterpriseId: row.enterprise_id || partner?.enterprise_id,
+    };
+  });
 
   const validGenderPctValues = supplierImpactData
     .map((s) => s.womenPct)

@@ -9,6 +9,9 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
 
@@ -434,23 +437,22 @@ export default function CategoryChartV2({
     return Array.from(map.values());
   }, [allOrderRegisterData, products]);
 
-  // Automatically select first product if current selectedProduct is unselected
-  useEffect(() => {
-    if (productOptions.length > 0) {
-      if (!selectedProduct || !productOptions.some((p) => p.value === selectedProduct)) {
-        setSelectedProduct(productOptions[0].value);
-      }
+  // Derived currently selected product (defaults to first option if unselected or stale)
+  const currentSelectedProduct = useMemo(() => {
+    if (selectedProduct && productOptions.some((p) => p.value === selectedProduct)) {
+      return selectedProduct;
     }
-  }, [productOptions, selectedProduct]);
+    return productOptions[0]?.value || "";
+  }, [selectedProduct, productOptions]);
 
-  // Step 2: Filter order_register array for selectedProduct & sort chronologically by order_date
+  // Step 2: Filter order_register array for currentSelectedProduct & sort chronologically by order_date
   const filteredTimeSeriesData = useMemo(() => {
-    if (!selectedProduct) return [];
+    if (!currentSelectedProduct) return [];
 
     const matches = allOrderRegisterData.filter((row) => {
       const name = row.product_name_auto || row.product_name || "";
       const sku = row.sku_id || "";
-      return name === selectedProduct || sku === selectedProduct;
+      return name === currentSelectedProduct || sku === currentSelectedProduct;
     });
 
     // Chronological sort using parsed DD/MM/YYYY timestamp
@@ -505,11 +507,11 @@ export default function CategoryChartV2({
         </button>
       </div>
 
-      {/* Spend View: Segmented horizontal bar and category rows */}
+      {/* Spend View: Segmented horizontal bar, enlarged category rows and mini donut chart */}
       {activeToggle === "spend" && (
-        <div className="space-y-4">
-          {/* 12px Segmented Horizontal Bar */}
-          <div className="w-full h-3 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-2">
+        <div className="space-y-4 flex-1 flex flex-col justify-between">
+          {/* Segmented Horizontal Bar */}
+          <div className="w-full h-3.5 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-2">
             {categories.map((cat) => {
               const pct = totalSpend > 0 ? (cat.total_spend / totalSpend) * 100 : 0;
               if (pct <= 0) return null;
@@ -520,61 +522,105 @@ export default function CategoryChartV2({
                     width: `${pct}%`,
                     backgroundColor: cat.color,
                   }}
-                  className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
+                  className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full hover:opacity-90"
                   title={`${cat.category_name}: ${pct.toFixed(1)}% (${formatRowAmount(cat.total_spend)})`}
                 />
               );
             })}
           </div>
 
-          {/* Row List for All Categories */}
-          <div className="space-y-3 mt-4">
-            {categories.map((cat) => {
-              const pctVal = totalSpend > 0 ? (cat.total_spend / totalSpend) * 100 : 0;
-              const pctStr = pctVal % 1 === 0 ? pctVal.toString() : pctVal.toFixed(1);
-              const isZero = cat.total_spend === 0;
+          {/* 2-Column Layout: Left Category Rows, Right Mini Donut Chart */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center mt-2 flex-1">
+            {/* Left: Category Rows with generous spacing and clearer hierarchy */}
+            <div className="md:col-span-7 space-y-2.5">
+              {categories.map((cat) => {
+                const pctVal = totalSpend > 0 ? (cat.total_spend / totalSpend) * 100 : 0;
+                const pctStr = pctVal % 1 === 0 ? pctVal.toString() : pctVal.toFixed(1);
+                const isZero = cat.total_spend === 0;
 
-              return (
-                <div
-                  key={cat.category_name}
-                  className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
-                    isZero ? "opacity-45" : "opacity-100"
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-[140px]">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: cat.color }}
-                    />
-                    <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal truncate">
-                      {cat.category_name}
-                    </span>
-                  </div>
-
-                  {/* Custom horizontal bar */}
-                  <div className="hidden sm:block flex-1 max-w-[120px] mx-3">
-                    <div className="h-1.5 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${pctVal}%`,
-                          backgroundColor: cat.color,
-                        }}
+                return (
+                  <div
+                    key={cat.category_name}
+                    className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1.5 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
+                      isZero ? "opacity-45" : "opacity-100"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-[130px]">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
+                        style={{ backgroundColor: cat.color }}
                       />
+                      <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-medium text-sm truncate">
+                        {cat.category_name}
+                      </span>
+                    </div>
+
+                    {/* Custom horizontal bar */}
+                    <div className="hidden sm:block flex-1 max-w-[110px] mx-2.5">
+                      <div className="h-1.5 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${pctVal}%`,
+                            backgroundColor: cat.color,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#6F6A61] dark:text-[#9A948A] font-normal text-xs sm:text-sm tabular-nums">
+                        {formatRowAmount(cat.total_spend)}
+                      </span>
+                      <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[38px] text-right tabular-nums text-xs sm:text-sm">
+                        {pctStr}%
+                      </span>
                     </div>
                   </div>
+                );
+              })}
+            </div>
 
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#6F6A61] dark:text-[#9A948A] font-normal text-sm tabular-nums">
-                      {formatRowAmount(cat.total_spend)}
-                    </span>
-                    <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[40px] text-right tabular-nums">
-                      {pctStr}%
-                    </span>
-                  </div>
+            {/* Right: Mini Donut Chart */}
+            <div className="md:col-span-5 flex flex-col items-center justify-center p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] relative h-full min-h-[170px]">
+              <div className="w-full h-32 relative flex items-center justify-center">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={categories.filter((c) => c.total_spend > 0)}
+                      dataKey="total_spend"
+                      nameKey="category_name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={36}
+                      outerRadius={52}
+                      paddingAngle={3}
+                      strokeWidth={1}
+                      stroke="rgba(0,0,0,0.06)"
+                    >
+                      {categories
+                        .filter((c) => c.total_spend > 0)
+                        .map((entry, index) => (
+                          <Cell key={`donut-cell-${index}`} fill={entry.color} />
+                        ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                {/* Center text inside mini donut */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-xs font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
+                    {formatRowAmount(totalSpend)}
+                  </span>
+                  <span className="text-[9px] uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] font-medium">
+                    Total
+                  </span>
                 </div>
-              );
-            })}
+              </div>
+              <div className="flex items-center justify-center gap-1.5 mt-1 text-[10px] text-[#6F6A61] dark:text-[#9A948A]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#55705A] dark:bg-[#9DB4A0]" />
+                <span className="font-medium">Spend Distribution</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -595,7 +641,7 @@ export default function CategoryChartV2({
             </label>
             <select
               id="product-select"
-              value={selectedProduct}
+              value={currentSelectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
               className="w-full text-xs font-normal bg-white dark:bg-[#1D2127] border border-black/15 dark:border-white/15 rounded-lg px-2.5 py-1.5 text-[#1F1B16] dark:text-[#F3EFE7] focus:outline-none focus:ring-1 focus:ring-[#7D3F1E] dark:focus:ring-[#E07A57] cursor-pointer shadow-xs truncate"
             >

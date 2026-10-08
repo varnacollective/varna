@@ -18,13 +18,13 @@ import Image from "next/image";
 interface NavItem {
   id: string;
   label: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   defaultHref: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, defaultHref: "/dashboard?section=overview" },
-  { id: "suppliers", label: "Partners", icon: Store, defaultHref: "/dashboard/suppliers" },
+  { id: "suppliers", label: "Partners", icon: Store, defaultHref: "/dashboard?section=suppliers" },
   { id: "orders", label: "Orders", icon: ShoppingBag, defaultHref: "/dashboard?section=orders" },
   { id: "impact", label: "Impact", icon: Leaf, defaultHref: "/dashboard?section=impact" },
   { id: "algorithm", label: "Framework", icon: Network, defaultHref: "/algorithm" },
@@ -43,7 +43,7 @@ function buildNavHref(itemId: string, defaultHref: string, clientId?: string | n
     case "overview":
       return `/dashboard?section=overview&clientId=${encodeURIComponent(clientId)}`;
     case "suppliers":
-      return `/dashboard/suppliers?clientId=${encodeURIComponent(clientId)}`;
+      return `/dashboard?section=suppliers&clientId=${encodeURIComponent(clientId)}`;
     case "orders":
       return `/dashboard?section=orders&clientId=${encodeURIComponent(clientId)}`;
     case "impact":
@@ -64,7 +64,7 @@ function checkIsActive(
   currentSectionQuery?: string | null
 ): boolean {
   if (activeSection === itemId) return true;
-  if (itemId === "suppliers" && pathname.includes("/suppliers")) return true;
+  if (itemId === "suppliers" && (pathname.includes("/suppliers") || currentSectionQuery === "suppliers")) return true;
   if (itemId === "orders") {
     if (pathname.includes("/orders")) return true;
     if (pathname === "/dashboard" && currentSectionQuery === "orders") return true;

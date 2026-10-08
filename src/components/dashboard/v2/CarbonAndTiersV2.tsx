@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Leaf, TreePine, Info } from "lucide-react";
+import { Leaf, TreePine, Info, Car } from "lucide-react";
 import {
   computeSmeSpendData,
   formatUsd,
   MSME_COLORS,
+  SmeTierRow,
 } from "@/components/dashboard/impact/v2/SMESpendCard";
 
 interface CarbonAndTiersV2Props {
@@ -15,9 +16,26 @@ interface CarbonAndTiersV2Props {
   tierDistribution: { tier: string; count: number; color: string }[];
   suppliers?: any[];
   totalSpend?: number;
+  carKmAvoided?: number;
+  carEquivalent?: number;
 }
 
 const KG_PER_TREE = 22;
+
+/**
+ * US EPA Greenhouse Gas Equivalencies:
+ * A typical passenger vehicle emits approximately 4,600 kg CO2e per year (4.6 metric tons).
+ * Source: US EPA Greenhouse Gas Equivalencies Calculator (40 CFR Part 600 / EPA-420-F-23-014).
+ * https://www.epa.gov/energy/greenhouse-gases-equivalencies-calculator-calculations-and-references
+ */
+export const KG_CO2E_PER_PASSENGER_VEHICLE_YEAR = 4600;
+
+/**
+ * US EPA passenger vehicle emissions per kilometer:
+ * Approximately 0.244 kg CO2e / km, which yields ~4.1 km avoided per kg CO2e.
+ * Source: US EPA Greenhouse Gas Equivalencies Calculator / Federal Highway Administration.
+ */
+export const KM_PER_KG_CO2E = 4.1;
 
 const TIER_CONFIG = [
   { key: "Micro A", label: "Micro A", color: "#55705A" },
@@ -32,6 +50,8 @@ export default function CarbonAndTiersV2({
   tierDistribution,
   suppliers = [],
   totalSpend = 0,
+  carKmAvoided,
+  carEquivalent,
 }: CarbonAndTiersV2Props) {
   const [tierViewMode, setTierViewMode] = useState<"count" | "spend">("count");
 
@@ -40,6 +60,15 @@ export default function CarbonAndTiersV2({
   }, [suppliers, totalSpend]);
   // Tree calculation
   const treesEquivalent = Math.round(totalCO2eAvoidedKg / KG_PER_TREE); // 98 trees
+
+  // Car Equivalent calculation: check if Supabase has explicit value, otherwise derive using EPA factor
+  const carYearsEquivalent = carEquivalent ?? (totalCO2eAvoidedKg > 0
+    ? Number((totalCO2eAvoidedKg / KG_CO2E_PER_PASSENGER_VEHICLE_YEAR).toFixed(2))
+    : 0);
+
+  const carKmsAvoided = carKmAvoided ?? (totalCO2eAvoidedKg > 0
+    ? Math.round(totalCO2eAvoidedKg * KM_PER_KG_CO2E)
+    : 0);
 
   // Target CO2e threshold (2,640 kg = 120 trees)
   const targetTrees = Math.max(treesEquivalent + 22, 120); // 120 trees
@@ -158,6 +187,71 @@ export default function CarbonAndTiersV2({
                       mature trees
                     </span>
                   </div>
+                ) : (
+                  <div className="mt-1">
+                    <span className="text-2xl font-light text-[#6F6A61] dark:text-[#9A948A]">N/A</span>
+                    <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] block mt-0.5 font-normal">Awaiting carbon data</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="h-px bg-black/[0.07] dark:bg-white/[0.08]" />
+
+            {/* Car equivalent */}
+            <div className="flex items-start gap-3.5">
+              <div className="w-9 h-9 rounded-full bg-[#55705A]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0] shrink-0 mt-1">
+                <Car className="w-4 h-4" strokeWidth={1.8} />
+              </div>
+              <div className="flex-1">
+                <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A] block">
+                  Car equivalent
+                </span>
+                {totalCO2eAvoidedKg > 0 ? (
+                  <>
+                    <div className="text-3xl lg:text-[38px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1 tabular-nums">
+                      {carYearsEquivalent}{" "}
+                      <span className="text-xs font-normal text-[#6F6A61] dark:text-[#9A948A]">
+                        cars off road / yr
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#55705A] dark:text-[#9DB4A0] font-medium block mt-1">
+                      ≈ {carKmsAvoided.toLocaleString("en-US")} km passenger driving avoided
+                    </span>
+
+                    {/* Car Glyph Track matching tree grid style */}
+                    <div className="mt-3 p-2.5 rounded-xl bg-[#F7F3EA] dark:bg-[#272C34] border border-black/[0.05] dark:border-white/[0.08]">
+                      <div className="flex items-center gap-1.5 justify-between">
+                        {Array.from({ length: 6 }).map((_, i) => {
+                          const iconThreshold = (i + 1) * 0.1;
+                          const isFilled = carYearsEquivalent >= iconThreshold;
+                          const isPartial = !isFilled && carYearsEquivalent >= iconThreshold - 0.05;
+                          return (
+                            <motion.div
+                              key={i}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.25, delay: 0.04 * i }}
+                              className={`flex-1 h-6 rounded-md flex items-center justify-center transition-all ${
+                                isFilled
+                                  ? "bg-[#55705A] dark:bg-[#9DB4A0] text-white dark:text-[#1A1F26]"
+                                  : isPartial
+                                  ? "bg-[#55705A]/45 dark:bg-[#9DB4A0]/45 text-white"
+                                  : "bg-black/10 dark:bg-white/10 text-[#6F6A61] dark:text-[#9A948A]"
+                              }`}
+                              title={`Equivalent to ${(i + 1) * 0.1} car/yr`}
+                            >
+                              <Car className="w-3.5 h-3.5" strokeWidth={1.8} />
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-[#6F6A61] dark:text-[#9A948A] mt-1.5 px-0.5">
+                        <span>Each icon = 0.1 car/yr</span>
+                        <span className="font-medium text-[#55705A] dark:text-[#9DB4A0]">US EPA Factor</span>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <div className="mt-1">
                     <span className="text-2xl font-light text-[#6F6A61] dark:text-[#9A948A]">N/A</span>
@@ -376,39 +470,21 @@ export default function CarbonAndTiersV2({
                 })}
               </div>
 
-              {/* MSME Row List */}
+              {/* MSME Row List with clickable percentage and carbon equivalent */}
               <div className="space-y-3 mt-4">
                 {(["Micro", "Small", "Medium"] as const).map((tier) => {
                   const amount = smeData.breakdownUsd[tier];
                   const pct = smeData.totalSMEUsd > 0 ? (amount / smeData.totalSMEUsd) * 100 : 0;
-                  const isZero = amount === 0;
-
                   return (
-                    <div
+                    <SmeTierRow
                       key={tier}
-                      className={`flex items-center justify-between text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
-                        isZero ? "opacity-45" : "opacity-100"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ backgroundColor: MSME_COLORS[tier] }}
-                        />
-                        <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-normal">
-                          {tier}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <span className="text-[#6F6A61] dark:text-[#9A948A] text-xs font-normal">
-                          ({pct.toFixed(1)}%)
-                        </span>
-                        <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[20px] text-right tabular-nums">
-                          {formatUsd(amount)}
-                        </span>
-                      </div>
-                    </div>
+                      tier={tier}
+                      amountUsd={amount}
+                      pct={pct}
+                      carbonKg={smeData.carbonBreakdownKg?.[tier] || 0}
+                      color={MSME_COLORS[tier]}
+                      isZero={amount === 0}
+                    />
                   );
                 })}
               </div>

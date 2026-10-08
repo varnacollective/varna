@@ -267,6 +267,128 @@ function SortDropdown({ value, onChange }: { value: SortOption; onChange: (v: So
   );
 }
 
+// ─── Status Filter & Helper ────────────────────────────────────────────────
+export type StatusFilter = "all" | "active" | "inactive";
+
+export function isPartnerActive(partner: any): boolean {
+  if (partner.isActive !== undefined) return Boolean(partner.isActive);
+  if (partner.hasClientOrders !== undefined) return Boolean(partner.hasClientOrders);
+  if (typeof partner.activeStatus === "string") {
+    const s = partner.activeStatus.toLowerCase();
+    if (s === "active" || s === "verified") return true;
+    if (s === "inactive" || s === "under review" || s === "pending") return false;
+  }
+  const spend = partner.totalSpend ?? partner.spend ?? partner.orders_inr_ytd_auto ?? 0;
+  const orders = partner.totalOrders ?? partner.units_ytd_auto ?? 0;
+  return spend > 0 || orders > 0;
+}
+
+function StatusDropdown({
+  value,
+  onChange,
+  activeCount,
+  inactiveCount,
+  totalCount,
+}: {
+  value: StatusFilter;
+  onChange: (v: StatusFilter) => void;
+  activeCount: number;
+  inactiveCount: number;
+  totalCount: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const isFiltered = value !== "all";
+  const label =
+    value === "active"
+      ? "Status: Active"
+      : value === "inactive"
+      ? "Status: Inactive"
+      : "Status: All";
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer border ${
+          isFiltered
+            ? "bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 border-[#7D3F1E] dark:border-[#E07A57] text-[#7D3F1E] dark:text-[#E07A57] font-semibold shadow-xs"
+            : "bg-white dark:bg-[#20242B] border-black/[0.10] dark:border-white/[0.12] text-[#5B564E] dark:text-[#C2BCB0] hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50"
+        }`}
+      >
+        <span>{label}</span>
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full mt-2 left-0 bg-white dark:bg-[#20242B] border border-black/[0.10] dark:border-white/[0.12] rounded-2xl shadow-xl z-30 w-44 p-1.5 space-y-0.5">
+          <button
+            type="button"
+            onClick={() => {
+              onChange("all");
+              setOpen(false);
+            }}
+            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-colors flex items-center justify-between ${
+              value === "all"
+                ? "bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 text-[#7D3F1E] dark:text-[#E07A57] font-semibold"
+                : "text-[#5B564E] dark:text-[#C2BCB0] hover:bg-black/5 dark:hover:bg-white/5"
+            }`}
+          >
+            <span>All</span>
+            <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">{totalCount}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onChange("active");
+              setOpen(false);
+            }}
+            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-colors flex items-center justify-between ${
+              value === "active"
+                ? "bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 text-[#7D3F1E] dark:text-[#E07A57] font-semibold"
+                : "text-[#5B564E] dark:text-[#C2BCB0] hover:bg-black/5 dark:hover:bg-white/5"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#55705A]" />
+              <span>Active</span>
+            </div>
+            <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">{activeCount}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onChange("inactive");
+              setOpen(false);
+            }}
+            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-colors flex items-center justify-between ${
+              value === "inactive"
+                ? "bg-[#7D3F1E]/10 dark:bg-[#E07A57]/15 text-[#7D3F1E] dark:text-[#E07A57] font-semibold"
+                : "text-[#5B564E] dark:text-[#C2BCB0] hover:bg-black/5 dark:hover:bg-white/5"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#9A948A]" />
+              <span>Inactive</span>
+            </div>
+            <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">{inactiveCount}</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function ClientSuppliersV2({
   suppliersData = [],
@@ -283,16 +405,71 @@ export default function ClientSuppliersV2({
 
   // ── Sort & Filter State ────────────────────────────────────────────────────
   const [sortBy, setSortBy] = useState<SortOption>("score_desc");
+  const [filterStatus, setFilterStatus] = useState<StatusFilter>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [filterBand, setFilterBand] = useState<string[]>([]);
   const [filterState, setFilterState] = useState<string[]>([]);
   const [filterCountry, setFilterCountry] = useState<string>("India");
+  const [urlHydrated, setUrlHydrated] = useState(false);
+
+  // ── URL Query Persistence ──────────────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const statusParam = params.get("status") as StatusFilter;
+    if (statusParam === "active" || statusParam === "inactive") {
+      setFilterStatus(statusParam);
+    }
+    const sortParam = params.get("sort") as SortOption;
+    if (sortParam && SORT_OPTIONS.some((o) => o.id === sortParam)) {
+      setSortBy(sortParam);
+    }
+    const bandParam = params.get("band");
+    if (bandParam) {
+      setFilterBand(bandParam.split(",").filter(Boolean));
+    }
+    const stateParam = params.get("state");
+    if (stateParam) {
+      setFilterState(stateParam.split(",").filter(Boolean));
+    }
+    setUrlHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!urlHydrated || typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (filterStatus !== "all") params.set("status", filterStatus);
+    else params.delete("status");
+
+    if (sortBy !== "score_desc") params.set("sort", sortBy);
+    else params.delete("sort");
+
+    if (filterBand.length > 0) params.set("band", filterBand.join(","));
+    else params.delete("band");
+
+    if (filterState.length > 0) params.set("state", filterState.join(","));
+    else params.delete("state");
+
+    const qs = params.toString();
+    const newUrl = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+    window.history.replaceState(null, "", newUrl);
+  }, [filterStatus, sortBy, filterBand, filterState, urlHydrated]);
+
+  // ── Active / Inactive Partner Counts ───────────────────────────────────────
+  const activeCount = useMemo(() => {
+    return suppliersData.filter((s) => isPartnerActive(s)).length;
+  }, [suppliersData]);
+
+  const inactiveCount = useMemo(() => {
+    return suppliersData.filter((s) => !isPartnerActive(s)).length;
+  }, [suppliersData]);
 
   // ── Derive filter options from data ────────────────────────────────────────
   const allStates = useMemo(() => {
     const states = new Set<string>();
     suppliersData.forEach((s) => {
-      const st = s.state || (s.enterprise_name?.toLowerCase().includes("ukhi") ? "Haryana" : s.enterprise_name?.toLowerCase().includes("bare") ? "Karnataka" : s.enterprise_name?.toLowerCase().includes("kheoni") ? "Madhya Pradesh" : "");
+      const name = (s.enterprise_name || s.enterpriseName || s.name || "").toLowerCase();
+      const st = s.state || (name.includes("ukhi") ? "Haryana" : name.includes("bare") ? "Karnataka" : name.includes("kheoni") ? "Madhya Pradesh" : "");
       if (st) states.add(st);
     });
     return Array.from(states).sort();
@@ -318,7 +495,8 @@ export default function ClientSuppliersV2({
   const stateOptions = useMemo(() => {
     return allStates.map((st) => {
       const count = suppliersData.filter((s) => {
-        const stateName = s.state || (s.enterprise_name?.toLowerCase().includes("ukhi") ? "Haryana" : s.enterprise_name?.toLowerCase().includes("bare") ? "Karnataka" : "Madhya Pradesh");
+        const name = (s.enterprise_name || s.enterpriseName || s.name || "").toLowerCase();
+        const stateName = s.state || (name.includes("ukhi") ? "Haryana" : name.includes("bare") ? "Karnataka" : "Madhya Pradesh");
         return stateName === st;
       }).length;
       return {
@@ -333,6 +511,13 @@ export default function ClientSuppliersV2({
   const processedSuppliers = useMemo(() => {
     let result = [...suppliersData];
 
+    // Apply status filter
+    if (filterStatus === "active") {
+      result = result.filter((s) => isPartnerActive(s));
+    } else if (filterStatus === "inactive") {
+      result = result.filter((s) => !isPartnerActive(s));
+    }
+
     // Apply band filter
     if (filterBand.length > 0) {
       result = result.filter((s) => {
@@ -344,7 +529,8 @@ export default function ClientSuppliersV2({
     // Apply state filter
     if (filterState.length > 0) {
       result = result.filter((s) => {
-        const st = s.state || (s.enterprise_name?.toLowerCase().includes("ukhi") ? "Haryana" : s.enterprise_name?.toLowerCase().includes("bare") ? "Karnataka" : "Madhya Pradesh");
+        const name = (s.enterprise_name || s.enterpriseName || s.name || "").toLowerCase();
+        const st = s.state || (name.includes("ukhi") ? "Haryana" : name.includes("bare") ? "Karnataka" : "Madhya Pradesh");
         return filterState.includes(st);
       });
     }
@@ -355,8 +541,8 @@ export default function ClientSuppliersV2({
       const bScore = b.final_varna_score ?? b.varnaScore ?? 72;
       const aSpend = a.totalSpend ?? a.spend ?? 0;
       const bSpend = b.totalSpend ?? b.spend ?? 0;
-      const aName = (a.enterprise_name || a.name || "").toLowerCase();
-      const bName = (b.enterprise_name || b.name || "").toLowerCase();
+      const aName = (a.enterprise_name || a.enterpriseName || a.name || "").toLowerCase();
+      const bName = (b.enterprise_name || b.enterpriseName || b.name || "").toLowerCase();
 
       switch (sortBy) {
         case "score_desc": return bScore - aScore;
@@ -368,13 +554,14 @@ export default function ClientSuppliersV2({
     });
 
     return result;
-  }, [suppliersData, filterBand, filterState, sortBy]);
+  }, [suppliersData, filterStatus, filterBand, filterState, sortBy]);
 
   const totalFiltered = processedSuppliers.length;
   const totalAll = suppliersData.length;
-  const hasActiveFilters = filterBand.length > 0 || filterState.length > 0;
+  const hasActiveFilters = filterStatus !== "all" || filterBand.length > 0 || filterState.length > 0;
 
   const clearFilters = () => {
+    setFilterStatus("all");
     setFilterBand([]);
     setFilterState([]);
   };
@@ -481,7 +668,7 @@ export default function ClientSuppliersV2({
         totalOrders={summaryTotalOrders}
         totalSpend={summaryTotalSpend}
         avgVarnaScore={summaryScore}
-        supplierNames={suppliersData.map((s) => s.enterprise_name || "")}
+        supplierNames={suppliersData.map((s) => s.enterprise_name || s.enterpriseName || s.name || "").filter(Boolean)}
         varnaScoreData={varnaScoreData}
       />
 
@@ -545,7 +732,16 @@ export default function ClientSuppliersV2({
           {/* 1. Sort dropdown */}
           <SortDropdown value={sortBy} onChange={setSortBy} />
 
-          {/* 2. Band dropdown */}
+          {/* 2. Status dropdown */}
+          <StatusDropdown
+            value={filterStatus}
+            onChange={setFilterStatus}
+            activeCount={activeCount}
+            inactiveCount={inactiveCount}
+            totalCount={totalAll}
+          />
+
+          {/* 3. Band dropdown */}
           <MultiSelectDropdown
             labelPrefix="Band"
             options={bandOptions}
@@ -599,7 +795,8 @@ export default function ClientSuppliersV2({
               onPinClick={(s) => {
                 setViewMode("list");
                 setTimeout(() => {
-                  const card = document.getElementById(`partner-card-${s.enterprise_id || s.name}`);
+                  const partnerId = s.enterprise_id || s.enterpriseId || s.name || "";
+                  const card = document.getElementById(`partner-card-${partnerId}`);
                   if (card) {
                     card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
                   }
@@ -622,7 +819,7 @@ export default function ClientSuppliersV2({
               className="relative flex overflow-x-auto snap-x snap-mandatory gap-7 no-scrollbar pb-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden focus:outline-none focus:ring-2 focus:ring-[#7D3F1E]/30 rounded-[24px]"
             >
               {processedSuppliers.map((supplier) => {
-                const name = supplier.enterprise_name || supplier.name;
+                const name = supplier.enterprise_name || supplier.enterpriseName || supplier.name || "";
                 const isUKHI = name.toLowerCase().includes("ukhi");
                 const isBare = name.toLowerCase().includes("bare");
                 const isKheoni = name.toLowerCase().includes("kheoni");
@@ -632,41 +829,63 @@ export default function ClientSuppliersV2({
                   (isUKHI ? SUPPLIER_CONFIDENCE_CHECKLISTS["UKHI India Private Limited"] : null);
                 const confidencePct = confidenceEntry?.score ?? supplier.confidence_pct ?? (isUKHI ? 63 : isBare ? 47 : isKheoni ? 24 : 50);
                 const isVerified = confidencePct >= 60;
-                const location = isBare ? "Bengaluru, Karnataka" : isUKHI ? "Faridabad, Haryana" : isKheoni ? "Indore, Madhya Pradesh" : supplier.city && supplier.state ? `${supplier.city}, ${supplier.state}` : "Bengaluru, Karnataka";
-                const legalName = isBare ? "Bare Necessities Zero Waste Solutions Pvt. Ltd." : isUKHI ? "UKHI India Private Limited" : isKheoni ? "Kheoni Ventures Pvt Ltd" : name;
+                const location = isBare
+                  ? "Bengaluru, Karnataka"
+                  : isUKHI
+                  ? "Faridabad, Haryana"
+                  : isKheoni
+                  ? "Indore, Madhya Pradesh"
+                  : supplier.city && supplier.state
+                  ? `${supplier.city}, ${supplier.state}`
+                  : supplier.city || supplier.state || "Bengaluru, Karnataka";
+                const legalName = isBare
+                  ? "Bare Necessities Zero Waste Solutions Pvt. Ltd."
+                  : isUKHI
+                  ? "UKHI India Private Limited"
+                  : isKheoni
+                  ? "Kheoni Ventures Pvt Ltd"
+                  : supplier.legal_name || supplier.legalName || name;
+                const enterpriseId = supplier.enterprise_id || supplier.enterpriseId || name;
+                const logoPath = supplier.logo_path || supplier.logoPath;
+                const varnaScore = supplier.final_varna_score ?? supplier.varnaScore ?? (isUKHI ? 56 : isBare ? 78 : 42);
+                const eScore = supplier.e_pillar_score ?? supplier.eScore ?? 60;
+                const sScore = supplier.s_pillar_score ?? supplier.sScore ?? 55;
+                const gScore = supplier.g_pillar_score ?? supplier.gScore ?? 50;
+                const cScore = supplier.c_pillar_score ?? supplier.cScore ?? 0;
 
                 return (
                   <div
-                    key={supplier.enterprise_id || name}
-                    id={`partner-card-${supplier.enterprise_id || name}`}
+                    key={enterpriseId}
+                    id={`partner-card-${enterpriseId}`}
                     className="varna-partner-card-wrapper w-full md:w-[calc((100%-28px)/2)] md:max-w-[650px] snap-start shrink-0 flex items-stretch"
                   >
                     <SupplierCardV2
                       name={name}
                       legalName={legalName}
-                      enterpriseId={supplier.enterprise_id}
-                      logoPath={supplier.logo_path}
+                      enterpriseId={enterpriseId}
+                      logoPath={logoPath}
                       location={location}
-                      varnaScore={supplier.final_varna_score ?? (isUKHI ? 56 : isBare ? 78 : 42)}
-                      eScore={supplier.e_pillar_score ?? 60}
-                      sScore={supplier.s_pillar_score ?? 55}
-                      gScore={supplier.g_pillar_score ?? 50}
-                      cScore={supplier.c_pillar_score ?? 0}
-                      carbonScore={supplier.c_pillar_score ?? 0}
-                      skuCount={isUKHI ? 4 : 2}
-                      totalUnits={isUKHI ? 2400 : 1200}
+                      varnaScore={varnaScore}
+                      eScore={eScore}
+                      sScore={sScore}
+                      gScore={gScore}
+                      cScore={cScore}
+                      carbonScore={cScore}
+                      skuCount={supplier.skuCount ?? (isUKHI ? 4 : 2)}
+                      totalUnits={supplier.totalOrders ?? supplier.totalUnits ?? (isUKHI ? 2400 : 1200)}
                       confidenceScore={confidencePct}
                       confidenceColor={isVerified ? "#55705A" : "#7D3F1E"}
                       badges={supplier.badges || []}
                       categoryBars={[
-                        { label: "Environmental", val: supplier.e_pillar_score ?? 60 },
-                        { label: "Social", val: supplier.s_pillar_score ?? 55 },
-                        { label: "Governance", val: supplier.g_pillar_score ?? 50 },
-                        { label: "Carbon Impact", val: supplier.c_pillar_score ?? 0 },
+                        { label: "Environmental", val: eScore },
+                        { label: "Social", val: sScore },
+                        { label: "Governance", val: gScore },
+                        { label: "Carbon Impact", val: cScore },
                       ]}
-                      sdgObjects={supplier.sdg_objects || []}
+                      sdgObjects={supplier.sdg_objects || supplier.sdgObjects || []}
                       liveConfidenceData={liveConfidenceData}
-                      scoresSummary={supplier.scores_summary}
+                      scoresSummary={supplier.scores_summary || supplier.scoresSummary}
+                      isActive={isPartnerActive(supplier)}
                     />
                   </div>
                 );
