@@ -1,0 +1,39 @@
+PROPRIETARY AND CONFIDENTIAL LICENSE
+
+Copyright (c) 2024-2026 Varna Collective. All rights reserved.
+
+NOTICE: This codebase, documentation, methodology, algorithm, and related digital 
+assets are the confidential and proprietary intellectual property of Varna Collective.
+
+1. PROPRIETARY RIGHTS
+All title, ownership rights, intellectual property rights, and copyright in and to 
+this software (including but not limited to any source code, images, photographs, 
+animations, video, audio, music, text, algorithms, data structures, and applets 
+incorporated into the software) are owned exclusively by Varna Collective.
+
+2. RESTRICTIONS
+Except as expressly authorized under a separate written agreement executed with 
+Varna Collective, you may not:
+  (a) Copy, distribute, reproduce, disclose, publish, or transfer any part of this software;
+  (b) Modify, translate, adapt, merge, or create derivative works of this software;
+  (c) Reverse engineer, decompile, disassemble, or attempt to derive the source code, 
+      underlying algorithms, or architecture of this software;
+  (d) Sell, rent, lease, sublicense, assign, or commercialize this software or any part thereof;
+  (e) Remove, alter, or obscure any copyright, trademark, confidentiality, or other 
+      proprietary rights notices on or within this software.
+
+3. THIRD-PARTY COMPONENTS
+This software may utilize third-party open-source libraries and dependencies. 
+Such third-party components remain subject to their respective open-source licenses 
+(e.g., MIT, Apache 2.0, BSD) and the intellectual property rights of their respective 
+copyright holders.
+
+4. DISCLAIMER OF WARRANTY
+THIS SOFTWARE IS PROVIDED BY VARNA COLLECTIVE "AS IS" AND ANY EXPRESS OR IMPLIED 
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT ARE DISCLAIMED. IN NO EVENT 
+SHALL VARNA COLLECTIVE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE.
+
+For licensing or partnership inquiries, please contact:
+Varna Collective (https://github.com/varnacollective)
