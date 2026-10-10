@@ -23,7 +23,7 @@
 
 </div>
 
-## 🌿 Overview
+##  Overview
 
 **Varna** is a high-precision enterprise sustainability intelligence dashboard and credentialing standard. Built for luxury hospitality groups, boutique properties, and ethical procurement leaders, Varna bridges the divide between corporate ESG mandates and the authentic realities of small, micro, and artisanal producers.
 
@@ -31,7 +31,7 @@ Conventional ESG frameworks are built for multinational industrial supply chains
 
 ---
 
-## 📐 The Varna Framework & Evaluation Methodology
+##  The Varna Framework & Evaluation Methodology
 
 The Varna Framework assesses enterprises through a rigorous mathematical synthesis combining multidimensional pillar evaluation with an **Evidence Confidence Multiplier Pipeline**.
 
@@ -75,42 +75,42 @@ $$\text{Effective Score} = \text{Raw Score} \times \text{Evidence Multiplier}$$
 
 ---
 
-## ✨ Key Features & Modules
+##  Key Features & Modules
 
-### 🏨 Enterprise Property Dashboard
+###  Enterprise Property Dashboard
 * **Real-Time ESG Metrics**: Aggregate carbon absorption, verified procurement spend, artisan livelihoods supported, and plastic reduction figures.
 * **Impact Pillars Breakdown**: Deep-dive inspection into Environmental, Social, Governance, and Cultural criteria with confidence checklist hover cards.
 * **Spend Analytics**: Visual spend breakdown across categories (Amenities, F&B, Textiles, Decor, Packaging) mapped against verified sustainability scores.
 * **Supplier Directory & Profiles**: Comprehensive supplier dossiers detailing provenance, materials, craft techniques, certifications, and audit histories.
 * **Exportable PDF Reports**: Enterprise-grade sustainability impact summaries generated dynamically using `@react-pdf/renderer`.
 
-### 🏢 Multi-Property Group Portfolio Intelligence
+###  Multi-Property Group Portfolio Intelligence
 * **Portfolio Rollup**: Multi-property executive overview aggregating sustainability performance across luxury hotel chains and corporate groups.
 * **Property Benchmarking**: Side-by-side comparative analysis of individual hotel properties within a brand group.
 * **Group ESG Reports**: Automated consolidated impact dossiers prepared for corporate governance and investor stakeholder presentations.
 
-### 🛡️ SuperAdmin Command Center
+###  SuperAdmin Command Center
 * **Client & Property Provisioning**: Onboard and configure enterprise hotel accounts, group portfolios, and access controls.
 * **Supplier Verification Pipeline**: Review submitted evidence, approve audit documentation, and recalibrate confidence multipliers.
 * **Dynamic Assessment Generator**: Create secure, expirable tokenized assessment links for prospective supplier onboarding.
 * **Master Data Management**: Administer raw assessment inputs, scoring matrices, and certificate repositories.
 
-### 📝 Supplier Self-Service Assessment Portal
+###  Supplier Self-Service Assessment Portal
 * **Structured Assessment Submissions**: Guided onboarding workflows for micro and small suppliers to submit qualitative and quantitative operational data.
 * **Certificate Vault**: Direct document uploads with categorization across labor compliance, organic sourcing, and fair trade accreditations.
 
-### 🤖 AI Sustainability Co-Pilot (Gemini Powered)
+###  AI Sustainability Co-Pilot (Gemini Powered)
 * **Real-Time Streaming Assistant**: Integrated conversational copilot leveraging Google Gemini (`gemini-3.6-flash`) via the Vercel AI SDK.
 * **Context-Aware Recommendations**: Analyzes live supplier scores, identifies missing or lapsed documentation, and delivers concrete, actionable roadmaps to elevate tier ratings.
 
-### 🎨 Visual & Sensory Design System
+###  Visual & Sensory Design System
 * **Curated Earth-Toned Aesthetic**: Tailored color palette (`#FAF8F5`, `#7D3F1E`, `#6E8471`, `#121316`) designed for quiet luxury.
 * **Dark & Light Mode**: Seamless theme switching powered by `next-themes` and Tailwind CSS v4.
 * **Spatial & 3D Visuals**: Three.js / React Three Fiber interactive components alongside Leaflet geographical sourcing maps.
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Domain | Technologies |
 | :--- | :--- |
@@ -126,7 +126,7 @@ $$\text{Effective Score} = \text{Raw Score} \times \text{Evidence Multiplier}$$
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ```
 varna/
@@ -177,7 +177,7 @@ varna/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -243,7 +243,7 @@ varna/
 
 ---
 
-## ⚖️ Disclaimer
+##  Disclaimer
 
 > [!NOTE]
 > **Regulatory & Certification Disclaimer:**  
@@ -251,7 +251,7 @@ varna/
 
 ---
 
-## 📜 License
+##  License
 
 ```
 PROPRIETARY AND CONFIDENTIAL
@@ -269,7 +269,7 @@ This product incorporates open-source libraries under their respective permissiv
 
 ---
 
-## 🤝 Copyright & Trademark Notice
+##  Copyright & Trademark Notice
 
 * **Copyright © 2024–2026 Varna Collective.** All rights reserved.
 * **Varna**, the **Varna Collective** logo, the **Varna Framework**, the **Evidence Multiplier Pipeline**, and associated visual trade dress are proprietary marks of **Varna Collective**.
