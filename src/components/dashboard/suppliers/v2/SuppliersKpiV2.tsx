@@ -176,7 +176,7 @@ export default function SuppliersKpiV2({
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight uppercase">
+                  <span className="text-lg font-bold text-gray-900 dark:text-white tracking-wide uppercase">
                     Sutra Verified Score
                   </span>
 
@@ -186,13 +186,15 @@ export default function SuppliersKpiV2({
                   </div>
                 </div>
 
-                <div className="text-2xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
-                  <AnimatedCounter
-                    value={avgVarnaScore}
-                    decimals={1}
-                    delay={0.35}
-                  />
-                  <span className="text-xs text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-0.5 font-normal">
+                <div className="flex items-baseline tabular-nums leading-none">
+                  <span className="text-4xl sm:text-5xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none">
+                    <AnimatedCounter
+                      value={avgVarnaScore}
+                      decimals={1}
+                      delay={0.35}
+                    />
+                  </span>
+                  <span className="text-xl font-normal text-gray-400 dark:text-gray-500 ml-1 leading-none">
                     /100
                   </span>
                 </div>
