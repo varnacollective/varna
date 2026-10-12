@@ -9,14 +9,14 @@ export default async function GroupDashboardSubRoutePage() {
   const sessionCookie = cookieStore.get("varna_session");
 
   if (!sessionCookie?.value) {
-    redirect("/login");
+    redirect("/");
   }
 
   let session: { clientId: string; clientName: string; isGroup?: boolean; parentGroup?: string };
   try {
     session = JSON.parse(sessionCookie.value);
   } catch {
-    redirect("/login");
+    redirect("/");
   }
 
   const parentGroup = session.parentGroup || "Meridian Hotels & Resorts";

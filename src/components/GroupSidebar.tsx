@@ -43,9 +43,9 @@ export default function GroupSidebar({
     setIsLoggingOut(true);
     try {
       await fetch("/api/logout", { method: "POST" });
-      router.push("/login");
+      router.push("/");
     } catch {
-      router.push("/login");
+      router.push("/");
     }
   };
 

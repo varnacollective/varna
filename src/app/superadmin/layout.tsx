@@ -38,7 +38,7 @@ export default async function SuperAdminLayout({
 
   // If no active session exists, immediately redirect to login before child pages render
   if (!isAuthorized) {
-    redirect("/login");
+    redirect("/");
   }
 
   return <SuperAdminClientLayout>{children}</SuperAdminClientLayout>;

@@ -95,7 +95,7 @@ export default function SuperAdminClientLayout({
     await fetch("/api/logout", { method: "POST" });
     localStorage.removeItem("varna_superadmin");
     localStorage.removeItem("varna_client");
-    router.push("/login");
+    router.push("/");
   };
 
   if (!mounted) return null;

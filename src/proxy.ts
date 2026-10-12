@@ -62,7 +62,7 @@ export async function proxy(request: NextRequest) {
     }
 
     if (!isSuperAdmin) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
@@ -74,7 +74,7 @@ export async function proxy(request: NextRequest) {
       superadminSession?.value === "true";
 
     if (!hasDashboardSession) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
