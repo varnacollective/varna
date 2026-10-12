@@ -13,13 +13,61 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const exactClientId = clientId.trim();
+
+    // ── Hardcoded superadmin bypass (checked before any DB call) ────────────
+    // This ensures superadmin can always log in regardless of the DB state.
+    if (exactClientId === "superadmin" && password === "Varna") {
+      const saResponse = NextResponse.json({
+        success: true,
+        isSuperAdmin: true,
+        isGroup: false,
+        redirectUrl: "/superadmin",
+        client: {
+          clientId: "superadmin",
+          clientName: "Super Admin",
+          industry: "Platform Administration",
+          isGroup: false,
+          parentGroup: null,
+        },
+      });
+
+      saResponse.cookies.set("varna_superadmin_session", "true", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24,
+        path: "/",
+      });
+
+      saResponse.cookies.set(
+        "varna_session",
+        JSON.stringify({
+          clientId: "superadmin",
+          clientName: "Super Admin",
+          role: "superadmin",
+          isGroup: false,
+          parentGroup: null,
+        }),
+        {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 60 * 60 * 24,
+          path: "/",
+        }
+      );
+
+      return saResponse;
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     const supabase = await createClient();
 
     // ── Single authoritative lookup: client_credentials table ──────────────
     // All accounts (CLT-*, GRP-*, superadmin) must have a row here.
     // Try uppercase first (CLT-001, GRP-001), then exact case (superadmin).
     const upperClientId = clientId.trim().toUpperCase();
-    const exactClientId = clientId.trim();
 
     let credRow: Record<string, any> | null = null;
 
