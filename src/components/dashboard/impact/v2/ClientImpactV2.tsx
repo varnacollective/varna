@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import type { DashboardData } from "@/lib/mock-data";
 import { getClientLogoFallback } from "@/lib/mock-data";
 import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
@@ -33,9 +34,24 @@ export default function ClientImpactV2({
 
   const totalCO2eAvoidedKg = summary?.totalCO2eAvoidedKg ?? 2160;
   const womenWorkforcePercent = summary?.womenWorkforcePercent ?? 78;
-  const wageRatio = supplierImpactData?.[0]?.wageRatio ?? 1.05;
+  // REMOVED: wageRatio = supplierImpactData?.[0]?.wageRatio — was only first partner's value.
+  // avgWageRatio below replaces it (portfolio mean, computed after this line).
   const suppliers = dashboardData?.suppliers ?? [];
   const totalSpend = summary?.totalSpend ?? 0;
+
+  // D01/D02 FIX: compute portfolio-level average wage ratio across ALL partners,
+  // not just supplierImpactData[0]. All 5 authoritative partners have
+  // s3_wages_input_wage_ratio = 1.05 (confirmed in Supabase), giving avg = 1.05.
+  // If data is partial or mixed, this still produces the correct aggregate.
+  const avgWageRatio = useMemo(() => {
+    if (!supplierImpactData || supplierImpactData.length === 0) return 1.05;
+    const valid = supplierImpactData.filter(
+      (s: any) => typeof s.wageRatio === "number" && !isNaN(s.wageRatio)
+    );
+    if (valid.length === 0) return 1.05;
+    const sum = valid.reduce((acc: number, s: any) => acc + s.wageRatio, 0);
+    return Math.round((sum / valid.length) * 100) / 100;
+  }, [supplierImpactData]);
 
   return (
     <div className="client-impact-v2 w-full max-w-[1760px] mx-auto space-y-6 pb-32">
@@ -97,7 +113,7 @@ export default function ClientImpactV2({
       {/* 5. Social Livelihood + Visual Row */}
       <SocialRowV2
         womenWorkforcePercent={womenWorkforcePercent}
-        wageRatio={wageRatio}
+        wageRatio={avgWageRatio}
         supplierImpactData={supplierImpactData}
       />
 

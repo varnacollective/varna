@@ -135,7 +135,7 @@ export default function CarbonAndTiersV2({
             Carbon Impact
           </h2>
           <p className="text-sm text-[#6F6A61] dark:text-[#9A948A] font-normal mt-0.5">
-            CO₂e emissions avoided through circular procurement
+            Estimated CO₂e avoided via circular procurement · Partial coverage (3 of 10 partners verified)
           </p>
         </div>
 
@@ -311,13 +311,18 @@ export default function CarbonAndTiersV2({
         </div>
 
         {/* D5 Derived Insight Footer */}
-        <div className="pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
-          <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
-            {remainingKg.toLocaleString("en-US")} kg CO₂e ({remainingTrees} trees) remaining to annual target
-          </span>
-          <span className="text-[#6F6A61] dark:text-[#9A948A]">
-            82% of target achieved
-          </span>
+        <div className="pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
+          <div className="text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
+            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
+              {remainingKg.toLocaleString("en-US")} kg CO₂e ({remainingTrees} trees) remaining to annual target
+            </span>
+            <span className="text-[#6F6A61] dark:text-[#9A948A]">
+              82% of target achieved
+            </span>
+          </div>
+          <p className="text-[10px] text-[#9A948A] mt-1 leading-tight font-normal">
+            Estimated from circular procurement baseline · Partial coverage: 3 purchasing partners verified (remaining 7 directory partners pending full lifecycle LCA disclosures). EPA factor: 22 kg CO₂e/tree/yr.
+          </p>
         </div>
       </motion.div>
 

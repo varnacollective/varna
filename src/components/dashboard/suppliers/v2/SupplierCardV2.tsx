@@ -277,11 +277,11 @@ export default function SupplierCardV2({
             </div>
           </div>
 
-          {/* Varna Score Eyebrow & Display Block */}
+          {/* Sutra Verified Score Eyebrow & Display Block */}
           <VarnaScoreHoverCard {...varnaScoreData}>
             <div className="flex flex-col items-end shrink-0 cursor-help group">
               <span className="text-[9px] uppercase tracking-[0.16em] font-semibold text-[#6F6A61] dark:text-[#9A948A] mb-0.5">
-                VARNA SCORE
+                SUTRA VERIFIED SCORE
               </span>
 
               <div className="text-xl lg:text-[28px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none flex items-baseline tabular-nums">
@@ -374,14 +374,14 @@ export default function SupplierCardV2({
                     <span className="text-[#5B564E] dark:text-[#C2BCB0] font-medium group-hover/pillar:text-[#1F1B16] dark:group-hover/pillar:text-white transition-colors">
                       {b.label}
                     </span>
-                    {b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val) ? (
+                    {b.label === "Carbon Impact" && (effectivePillarScore === 0 || effectivePillarScore === 0.0 || !effectivePillarScore) ? (
                       <span className="inline-flex items-center gap-1 text-[#9A948A] dark:text-[#6F6A61] text-[11px] font-medium" title="Carbon data is pending.">
                         N/A
                         <Info className="w-3 h-3 text-[#7D3F1E] dark:text-[#E07A57]" />
                       </span>
                     ) : (
                       <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-semibold tabular-nums">
-                        {b.val !== null && b.val !== undefined && !isNaN(b.val) ? b.val.toFixed(1) : "—"}
+                        {effectivePillarScore !== null && effectivePillarScore !== undefined && !isNaN(effectivePillarScore) ? effectivePillarScore.toFixed(1) : "—"}
                       </span>
                     )}
                   </div>
@@ -389,9 +389,9 @@ export default function SupplierCardV2({
                   <div className="w-full h-[5px] rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
                     <motion.div
                       className="h-full rounded-full transition-all duration-700"
-                      style={{ backgroundColor: pillarColor, width: b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val) ? "0%" : `${Math.min(100, Math.max(0, b.val || 0))}%` }}
+                      style={{ backgroundColor: pillarColor, width: b.label === "Carbon Impact" && (effectivePillarScore === 0 || effectivePillarScore === 0.0 || !effectivePillarScore) ? "0%" : `${Math.min(100, Math.max(0, effectivePillarScore || 0))}%` }}
                       initial={{ width: 0 }}
-                      animate={{ width: b.label === "Carbon Impact" && (b.val === 0 || b.val === 0.0 || !b.val) ? "0%" : `${Math.min(100, Math.max(0, b.val || 0))}%` }}
+                      animate={{ width: b.label === "Carbon Impact" && (effectivePillarScore === 0 || effectivePillarScore === 0.0 || !effectivePillarScore) ? "0%" : `${Math.min(100, Math.max(0, effectivePillarScore || 0))}%` }}
                     />
                   </div>
                 </div>

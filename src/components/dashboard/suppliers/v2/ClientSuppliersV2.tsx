@@ -14,6 +14,7 @@ import SuppliersKpiV2 from "./SuppliersKpiV2";
 import SupplierCardV2 from "./SupplierCardV2";
 import type { DashboardData, SupplierConfidenceData } from "@/lib/mock-data";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS, getClientLogoFallback } from "@/lib/mock-data";
+import { classifyScoreBand, SCORE_BAND_COLORS, type ScoreBandName } from "@/lib/portfolioCalc";
 
 const RealPartnerMapView = dynamic(
   () => import("./RealPartnerMapView"),
@@ -44,26 +45,20 @@ type SortOption = "score_desc" | "score_asc" | "spend_desc" | "name_asc";
 type ViewMode = "list" | "map";
 
 const SORT_OPTIONS: { id: SortOption; label: string }[] = [
-  { id: "score_desc", label: "Varna Score: High to Low" },
-  { id: "score_asc", label: "Varna Score: Low to High" },
+  { id: "score_desc", label: "Sutra Verified Score: High to Low" },
+  { id: "score_asc", label: "Sutra Verified Score: Low to High" },
   { id: "spend_desc", label: "Spend: High to Low" },
   { id: "name_asc", label: "Name: A to Z" },
 ];
 
-// Band mapping
-function getVarnaBand(score: number): string {
-  if (score >= 85) return "Leader";
-  if (score >= 70) return "Advanced";
-  if (score >= 55) return "Emerging";
-  return "Foundational";
+// Band mapping — delegates to the authoritative classifyScoreBand() from portfolioCalc.ts.
+// All UI surfaces (filter counts, card pills, chart colors) must call this function,
+// not reimplement their own thresholds.
+function getVarnaBand(score: number | null | undefined): ScoreBandName {
+  return classifyScoreBand(score);
 }
 
-const BAND_COLORS: Record<string, string> = {
-  Leader: "#55705A",
-  Advanced: "#7D3F1E",
-  Emerging: "#6F8391",
-  Foundational: "#9C7A58",
-};
+const BAND_COLORS: Record<string, string> = SCORE_BAND_COLORS;
 
 interface FilterOption {
   id: string;
@@ -310,10 +305,10 @@ function StatusDropdown({
   const isFiltered = value !== "all";
   const label =
     value === "active"
-      ? "Status: Active"
+      ? "Purchasing This Period"
       : value === "inactive"
-      ? "Status: Inactive"
-      : "Status: All";
+      ? "Directory Only"
+      : "Purchasing: All";
 
   return (
     <div className="relative" ref={ref}>
@@ -331,7 +326,7 @@ function StatusDropdown({
       </button>
 
       {open && (
-        <div className="absolute top-full mt-2 left-0 bg-white dark:bg-[#20242B] border border-black/[0.10] dark:border-white/[0.12] rounded-2xl shadow-xl z-30 w-44 p-1.5 space-y-0.5">
+        <div className="absolute top-full mt-2 left-0 bg-white dark:bg-[#20242B] border border-black/[0.10] dark:border-white/[0.12] rounded-2xl shadow-xl z-30 w-60 p-1.5 space-y-0.5">
           <button
             type="button"
             onClick={() => {
@@ -344,7 +339,7 @@ function StatusDropdown({
                 : "text-[#5B564E] dark:text-[#C2BCB0] hover:bg-black/5 dark:hover:bg-white/5"
             }`}
           >
-            <span>All</span>
+            <span>Purchasing: All</span>
             <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">{totalCount}</span>
           </button>
           <button
@@ -361,7 +356,7 @@ function StatusDropdown({
           >
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#55705A]" />
-              <span>Active</span>
+              <span>Purchasing This Period</span>
             </div>
             <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">{activeCount}</span>
           </button>
@@ -379,7 +374,7 @@ function StatusDropdown({
           >
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#9A948A]" />
-              <span>Inactive</span>
+              <span>Directory Only (No Orders Yet)</span>
             </div>
             <span className="text-[11px] text-[#9A948A] tabular-nums font-normal">{inactiveCount}</span>
           </button>
@@ -475,7 +470,10 @@ export default function ClientSuppliersV2({
     return Array.from(states).sort();
   }, [suppliersData]);
 
-  const BAND_OPTIONS = ["Leader", "Advanced", "Emerging", "Foundational"];
+  // "Not Ready" is now included because classifyScoreBand() correctly handles scores < 40.
+  // Previously "Foundational" was the catch-all fallback, which incorrectly absorbed
+  // partners like Nimbus (37.0) and Rustic Clay Works (21.8).
+  const BAND_OPTIONS: ScoreBandName[] = ["Not Ready", "Foundational", "Emerging", "Advanced", "Leader"];
 
   const bandOptions = useMemo(() => {
     return BAND_OPTIONS.map((band) => {
@@ -646,7 +644,7 @@ export default function ClientSuppliersV2({
     sScore: summarySScore,
     gScore: summaryGScore,
     cScore: summaryCScore,
-    supplierName: "Weighted average across your verified partners",
+    supplierName: "Simple arithmetic average across your active purchasing partners",
   };
 
   return (
@@ -665,6 +663,7 @@ export default function ClientSuppliersV2({
       {/* 3. KPI Row */}
       <SuppliersKpiV2
         totalSuppliers={summaryTotalSuppliers}
+        directoryCount={suppliersData.length}
         totalOrders={summaryTotalOrders}
         totalSpend={summaryTotalSpend}
         avgVarnaScore={summaryScore}

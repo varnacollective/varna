@@ -311,6 +311,10 @@ export default function RealPartnerMapView({
         maxWidth: 280,
       });
 
+      marker.on("click", () => {
+        onPinClick(supplier);
+      });
+
       marker.on("popupopen", () => {
         const btn = document.getElementById(`view-partner-btn-${idx}`);
         if (btn) {

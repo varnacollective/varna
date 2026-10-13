@@ -1,0 +1,37 @@
+<USER_REQUEST>
+ROLE
+You are a senior full-stack engineer (frontend + Supabase-aware). You are given a structured QA checklist of confirmed and suspected defects across the VARNA client-level dashboard (Overview, Partners, Orders, Impact, Stories, Reports, and the AI assistant). Work entirely from source code and the live Supabase data — do NOT open a browser, do NOT take screenshots, do NOT do any exploratory agentic browsing. Where "reproduce" is mentioned, reproduce it by tracing the actual code path and querying Supabase directly, not by rendering the UI.
+
+GLOBAL RULES FOR THIS ENTIRE PASS
+1. For every item: AUDIT FIRST, then FIX, then VERIFY, then REPORT — using this exact structure for your final write-up: Test case | Expected result | Actual result (root cause) | Resolution applied. Do not mark anything resolved without this trail.
+2. Never silently change a displayed number to "look right." If multiple widgets disagree, find which one (if any) is actually correct per the real underlying data, and make ALL of them derive from ONE shared source/function — do not patch each display independently.
+3. For any Supabase schema or data write (not just query logic changes): back up the affected table(s) first, dry-run the exact change and show the diff, then commit. Scope every write strictly by client_id/partner_id — never touch other clients' data.
+4. Distinguish, everywhere in this pass, between: a genuine zero, N/A (not applicable to this partner/pillar), missing/not-yet-provided data, and pending verification. These must never collapse into one "0" or blank value — add explicit state handling wherever this distinction isn't already made.
+5. Do not invent methodology (weighting schemes, emission factors, wage benchmarks) to make a number reconcile. If no real, documented methodology exists for something, say so explicitly in your report rather than fabricating one — this codebase has previously had a fabricated "Varna Diamond Model" appear in a generated report with no real backing, so be vi
+<truncated 20608 bytes>
+parate manual validation and is not something you can close out via code review alone.
+
+═══════════════════════════════════════════
+FINAL DELIVERABLE
+═══════════════════════════════════════════
+For EVERY item D01–D12 and every stabilization check above, produce a line in this exact format:
+`[ID] — Test case | Expected result | Actual result (root cause found) | Resolution applied (or "requires manual verification" / "requires a methodology decision from the team" if you could not resolve it purely in code)`
+
+Additionally, call out explicitly: (a) every place you found and fixed a duplicate/divergent calculation that you consolidated into one shared source of truth, listing all the files that now call it; (b) every place you found UI copy describing a methodology that doesn't match what the code actually computes; (c) anything you could not fix because it requires a business/methodology decision rather than a code fix, so these can be escalated to the team before Phase 2.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-13T15:07:52+05:30.
+
+The user's current state is as follows:
+Active Document: e:\varna\README.md (LANGUAGE_MARKDOWN)
+Cursor is on line: 1
+Other open documents:
+- e:\varna\src\components\dashboard\v2\PillarsAndCategoryV2.tsx (LANGUAGE_TSX)
+- e:\varna\scripts\update_astor_dubai.js (LANGUAGE_JAVASCRIPT)
+- e:\varna\src\lib\group-reports-data.ts (LANGUAGE_TYPESCRIPT)
+- e:\varna\src\app\globals.css (LANGUAGE_CSS)
+- e:\varna\src\components\ui\ConfidenceChecklistHoverCard.tsx (LANGUAGE_TSX)
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from None to Claude Sonnet 4.6 (Thinking). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>

@@ -32,6 +32,22 @@ export function formatDateForDisplay(dateStr: string): string {
   });
 }
 
+/**
+ * Format a local-timezone Date as YYYY-MM-DD.
+ * We deliberately avoid .toISOString() here because that converts to UTC,
+ * which means a midnight IST date (UTC-5:30) appears as the previous calendar
+ * day. All dashboard date arithmetic is in IST (India Standard Time, +05:30),
+ * matching the operational context of this platform.
+ * End dates produced here are INCLUSIVE — query layers must filter with
+ * endDate T23:59:59 (already done in ClientOverviewV2, ClientOrdersV2).
+ */
+function toLocalDateString(d: Date): string {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 // Calculate preset date ranges
 export function getPresetDates(preset: DatePreset): { startDate: string | null; endDate: string | null; label: string } {
   const now = new Date();
@@ -40,10 +56,12 @@ export function getPresetDates(preset: DatePreset): { startDate: string | null; 
 
   switch (preset) {
     case "this_month": {
+      // firstDay = first calendar day of current local month (1st)
+      // lastDay  = last calendar day of current local month (28/29/30/31)
       const firstDay = new Date(currentYear, currentMonth, 1);
       const lastDay = new Date(currentYear, currentMonth + 1, 0);
-      const start = firstDay.toISOString().split("T")[0];
-      const end = lastDay.toISOString().split("T")[0];
+      const start = toLocalDateString(firstDay);
+      const end = toLocalDateString(lastDay);
       return {
         startDate: start,
         endDate: end,
@@ -54,8 +72,8 @@ export function getPresetDates(preset: DatePreset): { startDate: string | null; 
       const quarterStartMonth = Math.floor(currentMonth / 3) * 3;
       const firstDay = new Date(currentYear, quarterStartMonth, 1);
       const lastDay = new Date(currentYear, quarterStartMonth + 3, 0);
-      const start = firstDay.toISOString().split("T")[0];
-      const end = lastDay.toISOString().split("T")[0];
+      const start = toLocalDateString(firstDay);
+      const end = toLocalDateString(lastDay);
       return {
         startDate: start,
         endDate: end,
@@ -77,8 +95,8 @@ export function getPresetDates(preset: DatePreset): { startDate: string | null; 
     case "last_12_months": {
       const twelveMonthsAgo = new Date(currentYear, currentMonth - 11, 1);
       const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
-      const start = twelveMonthsAgo.toISOString().split("T")[0];
-      const end = endOfMonth.toISOString().split("T")[0];
+      const start = toLocalDateString(twelveMonthsAgo);
+      const end = toLocalDateString(endOfMonth);
       return {
         startDate: start,
         endDate: end,
@@ -88,8 +106,8 @@ export function getPresetDates(preset: DatePreset): { startDate: string | null; 
     case "last_6_months": {
       const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1);
       const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
-      const start = sixMonthsAgo.toISOString().split("T")[0];
-      const end = endOfMonth.toISOString().split("T")[0];
+      const start = toLocalDateString(sixMonthsAgo);
+      const end = toLocalDateString(endOfMonth);
       return {
         startDate: start,
         endDate: end,

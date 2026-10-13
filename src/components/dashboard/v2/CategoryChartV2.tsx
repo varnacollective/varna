@@ -481,7 +481,7 @@ export default function CategoryChartV2({
 
   return (
     <div className="flex flex-col h-full">
-      {/* 1. Toggle Controls: 'Spend by Category' & Renamed 'CO2 Emissions' */}
+      {/* 1. Toggle Controls: 'Spend by Category' & 'Product Trends & CO₂ Reduction' */}
       <div className="flex items-center gap-1 mb-4 p-1 rounded-xl bg-black/5 dark:bg-white/5 w-fit">
         <button
           type="button"
@@ -503,7 +503,7 @@ export default function CategoryChartV2({
               : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
           }`}
         >
-          CO2 Emissions
+          Product Trends & CO₂ Reduction
         </button>
       </div>
 

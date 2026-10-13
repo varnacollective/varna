@@ -117,36 +117,20 @@ export interface SmeTierRowProps {
   isZero?: boolean;
 }
 
+// Methodology Note: SME breakdown is attributed strictly by MSME classification (Micro, Small, Medium)
+// per client spend. Carbon attribution is maintained separately in CarbonRowV2 based on verified product LCAs.
 export function SmeTierRow({
   tier,
   amountUsd,
   pct,
-  carbonKg,
   color,
   isZero = false,
 }: SmeTierRowProps) {
-  const [showCarbon, setShowCarbon] = useState(false);
-  const rowRef = useRef<HTMLDivElement>(null);
-
-  // Return to percentage on click outside
-  useEffect(() => {
-    if (!showCarbon) return;
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (rowRef.current && !rowRef.current.contains(e.target as Node)) {
-        setShowCarbon(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [showCarbon]);
-
-  const carbonLabel = carbonKg > 0 ? `${carbonKg.toLocaleString("en-US")} kg CO₂e` : "0 kg CO₂e";
-
   return (
     <div
-      ref={rowRef}
-      className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${isZero ? "opacity-45" : "opacity-100"
-        }`}
+      className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
+        isZero ? "opacity-45" : "opacity-100"
+      }`}
     >
       <div className="flex items-center gap-2.5">
         <span
@@ -157,30 +141,9 @@ export function SmeTierRow({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Clickable Percentage with Carbon Equivalent Toggle */}
-        <button
-          type="button"
-          aria-pressed={showCarbon}
-          onClick={() => setShowCarbon((prev) => !prev)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              setShowCarbon((prev) => !prev);
-            }
-          }}
-          title={showCarbon ? "Click to view spend percentage" : "Click to see carbon equivalent"}
-          className="relative inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-normal text-[#6F6A61] dark:text-[#9A948A] hover:text-[#55705A] dark:hover:text-[#9DB4A0] hover:bg-black/5 dark:hover:bg-white/10 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#55705A]/40"
-        >
-          {showCarbon ? (
-            <span className="font-semibold text-[#55705A] dark:text-[#9DB4A0] tabular-nums underline decoration-dotted underline-offset-2">
-              {carbonLabel}
-            </span>
-          ) : (
-            <span className="tabular-nums">
-              ({pct.toFixed(1)}%)
-            </span>
-          )}
-        </button>
+        <span className="text-xs font-normal text-[#6F6A61] dark:text-[#9A948A] tabular-nums">
+          ({pct.toFixed(1)}%)
+        </span>
 
         <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[36px] text-right tabular-nums text-sm">
           {formatUsd(amountUsd)}

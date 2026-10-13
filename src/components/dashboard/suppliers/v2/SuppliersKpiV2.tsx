@@ -8,6 +8,7 @@ import VarnaScoreBandScale, { PerformanceBandsLegend } from "@/components/ui/Var
 
 interface SuppliersKpiV2Props {
   totalSuppliers: number;
+  directoryCount?: number;
   totalOrders: number;
   totalSpend: number;
   avgVarnaScore: number;
@@ -25,6 +26,7 @@ function getBandLabel(score: number): string {
 
 export default function SuppliersKpiV2({
   totalSuppliers = 3,
+  directoryCount = 10,
   totalOrders = 5,
   totalSpend = 3773,
   avgVarnaScore = 67.6,
@@ -57,9 +59,9 @@ export default function SuppliersKpiV2({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6 items-stretch">
-      {/* 1) Column 1: Vertical Stack of Active Partners & Total Orders */}
+      {/* 1) Column 1: Vertical Stack of Purchasing Partners & Total Orders */}
       <div className="col-span-12 lg:col-span-3 xl:col-span-2 flex flex-col gap-4 h-full">
-        {/* KPI 1: Active Partners */}
+        {/* KPI 1: Purchasing Partners */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -76,15 +78,20 @@ export default function SuppliersKpiV2({
         >
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              Active Partners
+              Purchasing Partners
             </span>
             <div className="w-7 h-7 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
               <Building className="w-3.5 h-3.5" strokeWidth={1.8} />
             </div>
           </div>
 
-          <div className="text-2xl font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1.5 tabular-nums">
-            <AnimatedCounter value={totalSuppliers} delay={0.2} />
+          <div>
+            <div className="text-2xl font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight leading-none mt-1.5 tabular-nums">
+              <AnimatedCounter value={totalSuppliers} delay={0.2} />
+            </div>
+            <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-normal block mt-1">
+              of {directoryCount} Directory Partners
+            </span>
           </div>
         </motion.div>
 

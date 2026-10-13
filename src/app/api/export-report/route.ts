@@ -13,6 +13,9 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const queryClientId = searchParams.get("clientId");
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+  const rangeLabel = searchParams.get("rangeLabel");
 
   let clientId: string = "CLT-001";
   let clientName: string = "The Astor Dubai";
@@ -238,6 +241,13 @@ export async function GET(request: NextRequest) {
       year: "numeric",
     });
 
+    let reportingPeriod = summaryData?.reporting_period || "Jan–Jun 2026";
+    if (rangeLabel && rangeLabel !== "All Time") {
+      reportingPeriod = rangeLabel;
+    } else if (startDate && endDate) {
+      reportingPeriod = `${startDate} to ${endDate}`;
+    }
+
     const reportPayload = {
       client: {
         clientId,
@@ -245,7 +255,7 @@ export async function GET(request: NextRequest) {
         industry: clientData?.industry || "Hospitality",
         city: clientData?.city || "Dubai",
         country: clientData?.country || "UAE",
-        reportingPeriod: summaryData?.reporting_period || "Jan–Jun 2026",
+        reportingPeriod,
         logoPath: clientLogoPath,
       },
       summary: {

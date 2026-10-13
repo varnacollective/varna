@@ -79,7 +79,7 @@ export default function CarbonRowV2({
               Carbon Impact
             </h2>
             <p className="text-xs text-[#6F6A61] dark:text-[#9A948A] mt-1 font-normal">
-              CO₂e emissions avoided through circular procurement
+              Estimated CO₂e avoided via circular procurement · Partial coverage (3 of 10 partners verified)
             </p>
           </div>
 
@@ -196,12 +196,17 @@ export default function CarbonRowV2({
           </div>
         </div>
 
-        {/* D6 Pinned Target Remaining Footer */}
-        <div className="pt-3 mt-4 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#6F6A61] dark:text-[#9A948A] font-medium flex items-center justify-between">
-          <span>Target remaining</span>
-          <span className="text-[#7D3F1E] dark:text-[#E07A57] font-semibold">
-            {remainingKg} kg / {remainingTrees} trees remaining
-          </span>
+        {/* D6 Pinned Target Remaining Footer & Methodology Attribution */}
+        <div className="pt-3 mt-4 border-t border-black/[0.07] dark:border-white/[0.08]">
+          <div className="text-xs text-[#6F6A61] dark:text-[#9A948A] font-medium flex items-center justify-between">
+            <span>Target remaining (2026 Client Goal)</span>
+            <span className="text-[#7D3F1E] dark:text-[#E07A57] font-semibold">
+              {remainingKg} kg / {remainingTrees} trees remaining
+            </span>
+          </div>
+          <p className="text-[10px] text-[#9A948A] mt-1.5 leading-tight font-normal">
+            Estimated from circular procurement baseline · Partial coverage: 3 purchasing partners verified (remaining 7 directory partners pending full lifecycle LCA disclosures). EPA factor: 22 kg CO₂e/tree/yr.
+          </p>
         </div>
       </motion.div>
     </div>

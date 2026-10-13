@@ -197,10 +197,10 @@ export default function VarnaScoreHoverCard({
                     <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-mist/20 dark:border-midnight-blue">
                       <div>
                         <h4 className="text-xs font-sans font-semibold tracking-wider uppercase text-carbon-ink dark:text-warm-stone leading-tight">
-                          VARNA VERIFIED PARTNER SCORE
+                          SUTRA VERIFIED SCORE
                         </h4>
                         <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 mt-1 font-light tracking-wide">
-                          {supplierName && supplierName !== "Portfolio Average" ? supplierName : "Weighted average across your verified suppliers"}
+                          {supplierName && supplierName !== "Portfolio Average" ? supplierName : "Simple arithmetic average across your active purchasing partners"}
                         </p>
                       </div>
                       <div className="flex items-start gap-3">
@@ -350,7 +350,7 @@ export default function VarnaScoreHoverCard({
                       className="pt-4 border-t border-slate-mist/15 dark:border-midnight-blue/60"
                     >
                       <p className="text-[9px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
-                        Calculated using the Varna Framework 2.0.
+                        Calculated using the Sutra Assessment Framework 2.0.
                       </p>
                     </motion.div>
                   </div>

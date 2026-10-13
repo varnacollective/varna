@@ -35,16 +35,44 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
     });
   }, [dateState.startDate, dateState.endDate]);
 
+  const isPeriodFiltered = Boolean(dateState.startDate || dateState.endDate);
   const currentTotalOrders = filteredOrders ? filteredOrders.length : summary.totalOrders;
   const currentTotalSpend = filteredOrders ? filteredOrders.reduce((acc, o) => acc + o.orderValue, 0) : summary.totalSpend;
 
+  // D04 FIX: Period-dependent vs Cumulative classification.
+  // Spend and Category Spend are period-dependent. If a period filter has 0 orders,
+  // category spend is 0 for that period.
+  const currentCategorySpend = useMemo(() => {
+    if (!isPeriodFiltered) return categorySpend;
+    if (filteredOrders && filteredOrders.length === 0) {
+      return categorySpend.map((c) => ({ ...c, totalSpend: 0, units: 0, percentage: 0 }));
+    }
+    return categorySpend;
+  }, [isPeriodFiltered, filteredOrders, categorySpend]);
+
+  // Carbon avoided in this period: 0 kg if no orders in period; all-time baseline otherwise
+  const currentCO2eAvoidedKg = useMemo(() => {
+    if (!isPeriodFiltered) return summary.totalCO2eAvoidedKg;
+    if (filteredOrders && filteredOrders.length === 0) return 0;
+    return summary.totalCO2eAvoidedKg;
+  }, [isPeriodFiltered, filteredOrders, summary.totalCO2eAvoidedKg]);
+
+  // D01/D02 Portfolio average wage ratio
+  const avgWageRatio = useMemo(() => {
+    if (!supplierImpactData || supplierImpactData.length === 0) return 1.05;
+    const valid = supplierImpactData.filter((s) => typeof s.wageRatio === "number" && !isNaN(s.wageRatio));
+    if (valid.length === 0) return 1.05;
+    return Math.round((valid.reduce((acc, s) => acc + s.wageRatio, 0) / valid.length) * 100) / 100;
+  }, [supplierImpactData]);
+
+  // D06 Single authoritative portfolio score description
   const varnaScoreData = {
     score: summary.avgVarnaScore,
     eScore: summary.avgEScore,
     sScore: summary.avgSScore,
     gScore: summary.avgGScore,
     cScore: summary.avgCScore,
-    supplierName: "Weighted average across your verified partners",
+    supplierName: "Simple arithmetic average across your active purchasing partners",
   };
 
   const ratingBand = summary.avgVarnaScore >= 85 ? "Leader band" : summary.avgVarnaScore >= 70 ? "Advanced band" : "Emerging band";
@@ -94,14 +122,14 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
         gScore={summary.avgGScore}
         cScore={summary.avgCScore}
         pillarBreakdown={summary.pillarBreakdown}
-        categorySpend={categorySpend}
+        categorySpend={currentCategorySpend}
         products={products}
         orderRegister={data.orderRegister}
       />
 
       {/* 5. Carbon Impact + Supplier Tier Distribution (W9, W10 & D4, D5) */}
       <CarbonAndTiersV2
-        totalCO2eAvoidedKg={summary.totalCO2eAvoidedKg}
+        totalCO2eAvoidedKg={currentCO2eAvoidedKg}
         totalSuppliers={summary.totalSuppliers}
         tierDistribution={tierDistribution}
         suppliers={data.suppliers}
@@ -112,7 +140,7 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
       <SocialImpactV2
         artisansSupported={summary.totalArtisansSupported}
         womenWorkforcePercent={summary.womenWorkforcePercent}
-        wageRatio={supplierImpactData?.[0]?.wageRatio || 1.05}
+        wageRatio={avgWageRatio}
         supplierImpactData={supplierImpactData}
       />
 

@@ -8,6 +8,7 @@ import TopBarV2 from "@/components/dashboard/v2/TopBarV2";
 import OrdersHeroV2 from "./OrdersHeroV2";
 import OrdersKpiV2 from "./OrdersKpiV2";
 import AllOrdersTableV2 from "./AllOrdersTableV2";
+import OrderDetailPanel from "./OrderDetailPanel";
 import FooterDisclaimerV2 from "./FooterDisclaimerV2";
 import { X } from "lucide-react";
 
@@ -21,9 +22,6 @@ export default function ClientOrdersV2({
   evidencePanel,
 }: ClientOrdersV2Props) {
   const { state: dateState } = useDateRange();
-
-  // Check if an evidence panel is present to be rendered
-  const hasEvidencePanel = Boolean(evidencePanel);
 
   const filteredOrders = useMemo(() => {
     if (!dateState.startDate && !dateState.endDate) return CLIENT_ORDERS_LIST;
@@ -76,9 +74,13 @@ export default function ClientOrdersV2({
   const selectedOrder =
     filteredOrders.find((o) => o.orderNumber === selectedOrderNumber) || filteredOrders[0] || null;
 
+  // Active detail panel: custom passed prop or built-in OrderDetailPanel
+  const activeDetailPanel = evidencePanel || (selectedOrder ? <OrderDetailPanel order={selectedOrder} /> : null);
+  const hasDetailPanel = Boolean(activeDetailPanel);
+
   const handleSelectOrder = (order: ClientOrderItem) => {
     setSelectedOrderNumber(order.orderNumber);
-    if (isMobile && hasEvidencePanel) {
+    if (isMobile) {
       setIsMobileSheetOpen(true);
     }
   };
@@ -113,9 +115,9 @@ export default function ClientOrdersV2({
         vettedSuppliersCount={vettedSuppliersCount}
       />
 
-      {/* 4. Desktop & Tablet Split View: All Orders Table (8 or 12 cols) + Evidence Panel (4 cols if present) */}
+      {/* 4. Desktop & Tablet Split View: All Orders Table (8 cols) + Evidence Detail Panel (4 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        <div className={hasEvidencePanel ? "lg:col-span-8" : "lg:col-span-12"}>
+        <div className={hasDetailPanel ? "lg:col-span-8" : "lg:col-span-12"}>
           <AllOrdersTableV2
             orders={filteredOrders}
             selectedOrderNumber={selectedOrderNumber}
@@ -126,15 +128,15 @@ export default function ClientOrdersV2({
           />
         </div>
 
-        {hasEvidencePanel && (
+        {hasDetailPanel && (
           <div className="hidden lg:block lg:col-span-4">
-            {evidencePanel}
+            {activeDetailPanel}
           </div>
         )}
       </div>
 
       {/* 5. Mobile Bottom Sheet Modal (≤767px) */}
-      {hasEvidencePanel && isMobileSheetOpen && (
+      {hasDetailPanel && isMobileSheetOpen && (
         <div
           role="dialog"
           aria-modal="true"
@@ -161,7 +163,7 @@ export default function ClientOrdersV2({
               <X className="w-5 h-5" />
             </button>
 
-            {evidencePanel}
+            {activeDetailPanel}
           </div>
         </div>
       )}

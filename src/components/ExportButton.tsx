@@ -10,6 +10,7 @@
 import { useState } from "react";
 import { Download, FileText, Loader2 } from "lucide-react";
 import type { DashboardData } from "@/lib/mock-data";
+import { useDateRange } from "@/context/DateRangeContext";
 
 interface ExportButtonProps {
   data: DashboardData;
@@ -24,13 +25,21 @@ export default function ExportButton({
 }: ExportButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { state: dateState, label: dateLabel } = useDateRange();
 
   const handleExport = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const res = await fetch(`/api/export-report`);
+      const params = new URLSearchParams();
+      const clientId = data?.client?.clientId || "CLT-001";
+      params.set("clientId", clientId);
+      if (dateState?.startDate) params.set("startDate", dateState.startDate);
+      if (dateState?.endDate) params.set("endDate", dateState.endDate);
+      if (dateLabel) params.set("rangeLabel", dateLabel);
+
+      const res = await fetch(`/api/export-report?${params.toString()}`);
 
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));

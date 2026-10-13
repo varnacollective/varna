@@ -5,6 +5,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { useDateRange } from "@/context/DateRangeContext";
 
 interface ChatWidgetProps {
   dashboardData?: any;
@@ -14,6 +15,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { state: dateState, label: dateLabel } = useDateRange();
 
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
@@ -39,7 +41,16 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
     await sendMessage(
       { text: trimmed },
       {
-        body: { dashboardData },
+        body: {
+          dashboardData,
+          dateFilter: {
+            selectedRange: dateLabel || "All Time",
+            startDate: dateState?.startDate || null,
+            endDate: dateState?.endDate || null,
+          },
+          currency: "USD",
+          exchangeRate: 83,
+        },
       }
     );
   };

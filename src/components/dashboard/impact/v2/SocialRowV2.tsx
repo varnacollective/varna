@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Users, Scale } from "lucide-react";
+import { Users, Scale, AlertTriangle } from "lucide-react";
+import { computeWageCompliance } from "@/lib/portfolioCalc";
 
 interface SocialImpactSupplier {
   name: string;
@@ -30,6 +31,14 @@ export default function SocialRowV2({
   const suppliers = supplierImpactData && supplierImpactData.length > 0
     ? supplierImpactData
     : DEFAULT_SUPPLIER_LIST;
+
+  // D01/D02 Single authoritative wage compliance computation
+  const wageSummary = computeWageCompliance(suppliers);
+  const effectiveWageRatio = wageSummary.avgWageRatio > 0 ? wageSummary.avgWageRatio : wageRatio;
+
+  const allSameRatio =
+    suppliers.length > 0 &&
+    suppliers.every((s) => Math.abs(s.wageRatio - suppliers[0].wageRatio) < 0.001);
 
   // D5 Derived Highest Women Percentage Supplier
   let topWomenSupplierName = "Bare Necessities";
@@ -104,12 +113,14 @@ export default function SocialRowV2({
               </div>
 
               <div className="text-3xl lg:text-4xl font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none my-1 tabular-nums flex items-baseline gap-0.5">
-                <span>{wageRatio.toFixed(2)}</span>
+                <span>{effectiveWageRatio.toFixed(2)}</span>
                 <span className="text-base font-normal text-[#7D3F1E]/80 dark:text-[#E07A57]/80">×</span>
               </div>
 
               <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-normal block">
-                Same multiple at all {suppliers.length} enterprises
+                {allSameRatio
+                  ? `Same multiple at all ${suppliers.length} enterprises`
+                  : `${wageSummary.statutoryCompliantCount} of ${suppliers.length} meet statutory minimum (${effectiveWageRatio.toFixed(2)}× avg)`}
               </span>
             </div>
           </div>
@@ -156,6 +167,7 @@ export default function SocialRowV2({
               <div className="space-y-3">
                 {suppliers.map((s) => {
                   const ratioPct = Math.min(100, Math.round((s.wageRatio / 2.0) * 100)); // Scale 0 to 2.0x
+                  const isBelowStatutory = s.wageRatio < 1.0;
 
                   return (
                     <div key={s.name} className="space-y-1">
@@ -163,9 +175,16 @@ export default function SocialRowV2({
                         <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-medium truncate max-w-[160px]">
                           {s.name}
                         </span>
-                        <span className="text-[#7D3F1E] dark:text-[#E07A57] font-semibold tabular-nums">
-                          {s.wageRatio.toFixed(2)}×
-                        </span>
+                        <div className="flex items-center gap-1">
+                          {isBelowStatutory && (
+                            <span className="text-[10px] text-[#B85333] font-normal" title="Below statutory minimum wage (1.00×)">
+                              below min
+                            </span>
+                          )}
+                          <span className={`font-semibold tabular-nums ${isBelowStatutory ? "text-[#B85333]" : "text-[#7D3F1E] dark:text-[#E07A57]"}`}>
+                            {s.wageRatio.toFixed(2)}×
+                          </span>
+                        </div>
                       </div>
 
                       <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden relative">
@@ -173,7 +192,7 @@ export default function SocialRowV2({
                         <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-black/30 dark:bg-white/40 z-10" />
 
                         <div
-                          className="h-full bg-[#7D3F1E] dark:bg-[#E07A57] rounded-full"
+                          className={`h-full rounded-full ${isBelowStatutory ? "bg-[#B85333]" : "bg-[#7D3F1E] dark:bg-[#E07A57]"}`}
                           style={{ width: `${ratioPct}%` }}
                         />
                       </div>
@@ -185,12 +204,19 @@ export default function SocialRowV2({
           </div>
         </div>
 
-        {/* Footer Summary Line */}
-        <div className="pt-3 mt-5 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#6F6A61] dark:text-[#9A948A] font-medium flex items-center justify-between">
-          <span>Workforce & wage compliance</span>
-          <span className="text-[#55705A] dark:text-[#9DB4A0] font-semibold">
-            100% Fair Wage & Minimum Living Wage Compliant
-          </span>
+        {/* Footer Summary Line (D01 Truthful wage compliance disclosure) */}
+        <div className="pt-3 mt-5 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#6F6A61] dark:text-[#9A948A] font-medium flex items-center justify-between flex-wrap gap-2">
+          <span>Workforce & statutory wage compliance</span>
+          {wageSummary.belowStatutoryCount === 0 ? (
+            <span className="text-[#55705A] dark:text-[#9DB4A0] font-semibold">
+              {wageSummary.statutoryCompliantCount}/{wageSummary.totalWithWageData} Enterprises Meet Statutory Minimum Wage
+            </span>
+          ) : (
+            <span className="text-[#B85333] dark:text-[#E07A57] font-semibold flex items-center gap-1">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              {wageSummary.statutoryCompliantCount} of {wageSummary.totalWithWageData} meet statutory minimum ({wageSummary.belowStatutoryPartners.join(", ")} below threshold)
+            </span>
+          )}
         </div>
       </motion.div>
 
