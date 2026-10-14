@@ -175,187 +175,197 @@ export default function VarnaScoreHoverCard({
         createPortal(
           <AnimatePresence>
             {isOpen && (
-              <motion.div
-                ref={popoverRef}
-                {...POPOVER_ENTRANCE}
-                className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
-                style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
-              >
-                <div
-                  className="
-                    bg-white/95 dark:bg-carbon-ink/95 backdrop-blur-xl
-                    border border-slate-mist/30 dark:border-slate-mist/20
-                    shadow-[0_8px_40px_rgba(47,60,82,0.18)] dark:shadow-[0_12px_50px_rgba(0,0,0,0.55)]
-                    font-sans select-none overflow-hidden transform-gpu
-                  "
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setIsOpen(false)}
+                  className="fixed inset-0 z-[9998] bg-black/25 backdrop-blur-xs"
+                />
+                <motion.div
+                  ref={popoverRef}
+                  {...POPOVER_ENTRANCE}
+                  className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform"
+                  style={{ top: position.top, left: position.left, width: CARD_WIDTH }}
                 >
-                  {/* Colored top border */}
-                  <div className="h-1 w-full" style={{ backgroundColor: band.color }} />
+                  <div
+                    className="
+                      bg-white/95 dark:bg-[#1C1917]/95 backdrop-blur-xl
+                      border border-[#E5DEC9] dark:border-white/10
+                      shadow-2xl rounded-2xl
+                      font-sans select-none overflow-hidden transform-gpu
+                    "
+                  >
+                    {/* Colored top border */}
+                    <div className="h-1 w-full" style={{ backgroundColor: band.color }} />
 
-                  <div className="p-6">
-                    {/* ── Header ─────────────────────────────────── */}
-                    <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-mist/20 dark:border-midnight-blue">
-                      <div>
-                        <h4 className="text-xs font-sans font-semibold tracking-wider uppercase text-carbon-ink dark:text-warm-stone leading-tight">
-                          SUTRA VERIFIED SCORE
-                        </h4>
-                        <p className="text-[10px] text-slate-mist dark:text-warm-stone/50 mt-1 font-light tracking-wide">
-                          {supplierName && supplierName !== "Portfolio Average" ? supplierName : "Simple arithmetic average across your active purchasing partners"}
-                        </p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="flex flex-col items-end gap-1">
-                          <div className="flex items-baseline gap-0.5">
-                            <CountUpNumber
-                              value={score}
-                              className="text-3xl font-sans font-medium tracking-tighter text-carbon-ink dark:text-warm-stone"
-                            />
-                            <span className="text-xs font-normal text-slate-mist/80 dark:text-warm-stone/60 ml-0.5">
-                              / 100
-                            </span>
-                          </div>
-                          <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${band.bg} ${band.text} ${band.border}`}>
-                            {band.name}
-                          </span>
+                    <div className="p-6">
+                      {/* ── Header ─────────────────────────────────── */}
+                      <div className="flex items-start justify-between mb-5 pb-4 border-b border-[#E8E3DA] dark:border-white/10">
+                        <div>
+                          <h4 className="text-xs font-sans font-semibold tracking-wider uppercase text-[#1C1917] dark:text-[#FAF8F5] leading-tight">
+                            SUTRA VERIFIED SCORE
+                          </h4>
+                          <p className="text-[10px] text-[#8C827A] dark:text-warm-stone/50 mt-1 font-light tracking-wide">
+                            {supplierName && supplierName !== "Portfolio Average" ? supplierName : "Simple arithmetic average across your active purchasing partners"}
+                          </p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsOpen(false);
-                          }}
-                          className="p-1 rounded-md text-slate-mist hover:text-carbon-ink dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                          aria-label="Close"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* ── Impact Section (50%) ────────────────────── */}
-                    <div className="mb-5">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-1.5">
-                          <Leaf className="w-3 h-3 text-sage-mineral" strokeWidth={2} />
-                          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
-                            Impact
-                          </span>
-                        </div>
-                        <span className="text-[8px] font-semibold uppercase tracking-widest text-sage-mineral bg-sage-mineral/10 px-2 py-0.5 border border-sage-mineral/20">
-                          50% Weightage
-                        </span>
-                      </div>
-                      <div className="space-y-2.5">
-                        {pillars.map((p, idx) => {
-                          const PillarIcon = p.icon;
-                          return (
-                            <div key={p.key} className="flex items-center gap-2.5">
-                              <PillarIcon className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
-                              <span className="text-[10px] w-[72px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
-                                {p.label}
-                              </span>
-                              <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                                <motion.div
-                                  className="h-full rounded-r-sm"
-                                  style={{ backgroundColor: getPillarBarColor(p.key) }}
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${p.value}%` }}
-                                  transition={{ duration: 0.7, delay: idx * STAGGER_DELAY + 0.15, ease: EASE_SMOOTH }}
-                                />
-                              </div>
-                              <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono w-7 text-right">
-                                {p.value}
+                        <div className="flex items-start gap-3">
+                          <div className="flex flex-col items-end gap-1">
+                            <div className="flex items-baseline gap-0.5">
+                              <CountUpNumber
+                                value={score}
+                                className="text-3xl font-serif font-light tracking-tight text-[#1C1917] dark:text-[#FAF8F5]"
+                              />
+                              <span className="text-xs font-normal text-[#8C827A] dark:text-warm-stone/60 ml-0.5">
+                                / 100
                               </span>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* ── Readiness Section (30%) ─────────────────── */}
-                    <div className="mb-5">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-1.5">
-                          <Shield className="w-3 h-3 text-slate-mist" strokeWidth={2} />
-                          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
-                            Readiness
-                          </span>
-                        </div>
-                        <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-mist bg-slate-mist/10 px-2 py-0.5 border border-slate-mist/20">
-                          30% Weightage
-                        </span>
-                      </div>
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5 overflow-hidden">
-                            <Shield className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
-                            <span className="text-[10px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide leading-tight">
-                              Management, certifications & documentation
+                            <span className={`text-[8px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border ${band.bg} ${band.text} ${band.border}`}>
+                              {band.name}
                             </span>
                           </div>
-                          <span className="text-[10px] font-medium text-carbon-ink dark:text-warm-stone/80 tabular-nums font-mono w-7 text-right shrink-0">
-                            {readinessScore}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsOpen(false);
+                            }}
+                            className="p-1 rounded-md text-[#8C827A] hover:text-[#1C1917] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                            aria-label="Close"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ── Impact Section (50%) ────────────────────── */}
+                      <div className="mb-5">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-1.5">
+                            <Leaf className="w-3.5 h-3.5 text-[#3A5A40]" strokeWidth={2} />
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#1C1917] dark:text-warm-stone/80">
+                              Impact
+                            </span>
+                          </div>
+                          <span className="text-[9px] font-medium uppercase tracking-widest text-[#3A5A40] bg-[#3A5A40]/10 px-2 py-0.5 rounded-full border border-[#3A5A40]/20">
+                            50% Weightage
                           </span>
                         </div>
-                        <div className="w-full h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                          <motion.div
-                            className="h-full rounded-r-sm"
-                            style={{ backgroundColor: getPillarBarColor("G") }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${readinessScore}%` }}
-                            transition={{ duration: 0.7, delay: 0.35, ease: EASE_SMOOTH }}
-                          />
+                        <div className="space-y-2.5">
+                          {pillars.map((p, idx) => {
+                            const PillarIcon = p.icon;
+                            return (
+                              <div key={p.key} className="flex items-center gap-2.5">
+                                <PillarIcon className="w-3.5 h-3.5 flex-shrink-0 text-[#8C827A]" strokeWidth={1.5} />
+                                <span className="text-[10px] w-[72px] text-[#57534E] dark:text-warm-stone/60 font-light tracking-wide truncate">
+                                  {p.label}
+                                </span>
+                                <div className="flex-1 h-2 rounded-full bg-[#EFECE6] dark:bg-black/40 overflow-hidden">
+                                  <motion.div
+                                    className="h-full rounded-full"
+                                    style={{ backgroundColor: getPillarBarColor(p.key) }}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${p.value}%` }}
+                                    transition={{ duration: 0.7, delay: idx * STAGGER_DELAY + 0.15, ease: EASE_SMOOTH }}
+                                  />
+                                </div>
+                                <span className="text-[10px] font-medium text-[#1C1917] dark:text-warm-stone/80 tabular-nums w-7 text-right">
+                                  {p.value}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
-                    </div>
 
-                    {/* ── Risk Section (20%) ──────────────────────── */}
-                    <div className="mb-5">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-1.5">
-                          <AlertTriangle className="w-3 h-3 text-deep-clay" strokeWidth={2} />
-                          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-carbon-ink dark:text-warm-stone/80">
-                            Risk
+                      {/* ── Readiness Section (30%) ─────────────────── */}
+                      <div className="mb-5">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <Shield className="w-3.5 h-3.5 text-[#6F848F]" strokeWidth={2} />
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#1C1917] dark:text-warm-stone/80">
+                              Readiness
+                            </span>
+                          </div>
+                          <span className="text-[9px] font-medium uppercase tracking-widest text-[#6F848F] bg-[#6F848F]/10 px-2 py-0.5 rounded-full border border-[#6F848F]/20">
+                            30% Weightage
                           </span>
                         </div>
-                        <span className="text-[8px] font-semibold uppercase tracking-widest text-deep-clay bg-deep-clay/10 px-2 py-0.5 border border-deep-clay/20">
-                          20% Weightage
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2.5">
-                        <AlertTriangle className="w-3 h-3 flex-shrink-0 text-slate-mist/60" strokeWidth={1.5} />
-                        <span className="text-[10px] w-[72px] text-slate-mist dark:text-warm-stone/60 font-light tracking-wide truncate">
-                          Compliance
-                        </span>
-                        <div className="flex-1 h-1.5 bg-warm-stone/20 dark:bg-black/25 overflow-hidden">
-                          <motion.div
-                            className="h-full rounded-r-sm"
-                            style={{ backgroundColor: getPillarBarColor("S") }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${100 - riskScore}%` }}
-                            transition={{ duration: 0.7, delay: 0.45, ease: EASE_SMOOTH }}
-                          />
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5 overflow-hidden">
+                              <Shield className="w-3.5 h-3.5 flex-shrink-0 text-[#8C827A]" strokeWidth={1.5} />
+                              <span className="text-[10px] text-[#57534E] dark:text-warm-stone/60 font-light tracking-wide leading-tight">
+                                Management, certifications & documentation
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-medium text-[#1C1917] dark:text-warm-stone/80 tabular-nums w-7 text-right shrink-0">
+                              {readinessScore}
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-[#EFECE6] dark:bg-black/40 overflow-hidden">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: getPillarBarColor("G") }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${readinessScore}%` }}
+                              transition={{ duration: 0.7, delay: 0.35, ease: EASE_SMOOTH }}
+                            />
+                          </div>
                         </div>
-                        <span className={`text-[10px] font-medium tabular-nums font-mono w-7 text-right ${riskIsHigh ? "text-deep-clay" : "text-carbon-ink dark:text-warm-stone/80"}`}>
-                          {100 - riskScore}
-                        </span>
                       </div>
-                    </div>
 
-                    {/* ── Footer Note ─────────────────────────────── */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.6, duration: 0.4 }}
-                      className="pt-4 border-t border-slate-mist/15 dark:border-midnight-blue/60"
-                    >
-                      <p className="text-[9px] italic text-slate-mist dark:text-warm-stone/40 font-light leading-relaxed">
-                        Calculated using the Sutra Assessment Framework 2.0.
-                      </p>
-                    </motion.div>
+                      {/* ── Risk Section (20%) ──────────────────────── */}
+                      <div className="mb-5">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-1.5">
+                            <AlertTriangle className="w-3.5 h-3.5 text-[#9A4A2E]" strokeWidth={2} />
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#1C1917] dark:text-warm-stone/80">
+                              Risk
+                            </span>
+                          </div>
+                          <span className="text-[9px] font-medium uppercase tracking-widest text-[#9A4A2E] bg-[#9A4A2E]/10 px-2 py-0.5 rounded-full border border-[#9A4A2E]/20">
+                            20% Weightage
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                          <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 text-[#8C827A]" strokeWidth={1.5} />
+                          <span className="text-[10px] w-[72px] text-[#57534E] dark:text-warm-stone/60 font-light tracking-wide truncate">
+                            Compliance
+                          </span>
+                          <div className="flex-1 h-2 rounded-full bg-[#EFECE6] dark:bg-black/40 overflow-hidden">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: getPillarBarColor("S") }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${100 - riskScore}%` }}
+                              transition={{ duration: 0.7, delay: 0.45, ease: EASE_SMOOTH }}
+                            />
+                          </div>
+                          <span className={`text-[10px] font-medium tabular-nums w-7 text-right ${riskIsHigh ? "text-[#9A4A2E]" : "text-[#1C1917] dark:text-warm-stone/80"}`}>
+                            {100 - riskScore}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* ── Footer Note ─────────────────────────────── */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6, duration: 0.4 }}
+                        className="pt-4 border-t border-[#E8E3DA] dark:border-white/10"
+                      >
+                        <p className="text-[9px] italic text-[#8C827A] dark:text-warm-stone/40 font-light leading-relaxed">
+                          Calculated using the Sutra Assessment Framework 2.0.
+                        </p>
+                      </motion.div>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </>
             )}
           </AnimatePresence>,
           document.body

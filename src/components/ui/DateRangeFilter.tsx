@@ -91,11 +91,11 @@ export default function DateRangeFilter({ className = "", variant = "pill" }: Da
         className="
           inline-flex items-center gap-2 px-4 py-2 rounded-full
           bg-white dark:bg-[#1E2028]
-          border border-black/10 dark:border-white/15
+          border border-[#E6E1D6] dark:border-white/15
           text-xs text-[#5B564E] dark:text-[#C2BCB0] font-medium tracking-wide
-          shadow-xs hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
+          shadow-xs hover:border-[#9A4A2E]/50 dark:hover:border-[#E07A57]/50
           transition-all duration-200 cursor-pointer
-          focus:outline-none focus:ring-2 focus:ring-[#7D3F1E]/30
+          focus:outline-none focus:ring-2 focus:ring-[#9A4A2E]/30
         "
         aria-expanded={isOpen}
         aria-haspopup="true"

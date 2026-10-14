@@ -86,7 +86,7 @@ module.exports = {
         // Universal Geometric Sans: Avenir (macOS native) -> Jost (Next.js font fallback) -> sans-serif
         sans: ["Avenir", "var(--font-jost)", "Jost", "sans-serif"],
         jost: ["var(--font-jost)", "Jost", "sans-serif"],
-        serif: ["Avenir", "var(--font-jost)", "Jost", "sans-serif"],
+        serif: ["var(--font-cormorant)", "var(--font-playfair)", "Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
         // Editorial Display — Cormorant Garamond / Playfair for luxury hero headings
         display: ["var(--font-cormorant)", "var(--font-playfair)", "Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
         // Handwriting accents (<5% of UI)

@@ -92,9 +92,9 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#FAF8F5] text-stone-900 font-sans selection:bg-[#6D7D6D] selection:text-white">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#FAF8F5] text-[#1C1917] font-sans selection:bg-[#9A4A2E] selection:text-white">
       {/* ── LEFT COLUMN: Form Container (~42% width) ── */}
-      <div className="w-full lg:w-[42%] min-h-screen bg-white flex flex-col justify-center items-center p-8 sm:p-12 lg:p-16 relative z-10 flex-shrink-0">
+      <div className="w-full lg:w-[42%] min-h-screen bg-[#FAF8F5] border-r border-[#E8E3DA] flex flex-col justify-center items-center p-8 sm:p-12 lg:p-16 relative z-10 flex-shrink-0">
         {/* Center Form Container */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -102,11 +102,11 @@ export default function LoginPage() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="w-full max-w-[420px] my-auto py-6 flex flex-col items-center"
         >
-          {/* Repositioned & Enlarged VARNA Wordmark with Enhanced Tracking & Position */}
-          <div className="w-full flex justify-center mb-4 sm:mb-5">
+          {/* Repositioned & Enlarged VARNA Wordmark with Enhanced Tracking */}
+          <div className="w-full flex justify-center mb-5 tracking-[0.35em]">
             <svg
               viewBox="50 102 138 32"
-              className="w-80 sm:w-[360px] h-auto text-stone-900 fill-current transition-all"
+              className="w-80 sm:w-[360px] h-auto text-[#1C1917] fill-current transition-all"
               aria-label="VARNA Wordmark"
             >
               <g transform="translate(-7, 0)">
@@ -124,28 +124,31 @@ export default function LoginPage() {
             </svg>
           </div>
 
-          {/* Form Titles */}
-          <div className="text-center mb-9 w-full">
-            <h1 className="text-[26px] sm:text-[32px] font-bold tracking-wider text-stone-900 uppercase font-sans mb-3 leading-tight">
-              EVIDENCE TO IMPACT
-            </h1>
-            <p className="text-sm sm:text-[15px] text-stone-500 font-normal leading-relaxed max-w-[340px] sm:max-w-sm mx-auto">
+          {/* Form Titles & Refined Gold-accented Pill Badge */}
+          <div className="text-center mb-8 w-full flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#F5EFE6] border border-[#D4C5A9] shadow-xs mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9A4A2E]" />
+              <h1 className="text-[11px] font-semibold tracking-[0.28em] text-[#9A4A2E] uppercase font-sans m-0">
+                EVIDENCE TO IMPACT
+              </h1>
+            </div>
+            <p className="text-sm text-[#57534E] font-normal leading-relaxed max-w-[340px] sm:max-w-sm mx-auto">
               A clear view of your suppliers, procurement choices and the impact they create.
             </p>
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleLogin} className="space-y-6 w-full">
+          <form onSubmit={handleLogin} className="space-y-5 w-full">
             {/* User ID Field */}
-            <div className="space-y-2 text-left w-full">
-              <label className="text-sm sm:text-[14.5px] font-bold text-stone-900 block font-sans">
+            <div className="space-y-1.5 text-left w-full">
+              <label className="text-xs uppercase tracking-[0.1em] font-semibold text-[#1C1917] block font-sans">
                 User ID
               </label>
               <input
                 type="text"
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
-                className="w-full px-4 py-3.5 sm:py-4 bg-white border border-stone-200 text-stone-900 placeholder-stone-400 focus:border-stone-500 focus:ring-1 focus:ring-stone-500 outline-none transition-all duration-200 text-base font-sans rounded-lg"
+                className="w-full px-4 h-12 bg-white border border-[#DFD9CE] text-[#1C1917] placeholder-stone-400 focus:border-[#1C1917] focus:ring-1 focus:ring-[#1C1917] outline-none transition-all duration-200 text-sm sm:text-base font-sans rounded-lg shadow-xs"
                 placeholder="Enter Username"
                 required
                 autoComplete="username"
@@ -153,8 +156,8 @@ export default function LoginPage() {
             </div>
 
             {/* Password Field */}
-            <div className="space-y-2 text-left w-full">
-              <label className="text-sm sm:text-[14.5px] font-bold text-stone-900 block font-sans">
+            <div className="space-y-1.5 text-left w-full">
+              <label className="text-xs uppercase tracking-[0.1em] font-semibold text-[#1C1917] block font-sans">
                 Password
               </label>
               <div className="relative w-full">
@@ -162,7 +165,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3.5 sm:py-4 bg-white border border-stone-200 text-stone-900 placeholder-stone-400 focus:border-stone-500 focus:ring-1 focus:ring-stone-500 outline-none transition-all duration-200 text-base font-sans rounded-lg pr-12"
+                  className="w-full px-4 h-12 bg-white border border-[#DFD9CE] text-[#1C1917] placeholder-stone-400 focus:border-[#1C1917] focus:ring-1 focus:ring-[#1C1917] outline-none transition-all duration-200 text-sm sm:text-base font-sans rounded-lg pr-12 shadow-xs"
                   placeholder="Enter password"
                   required
                   autoComplete="current-password"
@@ -170,25 +173,25 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors p-1"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-[#1C1917] transition-colors p-1"
                   tabIndex={-1}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             {/* Checkbox & Forgot Password */}
-            <div className="flex items-center justify-between gap-6 sm:gap-8 text-sm text-stone-600 pt-1 w-full">
-              <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            <div className="flex items-center justify-between gap-4 text-xs sm:text-sm text-stone-600 pt-1 w-full">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-stone-300 text-[#6D7D6D] focus:ring-[#6D7D6D] h-4 w-4"
+                  className="rounded border-[#DFD9CE] text-[#1C1917] focus:ring-[#1C1917] h-4 w-4"
                 />
-                <span className="text-stone-500">Remember for 30 days</span>
+                <span className="text-[#57534E]">Remember for 30 days</span>
               </label>
               <a
                 href="#forgot"
@@ -196,7 +199,7 @@ export default function LoginPage() {
                   e.preventDefault();
                   setError("Please contact your Varna Enterprise Administrator to reset your password.");
                 }}
-                className="text-stone-500 hover:text-stone-900 transition-colors font-normal shrink-0"
+                className="text-[#57534E] hover:text-[#1C1917] transition-colors font-medium shrink-0"
               >
                 Forgot Password?
               </a>
@@ -209,7 +212,7 @@ export default function LoginPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="text-sm text-red-700 bg-red-50 border border-red-200 p-3.5 rounded-lg flex items-center gap-2.5 text-left"
+                  className="text-xs text-red-700 bg-red-50 border border-red-200 p-3 rounded-lg flex items-center gap-2.5 text-left"
                 >
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
                   <span>{error}</span>
@@ -217,16 +220,16 @@ export default function LoginPage() {
               )}
             </AnimatePresence>
 
-            {/* Submit Button */}
+            {/* CTA Button: Deep Espresso */}
             <button
               type="submit"
               disabled={loading || !clientId || !password}
-              className="w-full mt-4 py-4 sm:py-4.5 bg-[#6D7D6D] hover:bg-[#5C6C5E] active:scale-[0.99] text-white font-sans font-semibold text-base sm:text-[17px] rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full mt-3 h-12 bg-[#1C1917] hover:bg-[#332E2A] active:scale-[0.99] text-[#FAF8F5] font-sans font-medium text-sm tracking-[0.08em] uppercase rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (
                 <span className="flex items-center gap-2.5">
-                  <Loader2 className="w-5 h-5 animate-spin text-white" />
-                  <span className="font-sans text-sm sm:text-base">Logging in...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-[#FAF8F5]" />
+                  <span className="font-sans text-xs sm:text-sm tracking-wider uppercase">Logging in...</span>
                 </span>
               ) : (
                 <span>Login</span>
@@ -238,7 +241,7 @@ export default function LoginPage() {
 
       {/* ── RIGHT COLUMN: Carousel Container (~58% width) ── */}
       <div className="w-full lg:w-[58%] min-h-[450px] lg:min-h-screen p-4 sm:p-6 flex flex-col justify-center items-center bg-[#FAF8F5] flex-1">
-        <div className="w-full h-full min-h-[420px] lg:min-h-[calc(100vh-3rem)] relative rounded-3xl overflow-hidden shadow-xl bg-stone-900 select-none">
+        <div className="w-full h-full min-h-[420px] lg:min-h-[calc(100vh-3rem)] relative rounded-3xl overflow-hidden shadow-xl bg-[#1C1917] select-none isolate transform-gpu">
           {/* Carousel Background Images with CSS crossfade opacity */}
           {CAROUSEL_SLIDES.map((slide, idx) => (
             <div
@@ -250,7 +253,7 @@ export default function LoginPage() {
               <img
                 src={slide.image}
                 alt={`Varna Carousel slide ${idx + 1}`}
-                className={`w-full h-full object-cover ${slide.objectPosition || "object-center"}`}
+                className={`w-full h-full object-cover rounded-3xl ${slide.objectPosition || "object-center"}`}
               />
             </div>
           ))}
@@ -271,6 +274,9 @@ export default function LoginPage() {
             </motion.div>
           </AnimatePresence>
 
+          {/* Bottom Gradient Overlay for Crisp Pagination Dots */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none z-10" />
+
           {/* Bottom Center Pagination Dots */}
           <div className="absolute bottom-6 inset-x-0 z-20 flex items-center justify-center gap-2.5">
             {CAROUSEL_SLIDES.map((_, idx) => (
@@ -279,7 +285,7 @@ export default function LoginPage() {
                 onClick={() => setCarouselIndex(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
                 className={`transition-all duration-300 rounded-full cursor-pointer ${idx === carouselIndex
-                  ? "w-2.5 h-2.5 bg-white opacity-100 scale-110"
+                  ? "w-2.5 h-2.5 bg-white opacity-100 scale-110 shadow-xs"
                   : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80 opacity-60"
                   }`}
               />

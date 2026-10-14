@@ -10,18 +10,18 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Avenir", var(--font-jost), "Jost", sans-serif;
+  --font-sans: "Avenir", var(--font-inter), var(--font-jost), "Jost", sans-serif;
   --font-jost: var(--font-jost), "Jost", sans-serif;
-  --font-serif: "Avenir", var(--font-jost), "Jost", sans-serif;
+  --font-serif: var(--font-cormorant), var(--font-playfair), "Cormorant Garamond", "Playfair Display", Georgia, serif;
   --font-display: var(--font-cormorant), var(--font-playfair), "Cormorant Garamond", "Playfair Display", Georgia, serif;
   --font-accent: var(--font-caveat), var(--font-cedarville), "Caveat", "Cedarville Cursive", cursive;
   
-  --color-warm-stone: #FAF8F5;
-  --color-deep-clay: #B44C22;
+  --color-warm-stone: #F7F5F0;
+  --color-deep-clay: #9A4A2E;
   --color-slate-mist: #6F848F;
-  --color-midnight-blue: #2F3C52;
-  --color-sage-mineral: #6B7D70;
-  --color-carbon-ink: #1C1D21;
+  --color-midnight-blue: #1C1917;
+  --color-sage-mineral: #3A5A40;
+  --color-carbon-ink: #1C1917;
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -55,25 +55,25 @@
 
   /* ── Light / Editorial Theme (Framework, Brand-forward surfaces) ───────────────── */
   :root {
-    --background: #FAF8F5;          /* Warm Alabaster base */
-    --foreground: #1C1D21;          /* Carbon Ink text */
-    --card: #F4F1EA;                /* Clean warm alabaster card surface */
-    --card-foreground: #1C1D21;
-    --popover: #F4F1EA;
-    --popover-foreground: #1C1D21;
-    --primary: #B44C22;             /* Refined Terracotta highlight */
+    --background: #F7F5F0;          /* Warm Alabaster canvas */
+    --foreground: #1C1917;          /* Deep Espresso text */
+    --card: #FFFFFF;                /* Pure Ivory card surface */
+    --card-foreground: #1C1917;
+    --popover: #FFFFFF;
+    --popover-foreground: #1C1917;
+    --primary: #9A4A2E;             /* Warm Terracotta highlight */
     --primary-foreground: #FAF8F5;
     --secondary: #6F848F;           /* Slate Mist panels/dividers */
-    --secondary-foreground: #1C1D21;
-    --muted: #6F848F;
-    --muted-foreground: #2C3542;     /* Midnight Blue structured label */
-    --accent: #6B7D70;              /* Sage Mineral sustainability */
+    --secondary-foreground: #1C1917;
+    --muted: #8C827A;
+    --muted-foreground: #57534E;     /* Stone structured label */
+    --accent: #3A5A40;              /* Botanical Sage sustainability */
     --accent-foreground: #FAF8F5;
-    --destructive: #B44C22;         /* Refined Terracotta alert-as-brand */
+    --destructive: #9A4A2E;         /* Warm Terracotta alert */
     --destructive-foreground: #FAF8F5;
-    --border: rgba(111, 132, 143, 0.3); /* Slate Mist border */
-    --input: rgba(111, 132, 143, 0.2);
-    --ring: #B44C22;
+    --border: #E8E3DA;              /* Ultra-subtle warm border */
+    --input: #E8E3DA;
+    --ring: #1C1917;
   }
 
   /* ── Dark / Technical Theme (Overview, Suppliers, Orders) ─────────────────────── */
@@ -267,12 +267,12 @@
 }
 
 @utility bg-ambient-mesh-light {
-  background-color: #FAF8F5;
+  background-color: #F7F5F0;
   background-image: 
-    radial-gradient(at 10% 15%, rgba(244, 241, 234, 0.7) 0px, transparent 50%),
-    radial-gradient(at 90% 10%, rgba(115, 134, 120, 0.08) 0px, transparent 50%),
-    radial-gradient(at 85% 85%, rgba(180, 76, 34, 0.06) 0px, transparent 50%),
-    radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.08) 0px, transparent 50%);
+    radial-gradient(at 10% 15%, rgba(232, 227, 218, 0.5) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(58, 90, 64, 0.05) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(154, 74, 46, 0.05) 0px, transparent 50%),
+    radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.06) 0px, transparent 50%);
 }
 
 @utility bg-ambient-mesh-dark {
@@ -298,10 +298,10 @@
 .bg-ambient-mesh {
   background-color: var(--background);
   background-image: 
-    radial-gradient(at 10% 15%, rgba(244, 241, 234, 0.7) 0px, transparent 50%),
-    radial-gradient(at 90% 10%, rgba(115, 134, 120, 0.08) 0px, transparent 50%),
-    radial-gradient(at 85% 85%, rgba(180, 76, 34, 0.06) 0px, transparent 50%),
-    radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.08) 0px, transparent 50%);
+    radial-gradient(at 10% 15%, rgba(232, 227, 218, 0.5) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(58, 90, 64, 0.05) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(154, 74, 46, 0.05) 0px, transparent 50%),
+    radial-gradient(at 15% 85%, rgba(111, 132, 143, 0.06) 0px, transparent 50%);
 }
 
 :is(.dark, .dark *) .bg-ambient-mesh,

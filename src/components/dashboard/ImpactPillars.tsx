@@ -71,7 +71,7 @@ export default function ImpactPillars({
                 <RadialGauge
                   value={score}
                   size={effectiveGaugeSize}
-                  strokeWidth={10}
+                  strokeWidth={7}
                   pillarKey={pillar.key}
                   delay={delay + 0.08 * idx}
                 />

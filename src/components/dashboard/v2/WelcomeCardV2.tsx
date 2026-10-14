@@ -41,19 +41,19 @@ export default function WelcomeCardV2({
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="
           col-span-12 lg:col-span-9
-          bg-[#F4EACF] dark:bg-[#2B2720]
-          border border-[#E8DFC5] dark:border-[#F4EACF]/14
-          p-4 lg:p-5 rounded-[24px] shadow-sm
+          bg-gradient-to-r from-[#F3ECE0] via-[#EFE5D4] to-[#E8DEC8] dark:bg-gradient-to-r dark:from-[#2B2720] dark:via-[#25221C] dark:to-[#1E1B16]
+          border border-[#DFD3BD] dark:border-[#DFD3BD]/20
+          p-4 lg:p-5 rounded-[24px] shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
           flex flex-row items-center gap-5 lg:gap-6
           relative overflow-hidden min-h-[130px] lg:min-h-[150px]
         "
       >
-        {/* Faint Decorative Background SVG */}
-        <div className="absolute right-0 bottom-0 opacity-[0.07] pointer-events-none transform translate-x-1/6 translate-y-1/6 select-none">
+        {/* Faint Decorative Background SVG — Subtle Compass Watermark (opacity-25) */}
+        <div className="absolute right-0 bottom-0 opacity-25 pointer-events-none transform translate-x-1/6 translate-y-1/6 select-none text-[#9A4A2E] dark:text-[#D4C5A9]">
           <svg width="320" height="320" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" stroke="#7D3F1E" strokeWidth="2" strokeDasharray="4 4" />
-            <circle cx="100" cy="100" r="65" stroke="#7D3F1E" strokeWidth="2" />
-            <path d="M100 10 L100 190 M10 100 L190 100" stroke="#7D3F1E" strokeWidth="1.5" />
+            <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 4" />
+            <circle cx="100" cy="100" r="65" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M100 10 L100 190 M10 100 L190 100" stroke="currentColor" strokeWidth="1.2" />
           </svg>
         </div>
 
@@ -61,7 +61,7 @@ export default function WelcomeCardV2({
         <div
           className={`
             w-20 h-20 lg:w-24 lg:h-24 rounded-full shrink-0
-            ${isAstorDubai ? "bg-black dark:bg-black border border-[#D4AF37]/35 dark:border-[#D4AF37]/40 shadow-lg" : "bg-white dark:bg-white border border-black/10 shadow-md"}
+            ${isAstorDubai ? "bg-black dark:bg-black border border-[#D4AF37]/35 dark:border-[#D4AF37]/40 shadow-lg" : "bg-white dark:bg-white border border-[#E8E3DA] shadow-md"}
             flex items-center justify-center relative z-10 overflow-hidden
           `}
         >
@@ -80,16 +80,16 @@ export default function WelcomeCardV2({
 
         {/* Vertically Centered Text Stack */}
         <div className="flex flex-col justify-center text-left flex-1 min-w-0 relative z-10 gap-1">
-          <p className="text-[14px] sm:text-[15px] font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-tight m-0">
+          <p className="text-[13px] sm:text-[14px] font-medium uppercase tracking-[0.12em] text-[#8C827A] dark:text-[#C2BCB0] leading-tight m-0">
             Your Procurement Impact explained
           </p>
 
-          <h1 className="font-light font-display uppercase tracking-[0.12em] leading-tight text-[#1F1B16] dark:text-[#F1E6C8] text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[44px] text-balance break-words m-0">
+          <h1 className="font-serif font-medium uppercase tracking-[0.1em] leading-tight text-[#1C1917] dark:text-[#F1E6C8] text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[42px] text-balance break-words m-0">
             {clientName}
           </h1>
 
           <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-            <span className="text-sm font-normal text-[#5B564E] dark:text-[#C2BCB0] leading-none">
+            <span className="text-xs sm:text-sm font-medium text-[#9A4A2E] dark:text-[#D4C5A9] leading-none">
               {industry}
             </span>
           </div>
@@ -104,8 +104,8 @@ export default function WelcomeCardV2({
         className="
           col-span-12 lg:col-span-3
           rounded-[24px] overflow-hidden relative min-h-[130px] lg:min-h-[150px]
-          border border-black/[0.07] dark:border-white/[0.12] shadow-sm
-          bg-[#1F1B16] group flex flex-col justify-end p-5
+          border border-[#E8E3DA] dark:border-white/[0.12] shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
+          bg-[#1C1917] group flex flex-col justify-end p-5
         "
       >
         <Image
@@ -127,7 +127,7 @@ export default function WelcomeCardV2({
           ) : (
             <button
               disabled
-              className="bg-[#7D3F1E] text-white px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider flex items-center gap-2 shadow-md cursor-not-allowed opacity-60"
+              className="backdrop-blur-md bg-[#9A4A2E]/90 hover:bg-[#823C23] text-white px-5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider flex items-center gap-2 shadow-md cursor-not-allowed opacity-60"
             >
               Export Report
             </button>

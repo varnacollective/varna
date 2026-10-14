@@ -17,44 +17,44 @@ export interface BandConfig {
 
 export const PERFORMANCE_BANDS: Record<PerformanceBand, BandConfig> = {
   Leader: {
-    name: "Varna Leader",
+    name: "Leader",
     range: "85–100",
-    color: "#556B55",  // Sage Olive
-    badgeBg: "bg-[#556B55]/12 dark:bg-[#7B9B7B]/20",
-    badgeText: "text-[#556B55] dark:text-[#8AAE8A]",
-    badgeBorder: "border-[#556B55]/30 dark:border-[#7B9B7B]/35",
+    color: "#3A5A40",  // Botanical Sage
+    badgeBg: "bg-[#3A5A40]/10 dark:bg-[#7B9B7B]/20",
+    badgeText: "text-[#3A5A40] dark:text-[#8AAE8A]",
+    badgeBorder: "border-[#3A5A40]/25 dark:border-[#7B9B7B]/35",
   },
   Advanced: {
     name: "Advanced",
     range: "70–84",
     color: "#5B7594",  // Slate Navy
-    badgeBg: "bg-[#5B7594]/12 dark:bg-[#5B7594]/20",
-    badgeText: "text-[#2A3644] dark:text-[#8AAEC6]",
-    badgeBorder: "border-[#5B7594]/30",
+    badgeBg: "bg-[#5B7594]/10 dark:bg-[#5B7594]/20",
+    badgeText: "text-[#2B3A55] dark:text-[#8AAEC6]",
+    badgeBorder: "border-[#5B7594]/25",
   },
   Emerging: {
     name: "Emerging",
     range: "55–69",
     color: "#6E7781",  // Warm Slate
     badgeBg: "bg-[#6E7781]/10 dark:bg-[#6E7781]/15",
-    badgeText: "text-[#4A5560] dark:text-[#9BA9B4]",
-    badgeBorder: "border-[#6E7781]/30",
+    badgeText: "text-[#57534E] dark:text-[#9BA9B4]",
+    badgeBorder: "border-[#6E7781]/25",
   },
   Foundational: {
     name: "Foundational",
     range: "40–54",
-    color: "#B85333",  // Terracotta
-    badgeBg: "bg-[#B85333]/10 dark:bg-[#C85D3B]/20",
-    badgeText: "text-[#B85333] dark:text-[#E07555]",
-    badgeBorder: "border-[#B85333]/30",
+    color: "#9A4A2E",  // Warm Terracotta
+    badgeBg: "bg-[#9A4A2E]/10 dark:bg-[#C85D3B]/20",
+    badgeText: "text-[#9A4A2E] dark:text-[#E07555]",
+    badgeBorder: "border-[#9A4A2E]/25",
   },
   "Not Ready": {
     name: "Not Ready",
     range: "<40",
-    color: "#B85333",  // Terracotta alert
-    badgeBg: "bg-[#B85333]/15 dark:bg-[#C85D3B]/25",
-    badgeText: "text-[#B85333] dark:text-[#E8856A]",
-    badgeBorder: "border-[#B85333]/40",
+    color: "#9A4A2E",  // Warm Terracotta alert
+    badgeBg: "bg-[#9A4A2E]/10 dark:bg-[#C85D3B]/25",
+    badgeText: "text-[#9A4A2E] dark:text-[#E8856A]",
+    badgeBorder: "border-[#9A4A2E]/25",
   },
 };
 
@@ -79,7 +79,7 @@ interface RadialGaugeProps {
 function RadialGaugeComponent({
   value,
   size = 124,
-  strokeWidth = 10,
+  strokeWidth = 7,
   label,
   delta,
   delay = 0,
@@ -90,13 +90,13 @@ function RadialGaugeComponent({
   const band = PERFORMANCE_BANDS[bandKey];
 
   // Standardized ESG Pillar colors
-  // Environmental: Green (#4C7355) | Social: Red/Terracotta (#B85333) | Governance: Blue/Slate (#36424A)
+  // Environmental: Green (#3A5A40) | Social: Terracotta (#9A4A2E) | Governance: Slate (#36424A) | Cultural: Warm Clay (#7A3F1E)
   const pillarGradients: Record<string, [string, string]> = {
-    E: ["#4C7355", "#4C7355"], // Environmental - Green
-    S: ["#B85333", "#B85333"], // Social - Red/Terracotta
-    G: ["#36424A", "#36424A"], // Governance - Blue/Slate
+    E: ["#3A5A40", "#3A5A40"], // Environmental - Botanical Sage
+    S: ["#9A4A2E", "#9A4A2E"], // Social - Warm Terracotta
+    G: ["#36424A", "#36424A"], // Governance - Slate
     C: ["#7A3F1E", "#7A3F1E"], // Cultural - Warm Clay
-    Overall: ["#4C7355", "#36424A"],
+    Overall: ["#3A5A40", "#36424A"],
   };
 
   const [colorStart, colorEnd] = pillarGradients[pillarKey] || ["#829888", "#944D25"];
@@ -126,8 +126,8 @@ function RadialGaugeComponent({
               <stop offset="0%" stopColor={colorStart} />
               <stop offset="100%" stopColor={colorEnd} />
             </linearGradient>
-            <filter id={`${gradientId}-glow`} x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor={colorStart} floodOpacity="0.4" />
+            <filter id={`${gradientId}-glow`} x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor={colorStart} floodOpacity="0.25" />
             </filter>
           </defs>
 
@@ -137,20 +137,20 @@ function RadialGaugeComponent({
             cy={size / 2}
             r={radius}
             fill="none"
-            className="stroke-[#EAE5DC] dark:stroke-[#9BA9B4]/15"
+            className="stroke-[#EFECE6] dark:stroke-[#9BA9B4]/15"
             strokeWidth={strokeWidth}
             strokeDasharray={`${totalArc} ${circumference}`}
             strokeLinecap="round"
           />
 
-          {/* Animated Gauge Arc with Ambient Glow */}
+          {/* Animated Gauge Arc with Soft Drop Shadow */}
           <motion.circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
             fill="none"
             stroke={`url(#${gradientId})`}
-            strokeWidth={strokeWidth + 1}
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={`${totalArc} ${circumference}`}
             filter={`url(#${gradientId}-glow)`}
@@ -164,33 +164,37 @@ function RadialGaugeComponent({
           />
         </svg>
 
-        {/* Center Content: Score number + optional Trend Delta */}
+        {/* Center Content: Score number in editorial serif or NA in muted stone */}
         <div className={`absolute inset-0 flex flex-col items-center justify-center ${delta !== undefined ? "pt-2" : ""}`}>
           <motion.span
-            className="text-2xl font-sans text-[#1A1F26] dark:text-[#FAF8F5] font-medium tracking-tighter"
+            className="text-2xl font-serif text-[#1C1917] dark:text-[#FAF8F5] font-light tracking-tight tabular-nums"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: delay + 0.4, duration: 0.4 }}
           >
-            {value === 0 ? "NA" : Math.round(value)}
+            {value === 0 ? (
+              <span className="text-xl font-sans text-[#A8A29E] font-light">NA</span>
+            ) : (
+              Math.round(value)
+            )}
           </motion.span>
 
           {/* Delta indicator */}
           {delta !== undefined && (
             <div className="flex items-center gap-0.5 mt-0.5">
               {delta > 0 ? (
-                <TrendingUp className="w-2.5 h-2.5 text-sage-mineral" />
+                <TrendingUp className="w-2.5 h-2.5 text-[#3A5A40]" />
               ) : delta < 0 ? (
-                <TrendingDown className="w-2.5 h-2.5 text-deep-clay" />
+                <TrendingDown className="w-2.5 h-2.5 text-[#9A4A2E]" />
               ) : (
                 <Minus className="w-2.5 h-2.5 text-slate-mist" />
               )}
               <span
                 className={`text-[8px] font-sans font-semibold tracking-wide ${
                   delta > 0
-                    ? "text-sage-mineral"
+                    ? "text-[#3A5A40]"
                     : delta < 0
-                    ? "text-deep-clay"
+                    ? "text-[#9A4A2E]"
                     : "text-slate-mist"
                 }`}
               >
@@ -201,20 +205,20 @@ function RadialGaugeComponent({
         </div>
       </div>
 
-      {/* Performance Band Pill: Refined rounded-full chip with soft fill */}
+      {/* Performance Band Pill: Minimalist micro-pill per requirement */}
       <div className="flex flex-col items-center gap-1">
         <span
           className={`
-            px-2.5 py-0.5 rounded-full text-[8px] font-semibold uppercase tracking-[0.14em] shadow-xs border
-            ${value === 0 ? "bg-black/5 dark:bg-white/10 text-[#6E7781] dark:text-[#8C9DA8] border-black/10 dark:border-white/15" : `${band.badgeBg} ${band.badgeText} ${band.badgeBorder}`}
+            text-[10px] tracking-widest uppercase px-2.5 py-0.5 rounded-full font-medium shadow-xs border
+            ${value === 0 ? "bg-[#FAF8F5] dark:bg-white/10 text-[#A8A29E] border-[#E8E3DA] dark:border-white/15" : `${band.badgeBg} ${band.badgeText} ${band.badgeBorder}`}
           `}
           title={value === 0 ? "To Be Assessed" : `Framework Band: ${band.name} (${band.range})`}
         >
-          {value === 0 ? "To Be Assessed" : band.name}
+          {value === 0 ? "NOT READY" : band.name}
         </span>
 
         {label && (
-          <span className="text-[10px] font-semibold text-slate-mist dark:text-warm-stone/60 uppercase tracking-[0.16em] text-center mt-0.5">
+          <span className="text-[10px] font-semibold text-[#8C827A] dark:text-warm-stone/60 uppercase tracking-[0.16em] text-center mt-0.5">
             {label}
           </span>
         )}

@@ -147,16 +147,16 @@ function SidebarView({
                 }}
                 className={`
                   relative flex flex-col items-center justify-center
-                  w-full py-3.5 transition-all duration-150
-                  group rounded-none border-y border-transparent cursor-pointer
+                  w-full py-3.5 transition-all duration-200
+                  group rounded-none cursor-pointer
                   ${isActive
-                    ? "bg-[#B85333]/10 dark:bg-[#EAE5DC]/12 text-[#B85333] dark:text-[#EAE5DC] relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-gradient-to-b before:from-[#B85333] before:to-[#556B55] shadow-[0_0_12px_rgba(184,83,51,0.15)] font-medium"
-                    : "text-[#6E7781] dark:text-[#9BA9B4]/70 hover:text-[#1A1F26] dark:hover:text-[#EAE5DC] hover:bg-[#F0EBE3] dark:hover:bg-[#EAE5DC]/8"
+                    ? "border-l-2 border-[#9A4A2E] bg-[#F5EFE6] dark:bg-[#9A4A2E]/15 text-[#9A4A2E] dark:text-[#FAF8F5] font-medium shadow-xs"
+                    : "border-l-2 border-transparent text-[#6E7781] dark:text-[#9BA9B4]/70 hover:text-[#1C1917] dark:hover:text-[#FAF8F5] hover:bg-[#F5EFE6]/60 dark:hover:bg-white/[0.04]"
                   }
                 `}
                 title={item.label}
               >
-                <Icon className="w-5 h-5 mb-1 text-inherit" strokeWidth={isActive ? 2 : 1.5} />
+                <Icon className="w-5 h-5 mb-1 text-inherit transition-transform duration-200 group-hover:scale-105" strokeWidth={isActive ? 2 : 1.5} />
                 <span className="varna-nav-label text-[9px] tracking-widest font-sans font-light uppercase">
                   {item.label}
                 </span>

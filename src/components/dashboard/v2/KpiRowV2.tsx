@@ -34,12 +34,12 @@ export default function KpiRowV2({
           transition={{ duration: 0.45, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           className="
             bg-white dark:bg-[#20242B]
-            border border-black/[0.07] dark:border-white/[0.08]
-            shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+            border border-[#E8E3DA] dark:border-white/[0.08]
+            shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
             dark:shadow-none dark:border-t-white/[0.12]
             p-4 lg:p-5 rounded-[20px]
             flex flex-col justify-between
-            hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
+            hover:border-[#9A4A2E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
         >
           {/* Top Row: Eyebrow + Icon Chip */}
@@ -47,15 +47,15 @@ export default function KpiRowV2({
             <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
               Sustainable Spend
             </span>
-            <div className="w-7 h-7 rounded-full bg-[#6E8471]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#55705A] dark:text-[#9DB4A0]">
+            <div className="w-7 h-7 rounded-full bg-[#3A5A40]/15 dark:bg-[#9DB4A0]/20 flex items-center justify-center text-[#3A5A40] dark:text-[#9DB4A0]">
               <Wallet className="w-3.5 h-3.5" strokeWidth={1.8} />
             </div>
           </div>
 
           {/* Display Number */}
-          <div className="text-xl lg:text-2xl font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend / 83).toLocaleString('en-US')}`}>
+          <div className="text-xl lg:text-2xl font-serif font-light text-[#3A5A40] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums" aria-label={`Total spend $${Math.round(totalSpend / 83).toLocaleString('en-US')}`}>
             {totalOrders === 0 ? (
-              <span className="text-lg text-[#6F6A61] dark:text-[#9A948A] font-medium">$0</span>
+              <span className="text-lg text-[#6F6A61] dark:text-[#9A948A] font-medium font-serif">$0</span>
             ) : (
               <AnimatedCounter
                 value={Math.round(totalSpend / 83)}
@@ -73,12 +73,12 @@ export default function KpiRowV2({
           transition={{ duration: 0.45, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="
             bg-white dark:bg-[#20242B]
-            border border-black/[0.07] dark:border-white/[0.08]
-            shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+            border border-[#E8E3DA] dark:border-white/[0.08]
+            shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
             dark:shadow-none dark:border-t-white/[0.12]
             p-4 lg:p-5 rounded-[20px]
             flex flex-col justify-between
-            hover:border-[#7D3F1E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
+            hover:border-[#9A4A2E]/30 dark:hover:border-[#E07A57]/40 transition-colors duration-200
           "
         >
           {/* Top Row: Eyebrow + Icon Chip */}
@@ -92,9 +92,9 @@ export default function KpiRowV2({
           </div>
 
           {/* Display Number */}
-          <div className="text-xl lg:text-2xl font-light text-[#55705A] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums">
+          <div className="text-xl lg:text-2xl font-serif font-light text-[#3A5A40] dark:text-[#9DB4A0] tracking-tight leading-none my-1.5 tabular-nums">
             {totalOrders === 0 ? (
-              <span className="text-lg text-[#6F6A61] dark:text-[#9A948A] font-medium">0</span>
+              <span className="text-lg text-[#6F6A61] dark:text-[#9A948A] font-medium font-serif">0</span>
             ) : (
               <AnimatedCounter value={totalOrders} delay={0.25} />
             )}
@@ -113,12 +113,12 @@ export default function KpiRowV2({
           <div
             className="
               bg-white dark:bg-[#20242B]
-              border border-black/[0.07] dark:border-white/[0.08]
-              shadow-[0_1px_2px_rgba(31,27,22,0.04),0_8px_24px_rgba(31,27,22,0.06)]
+              border border-[#E8E3DA] dark:border-white/[0.08]
+              shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
               dark:shadow-none dark:border-t-white/[0.12]
               p-5 lg:p-6 rounded-[24px]
               flex flex-col justify-between h-full cursor-help
-              hover:border-[#7D3F1E]/50 dark:hover:border-[#E07A57]/50
+              hover:border-[#9A4A2E]/50 dark:hover:border-[#E07A57]/50
               hover:shadow-md transition-all duration-200
             "
           >
@@ -129,19 +129,19 @@ export default function KpiRowV2({
                 <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
                   Sutra Verified Score
                 </span>
-                <div className="w-[30px] h-[30px] rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
+                <div className="w-[30px] h-[30px] rounded-full bg-[#9A4A2E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#9A4A2E] dark:text-[#E07A57]">
                   <Award className="w-3.5 h-3.5" strokeWidth={1.8} />
                 </div>
               </div>
 
-              {/* Display Number (Brown #7D3F1E / #E07A57) */}
-              <div className="text-2xl lg:text-[32px] font-light text-[#7D3F1E] dark:text-[#E07A57] tracking-tight leading-none mt-2 flex items-baseline tabular-nums">
+              {/* Display Number (Terracotta #9A4A2E / #E07A57) */}
+              <div className="text-2xl lg:text-[34px] font-serif font-light text-[#9A4A2E] dark:text-[#E07A57] tracking-tight leading-none mt-2 flex items-baseline tabular-nums">
                 <AnimatedCounter
                   value={avgVarnaScore}
                   decimals={1}
                   delay={0.3}
                 />
-                <span className="text-base text-[#7D3F1E]/70 dark:text-[#E07A57]/70 ml-1 font-normal">
+                <span className="text-base text-[#9A4A2E]/70 dark:text-[#E07A57]/70 ml-1 font-sans font-normal">
                   /100
                 </span>
               </div>
@@ -168,9 +168,9 @@ export default function KpiRowV2({
         transition={{ duration: 0.45, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="
           col-span-12 lg:col-span-3
-          bg-gradient-to-br from-[#7D3F1E] to-[#663318] dark:from-[#8A4622] dark:to-[#552811]
-          text-white p-5 lg:p-[22px] rounded-[24px]
-          border border-[#663318] dark:border-white/10 shadow-sm
+          bg-gradient-to-br from-[#5A3218] to-[#3B1F0E]
+          text-[#FAF8F5] p-5 lg:p-[22px] rounded-[24px]
+          border border-[#5A3218]/40 shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
           flex flex-col justify-center items-center text-center
           relative overflow-hidden min-h-[160px] h-full
         "
@@ -180,7 +180,7 @@ export default function KpiRowV2({
           <Quote className="w-24 h-24" />
         </div>
 
-        <p className="varna-tagline-text text-white/95 text-[20px] sm:text-[22px] lg:text-[24px] leading-[1.3] font-normal text-balance relative z-10">
+        <p className="font-serif italic text-lg leading-relaxed text-[#FAF8F5] text-balance relative z-10 m-0">
           Products become purpose<br />
           Rooms become stories<br />
           Hotels become impact makers

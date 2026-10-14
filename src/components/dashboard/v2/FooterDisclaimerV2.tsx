@@ -6,13 +6,13 @@ export default function FooterDisclaimerV2() {
   return (
     <footer className="
       w-full
-      bg-[#F4EACF] dark:bg-[#2B2720]
-      text-[#5B564E] dark:text-[#C2BCB0]
-      px-6 py-4 rounded-[18px] text-center text-xs sm:text-[13px]
-      border border-[#E8DFC5] dark:border-[#F4EACF]/14
-      font-normal flex items-center justify-center gap-2 mb-8
+      bg-[#F5EFE6] dark:bg-[#201C18]
+      text-[#78716C] dark:text-[#A8A29E]
+      px-6 py-4 rounded-xl text-center text-xs sm:text-[13px]
+      border border-[#E8E3DA] dark:border-[#2E2823]
+      font-normal flex items-center justify-center gap-2.5 mb-8
     ">
-      <Info className="w-4 h-4 text-[#7D3F1E] dark:text-[#E07A57] shrink-0" />
+      <Info className="w-4 h-4 text-[#9A4A2E] dark:text-[#E07A57] shrink-0" />
       <span>
         Varna scores are not certifications. They are evidence-based assessments of the information and documentation provided to Varna at the time of review.
       </span>

@@ -100,7 +100,7 @@ export default function RootLayout({
         {/* Preconnect to Google Fonts CDN */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${jost.variable} ${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#FAF8F5] dark:bg-[#121316] text-[#1A1F26] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#B85333] selection:text-white`}>
+      <body className={`${jost.variable} ${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#F7F5F0] dark:bg-[#151311] text-[#1C1917] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#9A4A2E] selection:text-white`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

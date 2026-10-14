@@ -481,15 +481,15 @@ export default function CategoryChartV2({
 
   return (
     <div className="flex flex-col h-full">
-      {/* 1. Toggle Controls: 'Spend by Category' & 'Product Trends & CO₂ Reduction' */}
-      <div className="flex items-center gap-1 mb-4 p-1 rounded-xl bg-black/5 dark:bg-white/5 w-fit">
+      {/* 1. Toggle Controls: 'Spend by Category' & 'Product Trends & CO₂ Reduction' in recessed pill container */}
+      <div className="flex items-center gap-1 mb-4 p-1 rounded-lg bg-[#F3F0EA] dark:bg-[#272C34] border border-[#E8E3DA] dark:border-white/10 w-fit">
         <button
           type="button"
           onClick={() => setActiveToggle("spend")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 cursor-pointer ${
             activeToggle === "spend"
-              ? "bg-white dark:bg-[#272C34] text-[#1F1B16] dark:text-[#F3EFE7] shadow-sm"
-              : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
+              ? "bg-white dark:bg-[#1C1917] text-[#1C1917] dark:text-[#FAF8F5] shadow-xs"
+              : "text-[#57534E] dark:text-[#9A948A] hover:text-[#1C1917] dark:hover:text-[#FAF8F5]"
           }`}
         >
           Spend by Category
@@ -497,10 +497,10 @@ export default function CategoryChartV2({
         <button
           type="button"
           onClick={() => setActiveToggle("co2")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 cursor-pointer ${
             activeToggle === "co2"
-              ? "bg-white dark:bg-[#272C34] text-[#1F1B16] dark:text-[#F3EFE7] shadow-sm"
-              : "text-[#6F6A61] dark:text-[#9A948A] hover:text-[#1F1B16] dark:hover:text-[#F3EFE7]"
+              ? "bg-white dark:bg-[#1C1917] text-[#1C1917] dark:text-[#FAF8F5] shadow-xs"
+              : "text-[#57534E] dark:text-[#9A948A] hover:text-[#1C1917] dark:hover:text-[#FAF8F5]"
           }`}
         >
           Product Trends & CO₂ Reduction
@@ -511,7 +511,7 @@ export default function CategoryChartV2({
       {activeToggle === "spend" && (
         <div className="space-y-4 flex-1 flex flex-col justify-between">
           {/* Segmented Horizontal Bar */}
-          <div className="w-full h-3.5 rounded-full overflow-hidden flex bg-black/5 dark:bg-white/10 gap-1 my-2">
+          <div className="w-full h-3 rounded-full overflow-hidden flex bg-[#EFECE6] dark:bg-white/10 gap-1 my-2">
             {categories.map((cat) => {
               const pct = totalSpend > 0 ? (cat.total_spend / totalSpend) * 100 : 0;
               if (pct <= 0) return null;
@@ -531,8 +531,8 @@ export default function CategoryChartV2({
 
           {/* 2-Column Layout: Left Category Rows, Right Mini Donut Chart */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center mt-2 flex-1">
-            {/* Left: Category Rows with generous spacing and clearer hierarchy */}
-            <div className="md:col-span-7 space-y-2.5">
+            {/* Left: Category Rows aligned with subtle horizontal hairlines */}
+            <div className="md:col-span-7 divide-y divide-[#F0EDE6] dark:divide-white/[0.06]">
               {categories.map((cat) => {
                 const pctVal = totalSpend > 0 ? (cat.total_spend / totalSpend) * 100 : 0;
                 const pctStr = pctVal % 1 === 0 ? pctVal.toString() : pctVal.toFixed(1);
@@ -541,7 +541,7 @@ export default function CategoryChartV2({
                 return (
                   <div
                     key={cat.category_name}
-                    className={`flex items-center justify-between text-[14px] sm:text-[15px] py-1.5 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0 ${
+                    className={`flex items-center justify-between text-[14px] sm:text-[15px] py-2.5 ${
                       isZero ? "opacity-45" : "opacity-100"
                     }`}
                   >
@@ -550,14 +550,14 @@ export default function CategoryChartV2({
                         className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
                         style={{ backgroundColor: cat.color }}
                       />
-                      <span className="text-[#1F1B16] dark:text-[#F3EFE7] font-medium text-sm truncate">
+                      <span className="text-[#1C1917] dark:text-[#F3EFE7] font-medium text-sm truncate">
                         {cat.category_name}
                       </span>
                     </div>
 
                     {/* Custom horizontal bar */}
                     <div className="hidden sm:block flex-1 max-w-[110px] mx-2.5">
-                      <div className="h-1.5 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-[#EFECE6] dark:bg-white/10 rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{
@@ -572,7 +572,7 @@ export default function CategoryChartV2({
                       <span className="text-[#6F6A61] dark:text-[#9A948A] font-normal text-xs sm:text-sm tabular-nums">
                         {formatRowAmount(cat.total_spend)}
                       </span>
-                      <span className="font-semibold text-[#1F1B16] dark:text-[#F3EFE7] min-w-[38px] text-right tabular-nums text-xs sm:text-sm">
+                      <span className="font-semibold text-[#1C1917] dark:text-[#F3EFE7] min-w-[38px] text-right tabular-nums text-xs sm:text-sm">
                         {pctStr}%
                       </span>
                     </div>
@@ -581,8 +581,8 @@ export default function CategoryChartV2({
               })}
             </div>
 
-            {/* Right: Mini Donut Chart */}
-            <div className="md:col-span-5 flex flex-col items-center justify-center p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] relative h-full min-h-[170px]">
+            {/* Right: Mini Donut Chart in softly bordered card */}
+            <div className="md:col-span-5 flex flex-col items-center justify-center p-4 rounded-xl bg-[#FAF8F5] dark:bg-[#272C34] border border-[#ECE8DF] dark:border-white/[0.08] relative h-full min-h-[170px] shadow-xs">
               <div className="w-full h-32 relative flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -608,7 +608,7 @@ export default function CategoryChartV2({
                 </ResponsiveContainer>
                 {/* Center text inside mini donut */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-xs font-semibold text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums">
+                  <span className="text-xs font-semibold text-[#1C1917] dark:text-[#F3EFE7] tracking-tight tabular-nums">
                     {formatRowAmount(totalSpend)}
                   </span>
                   <span className="text-[9px] uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] font-medium">
@@ -617,7 +617,7 @@ export default function CategoryChartV2({
                 </div>
               </div>
               <div className="flex items-center justify-center gap-1.5 mt-1 text-[10px] text-[#6F6A61] dark:text-[#9A948A]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#55705A] dark:bg-[#9DB4A0]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#3A5A40] dark:bg-[#9DB4A0]" />
                 <span className="font-medium">Spend Distribution</span>
               </div>
             </div>

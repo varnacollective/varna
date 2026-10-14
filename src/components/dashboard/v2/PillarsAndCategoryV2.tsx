@@ -59,14 +59,15 @@ export default function PillarsAndCategoryV2({
         className="
           col-span-1 lg:col-span-2
           bg-white dark:bg-[#20242B]
-          rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
-          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[400px] h-full
+          rounded-[24px] border border-[#E8E3DA] dark:border-white/[0.08]
+          shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
+          flex flex-col justify-between p-6 lg:p-7 min-h-[400px] h-full
         "
       >
         {/* Header Row */}
-        <div className="flex items-center justify-between pb-3 border-b border-black/[0.07] dark:border-white/[0.08] gap-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#E8E3DA] dark:border-white/[0.08] gap-4">
           <div className="flex items-baseline gap-2 truncate">
-            <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em] whitespace-nowrap">
+            <h2 className="text-[20px] lg:text-[22px] font-serif font-medium text-[#1C1917] dark:text-[#F3EFE7] tracking-tight whitespace-nowrap">
               ESG Performance Pillars
             </h2>
           </div>
@@ -86,13 +87,13 @@ export default function PillarsAndCategoryV2({
         </div>
 
         {/* Bottom: Segmented Score Chart mirroring the Sutra Verified Score card */}
-        <div className="mt-4 pt-3 border-t border-black/[0.07] dark:border-white/[0.08]">
+        <div className="mt-4 pt-3 border-t border-[#E8E3DA] dark:border-white/[0.08]">
           {/* Performance Bands Legend aligned 1-to-1 in 5-columns directly over the 5 bar segments */}
           <PerformanceBandsLegend orientation="horizontal" className="mb-2" />
 
           {/* Segmented bar: completely uniform matching 5 columns */}
           <div className="w-full my-1 transform-gpu">
-            <div className="w-full h-2.5 rounded-full overflow-hidden grid grid-cols-5 bg-black/5 dark:bg-white/10 relative p-0.5 gap-0.5">
+            <div className="w-full h-2 rounded-full overflow-hidden grid grid-cols-5 bg-[#EFECE6] dark:bg-white/10 relative p-0.5 gap-0.5">
               {SCORE_BANDS.map((band, idx) => (
                 <div
                   key={band.id}
@@ -116,21 +117,22 @@ export default function PillarsAndCategoryV2({
         className="
           col-span-1 lg:col-span-3
           bg-white dark:bg-[#20242B]
-          rounded-[24px] border border-black/[0.07] dark:border-white/[0.08]
-          shadow-sm flex flex-col justify-between p-6 lg:p-7 min-h-[400px] h-full
+          rounded-[24px] border border-[#E8E3DA] dark:border-white/[0.08]
+          shadow-[0_4px_24px_-4px_rgba(28,25,23,0.04)]
+          flex flex-col justify-between p-6 lg:p-7 min-h-[400px] h-full
         "
       >
         <div className="flex-1 flex flex-col">
-          <div className="pb-4 border-b border-black/[0.07] dark:border-white/[0.08] mb-3">
-            <h2 className="text-[22px] font-medium text-[#1F1B16] dark:text-[#F3EFE7] tracking-[-0.01em]">
+          <div className="pb-4 border-b border-[#E8E3DA] dark:border-white/[0.08] mb-3">
+            <h2 className="text-[20px] lg:text-[22px] font-serif font-medium text-[#1C1917] dark:text-[#F3EFE7] tracking-tight">
               Category Level Metrics
             </h2>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl lg:text-[36px] font-light text-[#1F1B16] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalCategorySpendUsd.toLocaleString('en-US')}`}>
+              <span className="text-3xl lg:text-[36px] font-serif font-light text-[#1C1917] dark:text-[#F3EFE7] tracking-tight tabular-nums" aria-label={`Total spend $${totalCategorySpendUsd.toLocaleString('en-US')}`}>
                 ${totalCategorySpendUsd.toLocaleString('en-US')}
               </span>
-              <span className="text-xs font-semibold text-[#6F6A61] dark:text-[#9A948A] uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#8C827A] dark:text-[#9A948A] uppercase tracking-wider">
                 SUSTAINABLE SPEND
               </span>
             </div>
