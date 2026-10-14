@@ -146,11 +146,13 @@ export default function PillarsAndCategoryV2({
 
         {/* D3 Pinned Footer Insight Tile - Top Category */}
         {topCategory && (
-          <div className="mt-6 pt-3 border-t border-black/[0.07] dark:border-white/[0.08] text-xs text-[#5B564E] dark:text-[#C2BCB0] flex items-center justify-between">
-            <span className="font-medium text-[#7D3F1E] dark:text-[#E07A57]">
-              Top category: {topCategory.categoryName} ({topPct}% of spend)
+          <div className="mt-6 pt-3 border-t border-[#F0EDE6] dark:border-white/[0.08] text-xs text-[#57534E] dark:text-[#D6D3D1] flex items-center justify-between">
+            <span className="font-medium text-[#9A4A2E] dark:text-[#E07A57]">
+              {totalCategorySpendInr > 0
+                ? `Top category: ${topCategory.categoryName || (topCategory as any).category_name} (${topPct}% of spend)`
+                : "No active category spend in period"}
             </span>
-            <span className="text-[#6F6A61] dark:text-[#9A948A] font-light">
+            <span className="text-[#78716C] dark:text-[#A8A29E] font-normal">
               {activeCatCount} of {categorySpend.length} active
             </span>
           </div>

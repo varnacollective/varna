@@ -1,9 +1,7 @@
-"use client";
-
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -13,7 +11,9 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { CalendarX } from "lucide-react";
 import type { CategorySpend, ProductSpendItem } from "@/lib/mock-data";
+import { useDateRange } from "@/context/DateRangeContext";
 
 export interface OrderRegisterItem {
   order_id?: string;
@@ -36,11 +36,11 @@ interface CategoryChartProps {
 }
 
 const BRAND_CHART_COLORS = [
-  "#7A3F1E", // Deep clay
-  "#6E8471", // Sage mineral
-  "#6F8391", // Slate mist
-  "#2B3A55", // Midnight blue
-  "#9C7A58", // Warm clay
+  "#9A4A2E", // Warm Terracotta
+  "#3A5A40", // Botanical Sage
+  "#6F8391", // Slate Mist
+  "#D4C5A9", // Muted Champagne Gold
+  "#1C1917", // Deep Espresso
 ];
 
 const DEFAULT_CATEGORY_ESG: Record<string, { E: number; S: number; G: number }> = {
@@ -65,6 +65,12 @@ const DEFAULT_CATEGORIES = [
 /**
  * Historical order register seed data covering verified products with chronological timestamps
  * in DD/MM/YYYY format and real CO2 reduction percentages.
+ * Synchronized with CLIENT_ORDERS_LIST:
+ * - #1: 18/01/2026 Kheoni Wooden Comb ₹26,000
+ * - #2: 02/02/2026 UKHI Straws ₹33,450 & Bags ₹15,000
+ * - #3: 14/03/2026 UKHI Straws ₹66,000 & Bags ₹30,000
+ * - #4: 28/04/2026 Bare Necessities Conditioner ₹64,200
+ * - #5: 12/05/2026 Bare Necessities Liquid Soap ₹78,500 ($946)
  */
 export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
   // 1. Liquid Soap (Fresh Lime Shower Gel)
@@ -108,6 +114,16 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     order_value_inr_auto: 165000,
     co2_reduction_pct: 96.4,
   },
+  {
+    order_id: "ORD-005",
+    sku_id: "SKU-001",
+    product_name_auto: "Liquid Soap (Fresh Lime Shower Gel)",
+    category_auto: "Bathroom Amenities",
+    enterprise_name_auto: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+    order_date: "12/05/2026",
+    order_value_inr_auto: 78500,
+    co2_reduction_pct: 95.8,
+  },
 
   // 2. Liquid Conditioner (Jojoba Aloevera)
   {
@@ -150,6 +166,16 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     order_value_inr_auto: 120000,
     co2_reduction_pct: 25.8,
   },
+  {
+    order_id: "ORD-004-X",
+    sku_id: "SKU-003",
+    product_name_auto: "Liquid Conditioner (Jojoba Aloevera)",
+    category_auto: "Bathroom Amenities",
+    enterprise_name_auto: "Bare Necessities Zero Waste Solutions Pvt. Ltd.",
+    order_date: "28/04/2026",
+    order_value_inr_auto: 64200,
+    co2_reduction_pct: 26.5,
+  },
 
   // 3. Handcrafted Wooden Comb
   {
@@ -161,6 +187,16 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     order_date: "10/01/2026",
     order_value_inr_auto: 18000,
     co2_reduction_pct: 35.0,
+  },
+  {
+    order_id: "ORD-001-KHEONI",
+    sku_id: "SKU-012",
+    product_name_auto: "Handcrafted Wooden Comb",
+    category_auto: "Amenity Accessories",
+    enterprise_name_auto: "Kheoni Ventures Pvt Ltd",
+    order_date: "18/01/2026",
+    order_value_inr_auto: 26000,
+    co2_reduction_pct: 37.0,
   },
   {
     order_id: "ORD-004-E",
@@ -183,7 +219,7 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     co2_reduction_pct: 40.5,
   },
   {
-    order_id: "ORD-004",
+    order_id: "ORD-004-COMB",
     sku_id: "SKU-012",
     product_name_auto: "Handcrafted Wooden Comb",
     category_auto: "Amenity Accessories",
@@ -205,17 +241,17 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     co2_reduction_pct: 18.0,
   },
   {
-    order_id: "ORD-001-E",
+    order_id: "ORD-002-UKHI-STRAWS",
     sku_id: "SKU-005",
     product_name_auto: "Drinking Straws",
     category_auto: "Disposables",
     enterprise_name_auto: "UKHI India Private Limited",
-    order_date: "10/02/2026",
-    order_value_inr_auto: 5800,
-    co2_reduction_pct: 21.4,
+    order_date: "02/02/2026",
+    order_value_inr_auto: 33450,
+    co2_reduction_pct: 22.0,
   },
   {
-    order_id: "ORD-001",
+    order_id: "ORD-001-STRAWS",
     sku_id: "SKU-005",
     product_name_auto: "Drinking Straws",
     category_auto: "Disposables",
@@ -223,6 +259,16 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     order_date: "01/03/2026",
     order_value_inr_auto: 7500,
     co2_reduction_pct: 24.5,
+  },
+  {
+    order_id: "ORD-003-UKHI-STRAWS",
+    sku_id: "SKU-005",
+    product_name_auto: "Drinking Straws",
+    category_auto: "Disposables",
+    enterprise_name_auto: "UKHI India Private Limited",
+    order_date: "14/03/2026",
+    order_value_inr_auto: 66000,
+    co2_reduction_pct: 25.0,
   },
   {
     order_id: "ORD-001-F",
@@ -247,6 +293,16 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     co2_reduction_pct: 19.5,
   },
   {
+    order_id: "ORD-002-UKHI-BAGS",
+    sku_id: "SKU-007",
+    product_name_auto: "Garbage Bags (Flat)",
+    category_auto: "Packaging",
+    enterprise_name_auto: "UKHI India Private Limited",
+    order_date: "02/02/2026",
+    order_value_inr_auto: 15000,
+    co2_reduction_pct: 21.0,
+  },
+  {
     order_id: "ORD-001-H",
     sku_id: "SKU-007",
     product_name_auto: "Garbage Bags (Flat)",
@@ -257,13 +313,23 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
     co2_reduction_pct: 22.0,
   },
   {
-    order_id: "ORD-001",
+    order_id: "ORD-001-BAGS",
     sku_id: "SKU-007",
     product_name_auto: "Garbage Bags (Flat)",
     category_auto: "Packaging",
     enterprise_name_auto: "UKHI India Private Limited",
     order_date: "01/03/2026",
     order_value_inr_auto: 4400,
+    co2_reduction_pct: 24.5,
+  },
+  {
+    order_id: "ORD-003-UKHI-BAGS",
+    sku_id: "SKU-007",
+    product_name_auto: "Garbage Bags (Flat)",
+    category_auto: "Packaging",
+    enterprise_name_auto: "UKHI India Private Limited",
+    order_date: "14/03/2026",
+    order_value_inr_auto: 30000,
     co2_reduction_pct: 24.5,
   },
   {
@@ -311,17 +377,23 @@ export const DEFAULT_ORDER_REGISTER: OrderRegisterItem[] = [
 ];
 
 /**
- * Safely parse date in DD/MM/YYYY format (or standard string) into a numeric timestamp
- * for accurate chronological sorting.
+ * Safely parse date in DD/MM/YYYY, YYYY-MM-DD or standard string into a numeric timestamp
  */
-function parseDateDDMMYYYY(dateStr: string): number {
+export function parseDateToTime(dateStr: string): number {
   if (!dateStr) return 0;
   const cleanStr = String(dateStr).trim();
   const ddmmyyyyMatch = cleanStr.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
   if (ddmmyyyyMatch) {
     const day = parseInt(ddmmyyyyMatch[1], 10);
-    const month = parseInt(ddmmyyyyMatch[2], 10) - 1; // 0-indexed month
+    const month = parseInt(ddmmyyyyMatch[2], 10) - 1;
     const year = parseInt(ddmmyyyyMatch[3], 10);
+    return new Date(year, month, day).getTime();
+  }
+  const yyyymmddMatch = cleanStr.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if (yyyymmddMatch) {
+    const year = parseInt(yyyymmddMatch[1], 10);
+    const month = parseInt(yyyymmddMatch[2], 10) - 1;
+    const day = parseInt(yyyymmddMatch[3], 10);
     return new Date(year, month, day).getTime();
   }
   const timestamp = Date.parse(cleanStr);
@@ -334,17 +406,58 @@ function formatRowAmount(amountInr: number): string {
   return `$${usd.toLocaleString("en-US")}`;
 }
 
+function CustomSpendTooltip({ active, payload, label }: any) {
+  if (active && payload && payload.length) {
+    const value = payload[0].value;
+    const usd = Math.round(value / 83);
+    return (
+      <div className="bg-white/95 dark:bg-[#1C1917]/95 border border-[#E8E3DA] dark:border-[#38312B] rounded-xl p-2.5 shadow-lg text-xs backdrop-blur-md">
+        <p className="text-[10px] uppercase tracking-wider text-[#78716C] dark:text-[#A8A29E] font-medium mb-1">
+          Order Date: {label}
+        </p>
+        <p className="font-serif text-sm font-medium text-[#1C1917] dark:text-[#F7F5F0] tabular-nums">
+          ${usd.toLocaleString()} <span className="text-[11px] font-sans font-normal text-[#78716C] dark:text-[#A8A29E]">(₹{value.toLocaleString()})</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+}
+
+function CustomCo2Tooltip({ active, payload, label }: any) {
+  if (active && payload && payload.length) {
+    const value = payload[0].value;
+    return (
+      <div className="bg-white/95 dark:bg-[#1C1917]/95 border border-[#E8E3DA] dark:border-[#38312B] rounded-xl p-2.5 shadow-lg text-xs backdrop-blur-md">
+        <p className="text-[10px] uppercase tracking-wider text-[#78716C] dark:text-[#A8A29E] font-medium mb-1">
+          Order Date: {label}
+        </p>
+        <p className="font-serif text-sm font-medium text-[#3A5A40] dark:text-[#8EAF92] tabular-nums">
+          {value}% <span className="text-[11px] font-sans font-normal text-[#78716C] dark:text-[#A8A29E]">CO₂ Reduction</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function CategoryChartV2({
   categorySpend,
   data,
   products,
   orderRegister,
 }: CategoryChartProps) {
-  // Step 1: Active Toggle ('spend' vs 'co2')
   const [activeToggle, setActiveToggle] = useState<"spend" | "co2">("spend");
-
-  // Step 1 (Action 2): State hook to manage selected product in dropdown
   const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const { state: dateState } = useDateRange();
+
+  const startTime = useMemo(() => {
+    return dateState.startDate ? new Date(dateState.startDate + "T00:00:00").getTime() : null;
+  }, [dateState.startDate]);
+
+  const endTime = useMemo(() => {
+    return dateState.endDate ? new Date(dateState.endDate + "T23:59:59").getTime() : null;
+  }, [dateState.endDate]);
 
   // Process category-level spend metrics
   const categories = useMemo(() => {
@@ -412,7 +525,7 @@ export default function CategoryChartV2({
     return DEFAULT_ORDER_REGISTER;
   }, [orderRegister]);
 
-  // Step 1 (Action 2): Populate unique products dynamically from current data context
+  // Populate unique products dynamically from current data context
   const productOptions = useMemo(() => {
     const map = new Map<string, { value: string; label: string }>();
 
@@ -437,7 +550,7 @@ export default function CategoryChartV2({
     return Array.from(map.values());
   }, [allOrderRegisterData, products]);
 
-  // Derived currently selected product (defaults to first option if unselected or stale)
+  // Derived currently selected product
   const currentSelectedProduct = useMemo(() => {
     if (selectedProduct && productOptions.some((p) => p.value === selectedProduct)) {
       return selectedProduct;
@@ -445,19 +558,30 @@ export default function CategoryChartV2({
     return productOptions[0]?.value || "";
   }, [selectedProduct, productOptions]);
 
-  // Step 2: Filter order_register array for currentSelectedProduct & sort chronologically by order_date
+  // Filter time-series data by product AND active date filter range
   const filteredTimeSeriesData = useMemo(() => {
     if (!currentSelectedProduct) return [];
 
     const matches = allOrderRegisterData.filter((row) => {
       const name = row.product_name_auto || row.product_name || "";
       const sku = row.sku_id || "";
-      return name === currentSelectedProduct || sku === currentSelectedProduct;
+      const isProductMatch = name === currentSelectedProduct || sku === currentSelectedProduct;
+      if (!isProductMatch) return false;
+
+      // Filter by active date range
+      if (startTime || endTime) {
+        const rowTime = parseDateToTime(row.order_date);
+        if (rowTime > 0) {
+          if (startTime && rowTime < startTime) return false;
+          if (endTime && rowTime > endTime) return false;
+        }
+      }
+      return true;
     });
 
-    // Chronological sort using parsed DD/MM/YYYY timestamp
+    // Chronological sort using parsed timestamp
     const sorted = [...matches].sort((a, b) => {
-      return parseDateDDMMYYYY(a.order_date) - parseDateDDMMYYYY(b.order_date);
+      return parseDateToTime(a.order_date) - parseDateToTime(b.order_date);
     });
 
     return sorted.map((row) => {
@@ -477,19 +601,19 @@ export default function CategoryChartV2({
         sku_id: row.sku_id || "",
       };
     });
-  }, [allOrderRegisterData, selectedProduct]);
+  }, [allOrderRegisterData, currentSelectedProduct, startTime, endTime, selectedProduct]);
 
   return (
     <div className="flex flex-col h-full">
-      {/* 1. Toggle Controls: 'Spend by Category' & 'Product Trends & CO₂ Reduction' in recessed pill container */}
-      <div className="flex items-center gap-1 mb-4 p-1 rounded-lg bg-[#F3F0EA] dark:bg-[#272C34] border border-[#E8E3DA] dark:border-white/10 w-fit">
+      {/* 1. Toggle Controls: Refined recessed pill container */}
+      <div className="flex items-center gap-1 mb-4 p-1 rounded-xl bg-[#F3F0EA] dark:bg-[#272C34] border border-[#E6E1D6] dark:border-white/10 w-fit">
         <button
           type="button"
           onClick={() => setActiveToggle("spend")}
-          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs transition-all duration-200 cursor-pointer ${
             activeToggle === "spend"
-              ? "bg-white dark:bg-[#1C1917] text-[#1C1917] dark:text-[#FAF8F5] shadow-xs"
-              : "text-[#57534E] dark:text-[#9A948A] hover:text-[#1C1917] dark:hover:text-[#FAF8F5]"
+              ? "bg-white dark:bg-[#1C1917] text-[#1C1917] dark:text-[#FAF8F5] shadow-xs font-semibold"
+              : "text-[#78716C] dark:text-[#A8A29E] hover:text-[#1C1917] dark:hover:text-[#FAF8F5] font-medium"
           }`}
         >
           Spend by Category
@@ -497,20 +621,20 @@ export default function CategoryChartV2({
         <button
           type="button"
           onClick={() => setActiveToggle("co2")}
-          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs transition-all duration-200 cursor-pointer ${
             activeToggle === "co2"
-              ? "bg-white dark:bg-[#1C1917] text-[#1C1917] dark:text-[#FAF8F5] shadow-xs"
-              : "text-[#57534E] dark:text-[#9A948A] hover:text-[#1C1917] dark:hover:text-[#FAF8F5]"
+              ? "bg-white dark:bg-[#1C1917] text-[#1C1917] dark:text-[#FAF8F5] shadow-xs font-semibold"
+              : "text-[#78716C] dark:text-[#A8A29E] hover:text-[#1C1917] dark:hover:text-[#FAF8F5] font-medium"
           }`}
         >
           Product Trends & CO₂ Reduction
         </button>
       </div>
 
-      {/* Spend View: Segmented horizontal bar, enlarged category rows and mini donut chart */}
+      {/* Spend View: Segmented horizontal bar, category rows with smooth transitions, and mini donut chart */}
       {activeToggle === "spend" && (
         <div className="space-y-4 flex-1 flex flex-col justify-between">
-          {/* Segmented Horizontal Bar */}
+          {/* Segmented Horizontal Bar with smooth CSS transitions */}
           <div className="w-full h-3 rounded-full overflow-hidden flex bg-[#EFECE6] dark:bg-white/10 gap-1 my-2">
             {categories.map((cat) => {
               const pct = totalSpend > 0 ? (cat.total_spend / totalSpend) * 100 : 0;
@@ -522,7 +646,7 @@ export default function CategoryChartV2({
                     width: `${pct}%`,
                     backgroundColor: cat.color,
                   }}
-                  className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full hover:opacity-90"
+                  className="h-full transition-all duration-500 ease-out first:rounded-l-full last:rounded-r-full hover:opacity-90"
                   title={`${cat.category_name}: ${pct.toFixed(1)}% (${formatRowAmount(cat.total_spend)})`}
                 />
               );
@@ -541,8 +665,8 @@ export default function CategoryChartV2({
                 return (
                   <div
                     key={cat.category_name}
-                    className={`flex items-center justify-between text-[14px] sm:text-[15px] py-2.5 ${
-                      isZero ? "opacity-45" : "opacity-100"
+                    className={`flex items-center justify-between text-[14px] sm:text-[15px] py-2.5 transition-opacity duration-300 ${
+                      isZero ? "opacity-40" : "opacity-100"
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-[130px]">
@@ -555,11 +679,11 @@ export default function CategoryChartV2({
                       </span>
                     </div>
 
-                    {/* Custom horizontal bar */}
+                    {/* Custom horizontal bar with smooth transitions */}
                     <div className="hidden sm:block flex-1 max-w-[110px] mx-2.5">
                       <div className="h-1.5 w-full bg-[#EFECE6] dark:bg-white/10 rounded-full overflow-hidden">
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className="h-full rounded-full transition-all duration-500 ease-out"
                           style={{
                             width: `${pctVal}%`,
                             backgroundColor: cat.color,
@@ -569,10 +693,10 @@ export default function CategoryChartV2({
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="text-[#6F6A61] dark:text-[#9A948A] font-normal text-xs sm:text-sm tabular-nums">
+                      <span className="text-[#78716C] dark:text-[#9A948A] font-normal text-xs sm:text-sm tabular-nums">
                         {formatRowAmount(cat.total_spend)}
                       </span>
-                      <span className="font-semibold text-[#1C1917] dark:text-[#F3EFE7] min-w-[38px] text-right tabular-nums text-xs sm:text-sm">
+                      <span className="font-semibold text-[#1C1917] dark:text-[#F3EFE7] min-w-[42px] text-right tabular-nums text-xs sm:text-sm">
                         {pctStr}%
                       </span>
                     </div>
@@ -581,42 +705,49 @@ export default function CategoryChartV2({
               })}
             </div>
 
-            {/* Right: Mini Donut Chart in softly bordered card */}
+            {/* Right: Mini Donut Chart in softly bordered card with smooth transitions */}
             <div className="md:col-span-5 flex flex-col items-center justify-center p-4 rounded-xl bg-[#FAF8F5] dark:bg-[#272C34] border border-[#ECE8DF] dark:border-white/[0.08] relative h-full min-h-[170px] shadow-xs">
               <div className="w-full h-32 relative flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={categories.filter((c) => c.total_spend > 0)}
+                      data={
+                        totalSpend > 0
+                          ? categories.filter((c) => c.total_spend > 0)
+                          : [{ category_name: "Empty", total_spend: 1, color: "#E5E1D8" }]
+                      }
                       dataKey="total_spend"
                       nameKey="category_name"
                       cx="50%"
                       cy="50%"
                       innerRadius={36}
                       outerRadius={52}
-                      paddingAngle={3}
+                      paddingAngle={totalSpend > 0 ? 3 : 0}
                       strokeWidth={1}
                       stroke="rgba(0,0,0,0.06)"
+                      isAnimationActive={true}
+                      animationDuration={600}
                     >
-                      {categories
-                        .filter((c) => c.total_spend > 0)
-                        .map((entry, index) => (
-                          <Cell key={`donut-cell-${index}`} fill={entry.color} />
-                        ))}
+                      {(totalSpend > 0
+                        ? categories.filter((c) => c.total_spend > 0)
+                        : [{ color: "#E5E1D8" }]
+                      ).map((entry, index) => (
+                        <Cell key={`donut-cell-${index}`} fill={entry.color} />
+                      ))}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
                 {/* Center text inside mini donut */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-xs font-semibold text-[#1C1917] dark:text-[#F3EFE7] tracking-tight tabular-nums">
+                  <span className="text-xs font-semibold text-[#1C1917] dark:text-[#F3EFE7] tracking-tight tabular-nums transition-all duration-300">
                     {formatRowAmount(totalSpend)}
                   </span>
-                  <span className="text-[9px] uppercase tracking-wider text-[#6F6A61] dark:text-[#9A948A] font-medium">
+                  <span className="text-[9px] uppercase tracking-wider text-[#78716C] dark:text-[#A8A29E] font-medium">
                     Total
                   </span>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-1.5 mt-1 text-[10px] text-[#6F6A61] dark:text-[#9A948A]">
+              <div className="flex items-center justify-center gap-1.5 mt-1 text-[10px] text-[#78716C] dark:text-[#A8A29E]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#3A5A40] dark:bg-[#9DB4A0]" />
                 <span className="font-medium">Spend Distribution</span>
               </div>
@@ -625,31 +756,31 @@ export default function CategoryChartV2({
         </div>
       )}
 
-      {/* 2. CO2 Emissions Time-Series View: Product Dropdown & Two LineCharts */}
+      {/* 2. Product Trends & CO2 Emissions Time-Series View */}
       {activeToggle === "co2" && (
         <div className="space-y-3.5">
           {/* Action 2: Native <select> dropdown populated with unique products */}
           <div className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08]">
             <label
               htmlFor="product-select"
-              className="text-[11px] font-medium text-[#6F6A61] dark:text-[#9A948A] flex items-center justify-between"
+              className="text-[11px] font-medium text-[#78716C] dark:text-[#A8A29E] flex items-center justify-between"
             >
               <span>Filter by Product / SKU:</span>
-              <span className="text-[10px] text-[#7D3F1E] dark:text-[#E07A57] font-medium">
-                {filteredTimeSeriesData.length} recorded orders
+              <span className="text-[10px] text-[#9A4A2E] dark:text-[#E07A57] font-semibold tabular-nums">
+                {filteredTimeSeriesData.length} recorded {filteredTimeSeriesData.length === 1 ? "order" : "orders"}
               </span>
             </label>
             <select
               id="product-select"
               value={currentSelectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
-              className="w-full text-xs font-normal bg-white dark:bg-[#1D2127] border border-black/15 dark:border-white/15 rounded-lg px-2.5 py-1.5 text-[#1F1B16] dark:text-[#F3EFE7] focus:outline-none focus:ring-1 focus:ring-[#7D3F1E] dark:focus:ring-[#E07A57] cursor-pointer shadow-xs truncate"
+              className="w-full text-xs font-normal bg-white dark:bg-[#1D2127] border border-[#E8E3DA] dark:border-white/15 rounded-lg px-2.5 py-1.5 text-[#1C1917] dark:text-[#F3EFE7] focus:outline-none focus:ring-1 focus:ring-[#9A4A2E] dark:focus:ring-[#E07A57] cursor-pointer shadow-xs truncate"
             >
               {productOptions.map((opt) => (
                 <option
                   key={opt.value}
                   value={opt.value}
-                  className="bg-white dark:bg-[#1D2127] text-[#1F1B16] dark:text-[#F3EFE7]"
+                  className="bg-white dark:bg-[#1D2127] text-[#1C1917] dark:text-[#F3EFE7]"
                 >
                   {opt.label}
                 </option>
@@ -657,126 +788,123 @@ export default function CategoryChartV2({
             </select>
           </div>
 
-          {/* Time-Series Line Charts */}
+          {/* Time-Series Area Charts with subtle gradient fills and custom tooltips */}
           {filteredTimeSeriesData.length === 0 ? (
-            <div className="py-8 text-center text-xs text-[#6F6A61] dark:text-[#9A948A]">
-              No order register history found for this product.
+            <div className="py-12 px-4 text-center rounded-xl bg-[#FAF8F5] dark:bg-[#24201C] border border-[#E8E3DA] dark:border-white/[0.06] flex flex-col items-center justify-center my-2">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1917] border border-[#E8E3DA] dark:border-[#38312B] flex items-center justify-center text-[#78716C] dark:text-[#A8A29E] mb-2.5 shadow-xs">
+                <CalendarX className="w-4 h-4" />
+              </div>
+              <p className="text-xs font-medium text-[#1C1917] dark:text-[#F3EFE7]">
+                No recorded orders in this period
+              </p>
+              <p className="text-[11px] text-[#78716C] dark:text-[#A8A29E] mt-1 max-w-xs leading-relaxed">
+                No transactions were recorded for this product between the active filter dates. Try selecting &quot;All time&quot; or expanding your date range.
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {/* Chart 1 (Spend vs Time): X-axis order_date, Line dataKey order_value_inr_auto */}
-              <div className="bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.05] dark:border-white/[0.06] rounded-xl p-2.5">
+              {/* Chart 1 (Spend vs Time): AreaChart with gradient fill and custom tooltip */}
+              <div className="bg-[#FAF8F5] dark:bg-[#201C18] border border-[#ECE8DF] dark:border-white/[0.06] rounded-xl p-3 shadow-xs">
                 <div className="flex items-center justify-between mb-1 px-1">
-                  <span className="text-[11px] font-medium text-[#1F1B16] dark:text-[#F3EFE7]">
+                  <span className="text-[11px] font-medium text-[#1C1917] dark:text-[#F3EFE7]">
                     Spend vs Time
                   </span>
-                  <span className="text-[10px] text-[#7D3F1E] dark:text-[#E07A57] font-medium">
+                  <span className="text-[10px] text-[#9A4A2E] dark:text-[#E07A57] font-semibold">
                     Order Spend
                   </span>
                 </div>
                 <div className="h-36 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
+                    <AreaChart
                       data={filteredTimeSeriesData}
-                      margin={{ top: 20, right: 20, bottom: 25, left: 20 }}
+                      margin={{ top: 15, right: 15, bottom: 20, left: 15 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
+                      <defs>
+                        <linearGradient id="spendAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#9A4A2E" stopOpacity={0.15} />
+                          <stop offset="100%" stopColor="#9A4A2E" stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E6E1D6" vertical={false} />
                       <XAxis
                         dataKey="order_date"
-                        tick={{ fontSize: 10, fill: "#6F6A61" }}
+                        tick={{ fontSize: 10, fill: "#78716C" }}
                         tickLine={false}
-                        axisLine={{ stroke: "rgba(0,0,0,0.08)" }}
+                        axisLine={{ stroke: "#E6E1D6" }}
                       />
                       <YAxis
-                        tick={{ fontSize: 10, fill: "#6F6A61" }}
+                        tick={{ fontSize: 10, fill: "#78716C" }}
                         tickLine={false}
                         axisLine={false}
                         tickFormatter={(v) => (v >= 1000 ? `$${Math.round(v / 83).toLocaleString()}` : `$${v}`)}
                         width={46}
                       />
-                      <Tooltip
-                        formatter={(value: any) => [
-                          typeof value === "number"
-                            ? `$${Math.round(value / 83).toLocaleString()} (₹${value.toLocaleString()})`
-                            : value,
-                          "Order Value",
-                        ]}
-                        labelFormatter={(label) => `Order Date: ${label}`}
-                        contentStyle={{
-                          backgroundColor: "rgba(255, 255, 255, 0.96)",
-                          borderRadius: "8px",
-                          fontSize: "11px",
-                          borderColor: "rgba(0,0,0,0.1)",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                        }}
-                      />
-                      <Line
+                      <Tooltip content={<CustomSpendTooltip />} />
+                      <Area
                         type="monotone"
                         dataKey="order_value_inr_auto"
                         name="Order Spend"
-                        stroke="#7D3F1E"
+                        stroke="#9A4A2E"
                         strokeWidth={2}
-                        dot={{ r: 3, fill: "#7D3F1E" }}
-                        activeDot={{ r: 5, fill: "#7D3F1E" }}
+                        fill="url(#spendAreaGrad)"
+                        dot={{ r: 3.5, fill: "#9A4A2E" }}
+                        activeDot={{ r: 5.5, fill: "#9A4A2E" }}
                       />
-                    </LineChart>
+                    </AreaChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Chart 2 (CO2 Reduction vs Time): X-axis order_date, Line dataKey strictly co2_reduction_pct */}
-              <div className="bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.05] dark:border-white/[0.06] rounded-xl p-2.5">
+              {/* Chart 2 (CO2 Reduction vs Time): AreaChart with gradient fill and custom tooltip */}
+              <div className="bg-[#FAF8F5] dark:bg-[#201C18] border border-[#ECE8DF] dark:border-white/[0.06] rounded-xl p-3 shadow-xs">
                 <div className="flex items-center justify-between mb-1 px-1">
-                  <span className="text-[11px] font-medium text-[#1F1B16] dark:text-[#F3EFE7]">
+                  <span className="text-[11px] font-medium text-[#1C1917] dark:text-[#F3EFE7]">
                     CO₂ Reduction vs Time
                   </span>
-                  <span className="text-[10px] text-[#4C7355] font-medium">
+                  <span className="text-[10px] text-[#3A5A40] dark:text-[#8EAF92] font-semibold">
                     Reduction %
                   </span>
                 </div>
                 <div className="h-36 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
+                    <AreaChart
                       data={filteredTimeSeriesData}
-                      margin={{ top: 20, right: 20, bottom: 25, left: 20 }}
+                      margin={{ top: 15, right: 15, bottom: 20, left: 15 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
+                      <defs>
+                        <linearGradient id="co2AreaGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#3A5A40" stopOpacity={0.15} />
+                          <stop offset="100%" stopColor="#3A5A40" stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E6E1D6" vertical={false} />
                       <XAxis
                         dataKey="order_date"
-                        tick={{ fontSize: 10, fill: "#6F6A61" }}
+                        tick={{ fontSize: 10, fill: "#78716C" }}
                         tickLine={false}
-                        axisLine={{ stroke: "rgba(0,0,0,0.08)" }}
+                        axisLine={{ stroke: "#E6E1D6" }}
                       />
                       <YAxis
                         domain={[0, 100]}
                         ticks={[0, 25, 50, 75, 100]}
-                        tick={{ fontSize: 10, fill: "#6F6A61" }}
+                        tick={{ fontSize: 10, fill: "#78716C" }}
                         tickLine={false}
                         axisLine={false}
                         tickFormatter={(v) => `${v}%`}
                         width={38}
                       />
-                      <Tooltip
-                        formatter={(value: any) => [`${value}%`, "CO2 Reduction"]}
-                        labelFormatter={(label) => `Order Date: ${label}`}
-                        contentStyle={{
-                          backgroundColor: "rgba(255, 255, 255, 0.96)",
-                          borderRadius: "8px",
-                          fontSize: "11px",
-                          borderColor: "rgba(0,0,0,0.1)",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                        }}
-                      />
-                      <Line
+                      <Tooltip content={<CustomCo2Tooltip />} />
+                      <Area
                         type="monotone"
                         dataKey="co2_reduction_pct"
                         name="CO2 Reduction (%)"
-                        stroke="#4C7355"
+                        stroke="#3A5A40"
                         strokeWidth={2}
-                        dot={{ r: 3, fill: "#4C7355" }}
-                        activeDot={{ r: 5, fill: "#4C7355" }}
+                        fill="url(#co2AreaGrad)"
+                        dot={{ r: 3.5, fill: "#3A5A40" }}
+                        activeDot={{ r: 5.5, fill: "#3A5A40" }}
                       />
-                    </LineChart>
+                    </AreaChart>
                   </ResponsiveContainer>
                 </div>
               </div>

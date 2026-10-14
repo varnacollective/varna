@@ -39,15 +39,71 @@ export default function ClientOverviewV2({ data }: ClientOverviewV2Props) {
   const currentTotalOrders = filteredOrders ? filteredOrders.length : summary.totalOrders;
   const currentTotalSpend = filteredOrders ? filteredOrders.reduce((acc, o) => acc + o.orderValue, 0) : summary.totalSpend;
 
-  // D04 FIX: Period-dependent vs Cumulative classification.
-  // Spend and Category Spend are period-dependent. If a period filter has 0 orders,
-  // category spend is 0 for that period.
+  // Dynamic Category Spend based on filtered period orders
   const currentCategorySpend = useMemo(() => {
     if (!isPeriodFiltered) return categorySpend;
     if (filteredOrders && filteredOrders.length === 0) {
-      return categorySpend.map((c) => ({ ...c, totalSpend: 0, units: 0, percentage: 0 }));
+      return categorySpend.map((c) => ({
+        ...c,
+        totalSpend: 0,
+        total_spend: 0,
+        totalOrders: 0,
+        percentage: 0,
+      }));
     }
-    return categorySpend;
+
+    // Map each filtered order to its corresponding category spend
+    const spendByCategory: Record<string, { spend: number; orders: number }> = {
+      "Bathroom Amenities": { spend: 0, orders: 0 },
+      "Amenity Accessories": { spend: 0, orders: 0 },
+      "Disposables": { spend: 0, orders: 0 },
+      "Packaging": { spend: 0, orders: 0 },
+    };
+
+    // Ensure all categories from prop exist
+    categorySpend.forEach((c) => {
+      const name = c.categoryName || c.category_name;
+      if (name && !spendByCategory[name]) {
+        spendByCategory[name] = { spend: 0, orders: 0 };
+      }
+    });
+
+    (filteredOrders || []).forEach((order) => {
+      const supp = (order.supplierName || "").toLowerCase();
+      const val = order.orderValue || 0;
+
+      if (supp.includes("bare")) {
+        spendByCategory["Bathroom Amenities"].spend += val;
+        spendByCategory["Bathroom Amenities"].orders += 1;
+      } else if (supp.includes("kheoni")) {
+        spendByCategory["Amenity Accessories"].spend += val;
+        spendByCategory["Amenity Accessories"].orders += 1;
+      } else if (supp.includes("ukhi")) {
+        // UKHI provides both Disposables (69%) and Packaging (31%)
+        const dispVal = Math.round(val * 0.69);
+        const packVal = val - dispVal;
+        spendByCategory["Disposables"].spend += dispVal;
+        spendByCategory["Disposables"].orders += 1;
+        spendByCategory["Packaging"].spend += packVal;
+        spendByCategory["Packaging"].orders += 1;
+      } else {
+        // Fallback to first category
+        const firstCat = Object.keys(spendByCategory)[0] || "Bathroom Amenities";
+        spendByCategory[firstCat].spend += val;
+        spendByCategory[firstCat].orders += 1;
+      }
+    });
+
+    return categorySpend.map((cat) => {
+      const name = cat.categoryName || cat.category_name || "";
+      const stats = spendByCategory[name] || { spend: 0, orders: 0 };
+      return {
+        ...cat,
+        totalSpend: stats.spend,
+        total_spend: stats.spend,
+        totalOrders: stats.orders,
+      };
+    });
   }, [isPeriodFiltered, filteredOrders, categorySpend]);
 
   // Carbon avoided in this period: 0 kg if no orders in period; all-time baseline otherwise
