@@ -78,7 +78,7 @@ export default function SuppliersKpiV2({
         >
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-[0.14em] font-medium text-[#6F6A61] dark:text-[#9A948A]">
-              Purchasing Partners
+              Total Partners
             </span>
             <div className="w-7 h-7 rounded-full bg-[#7D3F1E]/15 dark:bg-[#E07A57]/20 flex items-center justify-center text-[#7D3F1E] dark:text-[#E07A57]">
               <Building className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -90,7 +90,7 @@ export default function SuppliersKpiV2({
               <AnimatedCounter value={totalSuppliers} delay={0.2} />
             </div>
             <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-normal block mt-1">
-              of {directoryCount} Directory Partners
+              of {directoryCount} Total Partners
             </span>
           </div>
         </motion.div>

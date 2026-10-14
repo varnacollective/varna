@@ -69,11 +69,9 @@ export default function TopBarV2({
       {/* Left: Dynamic Breadcrumb / Page Title */}
       <div className="flex items-center gap-2.5">
         <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8C827A] dark:text-[#9BA9B4]">
-
         </span>
         <span className="text-sm text-[#D4C5A9] dark:text-[#57534E] font-light">/</span>
         <h1 className="text-sm sm:text-base lg:text-[17px] font-serif font-medium text-[#1C1917] dark:text-[#FAF8F5] tracking-tight m-0">
-
         </h1>
       </div>
 
