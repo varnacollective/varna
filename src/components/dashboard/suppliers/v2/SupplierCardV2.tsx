@@ -223,7 +223,7 @@ export default function SupplierCardV2({
     isActive !== undefined
       ? !isActive
       : name.toLowerCase().includes("sundari") ||
-        Boolean(legalName && legalName.toLowerCase().includes("sundari"));
+      Boolean(legalName && legalName.toLowerCase().includes("sundari"));
 
   return (
     <div

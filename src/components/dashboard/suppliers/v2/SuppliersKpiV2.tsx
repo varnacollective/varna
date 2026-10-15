@@ -90,7 +90,7 @@ export default function SuppliersKpiV2({
               <AnimatedCounter value={totalSuppliers} delay={0.2} />
             </div>
             <span className="text-[11px] text-[#6F6A61] dark:text-[#9A948A] font-normal block mt-1">
-              of {directoryCount} Total Partners
+
             </span>
           </div>
         </motion.div>
