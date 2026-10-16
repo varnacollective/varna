@@ -76,65 +76,36 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 16 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="varna-chat-panel fixed bottom-6 right-6 z-[9999] w-[360px] sm:w-[400px] h-[530px] max-h-[calc(100vh-5rem)] flex flex-col bg-[#1C1917]/95 backdrop-blur-xl border border-[#332E2A] text-[#F5F2EB] shadow-2xl rounded-2xl overflow-hidden font-sans select-none"
+            className="varna-chat-panel fixed bottom-6 right-6 z-[9999] w-[360px] sm:w-[400px] h-[530px] max-h-[calc(100vh-5rem)] flex flex-col bg-white/95 backdrop-blur-md border border-[#E8E2D9] shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-2xl overflow-hidden text-[#1C1917] font-sans select-none"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#332E2A] bg-black/20 flex-shrink-0">
-              <div className="flex items-center gap-2.5">
-                {/* Varna Faceted Diamond Brand Mark */}
-                <div className="w-8 h-8 rounded-lg bg-[#9A4A2E]/20 border border-[#9A4A2E]/40 flex items-center justify-center p-1 shadow-inner">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 240 240"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="text-[#D4C5A9]"
-                  >
-                    <path
-                      d="M107.92 167.55L92.48 62.32c-0.13-0.89 0.95-1.43 1.59-0.79l49.1 49.49c1.12 1.13 1.8 2.63 1.9 4.22l3.36 52.27L107.92 167.55z"
-                      fill="currentColor"
-                      fillOpacity="0.9"
-                    />
-                    <path
-                      d="M107.88 167.66l17.02-61.53c0.19-0.7 1.05-0.96 1.59-0.47l29.42 26.57c1.04 0.94 1.46 2.39 1.1 3.75l-8.47 31.58L107.88 167.66z"
-                      fill="currentColor"
-                      fillOpacity="0.5"
-                    />
-                    <path
-                      d="M92.48 62.32L107.92 167.55l39.06-25.75"
-                      stroke="currentColor"
-                      strokeWidth="1"
-                      strokeOpacity="0.8"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-[#F5F2EB] font-serif font-normal text-sm tracking-wide leading-tight">
-                    Varna Assistant
-                  </h3>
-                  <p className="text-[10px] text-[#A8A29E] uppercase tracking-wider font-medium">
-                    Framework Intelligence
-                  </p>
-                </div>
+            <div className="bg-[#FAF8F5] border-b border-[#EFECE6] px-5 py-4 flex items-center justify-between flex-shrink-0">
+              <div>
+                <h3 className="text-base font-semibold tracking-tight text-[#1C1917]">
+                  Varna Assistant
+                </h3>
+                <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-[#8C6239] mt-0.5 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                  FRAMEWORK INTELLIGENCE
+                </p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
                 aria-label="Close Chat"
-                className="p-1.5 text-[#A8A29E] hover:text-[#F5F2EB] hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
+                className="text-stone-400 hover:text-stone-700 hover:bg-stone-200/50 p-1.5 rounded-full transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 scrollbar-thin select-text">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 scrollbar-thin select-text bg-white">
               {messages.length === 0 && (
-                <div className="text-center text-[#A8A29E] my-auto py-12 px-6 flex flex-col items-center justify-center space-y-3">
-                  <div className="p-3 rounded-full bg-[#9A4A2E]/15 border border-[#9A4A2E]/30 text-[#D4C5A9]">
+                <div className="text-center my-auto py-12 px-6 flex flex-col items-center justify-center">
+                  <div className="w-11 h-11 rounded-full bg-[#F5EFE6] text-[#8C6239] flex items-center justify-center mb-3 shadow-sm border border-[#E8DEC8]">
                     <Sparkles size={20} />
                   </div>
-                  <p className="text-xs leading-relaxed text-[#A8A29E] max-w-[240px]">
+                  <p className="text-xs sm:text-sm text-stone-500 max-w-[240px] leading-relaxed text-center font-normal">
                     How can I assist you with the Varna Framework today? Ask about scores, certificates, or impact rules.
                   </p>
                 </div>
@@ -157,10 +128,10 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
                     }`}
                   >
                     <div
-                      className={`max-w-[85%] px-4 py-2.5 text-sm leading-relaxed ${
+                      className={`max-w-[85%] leading-relaxed ${
                         m.role === "user"
-                          ? "bg-[#9A4A2E] text-[#FAF8F5] rounded-2xl rounded-tr-xs shadow-md"
-                          : "bg-[#262220] border border-[#3F3A36] text-[#F5F2EB] rounded-2xl rounded-tl-xs shadow-sm whitespace-pre-wrap"
+                          ? "bg-[#8C4A27] text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm shadow-sm"
+                          : "bg-[#FAF8F5] border border-[#EFECE6] text-stone-800 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm shadow-sm whitespace-pre-wrap"
                       }`}
                     >
                       {textContent}
@@ -172,10 +143,10 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
               {/* Streaming / Typing Indicator */}
               {isLoading && (messages.length === 0 || messages[messages.length - 1]?.role === "user") && (
                 <div className="flex justify-start">
-                  <div className="bg-[#262220] border border-[#3F3A36] text-[#A8A29E] rounded-2xl rounded-tl-xs px-4 py-3 text-xs flex items-center space-x-1.5 shadow-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#A8A29E] animate-bounce [animation-delay:-0.3s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#A8A29E] animate-bounce [animation-delay:-0.15s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#A8A29E] animate-bounce" />
+                  <div className="bg-[#FAF8F5] border border-[#EFECE6] text-stone-500 rounded-2xl rounded-tl-sm px-4 py-3 text-xs flex items-center space-x-1.5 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8C6239] animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8C6239] animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8C6239] animate-bounce" />
                   </div>
                 </div>
               )}
@@ -183,7 +154,7 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
               {/* Inline Error Display */}
               {error && (
                 <div className="flex justify-start">
-                  <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl rounded-tl-xs px-4 py-2.5 text-xs leading-relaxed">
+                  <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl rounded-tl-sm px-4 py-2.5 text-xs leading-relaxed">
                     Something went wrong: please try again.
                   </div>
                 </div>
@@ -195,20 +166,20 @@ export default function ChatWidget({ dashboardData }: ChatWidgetProps) {
             {/* Input Form */}
             <form
               onSubmit={handleSubmit}
-              className="p-3 border-t border-[#332E2A] bg-black/20 flex-shrink-0"
+              className="p-3.5 bg-white border-t border-[#EFECE6] flex-shrink-0"
             >
-              <div className="relative flex items-center">
+              <div className="flex items-center bg-[#FAF8F5] border border-[#E5E0D8] focus-within:border-[#8C6239] focus-within:ring-2 focus-within:ring-[#8C6239]/10 rounded-xl px-3.5 py-2 transition-all gap-2">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask a question..."
-                  className="w-full bg-[#292524] border border-[#3F3A36] rounded-xl pl-4 pr-11 py-2.5 text-sm text-[#F5F2EB] placeholder:text-[#A8A29E] focus:outline-none focus:border-[#9A4A2E] focus:ring-1 focus:ring-[#9A4A2E]/50 transition-all"
+                  className="bg-transparent text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none w-full"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
                   aria-label="Send message"
-                  className="absolute right-1.5 p-1.5 rounded-lg bg-[#9A4A2E] text-[#FAF8F5] hover:bg-[#823C23] active:scale-95 disabled:opacity-30 disabled:hover:bg-[#9A4A2E] disabled:active:scale-100 transition-all cursor-pointer"
+                  className="bg-[#8C4A27] hover:bg-[#733B1E] text-white p-2 rounded-lg transition-colors shadow-sm disabled:opacity-40 flex-shrink-0 cursor-pointer"
                 >
                   <Send size={15} />
                 </button>
