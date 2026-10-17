@@ -199,49 +199,6 @@ varna/
    npm install
    ```
 
-3. **Configure Environment Variables:**
-   Create a `.env.local` file in the project root:
-   ```bash
-   cp .env.example .env.local
-   ```
-   Populate the required credentials:
-   ```env
-   # ─── Supabase Configuration ────────────────────────────────
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
-   SUPABASE_DB_URL=postgresql://postgres:password@db.your-project.supabase.co:5432/postgres
-
-   # ─── Google Gemini AI Configuration ────────────────────────
-   GOOGLE_GENERATIVE_AI_API_KEY=your-gemini-api-key
-
-   # ─── Google Service Account & Sheets Ingestion ─────────────
-   GOOGLE_SERVICE_ACCOUNT_KEY={"type":"service_account",...}
-   GOOGLE_CLIENT_EMAIL=service-account@project.iam.gserviceaccount.com
-   GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-   GOOGLE_SHEET_ID=your-primary-sheet-id
-   GOOGLE_SHEET_ID_CONFIDENCE=your-confidence-sheet-id
-   GOOGLE_DRIVE_FOLDER_ID=your-drive-folder-id
-   ```
-
-4. **Launch the Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-5. **Lint and Type Check:**
-   ```bash
-   npm run lint
-   ```
-
-6. **Production Build:**
-   ```bash
-   npm run build
-   npm run start
-   ```
-
----
 
 ##  Disclaimer
 
