@@ -4,6 +4,8 @@ import SuppliersCarousel from "@/components/dashboard/SuppliersCarousel";
 import { SUPPLIER_CONFIDENCE_CHECKLISTS, getSupplierLogoFallback } from "@/lib/mock-data";
 import { Users, ShieldCheck } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function GroupSuppliersPage() {
   try {
     const supabase = await createClient();
@@ -201,7 +203,10 @@ export default async function GroupSuppliersPage() {
         />
       </div>
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("DYNAMIC_SERVER_USAGE")) {
+      throw error;
+    }
     console.error("Group Suppliers Page Error:", error);
     return (
       <div className="p-8 text-center text-xs text-red-500 font-mono">

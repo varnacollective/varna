@@ -1,15 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Playfair_Display, Inter, Jost, Caveat, Cedarville_Cursive } from "next/font/google";
+import { Cormorant_Garamond, Playfair_Display, Inter, Caveat, Cedarville_Cursive } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/next";
-
-const jost = Jost({
-  subsets: ["latin"],
-  variable: "--font-jost",
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -100,7 +93,7 @@ export default function RootLayout({
         {/* Preconnect to Google Fonts CDN */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${jost.variable} ${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#F7F5F0] dark:bg-[#151311] text-[#1C1917] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#9A4A2E] selection:text-white`}>
+      <body className={`${inter.variable} ${cormorant.variable} ${playfair.variable} ${caveat.variable} ${cedarville.variable} font-sans antialiased bg-[#F7F5F0] dark:bg-[#151311] text-[#1C1917] dark:text-[#FAF8F5] transition-colors duration-300 selection:bg-[#9A4A2E] selection:text-white`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
