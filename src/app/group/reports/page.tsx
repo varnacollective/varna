@@ -1,5 +1,5 @@
 import React from "react";
-import { cookies } from "next/headers";
+import { getSession } from "@/lib/session";
 import { createClient } from "@/utils/supabase/server";
 import GroupReportsClient, {
   type HotelReportListItem,
@@ -8,20 +8,8 @@ import GroupReportsClient, {
 import { scoreBand } from "@/lib/group-reports-data";
 
 export default async function GroupReportsPage() {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("varna_session");
-
-  let parentGroup = "Meridian Hospitality Group (DEMO)";
-  if (sessionCookie?.value) {
-    try {
-      const session = JSON.parse(sessionCookie.value);
-      if (session.parentGroup) {
-        parentGroup = session.parentGroup;
-      }
-    } catch {
-      // Use default parentGroup
-    }
-  }
+  const session = await getSession();
+  const parentGroup = session?.parentGroup || "Meridian Hospitality Group (DEMO)";
 
   const supabase = await createClient();
 

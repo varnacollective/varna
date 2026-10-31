@@ -1,25 +1,17 @@
-import { cookies } from "next/headers";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import GroupDashboardClient from "@/app/group-dashboard/GroupDashboardClient";
 import { type FullGroupDashboardData, type GroupSummaryData, type HotelLeaderboardItem, type SupplierBandSpend, type SupplierTierCount } from "@/app/group-dashboard/page";
 
 export default async function GroupDashboardSubRoutePage() {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("varna_session");
+  const session = await getSession();
 
-  if (!sessionCookie?.value) {
+  if (!session) {
     redirect("/");
   }
 
-  let session: { clientId: string; clientName: string; isGroup?: boolean; parentGroup?: string };
-  try {
-    session = JSON.parse(sessionCookie.value);
-  } catch {
-    redirect("/");
-  }
-
-  const parentGroup = session.parentGroup || "Meridian Hotels & Resorts";
+  const parentGroup = session.parentGroup || "Meridian Hospitality Group (DEMO)";
   const supabase = await createClient();
 
   try {
