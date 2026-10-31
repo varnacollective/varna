@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import DashboardClient from "./DashboardClient";
@@ -27,17 +27,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       ? rawClientId[0]
       : undefined;
 
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("varna_session");
-
-  let session: { clientId: string; clientName: string; isGroup?: boolean; parentGroup?: string } | null = null;
-  if (sessionCookie?.value) {
-    try {
-      session = JSON.parse(sessionCookie.value);
-    } catch {
-      // ignore JSON parse error
-    }
-  }
+  const session = await getSession();
 
   // If no active session and no explicit hotel requested via query, redirect to login
   if (!session && !queryClientId) {

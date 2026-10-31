@@ -3,7 +3,7 @@ require('dotenv').config({ path: '.env.local' });
 
 async function run() {
   const client = new Client({
-    connectionString: process.env.SUPABASE_DB_URL || "postgresql://postgres:YpaYGLG8i6xmQoKP@db.ithvvxdcfyckculqzgkg.supabase.co:5432/postgres",
+    connectionString: process.env.SUPABASE_DB_URL || process.env.DATABASE_URL,
   });
   await client.connect();
 

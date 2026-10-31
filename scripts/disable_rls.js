@@ -1,36 +1,18 @@
-const { Pool } = require('pg');
-require('dotenv').config({ path: '.env.local' });
+/**
+ * scripts/disable_rls.js — NEUTRALIZED
+ *
+ * This script has been intentionally disabled as part of security remediation
+ * (Fix F5 / F3). Running it would disable Row-Level Security across all core
+ * tables, exposing tenant data.
+ *
+ * To re-enable RLS after accidental disabling, run:
+ *   psql $DATABASE_URL -f supabase/migrations/enable_rls_security.sql
+ *
+ * DO NOT restore the original pool.query logic.
+ */
 
-const pool = new Pool({
-  connectionString: process.env.SUPABASE_DB_URL || "postgresql://postgres:YpaYGLG8i6xmQoKP@db.ithvvxdcfyckculqzgkg.supabase.co:5432/postgres",
-});
-
-async function main() {
-  const tables = [
-    'enterprise_master',
-    'assessment_inputs',
-    'product_catalogue',
-    'confidence_summary',
-    'order_register',
-    'scores_summary',
-    'category_spend_by_client',
-    'client_master',
-    'supplier_detail_by_client',
-    'client_summary',
-    'confidence_scoring'
-  ];
-
-  try {
-    for (const table of tables) {
-      console.log(`Disabling RLS for ${table}...`);
-      await pool.query(`ALTER TABLE public."${table}" DISABLE ROW LEVEL SECURITY;`);
-    }
-    console.log('Done.');
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await pool.end();
-  }
-}
-
-main();
+console.error(
+  "[SECURITY] disable_rls.js has been permanently neutralized. " +
+  "To manage RLS policies, use supabase/migrations/enable_rls_security.sql."
+);
+process.exit(1);

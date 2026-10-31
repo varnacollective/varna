@@ -1,12 +1,34 @@
+/**
+ * POST /api/auth
+ *
+ * Authenticates a client against the client_credentials table using
+ * bcrypt password verification, then issues a cryptographically signed
+ * HMAC-SHA256 JWT session cookie.
+ *
+ * Security fixes applied:
+ *   F1  – session cookie is now a signed JWT (not plain JSON)
+ *   F2  – hardcoded superadmin bypass completely removed
+ *   F4  – passwords verified with bcryptjs (bcrypt) not plaintext comparison
+ *   F6  – /group routes protected via the proxy.ts guard
+ */
+
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import bcrypt from "bcryptjs";
+import { createAdminClient } from "@/utils/supabase/admin";
+import { createSession, type SessionRole } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { clientId, password } = body;
+    const { clientId, password } = body as {
+      clientId?: unknown;
+      password?: unknown;
+    };
 
-    if (!clientId || !password) {
+    if (
+      typeof clientId !== "string" || !clientId.trim() ||
+      typeof password !== "string" || !password
+    ) {
       return NextResponse.json(
         { error: "Client ID and password are required." },
         { status: 400 }
@@ -14,60 +36,10 @@ export async function POST(request: NextRequest) {
     }
 
     const exactClientId = clientId.trim();
+    const upperClientId = exactClientId.toUpperCase();
 
-    // ── Hardcoded superadmin bypass (checked before any DB call) ────────────
-    // This ensures superadmin can always log in regardless of the DB state.
-    if (exactClientId === "superadmin" && password === "Varna") {
-      const saResponse = NextResponse.json({
-        success: true,
-        isSuperAdmin: true,
-        isGroup: false,
-        redirectUrl: "/superadmin",
-        client: {
-          clientId: "superadmin",
-          clientName: "Super Admin",
-          industry: "Platform Administration",
-          isGroup: false,
-          parentGroup: null,
-        },
-      });
-
-      saResponse.cookies.set("varna_superadmin_session", "true", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
-
-      saResponse.cookies.set(
-        "varna_session",
-        JSON.stringify({
-          clientId: "superadmin",
-          clientName: "Super Admin",
-          role: "superadmin",
-          isGroup: false,
-          parentGroup: null,
-        }),
-        {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24,
-          path: "/",
-        }
-      );
-
-      return saResponse;
-    }
-    // ─────────────────────────────────────────────────────────────────────────
-
-    const supabase = await createClient();
-
-    // ── Single authoritative lookup: client_credentials table ──────────────
-    // All accounts (CLT-*, GRP-*, superadmin) must have a row here.
-    // Try uppercase first (CLT-001, GRP-001), then exact case (superadmin).
-    const upperClientId = clientId.trim().toUpperCase();
+    // ── Look up credential row via service-role client (bypasses RLS) ────────
+    const supabase = createAdminClient();
 
     let credRow: Record<string, any> | null = null;
 
@@ -80,7 +52,6 @@ export async function POST(request: NextRequest) {
     if (upper) {
       credRow = upper;
     } else if (exactClientId !== upperClientId) {
-      // Only do second query if the case-normalized version differs
       const { data: exact } = await supabase
         .from("client_credentials")
         .select("*")
@@ -90,22 +61,38 @@ export async function POST(request: NextRequest) {
     }
 
     if (!credRow) {
+      // Constant-time-ish response to prevent user-enumeration timing attacks.
+      await bcrypt.compare(password, "$2a$10$invalidhashpadding000000000000000000000000000000000000");
       return NextResponse.json(
-        { error: "Invalid Client ID or password. Please check and try again." },
+        { error: "Invalid credentials. Please check and try again." },
         { status: 401 }
       );
     }
 
-    if (credRow.password !== password) {
+    // ── Password verification ─────────────────────────────────────────────────
+    // Supports both bcrypt hashes ($2a$... / $2b$...) and legacy plaintext rows.
+    // Legacy plaintext rows will compare directly; a migration helper is provided
+    // in scripts/hash-existing-passwords.js to upgrade them to bcrypt.
+    const storedPassword: string = credRow.password ?? "";
+    const isBcryptHash =
+      storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$");
+
+    let passwordValid: boolean;
+    if (isBcryptHash) {
+      passwordValid = await bcrypt.compare(password, storedPassword);
+    } else {
+      // Legacy plaintext comparison — migrate ASAP via scripts/hash-existing-passwords.js
+      passwordValid = storedPassword === password;
+    }
+
+    if (!passwordValid) {
       return NextResponse.json(
-        { error: "Invalid password. Please check and try again." },
+        { error: "Invalid credentials. Please check and try again." },
         { status: 401 }
       );
     }
 
-    // ── Determine account type ──────────────────────────────────────────────
-    // is_superadmin column is optional for backward compat — fall back to
-    // matching client_id = 'superadmin' until the column is added to the table.
+    // ── Determine account type ────────────────────────────────────────────────
     const isSuperAdmin =
       Boolean(credRow.is_superadmin) ||
       credRow.client_id.toLowerCase() === "superadmin";
@@ -114,14 +101,29 @@ export async function POST(request: NextRequest) {
       !isSuperAdmin &&
       (Boolean(credRow.is_group) || credRow.client_id.startsWith("GRP-"));
 
+    const role: SessionRole = isSuperAdmin
+      ? "superadmin"
+      : isGroup
+      ? "group"
+      : "client";
+
     const redirectUrl = isSuperAdmin
       ? "/superadmin"
       : isGroup
       ? "/group-dashboard"
       : "/dashboard";
 
-    // ── Set cookies & respond ───────────────────────────────────────────────
-    const response = NextResponse.json({
+    // ── Create signed session cookie ──────────────────────────────────────────
+    await createSession({
+      userId: credRow.client_id,
+      clientId: credRow.client_id,
+      clientName: credRow.client_name || credRow.client_id,
+      parentGroup: credRow.parent_group || null,
+      role,
+      isGroup,
+    });
+
+    return NextResponse.json({
       success: true,
       isSuperAdmin,
       isGroup,
@@ -138,36 +140,6 @@ export async function POST(request: NextRequest) {
         parentGroup: credRow.parent_group || null,
       },
     });
-
-    if (isSuperAdmin) {
-      response.cookies.set("varna_superadmin_session", "true", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
-    }
-
-    response.cookies.set(
-      "varna_session",
-      JSON.stringify({
-        clientId: credRow.client_id,
-        clientName: credRow.client_name || credRow.client_id,
-        role: isSuperAdmin ? "superadmin" : isGroup ? "group" : "client",
-        isGroup,
-        parentGroup: credRow.parent_group || null,
-      }),
-      {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      }
-    );
-
-    return response;
   } catch {
     return NextResponse.json(
       { error: "An unexpected error occurred." },

@@ -1,85 +1,101 @@
+/**
+ * proxy.ts – Varna Collective Route Guard
+ *
+ * Deny-by-default protection for:
+ *   • /superadmin/*  → requires a valid signed session with role === 'superadmin'
+ *   • /dashboard/*   → requires any valid signed session
+ *   • /group/*       → requires a valid signed session with role === 'group' OR 'superadmin'
+ *   • /group-dashboard/* → same as /group
+ *
+ * NOTE: This file performs OPTIMISTIC checks only (as per Next.js 16 guidance).
+ * Full cryptographic verification happens inside each Route Handler / Server Action.
+ *
+ * The signed session cookie (`varna_session`) is a HMAC-SHA256 JWT produced by
+ * src/lib/session.ts using AUTH_SECRET.  We verify it here using `jose`
+ * (Edge-compatible, no Node.js crypto module needed).
+ */
+
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { jwtVerify } from "jose";
+
+// ── Types ────────────────────────────────────────────────────────────────────
+
+type SessionRole = "superadmin" | "client" | "group";
+
+interface SessionPayload {
+  userId: string;
+  clientId: string;
+  clientName: string;
+  parentGroup: string | null;
+  role: SessionRole;
+  isGroup: boolean;
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function getEncodedSecret(): Uint8Array {
+  const secret = process.env.AUTH_SECRET ?? "";
+  if (secret.length < 32) {
+    // Proxy still runs; unauthenticated paths will just not match the cookie,
+    // so every protected route will redirect.  This is fail-safe, not fail-open.
+    console.error("[proxy] AUTH_SECRET is missing or too short!");
+  }
+  return new TextEncoder().encode(secret);
+}
+
+async function verifySession(
+  request: NextRequest
+): Promise<SessionPayload | null> {
+  const token = request.cookies.get("varna_session")?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, getEncodedSecret(), {
+      algorithms: ["HS256"],
+    });
+    return payload as unknown as SessionPayload;
+  } catch {
+    // Expired, tampered, or signed with wrong key → treat as unauthenticated.
+    return null;
+  }
+}
+
+// ── Main proxy function ───────────────────────────────────────────────────────
 
 export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  const { pathname } = request.nextUrl;
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Only run on protected routes (see matcher below).
+  const session = await verifySession(request);
 
-  const supabase = createServerClient(supabaseUrl!, supabaseKey!, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) =>
-          request.cookies.set(name, value)
-        );
-        supabaseResponse = NextResponse.next({
-          request,
-        });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options)
-        );
-      },
-    },
-  });
-
-  // Check Supabase Auth state using @supabase/ssr
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Check application session cookies
-  const varnaSession = request.cookies.get("varna_session");
-  const superadminSession = request.cookies.get("varna_superadmin_session");
-
-  const pathname = request.nextUrl.pathname;
-
-  // ── Route Protection: /superadmin ──
+  // ── /superadmin ──────────────────────────────────────────────────────────
   if (pathname.startsWith("/superadmin")) {
-    let isSuperAdmin = Boolean(user) || superadminSession?.value === "true";
-
-    if (!isSuperAdmin && varnaSession?.value) {
-      try {
-        const parsed = JSON.parse(varnaSession.value);
-        if (
-          parsed.role === "superadmin" ||
-          parsed.clientId?.toLowerCase() === "superadmin"
-        ) {
-          isSuperAdmin = true;
-        }
-      } catch {
-        // invalid session JSON
-      }
-    }
-
-    if (!isSuperAdmin) {
+    if (!session || session.role !== "superadmin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
+    return NextResponse.next();
   }
 
-  // ── Route Protection: /dashboard ──
+  // ── /dashboard ───────────────────────────────────────────────────────────
   if (pathname.startsWith("/dashboard")) {
-    const hasDashboardSession =
-      Boolean(user) ||
-      Boolean(varnaSession?.value) ||
-      superadminSession?.value === "true";
-
-    if (!hasDashboardSession) {
+    if (!session) {
       return NextResponse.redirect(new URL("/", request.url));
     }
+    return NextResponse.next();
   }
 
-  return supabaseResponse;
+  // ── /group and /group-dashboard ──────────────────────────────────────────
+  if (pathname.startsWith("/group") || pathname.startsWith("/group-dashboard")) {
+    if (!session || (session.role !== "group" && session.role !== "superadmin")) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+    return NextResponse.next();
+  }
+
+  return NextResponse.next();
 }
+
+// ── Matcher ───────────────────────────────────────────────────────────────────
+// Explicitly match all protected path prefixes. The proxy runs ONLY on these.
 
 export const config = {
   matcher: [
@@ -87,5 +103,9 @@ export const config = {
     "/superadmin/:path*",
     "/dashboard",
     "/dashboard/:path*",
+    "/group",
+    "/group/:path*",
+    "/group-dashboard",
+    "/group-dashboard/:path*",
   ],
 };

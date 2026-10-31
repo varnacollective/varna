@@ -62,78 +62,21 @@ export const PILLAR_SUB_CRITERIA_CONFIG = {
   ],
 };
 
-/** Exact partner data from scores_summary table in Supabase used as direct fallback */
-export const KNOWN_SUPPLIER_SCORES: Record<string, Record<string, any>> = {
-  // ENT-001: Bare Necessities Zero Waste Solutions Pvt. Ltd.
-  "ENT-001": {
-    e_pillar_score: 31.8,
-    e1_eff_score: 15,
-    e2_eff_score: 10,
-    e3_eff_score: 52.5,
-    e4_eff_score: 15,
-    e5_eff_score: 100,
-    e6_eff_score: 56.3,
-    s_pillar_score: 63.8,
-    s1_eff_score: 56.3,
-    s2_eff_score: 75,
-    s3_eff_score: 32.5,
-    s4_eff_score: 100,
-    g_pillar_score: 85.3,
-    g1_eff_score: 100,
-    g2_eff_score: 100,
-    g3_eff_score: 41.3,
-    c_pillar_score: null,
-    c1_eff_score: null,
-    c2_eff_score: null,
-    c3_eff_score: null,
-  },
-  // ENT-002: UKHI INDIA PRIVATE LIMITED
-  "ENT-002": {
-    e_pillar_score: 46.3,
-    e1_eff_score: 37.5,
-    e2_eff_score: 10,
-    e3_eff_score: 90,
-    e4_eff_score: 15,
-    e5_eff_score: 80,
-    e6_eff_score: 100,
-    s_pillar_score: 67.5,
-    s1_eff_score: 67.5,
-    s2_eff_score: 60,
-    s3_eff_score: 48.8,
-    s4_eff_score: 100,
-    g_pillar_score: 78.3,
-    g1_eff_score: 100,
-    g2_eff_score: 80,
-    g3_eff_score: 41.3,
-    c_pillar_score: null,
-    c1_eff_score: null,
-    c2_eff_score: null,
-    c3_eff_score: null,
-  },
-  // ENT-003: Kheoni Ventures Pvt Ltd
-  "ENT-003": {
-    e_pillar_score: 25.4,
-    e1_eff_score: 15,
-    e2_eff_score: 10,
-    e3_eff_score: 37.5,
-    e4_eff_score: 15,
-    e5_eff_score: 75,
-    e6_eff_score: 37.5,
-    s_pillar_score: 59.1,
-    s1_eff_score: 56.3,
-    s2_eff_score: 60,
-    s3_eff_score: 48.8,
-    s4_eff_score: 75,
-    g_pillar_score: 76.5,
-    g1_eff_score: 90,
-    g2_eff_score: 60,
-    g3_eff_score: null,
-    c_pillar_score: null,
-    c1_eff_score: null,
-    c2_eff_score: null,
-    c3_eff_score: null,
-  },
-};
+/**
+ * KNOWN_SUPPLIER_SCORES removed (Fix F11).
+ * All scores must be read from the canonical `scores_summary` table in Supabase.
+ * Use server-side queries in Server Components or Route Handlers — never hardcode
+ * pillar/sub-criteria scores in the frontend.
+ *
+ * Canonical Sutra formula (server-side only):
+ *   Final Varna Score = (0.50 × Impact) + (0.30 × Readiness) + (0.20 × Risk)
+ *   Evidence multipliers: Proxy=0.50, Self-Reported=0.75, Third-Party Verified=1.00
+ *
+ * DB columns: readiness_score, risk_score, impact_score, final_varna_score,
+ *             e_pillar_score, s_pillar_score, g_pillar_score, c_pillar_score,
+ *             e1_eff_score … e6_eff_score, s1_eff_score … s4_eff_score,
+ *             g1_eff_score … g3_eff_score, c1_eff_score … c3_eff_score
+ */
 
 export function getSubCriteriaForPillar(
   pillarKey: "E" | "S" | "G" | "C",
@@ -158,12 +101,16 @@ export function getSubCriteriaForPillar(
 }
 
 /**
- * Extracts partner-specific sub-criteria items from a scores_summary row or fallback data.
+ * Extracts partner-specific sub-criteria items from a scores_summary row.
+ *
+ * The `scoresSummary` MUST come from a server-side Supabase query of the
+ * `scores_summary` table — never from hardcoded frontend fallbacks.
+ * If the row is missing, items will have score=null (displayed as "–" in UI).
  */
 export function getPartnerPillarBreakdown(
   pillarName: "Environmental" | "Social" | "Governance" | "Cultural" | "Carbon Impact" | string,
   scoresSummary?: Record<string, any> | null,
-  partnerIdOrName?: string
+  _partnerIdOrName?: string  // kept for API compatibility, no longer used for mock lookup
 ): { items: SubCriterionItem[]; pillarScore: number | null } {
   // Normalize pillar name: in DB the 4th pillar is Cultural, in UI sometimes called Carbon Impact
   const normPillar: "Environmental" | "Social" | "Governance" | "Cultural" =
@@ -173,20 +120,8 @@ export function getPartnerPillarBreakdown(
 
   const config = PILLAR_SUB_CRITERIA_CONFIG[normPillar] || [];
 
-  // Find fallback row if scoresSummary is missing or lacks columns
-  let effectiveRow = scoresSummary;
-  if (!effectiveRow || !effectiveRow.e1_eff_score) {
-    if (partnerIdOrName) {
-      const lower = partnerIdOrName.toLowerCase();
-      if (lower.includes("ent-001") || lower.includes("bare")) {
-        effectiveRow = KNOWN_SUPPLIER_SCORES["ENT-001"];
-      } else if (lower.includes("ent-002") || lower.includes("ukhi")) {
-        effectiveRow = KNOWN_SUPPLIER_SCORES["ENT-002"];
-      } else if (lower.includes("ent-003") || lower.includes("kheoni")) {
-        effectiveRow = KNOWN_SUPPLIER_SCORES["ENT-003"];
-      }
-    }
-  }
+  // Use only the passed scoresSummary — no hardcoded fallback.
+  const effectiveRow = scoresSummary ?? null;
 
   // Extract pillar score
   const pillarScoreKey =

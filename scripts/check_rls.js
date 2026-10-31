@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config({ path: '.env.local' });
 
 const pool = new Pool({
-  connectionString: process.env.SUPABASE_DB_URL || "postgresql://postgres:YpaYGLG8i6xmQoKP@db.ithvvxdcfyckculqzgkg.supabase.co:5432/postgres",
+  connectionString: process.env.SUPABASE_DB_URL || process.env.DATABASE_URL,
 });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

@@ -1,7 +1,7 @@
 import React from "react";
 import { createClient } from "@/utils/supabase/server";
 import SuppliersCarousel from "@/components/dashboard/SuppliersCarousel";
-import { SUPPLIER_CONFIDENCE_CHECKLISTS, getSupplierLogoFallback } from "@/lib/mock-data";
+import { getSupplierLogoFallback } from "@/lib/mock-data";
 import { Users, ShieldCheck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -44,14 +44,8 @@ export default async function GroupSuppliersPage() {
       .select("*")
       .order("sdg_number", { ascending: true });
 
-    // Fallback supplier list if scoresData is empty
-    const rawSuppliers = scoresData && scoresData.length > 0 ? scoresData : [
-      { enterprise_id: "ENT-002", enterprise_name: "UKHI INDIA PRIVATE LIMITED", final_varna_score: 56, e_pillar_score: 60, s_pillar_score: 55, g_pillar_score: 50, c_pillar_score: 45 },
-      { enterprise_id: "ENT-001", enterprise_name: "Bare Necessities Zero Waste Solutions Pvt. Ltd.", final_varna_score: 78, e_pillar_score: 75, s_pillar_score: 80, g_pillar_score: 70, c_pillar_score: 72 },
-      { enterprise_id: "ENT-003", enterprise_name: "Kheoni Ventures Pvt Ltd", final_varna_score: 42, e_pillar_score: 40, s_pillar_score: 45, g_pillar_score: 40, c_pillar_score: 35 },
-      { enterprise_id: "ENT-004", enterprise_name: "Greensole Footwear Pvt Ltd", final_varna_score: 72, e_pillar_score: 70, s_pillar_score: 75, g_pillar_score: 68, c_pillar_score: 65 },
-      { enterprise_id: "ENT-005", enterprise_name: "Marikar Green Earth Private Limited", final_varna_score: 64, e_pillar_score: 62, s_pillar_score: 65, g_pillar_score: 60, c_pillar_score: 58 },
-    ];
+    // Live database records only — no mock fallbacks.
+    const rawSuppliers = scoresData ?? [];
 
     const mergedSuppliers = rawSuppliers.map((scoreRow: any) => {
       const name = scoreRow.enterprise_name || "";
@@ -67,12 +61,7 @@ export default async function GroupSuppliersPage() {
       // Target-specific confidence enforcement
       let confidencePct = confidenceRow?.confidence_pct;
       if (confidencePct === undefined || confidencePct === null) {
-        if (lowerName.includes("ukhi")) confidencePct = 63;
-        else if (lowerName.includes("bare")) confidencePct = 47;
-        else if (lowerName.includes("kheoni")) confidencePct = 24;
-        else if (lowerName.includes("greensole")) confidencePct = 72;
-        else if (lowerName.includes("marikar")) confidencePct = 64;
-        else confidencePct = 50;
+        confidencePct = 50; // neutral default when no DB record exists
       }
 
       const masterRow = (enterpriseMasterData || []).find((m: any) => {
@@ -89,16 +78,12 @@ export default async function GroupSuppliersPage() {
         return false;
       });
 
+      // Derive badges from enterprise_master flags (live data) rather than name matching.
       const badges: string[] = [];
-      if (lowerName.includes("bare")) {
-        badges.push("Cruelty-Free (PETA)", "DPIIT Startup", "Refillable Format");
-      } else if (lowerName.includes("ukhi")) {
-        badges.push("DPIIT Startup", "Refillable Format", "Material Innovation");
-      } else if (lowerName.includes("kheoni")) {
-        badges.push("DPIIT Startup", "Craft-Led");
-      } else {
-        badges.push("ISO 14001", "DPIIT Startup");
-      }
+      if (masterRow?.is_craftled_yn === "Y") badges.push("Craft-Led");
+      if (masterRow?.is_womenled_yn === "Y") badges.push("Women-Led");
+      if (masterRow?.is_material_innovation_yn === "Y") badges.push("Material Innovation");
+      if (masterRow?.udyam_number) badges.push("DPIIT Startup");
 
       return {
         enterprise_id: scoreRow.enterprise_id,
@@ -143,19 +128,12 @@ export default async function GroupSuppliersPage() {
         return { item: c.item, status, score: numericScore };
       });
 
-      if (checklist.length === 0) {
-        const fallbackKey = Object.keys(SUPPLIER_CONFIDENCE_CHECKLISTS).find(
-          (k) => k.toLowerCase().includes(lowerName) || lowerName.includes(k.toLowerCase())
-        );
-        if (fallbackKey && SUPPLIER_CONFIDENCE_CHECKLISTS[fallbackKey]) {
-          checklist = SUPPLIER_CONFIDENCE_CHECKLISTS[fallbackKey].checklist;
-        }
-      }
+      // No mock fallback — if the DB has no scoring rows, checklist is empty.
 
-      const totalScoreSum = scoringRows.length > 0
-        ? scoringRows.reduce((acc: number, c: any) => acc + (parseFloat(c.score) || 0), 0)
-        : (lowerName.includes("ukhi") ? 11.25 : lowerName.includes("bare") ? 8.5 : lowerName.includes("kheoni") ? 4.25 : 13);
-
+      const totalScoreSum = scoringRows.reduce(
+        (acc: number, c: any) => acc + (parseFloat(c.score) || 0),
+        0
+      );
       const scorePointsStr = totalScoreSum % 1 === 0 ? totalScoreSum.toString() : totalScoreSum.toFixed(2);
 
       liveConfidenceData[name] = {

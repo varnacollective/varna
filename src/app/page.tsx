@@ -130,7 +130,7 @@ export default function LoginPage() {
               EVIDENCE TO IMPACT
             </h1>
             <p className="text-sm sm:text-[15px] text-stone-500 font-normal leading-relaxed max-w-[340px] sm:max-w-sm mx-auto">
-              A clear view of your suppliers, procurement choices and the impact they create.
+              A clear view of your partners, procurement choices and the impact they create.
             </p>
           </div>
 
@@ -243,9 +243,8 @@ export default function LoginPage() {
           {CAROUSEL_SLIDES.map((slide, idx) => (
             <div
               key={slide.image}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${
-                idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
-              }`}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${idx === carouselIndex ? "opacity-100 z-0" : "opacity-0 pointer-events-none -z-10"
+                }`}
             >
               <img
                 src={slide.image}

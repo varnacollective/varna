@@ -140,7 +140,7 @@ async function syncToSupabase() {
   const pg = new Client({
     connectionString:
       env.SUPABASE_DB_URL ||
-      "postgresql://postgres:YpaYGLG8i6xmQoKP@db.ithvvxdcfyckculqzgkg.supabase.co:5432/postgres",
+      process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
   });
 

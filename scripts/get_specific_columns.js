@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: '.env.local' });
-const pool = new Pool({ connectionString: process.env.SUPABASE_DB_URL || "postgresql://postgres:YpaYGLG8i6xmQoKP@db.ithvvxdcfyckculqzgkg.supabase.co:5432/postgres" });
+const pool = new Pool({ connectionString: process.env.SUPABASE_DB_URL || process.env.DATABASE_URL });
 
 async function main() {
   const tables = ['scores_summary', 'confidence_summary', 'confidence_scoring'];
