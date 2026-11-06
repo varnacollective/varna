@@ -15,9 +15,7 @@ import {
   type CalculatorProduct,
   type BasketLineItem,
   type EmissionFactor,
-  calculateUnitCo2e,
   calculateLineTotal,
-  calculateBasketSummary,
 } from "@/lib/calculator-data";
 import {
   Search,
@@ -75,89 +73,150 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
     });
   }, [selectedGroup, selectedCategory, searchQuery]);
 
-  // Recalculate summary from basket
-  const summary = useMemo(() => {
-    return calculateBasketSummary(basket);
+  // Derived state directly from current active basket items array for reliable reactivity
+  const { totalCo2eKg, totalCo2eTonnes, netSavingKg, switchableCount, categoryBreakdown } = useMemo(() => {
+    let totalKg = 0;
+    let netSaving = 0;
+    let switches = 0;
+    const catMap: Record<string, number> = {};
+
+    for (const item of basket) {
+      const qty = typeof item.quantity === "number" && !isNaN(item.quantity) ? item.quantity : 0;
+      const unitVal = typeof item.unitCo2eKg === "number" && !isNaN(item.unitCo2eKg) ? item.unitCo2eKg : 0;
+      const lineTotal = typeof item.lineCo2eKg === "number" && !isNaN(item.lineCo2eKg) && item.lineCo2eKg !== 0
+        ? item.lineCo2eKg
+        : qty * unitVal;
+
+      totalKg += lineTotal;
+
+      const saving = typeof item.savingKgCo2e === "number" && !isNaN(item.savingKgCo2e) ? item.savingKgCo2e : 0;
+      if (saving > 0) {
+        netSaving += saving;
+        switches += 1;
+      }
+
+      const cat = item.category || "General";
+      catMap[cat] = (catMap[cat] || 0) + lineTotal;
+    }
+
+    const totalTonnes = totalKg / 1000;
+
+    const breakdown = Object.entries(catMap)
+      .map(([category, kgCo2e]) => ({
+        category,
+        kgCo2e,
+        percentage: totalKg > 0 ? (kgCo2e / totalKg) * 100 : 0,
+      }))
+      .sort((a, b) => b.kgCo2e - a.kgCo2e);
+
+    return {
+      totalCo2eKg: totalKg,
+      totalCo2eTonnes: totalTonnes,
+      netSavingKg: netSaving,
+      switchableCount: switches,
+      categoryBreakdown: breakdown,
+    };
   }, [basket]);
+
+  // Format 3 decimal places consistently using Intl.NumberFormat
+  const format3Decimals = (val: number): string => {
+    return Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(isNaN(val) ? 0 : val);
+  };
 
   // ─── Basket Actions ────────────────────────────────────────────────────────
   const handleAddProduct = (prod: CalculatorProduct) => {
-    // Check if product already exists in basket
-    const existingIndex = basket.findIndex((item) => item.productId === prod.productId);
-    if (existingIndex >= 0) {
-      // Increment quantity
-      const updated = [...basket];
-      const existing = updated[existingIndex];
-      const newQty = existing.quantity + 1;
-      updated[existingIndex] = calculateLineTotal(
-        prod,
-        newQty,
-        existing.customWeightKg,
-        existing.customPriceInr
-      );
-      setBasket(updated);
-    } else {
-      // Add new item with default quantity 1 (or 100 if small item)
-      const defaultQty = prod.route === "Weight" && (prod.weightPerUnitKg || 0) < 0.1 ? 100 : 1;
-      const newLine = calculateLineTotal(prod, defaultQty);
-      newLine.lineNumber = basket.length + 1;
-      setBasket([...basket, newLine]);
-    }
+    setBasket((prevBasket) => {
+      const existingIndex = prevBasket.findIndex((item) => item.productId === prod.productId);
+      if (existingIndex >= 0) {
+        const updated = [...prevBasket];
+        const existing = updated[existingIndex];
+        const newQty = (existing.quantity || 0) + 1;
+        const recalculated = calculateLineTotal(
+          prod,
+          newQty,
+          existing.customWeightKg,
+          existing.customPriceInr
+        );
+        updated[existingIndex] = {
+          ...recalculated,
+          lineNumber: existing.lineNumber,
+        };
+        return updated;
+      } else {
+        const defaultQty = prod.route === "Weight" && (prod.weightPerUnitKg || 0) < 0.1 ? 100 : 1;
+        const newLine = calculateLineTotal(prod, defaultQty);
+        newLine.lineNumber = prevBasket.length + 1;
+        return [...prevBasket, newLine];
+      }
+    });
   };
 
   const handleUpdateQuantity = (index: number, newQty: number) => {
-    if (isNaN(newQty) || newQty <= 0) return;
-    const updated = [...basket];
-    const item = updated[index];
-    const prod = PRODUCT_MAP.get(item.productId);
-    if (!prod) return;
+    if (isNaN(newQty) || newQty < 0) return;
+    setBasket((prevBasket) => {
+      if (!prevBasket[index]) return prevBasket;
+      const updated = [...prevBasket];
+      const item = updated[index];
+      const prod = PRODUCT_MAP.get(item.productId);
+      if (!prod) return prevBasket;
 
-    updated[index] = {
-      ...calculateLineTotal(prod, newQty, item.customWeightKg, item.customPriceInr),
-      lineNumber: item.lineNumber,
-    };
-    setBasket(updated);
+      updated[index] = {
+        ...calculateLineTotal(prod, newQty, item.customWeightKg, item.customPriceInr),
+        lineNumber: item.lineNumber,
+      };
+      return updated;
+    });
   };
 
   const handleUpdateCustomWeight = (index: number, valStr: string) => {
-    const updated = [...basket];
-    const item = updated[index];
-    const prod = PRODUCT_MAP.get(item.productId);
-    if (!prod) return;
+    setBasket((prevBasket) => {
+      if (!prevBasket[index]) return prevBasket;
+      const updated = [...prevBasket];
+      const item = updated[index];
+      const prod = PRODUCT_MAP.get(item.productId);
+      if (!prod) return prevBasket;
 
-    const val = valStr === "" ? null : parseFloat(valStr);
-    updated[index] = {
-      ...calculateLineTotal(prod, item.quantity, val, item.customPriceInr),
-      lineNumber: item.lineNumber,
-    };
-    setBasket(updated);
+      const val = valStr === "" ? null : parseFloat(valStr);
+      updated[index] = {
+        ...calculateLineTotal(prod, item.quantity, val, item.customPriceInr),
+        lineNumber: item.lineNumber,
+      };
+      return updated;
+    });
   };
 
   const handleUpdateCustomPrice = (index: number, valStr: string) => {
-    const updated = [...basket];
-    const item = updated[index];
-    const prod = PRODUCT_MAP.get(item.productId);
-    if (!prod) return;
+    setBasket((prevBasket) => {
+      if (!prevBasket[index]) return prevBasket;
+      const updated = [...prevBasket];
+      const item = updated[index];
+      const prod = PRODUCT_MAP.get(item.productId);
+      if (!prod) return prevBasket;
 
-    const val = valStr === "" ? null : parseFloat(valStr);
-    updated[index] = {
-      ...calculateLineTotal(prod, item.quantity, item.customWeightKg, val),
-      lineNumber: item.lineNumber,
-    };
-    setBasket(updated);
+      const val = valStr === "" ? null : parseFloat(valStr);
+      updated[index] = {
+        ...calculateLineTotal(prod, item.quantity, item.customWeightKg, val),
+        lineNumber: item.lineNumber,
+      };
+      return updated;
+    });
   };
 
   const handleRemoveLine = (index: number) => {
-    const updated = basket.filter((_, idx) => idx !== index);
-    // renumber lines
-    updated.forEach((item, idx) => {
-      item.lineNumber = idx + 1;
+    setBasket((prevBasket) => {
+      const updated = prevBasket.filter((_, idx) => idx !== index);
+      return updated.map((item, idx) => ({
+        ...item,
+        lineNumber: idx + 1,
+      }));
     });
-    setBasket(updated);
   };
 
   const handleResetSample = () => {
-    setBasket(INITIAL_BASKET_ITEMS);
+    setBasket(INITIAL_BASKET_ITEMS.map((item) => ({ ...item })));
   };
 
   const handleClearBasket = () => {
@@ -165,17 +224,20 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
   };
 
   const handleSwitchAlternative = (index: number) => {
-    const item = basket[index];
-    if (!item.compareWith) return;
+    setBasket((prevBasket) => {
+      if (!prevBasket[index]) return prevBasket;
+      const item = prevBasket[index];
+      if (!item.compareWith) return prevBasket;
 
-    const altProd = PRODUCT_NAME_MAP.get(item.compareWith.toLowerCase().trim());
-    if (!altProd) return;
+      const altProd = PRODUCT_NAME_MAP.get(item.compareWith.toLowerCase().trim());
+      if (!altProd) return prevBasket;
 
-    const updated = [...basket];
-    const switchedLine = calculateLineTotal(altProd, item.quantity);
-    switchedLine.lineNumber = item.lineNumber;
-    updated[index] = switchedLine;
-    setBasket(updated);
+      const updated = [...prevBasket];
+      const switchedLine = calculateLineTotal(altProd, item.quantity);
+      switchedLine.lineNumber = item.lineNumber;
+      updated[index] = switchedLine;
+      return updated;
+    });
   };
 
   const handleOpenFactorDetails = (prodId: string) => {
@@ -203,14 +265,6 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
         "
       >
         <div className="relative z-10 space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#8C4A27]/10 text-[#8C4A27] dark:bg-[#E07A57]/20 dark:text-[#E07A57] border border-[#8C4A27]/20">
-              Scope 3 Planning
-            </span>
-            <span className="text-[11px] text-[#7A7265] dark:text-[#9A9182] font-mono">
-              Version: {CALCULATOR_SETTINGS.factorVersion}
-            </span>
-          </div>
           <h1 className="text-2xl lg:text-3xl font-serif font-bold text-[#1F1B16] dark:text-[#FAF8F5] tracking-tight">
             What does this purchase emit?
           </h1>
@@ -241,8 +295,8 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
         </div>
       </motion.div>
 
-      {/* ─── 3 Top KPI Cards ──────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {/* ─── Top KPI Cards (Two Cards Spanning Space) ────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* KPI 1: Total Footprint */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
@@ -262,14 +316,14 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
             </div>
             <div className="flex items-baseline gap-2 mt-2">
               <span className="text-3xl lg:text-4xl font-serif font-bold tracking-tight text-[#FAF8F5] tabular-nums">
-                {summary.totalCo2eTonnes.toFixed(1)}
+                {totalCo2eTonnes.toFixed(3)}
               </span>
               <span className="text-lg font-serif text-[#C4B9A7]">tonnes</span>
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
             <span className="text-[#A39989] font-mono">
-              {Math.round(summary.totalCo2eKg).toLocaleString()} kg CO₂e
+              {format3Decimals(totalCo2eKg)} kg CO₂e
             </span>
             <span className="text-[11px] text-[#D8CEBC]">Scope 3 Goods</span>
           </div>
@@ -295,47 +349,18 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
             </div>
             <div className="flex items-baseline gap-2 mt-2">
               <span className="text-3xl lg:text-4xl font-serif font-bold text-[#55705A] dark:text-[#88A88D] tabular-nums">
-                {Math.round(summary.netSavingKg).toLocaleString()}
+                {format3Decimals(netSavingKg)}
               </span>
               <span className="text-lg font-serif text-[#6F675A] dark:text-[#A8A196]">kg CO₂e</span>
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs text-[#7A7265] dark:text-[#9A9182]">
             <span>
-              {basket.filter((b) => (b.savingKgCo2e || 0) > 0).length} switchable lines found
+              {switchableCount} {switchableCount === 1 ? "switchable line" : "switchable lines"} found
             </span>
             <span className="text-[11px] text-[#55705A] dark:text-[#88A88D] font-medium">
               Verified reductions
             </span>
-          </div>
-        </motion.div>
-
-        {/* KPI 3: Low-Confidence Share */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.15 }}
-          className="
-            bg-[#FAF8F5] dark:bg-[#1E2228] border border-[#E8E2D9] dark:border-white/10
-            p-5 rounded-[22px] shadow-sm flex flex-col justify-between
-          "
-        >
-          <div>
-            <div className="flex items-center justify-between text-xs text-[#6F675A] dark:text-[#A8A196] font-medium mb-1">
-              <span>Low-Confidence Share</span>
-              <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300">
-                Data quality
-              </span>
-            </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl lg:text-4xl font-serif font-bold text-[#8C4A27] dark:text-[#E07A57] tabular-nums">
-                {Math.round(summary.lowConfidenceShare * 100)}%
-              </span>
-              <span className="text-xs text-[#7A7265] dark:text-[#9A9182]">from spend / proxy EFs</span>
-            </div>
-          </div>
-          <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs text-[#7A7265] dark:text-[#9A9182]">
-            <span className="truncate">Refine with your custom weights / invoice prices</span>
           </div>
         </motion.div>
       </div>
@@ -504,7 +529,7 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
               <div className="text-right">
                 <span className="text-xs text-[#7A7265] dark:text-[#9A9182] block">Total</span>
                 <span className="text-lg font-serif font-bold text-[#8C4A27] dark:text-[#E07A57] tabular-nums">
-                  {summary.totalCo2eTonnes.toFixed(2)} t
+                  {totalCo2eTonnes.toFixed(3)} t
                 </span>
               </div>
             </div>
@@ -730,12 +755,12 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
           </div>
 
           <div className="space-y-3">
-            {summary.categoryBreakdown.length === 0 ? (
+            {categoryBreakdown.length === 0 ? (
               <p className="text-xs text-[#8C8273] py-4 text-center">
                 Add products to view category emissions split.
               </p>
             ) : (
-              summary.categoryBreakdown.map((cat) => (
+              categoryBreakdown.map((cat) => (
                 <div key={cat.category} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-[#1F1B16] dark:text-[#FAF8F5]">

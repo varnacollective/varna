@@ -6617,31 +6617,37 @@ export function calculateUnitCo2e(
   customPriceInr?: number | null
 ): { unitCo2eKg: number; effectiveConfidence: ConfidenceLevel; isCustomized: boolean } {
   const p = calculateCompositeFactor(prod);
-  let unitCo2eKg = prod.estimateKgCo2ePerUnit;
   let effectiveConfidence: ConfidenceLevel = prod.confidence;
   let isCustomized = false;
+  let unitCo2eKg = prod.estimateKgCo2ePerUnit;
 
   if (prod.route === 'Weight') {
-    const weight = customWeightKg != null && !isNaN(customWeightKg) && customWeightKg > 0
-      ? ((isCustomized = true), customWeightKg)
-      : prod.weightPerUnitKg || 1.0;
-    unitCo2eKg = weight * p;
-    // Dynamic confidence rule: entering user-verified weight elevates Medium to High
-    if (isCustomized && effectiveConfidence === 'Medium') {
-      effectiveConfidence = 'High';
+    if (customWeightKg != null && !isNaN(customWeightKg) && customWeightKg > 0) {
+      isCustomized = true;
+      const factorRate = p > 0 ? p : (prod.weightPerUnitKg ? prod.estimateKgCo2ePerUnit / prod.weightPerUnitKg : prod.estimateKgCo2ePerUnit);
+      unitCo2eKg = customWeightKg * factorRate;
+      // Dynamic confidence rule: entering user-verified weight elevates Medium to High
+      if (effectiveConfidence === 'Medium') {
+        effectiveConfidence = 'High';
+      }
+    } else {
+      unitCo2eKg = prod.estimateKgCo2ePerUnit;
     }
   } else if (prod.route === 'Spend') {
-    const price = customPriceInr != null && !isNaN(customPriceInr) && customPriceInr > 0
-      ? ((isCustomized = true), customPriceInr)
-      : prod.typicalPriceInr || 0;
-    unitCo2eKg = (price / CALCULATOR_SETTINGS.rupeesPerUsd) * p;
-    // Dynamic confidence rule: entering user actual price elevates Low to Medium
-    if (isCustomized && effectiveConfidence === 'Low') {
-      effectiveConfidence = 'Medium';
+    if (customPriceInr != null && !isNaN(customPriceInr) && customPriceInr > 0) {
+      isCustomized = true;
+      const factorRate = p > 0 ? p : (prod.typicalPriceInr ? (prod.estimateKgCo2ePerUnit * CALCULATOR_SETTINGS.rupeesPerUsd) / prod.typicalPriceInr : 0);
+      unitCo2eKg = (customPriceInr / CALCULATOR_SETTINGS.rupeesPerUsd) * factorRate;
+      // Dynamic confidence rule: entering user actual price elevates Low to Medium
+      if (effectiveConfidence === 'Low') {
+        effectiveConfidence = 'Medium';
+      }
+    } else {
+      unitCo2eKg = prod.estimateKgCo2ePerUnit;
     }
   } else {
     // Per unit
-    unitCo2eKg = p;
+    unitCo2eKg = prod.estimateKgCo2ePerUnit > 0 ? prod.estimateKgCo2ePerUnit : p;
   }
 
   return { unitCo2eKg, effectiveConfidence, isCustomized };
