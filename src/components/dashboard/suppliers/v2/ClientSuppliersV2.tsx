@@ -883,7 +883,12 @@ export default function ClientSuppliersV2({
                       ]}
                       sdgObjects={supplier.sdg_objects || supplier.sdgObjects || []}
                       liveConfidenceData={liveConfidenceData}
-                      scoresSummary={supplier.scores_summary || supplier.scoresSummary}
+                      scoresSummary={{
+                        ...(supplier.scores_summary || {}),
+                        ...(supplier.scoresSummary || {}),
+                        ...(supplier.supplier_detail_by_client || {}),
+                        ...supplier,
+                      }}
                       isActive={isPartnerActive(supplier)}
                     />
                   </div>

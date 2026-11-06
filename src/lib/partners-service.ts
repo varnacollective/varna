@@ -32,9 +32,12 @@ export interface AuthoritativePartner {
   confidence_summary: any;
   badges: string[];
   scores_summary: any;
+  scoresSummary?: any;
+  supplier_detail_by_client?: any;
   womenPercent?: number;
   wageRatio?: number;
   artisansEmployed?: number;
+  [key: string]: any;
 }
 
 export interface PartnerTierCount {
@@ -395,9 +398,14 @@ export async function getAuthoritativePartnersForClient(
       confidence_summary: confidenceRow || null,
       badges: extractSupplierBadges(name, scoreRow.enterprise_id),
       scores_summary: scoreRow,
+      scoresSummary: scoreRow,
+      supplier_detail_by_client: linkRow || null,
       womenPercent,
       wageRatio,
       artisansEmployed,
+      // Spread sub-criteria and detail columns from both sources for instant flexible access
+      ...(linkRow || {}),
+      ...(scoreRow || {}),
     };
   });
 

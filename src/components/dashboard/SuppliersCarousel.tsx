@@ -204,7 +204,12 @@ export default function SuppliersCarousel({
                     ]}
                     sdgObjects={supplier.sdg_objects || []}
                     liveConfidenceData={liveConfidenceData}
-                    scoresSummary={supplier.scores_summary}
+                    scoresSummary={{
+                      ...(supplier.scores_summary || {}),
+                      ...(supplier.scoresSummary || {}),
+                      ...(supplier.supplier_detail_by_client || {}),
+                      ...supplier,
+                    }}
                   />
                 </div>
               );
@@ -306,7 +311,12 @@ export default function SuppliersCarousel({
                   ]}
                   sdgObjects={supplier.sdg_objects || []}
                   liveConfidenceData={liveConfidenceData}
-                  scoresSummary={supplier.scores_summary}
+                  scoresSummary={{
+                    ...(supplier.scores_summary || {}),
+                    ...(supplier.scoresSummary || {}),
+                    ...(supplier.supplier_detail_by_client || {}),
+                    ...supplier,
+                  }}
                 />
               </div>
             );

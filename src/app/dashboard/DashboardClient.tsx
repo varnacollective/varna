@@ -31,6 +31,7 @@ import ClientOverviewV2 from "@/components/dashboard/v2/ClientOverviewV2";
 import ClientOrdersV2 from "@/components/dashboard/orders/v2/ClientOrdersV2";
 import ClientImpactV2 from "@/components/dashboard/impact/v2/ClientImpactV2";
 import ClientSuppliersV2 from "@/components/dashboard/suppliers/v2/ClientSuppliersV2";
+import CalculatorView from "@/components/dashboard/CalculatorView";
 
 export default function DashboardClient({ initialData }: { initialData: DashboardData | null }) {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
     // Read ?section= query param from client side safely
     const params = new URLSearchParams(window.location.search);
     const sec = params.get("section");
-    if (sec && ["overview", "suppliers", "orders", "impact"].includes(sec)) {
+    if (sec && ["overview", "suppliers", "orders", "calculator", "impact"].includes(sec)) {
       setActiveSection(sec);
     }
   }, [initialData, router]);
@@ -58,7 +59,7 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
       const sec = params.get("section");
-      if (sec && ["overview", "suppliers", "orders", "impact"].includes(sec)) {
+      if (sec && ["overview", "suppliers", "orders", "calculator", "impact"].includes(sec)) {
         setActiveSection(sec);
       } else {
         setActiveSection("overview");
@@ -172,6 +173,9 @@ export default function DashboardClient({ initialData }: { initialData: Dashboar
               )}
               {activeSection === "orders" && (
                 <ClientOrdersV2 dashboardData={data} />
+              )}
+              {activeSection === "calculator" && (
+                <CalculatorView clientName={client.clientName} />
               )}
               {activeSection === "impact" && (
                 <ClientImpactV2 dashboardData={data} supplierImpactData={data.supplierImpactData} />

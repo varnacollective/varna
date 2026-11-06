@@ -162,6 +162,8 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
       const isUKHI = lower.includes("ukhi");
 
       return {
+        ...(p.scores_summary || {}),
+        ...p,
         clientId,
         enterpriseId: p.enterprise_id,
         enterpriseName: name,
@@ -185,6 +187,9 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
         logoPath: p.logo_path || getSupplierLogoFallback(name),
         isCraftLed: p.badges?.includes("Craft-Led"),
         badges: p.badges,
+        scores_summary: p.scores_summary,
+        scoresSummary: p.scores_summary,
+        supplier_detail_by_client: p.supplier_detail_by_client,
       };
     });
 

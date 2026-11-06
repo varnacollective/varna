@@ -62,7 +62,14 @@ export default async function SuppliersServerPage({ searchParams }: PageProps) {
         .then((r) => r.data),
       supabase
         .from("supplier_detail_by_client")
-        .select("enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto, orders_inr_ytd_auto, units_ytd_auto, band_auto, total_co2e_kg_auto, co2e_avoided_kg_auto")
+        .select(`
+          enterprise_id, enterprise_name_auto, tier_auto, varna_score_auto, e_score_auto, s_score_auto, g_score_auto, c_score_auto,
+          orders_inr_ytd_auto, units_ytd_auto, band_auto, total_co2e_kg_auto, co2e_avoided_kg_auto,
+          e1_carbon_auto, e2_material_pct_auto, e3_circularity_auto, e4_water_auto, e5_pollution_auto, e6_packaging_auto,
+          s1_employment_auto, s2_gender_auto, s3_wages_auto, s4_health_auto,
+          g1_legal_auto, g2_ethics_auto, g3_sourcing_auto,
+          c1_craft_authenticity_auto, c2_skill_rarity_auto, c3_climatevulnerable_auto
+        `)
         .eq("client_id", clientId)
         .then((r) => r.data),
     ]);

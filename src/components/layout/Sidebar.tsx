@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Store,
   ShoppingBag,
+  Calculator,
   Leaf,
   Network,
   LogOut,
@@ -26,6 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, defaultHref: "/dashboard?section=overview" },
   { id: "suppliers", label: "Partners", icon: Store, defaultHref: "/dashboard?section=suppliers" },
   { id: "orders", label: "Orders", icon: ShoppingBag, defaultHref: "/dashboard?section=orders" },
+  { id: "calculator", label: "Calculator", icon: Calculator, defaultHref: "/dashboard?section=calculator" },
   { id: "impact", label: "Impact", icon: Leaf, defaultHref: "/dashboard?section=impact" },
   { id: "algorithm", label: "Framework", icon: Network, defaultHref: "/algorithm" },
 ];
@@ -46,6 +48,8 @@ function buildNavHref(itemId: string, defaultHref: string, clientId?: string | n
       return `/dashboard?section=suppliers&clientId=${encodeURIComponent(clientId)}`;
     case "orders":
       return `/dashboard?section=orders&clientId=${encodeURIComponent(clientId)}`;
+    case "calculator":
+      return `/dashboard?section=calculator&clientId=${encodeURIComponent(clientId)}`;
     case "impact":
       return `/dashboard?section=impact&clientId=${encodeURIComponent(clientId)}`;
     case "algorithm":
@@ -68,6 +72,10 @@ function checkIsActive(
   if (itemId === "orders") {
     if (pathname.includes("/orders")) return true;
     if (pathname === "/dashboard" && currentSectionQuery === "orders") return true;
+  }
+  if (itemId === "calculator") {
+    if (pathname.includes("/calculator")) return true;
+    if (pathname === "/dashboard" && currentSectionQuery === "calculator") return true;
   }
   if (itemId === "impact") {
     if (pathname.includes("/impact")) return true;

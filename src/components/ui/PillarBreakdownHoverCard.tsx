@@ -260,11 +260,11 @@ export default function PillarBreakdownHoverCard({
                       {finalItems.map((item, idx) => {
                         const isScored = item.score !== null && item.score !== undefined && !isNaN(Number(item.score));
                         const numScore = isScored ? Number(item.score) : 0;
-                        const isCulturalUnassessed = isCultural && (numScore === 0 || !isScored);
+                        const isCulturalUnassessed = isCultural && (numScore === 0 || !isScored || item.isUnassessed);
                         const formattedScore = isCulturalUnassessed
                           ? "To Be Assessed"
                           : isScored
-                          ? (numScore % 1 === 0 ? numScore : numScore.toFixed(1))
+                          ? `${numScore % 1 === 0 ? numScore : numScore.toFixed(1)} / 100`
                           : "Not yet scored";
 
                         const sutraEntry = sutraList.find((s) => {
@@ -300,9 +300,15 @@ export default function PillarBreakdownHoverCard({
                               </span>
 
                               <div className="flex items-center gap-2 shrink-0">
-                                <span className={`font-mono text-xs ${isCulturalUnassessed ? "font-sans font-medium text-[11px] text-[#6E7781] dark:text-[#8C9DA8]" : "font-bold text-[#1A1F26] dark:text-[#FAF8F5]"}`}>
-                                  {formattedScore}
-                                </span>
+                                {isCulturalUnassessed ? (
+                                  <span className="px-1.5 py-0.5 rounded text-[10px] font-sans font-medium bg-[#7A3F1E]/10 text-[#7A3F1E] dark:bg-[#7A3F1E]/20 dark:text-[#E07A57]">
+                                    To Be Assessed
+                                  </span>
+                                ) : (
+                                  <span className={`font-mono text-xs ${!isScored ? "text-[#8C9DA8] font-normal italic font-sans" : "font-bold text-[#1A1F26] dark:text-[#FAF8F5]"}`}>
+                                    {formattedScore}
+                                  </span>
+                                )}
 
                                 {/* + / - Icon Accordion Button */}
                                 <button
