@@ -82,16 +82,24 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
 
     for (const item of basket) {
       const qty = typeof item.quantity === "number" && !isNaN(item.quantity) ? item.quantity : 0;
-      const unitVal = typeof item.unitCo2eKg === "number" && !isNaN(item.unitCo2eKg) ? item.unitCo2eKg : 0;
-      const lineTotal = typeof item.lineCo2eKg === "number" && !isNaN(item.lineCo2eKg) && item.lineCo2eKg !== 0
-        ? item.lineCo2eKg
-        : qty * unitVal;
+      // baseline_co2e per unit (defaults to unitCo2eKg if not explicitly set)
+      const baselineCo2e = typeof item.baseline_co2e === "number" && !isNaN(item.baseline_co2e)
+        ? item.baseline_co2e
+        : (typeof item.unitCo2eKg === "number" && !isNaN(item.unitCo2eKg) ? item.unitCo2eKg : 0);
 
+      // line footprint = qty * baseline_co2e
+      const lineTotal = qty * baselineCo2e;
       totalKg += lineTotal;
 
-      const saving = typeof item.savingKgCo2e === "number" && !isNaN(item.savingKgCo2e) ? item.savingKgCo2e : 0;
-      if (saving > 0) {
-        netSaving += saving;
+      // savings_per_unit (defaults to savingKgCo2e / qty if not explicitly set)
+      const savingPerUnit = typeof item.savings_per_unit === "number" && !isNaN(item.savings_per_unit)
+        ? item.savings_per_unit
+        : (qty > 0 && typeof item.savingKgCo2e === "number" && !isNaN(item.savingKgCo2e) ? item.savingKgCo2e / qty : 0);
+
+      // net saving = qty * savings_per_unit
+      const savingTotal = qty * savingPerUnit;
+      if (savingTotal > 0) {
+        netSaving += savingTotal;
         switches += 1;
       }
 
@@ -118,12 +126,9 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
     };
   }, [basket]);
 
-  // Format 3 decimal places consistently using Intl.NumberFormat
+  // Format exactly 3 decimal places using .toFixed(3)
   const format3Decimals = (val: number): string => {
-    return Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }).format(isNaN(val) ? 0 : val);
+    return (isNaN(val) ? 0 : val).toFixed(3);
   };
 
   // ─── Basket Actions ────────────────────────────────────────────────────────

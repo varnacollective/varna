@@ -58,6 +58,9 @@ export interface CalculatorProduct {
   compareNote: string | null;
   currentCatalogueCategory: string | null;
   factorUsed: string | null;
+  baseline_co2e?: number;
+  alternative_co2e_per_unit?: number;
+  savings_per_unit?: number;
 }
 
 export interface ComparePair {
@@ -89,6 +92,9 @@ export interface BasketLineItem {
   savingKgCo2e: number;
   compareNote: string | null;
   isCustomized?: boolean;
+  baseline_co2e?: number;
+  alternative_co2e_per_unit?: number;
+  savings_per_unit?: number;
 }
 
 export interface BasketSummary {
@@ -6482,7 +6488,10 @@ export const INITIAL_BASKET_ITEMS: BasketLineItem[] = [
     "compareWith": null,
     "alternativeUnitCo2eKg": null,
     "savingKgCo2e": 0,
-    "compareNote": null
+    "compareNote": null,
+    "baseline_co2e": 4.879567,
+    "alternative_co2e_per_unit": 4.879567,
+    "savings_per_unit": 0
   },
   {
     "lineNumber": 2,
@@ -6499,7 +6508,10 @@ export const INITIAL_BASKET_ITEMS: BasketLineItem[] = [
     "compareWith": null,
     "alternativeUnitCo2eKg": null,
     "savingKgCo2e": 0,
-    "compareNote": null
+    "compareNote": null,
+    "baseline_co2e": 8.826675,
+    "alternative_co2e_per_unit": 8.826675,
+    "savings_per_unit": 0
   },
   {
     "lineNumber": 3,
@@ -6516,7 +6528,10 @@ export const INITIAL_BASKET_ITEMS: BasketLineItem[] = [
     "compareWith": "Recycled PET water bottle, 500 ml",
     "alternativeUnitCo2eKg": 0.0442316502,
     "savingKgCo2e": 1650,
-    "compareNote": null
+    "compareNote": null,
+    "baseline_co2e": 0.0772316502,
+    "alternative_co2e_per_unit": 0.0442316502,
+    "savings_per_unit": 0.033
   },
   {
     "lineNumber": 4,
@@ -6533,7 +6548,10 @@ export const INITIAL_BASKET_ITEMS: BasketLineItem[] = [
     "compareWith": "Copy paper, A4 ream, recycled",
     "alternativeUnitCo2eKg": 2.62147785,
     "savingKgCo2e": 295,
-    "compareNote": null
+    "compareNote": null,
+    "baseline_co2e": 3.35897785,
+    "alternative_co2e_per_unit": 2.62147785,
+    "savings_per_unit": 0.7375
   },
   {
     "lineNumber": 5,
@@ -6550,7 +6568,10 @@ export const INITIAL_BASKET_ITEMS: BasketLineItem[] = [
     "compareWith": null,
     "alternativeUnitCo2eKg": null,
     "savingKgCo2e": 0,
-    "compareNote": null
+    "compareNote": null,
+    "baseline_co2e": 5.65,
+    "alternative_co2e_per_unit": 5.65,
+    "savings_per_unit": 0
   },
   {
     "lineNumber": 6,
@@ -6567,7 +6588,10 @@ export const INITIAL_BASKET_ITEMS: BasketLineItem[] = [
     "compareWith": null,
     "alternativeUnitCo2eKg": null,
     "savingKgCo2e": 0,
-    "compareNote": null
+    "compareNote": null,
+    "baseline_co2e": 67.9319306788995,
+    "alternative_co2e_per_unit": 67.9319306788995,
+    "savings_per_unit": 0
   }
 ];
 
@@ -6692,6 +6716,10 @@ export function calculateLineTotal(
     }
   }
 
+  const savings_per_unit = compareWith && savingKgCo2e > 0 && quantity > 0
+    ? savingKgCo2e / quantity
+    : 0;
+
   return {
     lineNumber: 1,
     productId: prod.productId,
@@ -6709,6 +6737,9 @@ export function calculateLineTotal(
     savingKgCo2e,
     compareNote,
     isCustomized,
+    baseline_co2e: unitCo2eKg,
+    alternative_co2e_per_unit: alternativeUnitCo2eKg ?? unitCo2eKg,
+    savings_per_unit,
   };
 }
 
