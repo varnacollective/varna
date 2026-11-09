@@ -3,6 +3,10 @@ import { Cormorant_Garamond, Playfair_Display, Inter, Caveat, Cedarville_Cursive
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/next";
+import MaintenancePage from "@/components/MaintenancePage";
+
+// Hardcoded flag: when true, intercepts all application routes and renders only the Maintenance page
+const isMaintenanceMode = true;
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -100,7 +104,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange={false}
         >
-          {children}
+          {isMaintenanceMode ? <MaintenancePage /> : children}
         </ThemeProvider>
         <Analytics />
       </body>
