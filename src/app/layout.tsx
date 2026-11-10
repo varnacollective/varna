@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import MaintenancePage from "@/components/MaintenancePage";
 
 // Hardcoded flag: when true, intercepts all application routes and renders only the Maintenance page
-const isMaintenanceMode = true;
+const isMaintenanceMode = false;
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
