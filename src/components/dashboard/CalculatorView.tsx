@@ -74,7 +74,7 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
   }, [selectedGroup, selectedCategory, searchQuery]);
 
   // Derived state directly from current active basket items array for reliable reactivity
-  const { totalCo2eKg, totalCo2eTonnes, netSavingKg, switchableCount, categoryBreakdown } = useMemo(() => {
+  const { totalCo2eKg, totalCo2eTonnes, netSavingKg, categoryBreakdown } = useMemo(() => {
     let totalKg = 0;
     let netSaving = 0;
     let switches = 0;
@@ -348,8 +348,7 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
             <div className="flex items-center justify-between text-xs text-[#6F675A] dark:text-[#A8A196] font-medium mb-1">
               <span>Net Saving If Switched</span>
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#55705A] dark:text-[#88A88D]">
-                <TrendingDown className="w-3.5 h-3.5" />
-                Varna Alternatives
+
               </span>
             </div>
             <div className="flex items-baseline gap-2 mt-2">
@@ -360,12 +359,7 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs text-[#7A7265] dark:text-[#9A9182]">
-            <span>
-              {switchableCount} {switchableCount === 1 ? "switchable line" : "switchable lines"} found
-            </span>
-            <span className="text-[11px] text-[#55705A] dark:text-[#88A88D] font-medium">
-              Verified reductions
-            </span>
+            {/* <span>Get better insights on Net Saving If Switched by using Varna.</span> */}
           </div>
         </motion.div>
       </div>
@@ -416,10 +410,9 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
                   onClick={() => setSelectedGroup(grp)}
                   className={`
                     px-2.5 py-1 rounded-lg text-xs font-medium transition-all
-                    ${
-                      selectedGroup === grp
-                        ? "bg-[#8C4A27] text-white shadow-xs"
-                        : "bg-white/80 dark:bg-white/5 text-[#5B5448] dark:text-[#B3A998] hover:bg-black/5 dark:hover:bg-white/10 border border-[#E0D7C5] dark:border-white/5"
+                    ${selectedGroup === grp
+                      ? "bg-[#8C4A27] text-white shadow-xs"
+                      : "bg-white/80 dark:bg-white/5 text-[#5B5448] dark:text-[#B3A998] hover:bg-black/5 dark:hover:bg-white/10 border border-[#E0D7C5] dark:border-white/5"
                     }
                   `}
                 >
@@ -476,10 +469,9 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
                         <span
                           className={`
                             text-[10px] font-mono px-1 rounded
-                            ${
-                              prod.confidence === "High"
-                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                                : prod.confidence === "Medium"
+                            ${prod.confidence === "High"
+                              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                              : prod.confidence === "Medium"
                                 ? "bg-blue-500/10 text-blue-700 dark:text-blue-300"
                                 : "bg-amber-500/10 text-amber-700 dark:text-amber-300"
                             }
@@ -495,10 +487,9 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
                       onClick={() => handleAddProduct(prod)}
                       className={`
                         shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1
-                        ${
-                          inBasket
-                            ? "bg-[#55705A]/15 text-[#55705A] dark:bg-[#55705A]/30 dark:text-[#88A88D]"
-                            : "bg-[#8C4A27] text-white hover:bg-[#733B1E] shadow-xs"
+                        ${inBasket
+                          ? "bg-[#55705A]/15 text-[#55705A] dark:bg-[#55705A]/30 dark:text-[#88A88D]"
+                          : "bg-[#8C4A27] text-white hover:bg-[#733B1E] shadow-xs"
                         }
                       `}
                     >
@@ -599,10 +590,9 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
                               onClick={() => handleOpenFactorDetails(item.productId)}
                               className={`
                                 inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full cursor-pointer hover:opacity-80 transition-all
-                                ${
-                                  item.confidence === "High"
-                                    ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20"
-                                    : item.confidence === "Medium"
+                                ${item.confidence === "High"
+                                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20"
+                                  : item.confidence === "Medium"
                                     ? "bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20"
                                     : "bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20"
                                 }
