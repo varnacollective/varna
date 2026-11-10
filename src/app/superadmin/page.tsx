@@ -7,19 +7,21 @@ import {
   Users,
   ShoppingBag,
   KeyRound,
-  Database,
   ArrowRight,
   ShieldCheck,
+  Mail,
+  Package,
+  Clock,
   CheckCircle2,
+  AlertTriangle,
+  TrendingUp,
 } from "lucide-react";
-import LinkGenerator from "@/components/SuperAdmin/LinkGenerator";
 
 export const revalidate = 0;
 
 export default async function SuperAdminOverviewPage() {
   const supabase = await createClient();
 
-  // Fetch counts from each primary table
   const [
     { count: enterprisesCount },
     { count: inputsCount },
@@ -27,6 +29,9 @@ export default async function SuperAdminOverviewPage() {
     { count: clientsCount },
     { count: ordersCount },
     { count: credentialsCount },
+    { count: invitationsCount },
+    { count: suppliersCount },
+    { count: pendingDocsCount },
   ] = await Promise.all([
     supabase.from("enterprise_master").select("*", { count: "exact", head: true }),
     supabase.from("assessment_inputs").select("*", { count: "exact", head: true }),
@@ -34,9 +39,12 @@ export default async function SuperAdminOverviewPage() {
     supabase.from("client_summary").select("*", { count: "exact", head: true }),
     supabase.from("order_register").select("*", { count: "exact", head: true }),
     supabase.from("client_credentials").select("*", { count: "exact", head: true }),
+    Promise.resolve(supabase.from("partner_invitations").select("*", { count: "exact", head: true })).then(r => ({ count: r.count })).catch(() => ({ count: 0 })),
+    Promise.resolve(supabase.from("partner_suppliers").select("*", { count: "exact", head: true })).then(r => ({ count: r.count })).catch(() => ({ count: 0 })),
+    Promise.resolve(supabase.from("partner_documents").select("*", { count: "exact", head: true }).eq("status", "awaiting_verification")).then(r => ({ count: r.count })).catch(() => ({ count: 0 })),
   ]);
 
-  const TABLES = [
+  const DATA_TABLES = [
     {
       title: "Enterprises Directory",
       table: "enterprise_master",
@@ -87,85 +95,82 @@ export default async function SuperAdminOverviewPage() {
     },
   ];
 
-  return (
-    <div className="space-y-8 font-sans">
-      {/* Overview Banner */}
-      <div className="bg-[#1C1D21] border border-slate-mist/20 p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 bg-deep-clay rotate-45" />
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-mist">
-              Varna Master Control Console
-            </span>
-          </div>
-          <h1 className="text-3xl font-sans font-medium text-warm-stone tracking-tight">
-            Database Administration
-          </h1>
-          <p className="text-xs text-slate-mist font-light mt-1 max-w-2xl leading-relaxed">
-            Directly view and edit live Supabase tables in a spreadsheet grid. Changes are synced to PostgreSQL in real time.
-          </p>
-        </div>
+  const KPI_CARDS = [
+    {
+      label: "Total Invitations",
+      value: invitationsCount ?? 0,
+      icon: Mail,
+      href: "/superadmin/partners/invitations",
+      color: "var(--sa-info)",
+      tint: "var(--sa-info-tint)",
+    },
+    {
+      label: "Suppliers",
+      value: suppliersCount ?? 0,
+      icon: Package,
+      href: "/superadmin/partners/suppliers",
+      color: "var(--sa-accent)",
+      tint: "var(--sa-accent-tint)",
+    },
+    {
+      label: "Docs Awaiting Verification",
+      value: pendingDocsCount ?? 0,
+      icon: Clock,
+      href: "/superadmin/certificates",
+      color: "var(--sa-warning)",
+      tint: "var(--sa-warning-tint)",
+    },
+    {
+      label: "Enterprises in Directory",
+      value: enterprisesCount ?? 0,
+      icon: Building2,
+      href: "/superadmin/enterprises",
+      color: "var(--sa-success)",
+      tint: "var(--sa-success-tint)",
+    },
+  ];
 
-        {/* Database Health Pill */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-[#131416] border border-slate-mist/20 px-5 py-3.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-sage-mineral animate-pulse" />
-          <div className="text-left">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-warm-stone/80">
-              PostgreSQL Connected
-            </p>
-            <p className="text-[9px] text-slate-mist font-mono">
-              Schema: public &bull; RLS Active &bull; Instant Sync
-            </p>
-          </div>
-        </div>
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+      {/* Page header */}
+      <div>
+        <h1 className="sa-page-title">Command Center</h1>
+        <p style={{ marginTop: "6px", fontSize: "13px", color: "var(--sa-muted)", maxWidth: "520px", lineHeight: 1.6 }}>
+          Platform-wide visibility: supplier pipeline, invitations, certificate verification, and scoring approvals.
+        </p>
       </div>
 
-      {/* Grid of Tables */}
-      <div className="space-y-3">
-        <div className="flex justify-between items-end">
-          <h2 className="text-lg font-sans font-medium text-warm-stone tracking-tight">
-            Supabase Core Tables
-          </h2>
-          <span className="text-[10px] font-mono text-slate-mist">
-            Select a table to open spreadsheet editor
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {TABLES.map((t) => {
-            const Icon = t.icon;
+      {/* KPI cards */}
+      <div>
+        <div className="sa-label" style={{ marginBottom: "12px" }}>Platform Overview</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          {KPI_CARDS.map((kpi) => {
+            const Icon = kpi.icon;
             return (
-              <Link
-                key={t.table}
-                href={t.href}
-                className="bg-[#1C1D21] border border-slate-mist/20 hover:border-warm-stone/40 p-6 flex flex-col justify-between transition-all duration-200 group hover:shadow-xl hover:-translate-y-0.5"
-              >
-                <div>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-10 h-10 border border-slate-mist/25 bg-black/20 flex items-center justify-center text-warm-stone group-hover:border-warm-stone/40 transition-colors">
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-2xl font-sans font-medium text-warm-stone group-hover:text-white transition-colors">
-                      {t.count}
-                    </span>
+              <Link key={kpi.label} href={kpi.href} style={{ textDecoration: "none" }}>
+                <div className="sa-stat-card">
+                  <div
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "var(--sa-radius-sm)",
+                      background: kpi.tint,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    <Icon className="w-4 h-4" style={{ color: kpi.color }} />
                   </div>
-
-                  <h3 className="text-base font-sans font-medium text-warm-stone mb-1 group-hover:text-white transition-colors">
-                    {t.title}
-                  </h3>
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-slate-mist mb-2">
-                    {t.table}
-                  </p>
-                  <p className="text-xs text-slate-mist/80 font-light leading-relaxed">
-                    {t.description}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-slate-mist/10 flex items-center justify-between text-xs text-warm-stone/70 group-hover:text-warm-stone">
-                  <span className="text-[10px] font-mono uppercase tracking-widest">
-                    Open Spreadsheet Grid
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                  <div className="sa-stat-value">{kpi.value.toLocaleString()}</div>
+                  <div className="sa-stat-label">{kpi.label}</div>
                 </div>
               </Link>
             );
@@ -173,28 +178,138 @@ export default async function SuperAdminOverviewPage() {
         </div>
       </div>
 
-      {/* Assessment Link Generator */}
-      <LinkGenerator />
+      {/* Quick actions */}
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <Link href="/superadmin/partners/invitations?action=invite" className="sa-btn-primary">
+          <Mail className="w-4 h-4" />
+          + Invite Partner
+        </Link>
+        <Link href="/superadmin/partners/suppliers" className="sa-btn-secondary">
+          <Package className="w-4 h-4" />
+          View Suppliers
+        </Link>
+        <Link href="/superadmin/certificates" className="sa-btn-secondary">
+          <CheckCircle2 className="w-4 h-4" />
+          Review Certificates
+        </Link>
+      </div>
 
-      {/* Quick Security Architecture Notes */}
-      <div className="bg-[#18191B] border border-slate-mist/15 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <ShieldCheck className="w-6 h-6 text-sage-mineral shrink-0" />
+      {/* Data Tables section */}
+      <div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "16px",
+          }}
+        >
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-warm-stone">
-              Spreadsheet Editing Safety
-            </h4>
-            <p className="text-[11px] text-slate-mist font-light">
-              Primary key columns are locked by default to protect relational integrity. Type conversion preserves numbers and booleans automatically.
+            <div className="sa-section-title">Core Data Tables</div>
+            <p style={{ fontSize: "12px", color: "var(--sa-muted)", marginTop: "2px" }}>
+              Spreadsheet editors — click any card to open
             </p>
           </div>
         </div>
 
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          {DATA_TABLES.map((t) => {
+            const Icon = t.icon;
+            return (
+              <Link
+                key={t.table}
+                href={t.href}
+                style={{ textDecoration: "none" }}
+              >
+                <div
+                  className="sa-card-interactive"
+                  style={{
+                    padding: "20px 24px",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
+                    <div
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "var(--sa-radius-sm)",
+                        background: "var(--sa-sand)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Icon className="w-4.5 h-4.5" style={{ color: "var(--sa-muted)" }} />
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "26px",
+                        fontWeight: 300,
+                        color: "var(--sa-ink)",
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      {t.count}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--sa-ink)", marginBottom: "4px" }}>
+                    {t.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      fontFamily: "ui-monospace,monospace",
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "var(--sa-caption)",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {t.table}
+                  </div>
+                  <p style={{ fontSize: "12px", color: "var(--sa-muted)", lineHeight: 1.5 }}>{t.description}</p>
+                  <div
+                    style={{
+                      marginTop: "14px",
+                      paddingTop: "12px",
+                      borderTop: "1px solid var(--sa-border)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      fontSize: "11px",
+                      fontWeight: 500,
+                      color: "var(--sa-accent)",
+                    }}
+                  >
+                    Open Spreadsheet
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Spreadsheet safety strip */}
+      <div className="sa-info-strip">
+        <ShieldCheck className="w-4 h-4 shrink-0" style={{ color: "var(--sa-accent)" }} />
+        <div>
+          <span style={{ fontWeight: 600 }}>Spreadsheet Editing Safety —</span>{" "}
+          Primary key columns are locked by default to protect relational integrity. Type conversion preserves numbers and booleans automatically.
+        </div>
         <Link
           href="/superadmin/credentials"
-          className="px-4 py-2 bg-warm-stone text-carbon-ink hover:bg-[#E4DEC9] text-xs font-sans font-medium uppercase tracking-widest whitespace-nowrap transition-colors"
+          className="sa-btn-secondary"
+          style={{ marginLeft: "auto", whiteSpace: "nowrap", fontSize: "12px", padding: "6px 12px" }}
         >
-          Manage Client Credentials &rarr;
+          Manage Credentials →
         </Link>
       </div>
     </div>

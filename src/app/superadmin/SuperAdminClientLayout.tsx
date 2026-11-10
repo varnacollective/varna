@@ -1,78 +1,86 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  LayoutDashboard,
+  Users,
+  Package,
+  Mail,
+  GitBranch,
+  Flag,
+  FileCheck,
+  BarChart3,
   Building2,
   FileSpreadsheet,
   Award,
-  Users,
   ShoppingBag,
   KeyRound,
-  LayoutDashboard,
+  Bell,
+  UserCog,
+  FileText,
+  ClipboardList,
   LogOut,
   ExternalLink,
-  ShieldAlert,
   Database,
-  Sun,
-  Moon,
-  ChevronRight,
   Menu,
   X,
-  FileCheck,
+  ChevronDown,
+  ChevronRight,
+  Search,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 
-const NAV_ITEMS = [
+type NavChild = { name: string; href: string };
+type NavGroup = {
+  label: string;
+  items: { name: string; href: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; children?: NavChild[] }[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
   {
-    name: "Overview",
-    href: "/superadmin",
-    icon: LayoutDashboard,
-    table: "System Stats",
+    label: "",
+    items: [
+      { name: "Overview", href: "/superadmin", icon: LayoutDashboard },
+    ],
   },
   {
-    name: "Certificates",
-    href: "/superadmin/certificates",
-    icon: FileCheck,
-    table: "partner_certificates",
+    label: "Partners",
+    items: [
+      { name: "Clients", href: "/superadmin/partners/clients", icon: Users },
+      { name: "Suppliers", href: "/superadmin/partners/suppliers", icon: Package },
+      { name: "Invitations", href: "/superadmin/partners/invitations", icon: Mail },
+    ],
   },
   {
-    name: "Enterprises",
-    href: "/superadmin/enterprises",
-    icon: Building2,
-    table: "enterprise_master",
+    label: "Assessment",
+    items: [
+      { name: "Pipeline", href: "/superadmin/assessment/pipeline", icon: GitBranch },
+      { name: "Review Queue", href: "/superadmin/assessment/review-queue", icon: Flag },
+      { name: "Certificates", href: "/superadmin/certificates", icon: FileCheck },
+      { name: "Scoring & Approval", href: "/superadmin/assessment/scoring", icon: BarChart3 },
+    ],
   },
   {
-    name: "Assessment Inputs",
-    href: "/superadmin/assessment-inputs",
-    icon: FileSpreadsheet,
-    table: "assessment_inputs",
+    label: "Data",
+    items: [
+      { name: "Enterprises", href: "/superadmin/enterprises", icon: Building2 },
+      { name: "Assessment Inputs", href: "/superadmin/assessment-inputs", icon: FileSpreadsheet },
+      { name: "Scores Summary", href: "/superadmin/scores-summary", icon: Award },
+      { name: "Client Summary", href: "/superadmin/client-summary", icon: Users },
+      { name: "Orders", href: "/superadmin/orders", icon: ShoppingBag },
+      { name: "Credentials", href: "/superadmin/credentials", icon: KeyRound },
+    ],
   },
   {
-    name: "Scores Summary",
-    href: "/superadmin/scores-summary",
-    icon: Award,
-    table: "scores_summary",
-  },
-  {
-    name: "Client Summary",
-    href: "/superadmin/client-summary",
-    icon: Users,
-    table: "client_summary",
-  },
-  {
-    name: "Orders",
-    href: "/superadmin/orders",
-    icon: ShoppingBag,
-    table: "order_register",
-  },
-  {
-    name: "Credentials",
-    href: "/superadmin/credentials",
-    icon: KeyRound,
-    table: "client_credentials",
+    label: "Admin",
+    items: [
+      { name: "Notifications", href: "/superadmin/admin/notifications", icon: Bell },
+      { name: "Users & Roles", href: "/superadmin/admin/users", icon: UserCog },
+      { name: "Templates & Settings", href: "/superadmin/admin/templates", icon: FileText },
+      { name: "Audit Log", href: "/superadmin/admin/audit-log", icon: ClipboardList },
+    ],
   },
 ];
 
@@ -83,12 +91,25 @@ export default function SuperAdminClientLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Keyboard shortcut for search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, []);
 
   const handleLogout = async () => {
@@ -100,166 +121,298 @@ export default function SuperAdminClientLayout({
 
   if (!mounted) return null;
 
+  const isActive = (href: string) =>
+    href === "/superadmin"
+      ? pathname === "/superadmin"
+      : pathname.startsWith(href);
+
+  // Breadcrumb
+  const pathParts = pathname.split("/").filter(Boolean);
+  const breadcrumb = pathParts.map((part, i) => ({
+    label: part.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+    href: "/" + pathParts.slice(0, i + 1).join("/"),
+  }));
+
   return (
-    <div className="min-h-screen flex bg-[#161719] text-warm-stone font-sans selection:bg-deep-clay selection:text-warm-stone">
-      {/* Mobile Sidebar Overlay */}
+    <div className="sa-root min-h-screen flex" style={{ background: "var(--sa-canvas)" }}>
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/60 z-40 md:hidden"
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ background: "rgba(30,26,22,0.4)" }}
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Left-Hand Super Admin Sidebar */}
+      {/* Sidebar */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#1C1D20] border-r border-slate-mist/20 flex flex-col justify-between transition-transform duration-300 ${
+        className={`sa-sidebar fixed top-0 bottom-0 left-0 z-50 flex flex-col transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
+        style={{ width: "256px" }}
       >
-        <div>
-          {/* Brand Header */}
-          <div className="p-6 border-b border-slate-mist/15">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <Image
-                  src="/varna-logo.svg"
-                  alt="Varna Collective"
-                  width={24}
-                  height={24}
-                  className="w-6 h-6 object-contain"
-                  priority
-                />
-                <span className="text-[10px] font-semibold tracking-[0.25em] text-warm-stone/80 uppercase">
-                  Varna Collective
-                </span>
-              </div>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="md:hidden text-slate-mist hover:text-warm-stone cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <h1 className="text-xl font-sans font-medium text-warm-stone tracking-tight mt-2">
-              Super Admin
-            </h1>
-            <p className="text-[10px] font-mono text-slate-mist uppercase tracking-widest mt-0.5">
-              Direct Database Portal
-            </p>
+        {/* Logo area */}
+        <div
+          style={{
+            padding: "20px 20px 16px",
+            borderBottom: "1px solid var(--sa-border)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <Link href="/superadmin" className="flex flex-col gap-1.5">
+              <Image
+                src="/Varnawordmark.svg"
+                alt="Varna"
+                width={110}
+                height={28}
+                className="object-contain"
+                priority
+              />
+            </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="md:hidden"
+              style={{ color: "var(--sa-muted)" }}
+              aria-label="Close sidebar"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-
-          {/* Database Tables Navigation Menu */}
-          <div className="px-3 py-6 space-y-1">
-            <div className="px-3 pb-2 text-[9px] font-semibold uppercase tracking-[0.25em] text-slate-mist/70">
-              Supabase Core Tables
-            </div>
-
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-all duration-150 group ${
-                    isActive
-                      ? "bg-deep-clay text-warm-stone font-medium shadow-sm"
-                      : "text-warm-stone/70 hover:text-warm-stone hover:bg-white/5"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      className={`w-4 h-4 ${
-                        isActive ? "text-warm-stone" : "text-slate-mist group-hover:text-warm-stone"
-                      }`}
-                    />
-                    <span>{item.name}</span>
-                  </div>
-                  <span
-                    className={`text-[8px] font-mono tracking-wider ${
-                      isActive ? "text-warm-stone/80" : "text-slate-mist/60 group-hover:text-slate-mist"
-                    }`}
-                  >
-                    {item.table}
-                  </span>
-                </Link>
-              );
-            })}
+          <div
+            style={{
+              display: "inline-flex",
+              marginTop: "10px",
+              padding: "2px 8px",
+              background: "var(--sa-accent-tint)",
+              borderRadius: "4px",
+              fontSize: "10px",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--sa-accent)",
+            }}
+          >
+            Super Admin
           </div>
         </div>
 
-        {/* Bottom Sidebar Info & Logout */}
-        <div className="p-4 border-t border-slate-mist/15 space-y-3">
-          {/* Live DB Pill */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-black/20 border border-slate-mist/15 text-[10px] text-slate-mist">
-            <Database className="w-3.5 h-3.5 text-sage-mineral" />
-            <span className="font-mono truncate">PostgreSQL &bull; Live Sync</span>
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto" style={{ padding: "8px 12px" }}>
+          {NAV_GROUPS.map((group, gi) => (
+            <div key={gi} style={{ marginBottom: "4px" }}>
+              {group.label && (
+                <div className="sa-nav-group-label">{group.label}</div>
+              )}
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`sa-nav-item ${active ? "active" : ""}`}
+                    style={{ marginBottom: "2px" }}
+                  >
+                    <Icon className="w-4 h-4 shrink-0" style={{ opacity: active ? 1 : 0.6 }} />
+                    <span style={{ flex: 1 }}>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+
+        {/* Sidebar footer */}
+        <div
+          style={{
+            padding: "12px 16px",
+            borderTop: "1px solid var(--sa-border)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          {/* Live sync indicator */}
+          <div className="sa-live-dot" style={{ padding: "0 4px" }}>
+            PostgreSQL · Live Sync
           </div>
 
-          {/* Client Dashboard Link */}
           <Link
             href="/dashboard"
-            className="flex items-center justify-between px-3 py-2 text-xs text-slate-mist hover:text-warm-stone transition-colors group"
-            title="Open Client Dashboard View"
+            className="sa-nav-item"
+            style={{ fontSize: "12px" }}
           >
-            <span className="text-[11px]">View Client Dashboard</span>
-            <ExternalLink className="w-3.5 h-3.5 text-slate-mist group-hover:translate-x-0.5 transition-transform" />
+            <ExternalLink className="w-3.5 h-3.5" style={{ opacity: 0.5 }} />
+            View Client Dashboard
           </Link>
 
-          {/* Sign Out Button */}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-between px-3 py-2.5 text-xs text-red-300 hover:text-red-200 bg-red-950/20 hover:bg-red-950/40 border border-red-900/30 transition-colors cursor-pointer"
+            className="sa-nav-item w-full text-left"
+            style={{ fontSize: "12px", color: "var(--sa-danger)" }}
           >
-            <span className="font-sans font-medium tracking-wider uppercase text-[10px]">Logout Superadmin</span>
             <LogOut className="w-3.5 h-3.5" />
+            Logout
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col md:pl-64 min-w-0">
-        {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 h-16 bg-[#18191B]/95 backdrop-blur border-b border-slate-mist/20 px-6 sm:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="p-1.5 md:hidden text-slate-mist hover:text-warm-stone cursor-pointer"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-2 text-xs text-slate-mist">
-              <span className="font-mono text-[10px] tracking-widest uppercase">Super Admin</span>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-mist/40" />
-              <span className="text-warm-stone font-medium capitalize">
-                {pathname === "/superadmin"
-                  ? "Overview Console"
-                  : pathname.replace("/superadmin/", "").replace("-", " ")}
-              </span>
-            </div>
-          </div>
+      {/* Main area */}
+      <div
+        className="flex flex-col flex-1 min-h-screen"
+        style={{ marginLeft: "256px" }}
+      >
+        {/* Top bar */}
+        <header className="sa-topbar sticky top-0 z-30">
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden mr-2"
+            style={{ color: "var(--sa-muted)" }}
+            aria-label="Open sidebar"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
 
-          {/* Top Actions */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1 bg-deep-clay/10 border border-deep-clay/30 text-[10px] text-warm-stone font-mono uppercase tracking-wider">
-              <ShieldAlert className="w-3 h-3 text-deep-clay dark:text-warm-stone" />
-              <span>Full R/W Access</span>
-            </div>
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1 flex-1" style={{ fontSize: "13px", color: "var(--sa-muted)" }}>
+            {breadcrumb.map((crumb, i) => (
+              <React.Fragment key={crumb.href}>
+                {i > 0 && <ChevronRight className="w-3.5 h-3.5 opacity-40" />}
+                {i === breadcrumb.length - 1 ? (
+                  <span style={{ color: "var(--sa-ink)", fontWeight: 500 }}>{crumb.label}</span>
+                ) : (
+                  <Link href={crumb.href} style={{ color: "var(--sa-muted)" }} className="hover:underline">
+                    {crumb.label}
+                  </Link>
+                )}
+              </React.Fragment>
+            ))}
+          </nav>
 
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 border border-slate-mist/20 hover:border-slate-mist text-slate-mist hover:text-warm-stone transition-colors cursor-pointer"
-              title="Toggle theme"
+          {/* Search button */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="sa-btn-secondary"
+            style={{ fontSize: "12px", padding: "6px 12px", gap: "6px" }}
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span style={{ color: "var(--sa-muted)" }}>Search</span>
+            <kbd
+              style={{
+                background: "var(--sa-sand)",
+                border: "1px solid var(--sa-border)",
+                borderRadius: "4px",
+                padding: "1px 4px",
+                fontSize: "10px",
+                fontFamily: "ui-monospace,monospace",
+                color: "var(--sa-muted)",
+              }}
             >
-              {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            </button>
-          </div>
+              ⌘K
+            </kbd>
+          </button>
+
+          {/* Notification bell (placeholder) */}
+          <button
+            className="relative"
+            style={{
+              width: "36px",
+              height: "36px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "var(--sa-radius-sm)",
+              background: "transparent",
+              border: "1px solid var(--sa-border)",
+              color: "var(--sa-muted)",
+              cursor: "pointer",
+            }}
+            aria-label="Notifications"
+          >
+            <Bell className="w-4 h-4" />
+          </button>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 p-6 sm:p-8 max-w-[1600px] w-full overflow-x-hidden">
+        {/* Command palette overlay */}
+        {searchOpen && (
+          <>
+            <div
+              className="sa-overlay"
+              onClick={() => setSearchOpen(false)}
+            />
+            <div
+              style={{
+                position: "fixed",
+                top: "80px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "480px",
+                maxWidth: "90vw",
+                background: "var(--sa-white)",
+                border: "1px solid var(--sa-border)",
+                borderRadius: "var(--sa-radius-lg)",
+                boxShadow: "var(--sa-shadow-lg)",
+                zIndex: 60,
+                overflow: "hidden",
+              }}
+            >
+              <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid var(--sa-border)" }}>
+                <Search className="w-4 h-4" style={{ color: "var(--sa-muted)", flexShrink: 0 }} />
+                <input
+                  autoFocus
+                  placeholder="Search pages, partners, suppliers…"
+                  className="sa-input"
+                  style={{ border: "none", padding: "0", boxShadow: "none", fontSize: "14px" }}
+                />
+                <kbd
+                  style={{ fontSize: "10px", fontFamily: "ui-monospace,monospace", color: "var(--sa-muted)", flexShrink: 0 }}
+                  onClick={() => setSearchOpen(false)}
+                >
+                  ESC
+                </kbd>
+              </div>
+              <div style={{ padding: "8px", maxHeight: "320px", overflowY: "auto" }}>
+                {NAV_GROUPS.flatMap((g) => g.items).map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setSearchOpen(false)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "8px 12px",
+                        borderRadius: "var(--sa-radius-sm)",
+                        fontSize: "13px",
+                        color: "var(--sa-ink-2)",
+                        textDecoration: "none",
+                      }}
+                      className="hover:bg-[var(--sa-sand)]"
+                    >
+                      <Icon className="w-4 h-4" style={{ color: "var(--sa-muted)" }} />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Page content */}
+        <main
+          style={{
+            flex: 1,
+            padding: "32px 32px 48px",
+            maxWidth: "1280px",
+            width: "100%",
+            margin: "0 auto",
+          }}
+        >
           {children}
         </main>
       </div>

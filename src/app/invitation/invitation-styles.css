@@ -1,0 +1,309 @@
+/* Public Partner Onboarding Form Styles — scoped strictly to .inv-root */
+
+.inv-root {
+  --inv-canvas: #FAF7F2;
+  --inv-card: #FFFFFF;
+  --inv-sand: #F3EEE6;
+  --inv-sand-hover: #EDE5D8;
+  --inv-border: #E7DFD3;
+  --inv-border-strong: #D4C9BA;
+  --inv-ink: #1E1A16;
+  --inv-muted: #6B6259;
+  --inv-caption: #9A8E84;
+  --inv-accent: #9A4A2E;
+  --inv-accent-hover: #7A3A20;
+  --inv-accent-tint: #FDF0EB;
+  --inv-accent-tint-hover: #FAE4D8;
+  --inv-success: #2D7D46;
+  --inv-success-tint: #EAF7ED;
+  --inv-danger: #C0392B;
+  --inv-danger-tint: #FEE2E2;
+
+  background-color: var(--inv-canvas);
+  color: var(--inv-ink);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+/* Card Styling */
+.inv-card {
+  background-color: var(--inv-card);
+  border: 1px solid var(--inv-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(30, 26, 22, 0.03), 0 4px 12px rgba(30, 26, 22, 0.02);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.inv-card:hover {
+  border-color: var(--inv-border-strong);
+}
+
+/* Form Inputs */
+.inv-input,
+.inv-select,
+.inv-textarea {
+  width: 100%;
+  background-color: #FFFFFF;
+  border: 1px solid var(--inv-border);
+  border-radius: 8px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  color: var(--inv-ink);
+  transition: all 0.15s ease;
+}
+
+.inv-input:focus,
+.inv-select:focus,
+.inv-textarea:focus {
+  outline: none;
+  border-color: var(--inv-accent);
+  box-shadow: 0 0 0 3px var(--inv-accent-tint);
+}
+
+.inv-input::placeholder,
+.inv-textarea::placeholder {
+  color: var(--inv-caption);
+}
+
+.inv-input:disabled,
+.inv-textarea:disabled {
+  background-color: var(--inv-sand);
+  color: var(--inv-muted);
+  cursor: not-allowed;
+}
+
+/* Hint / Helper Boxes */
+.inv-hint {
+  font-size: 0.84rem;
+  color: var(--inv-muted);
+  line-height: 1.5;
+  margin-top: 0.375rem;
+}
+
+.inv-why-box {
+  background-color: var(--inv-sand);
+  border-left: 3px solid var(--inv-accent);
+  border-radius: 4px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--inv-ink);
+  margin-top: 0.5rem;
+}
+
+/* Selectable Cards (Radio & Checkbox) */
+.inv-choice-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background-color: var(--inv-card);
+  border: 1.5px solid var(--inv-border);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.inv-choice-card:hover {
+  border-color: var(--inv-accent);
+  background-color: #FCFAF8;
+}
+
+.inv-choice-card.selected {
+  border-color: var(--inv-accent);
+  background-color: var(--inv-accent-tint);
+}
+
+.inv-choice-circle {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  border: 2px solid var(--inv-border-strong);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.125rem;
+  transition: all 0.15s ease;
+}
+
+.inv-choice-card.selected .inv-choice-circle {
+  border-color: var(--inv-accent);
+  background-color: var(--inv-accent);
+}
+
+.inv-choice-circle-inner {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #FFFFFF;
+}
+
+.inv-choice-square {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+  border: 2px solid var(--inv-border-strong);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.125rem;
+  transition: all 0.15s ease;
+}
+
+.inv-choice-card.selected .inv-choice-square {
+  border-color: var(--inv-accent);
+  background-color: var(--inv-accent);
+  color: #FFFFFF;
+}
+
+/* Quick chips */
+.inv-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--inv-sand);
+  color: var(--inv-ink);
+  border: 1px solid var(--inv-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inv-chip:hover {
+  background-color: var(--inv-sand-hover);
+  border-color: var(--inv-border-strong);
+}
+
+.inv-chip.active {
+  background-color: var(--inv-accent-tint);
+  border-color: var(--inv-accent);
+  color: var(--inv-accent);
+}
+
+/* Stepper Progress Bar */
+.inv-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: var(--inv-border);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.inv-progress-fill {
+  height: 100%;
+  background-color: var(--inv-accent);
+  border-radius: 9999px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Buttons */
+.inv-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--inv-accent);
+  color: #FFFFFF;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.inv-btn-primary:hover:not(:disabled) {
+  background-color: var(--inv-accent-hover);
+}
+
+.inv-btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.inv-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inv-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #FFFFFF;
+  color: var(--inv-ink);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid var(--inv-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inv-btn-secondary:hover:not(:disabled) {
+  background-color: var(--inv-sand);
+  border-color: var(--inv-border-strong);
+}
+
+.inv-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inv-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  background-color: transparent;
+  color: var(--inv-muted);
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inv-btn-ghost:hover {
+  background-color: var(--inv-sand);
+  color: var(--inv-ink);
+}
+
+/* Upload zone */
+.inv-dropzone {
+  border: 2px dashed var(--inv-border);
+  border-radius: 10px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  background-color: #FDFBF8;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.inv-dropzone:hover,
+.inv-dropzone.drag-active {
+  border-color: var(--inv-accent);
+  background-color: var(--inv-accent-tint);
+}
+
+/* Saved pill indicator */
+.inv-saved-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  background-color: var(--inv-success-tint);
+  color: var(--inv-success);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  transition: opacity 0.2s ease;
+}

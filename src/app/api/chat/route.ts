@@ -159,8 +159,10 @@ When explaining scores or roadmap recommendations, cite specific pillar scores (
 
     const modelMessages = await convertToModelMessages(messages);
 
+    const modelName = process.env.GOOGLE_GEMINI_MODEL || "gemini-3.8-flash";
+
     const result = await streamText({
-      model: google("gemini-2.0-flash"),
+      model: google(modelName),
       system: systemPrompt,
       messages: modelMessages,
     });

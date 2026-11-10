@@ -10,18 +10,9 @@ import {
   ExternalLink,
   Search,
   RefreshCw,
-  Building2,
-  Filter,
-  Eye,
   AlertCircle,
   FileText,
-  Calendar,
   Layers,
-  ChevronRight,
-  Link2,
-  Copy,
-  Check,
-  X,
 } from "lucide-react";
 
 interface Certificate {
@@ -46,44 +37,6 @@ export default function SuperadminCertificatesPage() {
   const [statusFilter, setStatusFilter] = useState<"ALL" | "Pending" | "Verified">("ALL");
   const [toastMessage, setToastMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Generate Upload Link modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [partnerName, setPartnerName] = useState("");
-  const [driveLink, setDriveLink] = useState("");
-  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const openModal = () => {
-    setPartnerName("");
-    setDriveLink("");
-    setGeneratedUrl(null);
-    setCopied(false);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setGeneratedUrl(null);
-    setCopied(false);
-  };
-
-  const handleGenerateLink = () => {
-    if (!partnerName.trim() || !driveLink.trim()) return;
-    const url = `${window.location.origin}/upload-certificate?partner=${encodeURIComponent(partnerName.trim())}&folder=${encodeURIComponent(driveLink.trim())}`;
-    setGeneratedUrl(url);
-  };
-
-  const handleCopy = async () => {
-    if (!generatedUrl) return;
-    try {
-      await navigator.clipboard.writeText(generatedUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      // fallback: select the input text
-    }
-  };
-
   // Fetch certificates from Supabase table partner_certificates
   const fetchCertificates = async () => {
     setLoading(true);
@@ -105,7 +58,10 @@ export default function SuperadminCertificatesPage() {
         if (rows.length > 0) {
           setSelectedCert((prev) => {
             if (prev) {
-              const matched = rows.find((r: Certificate) => r.id === prev.id || r.drive_file_id === prev.drive_file_id);
+              const matched = rows.find(
+                (r: Certificate) =>
+                  r.id === prev.id || r.drive_file_id === prev.drive_file_id
+              );
               return matched || rows[0];
             }
             return rows[0];
@@ -179,7 +135,10 @@ export default function SuperadminCertificatesPage() {
         )
       );
 
-      if (selectedCert && (selectedCert.id === cert.id || selectedCert.drive_file_id === cert.drive_file_id)) {
+      if (
+        selectedCert &&
+        (selectedCert.id === cert.id || selectedCert.drive_file_id === cert.drive_file_id)
+      ) {
         setSelectedCert({ ...selectedCert, status: "Verified" });
       }
 
@@ -202,7 +161,6 @@ export default function SuperadminCertificatesPage() {
   const getEmbedUrl = (cert: Certificate) => {
     if (!cert) return "";
     const raw = cert.drive_webview_link || "";
-    // Google Drive webViewLinks typically have /view?usp=... which requires /preview for iframe embedding
     if (raw.includes("/view")) {
       return raw.replace(/\/view(\?.*)?$/, "/preview");
     }
@@ -214,21 +172,33 @@ export default function SuperadminCertificatesPage() {
 
   // Stats calculation
   const totalCount = certificates.length;
-  const pendingCount = certificates.filter((c) => (c.status || "Pending").toLowerCase() === "pending").length;
-  const verifiedCount = certificates.filter((c) => (c.status || "").toLowerCase() === "verified").length;
+  const pendingCount = certificates.filter(
+    (c) => (c.status || "Pending").toLowerCase() === "pending"
+  ).length;
+  const verifiedCount = certificates.filter(
+    (c) => (c.status || "").toLowerCase() === "verified"
+  ).length;
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-mist/20 pb-4">
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "16px",
+          borderBottom: "1px solid var(--sa-border)",
+          paddingBottom: "16px",
+        }}
+      >
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <FileCheck className="w-5 h-5 text-deep-clay dark:text-warm-stone" />
-            <h1 className="text-2xl font-sans font-medium text-warm-stone tracking-tight">
-              Partner Certificate Verification
-            </h1>
+            <FileCheck className="w-5 h-5" style={{ color: "var(--sa-accent)" }} />
+            <h1 className="sa-page-title">Certificate Verification</h1>
           </div>
-          <p className="text-xs text-slate-mist font-light">
+          <p style={{ fontSize: "13px", color: "var(--sa-muted)", marginTop: "4px" }}>
             Audit partner compliance, inspect document previews via Google Drive, and verify credentials.
           </p>
         </div>
@@ -236,17 +206,9 @@ export default function SuperadminCertificatesPage() {
         {/* Action Controls */}
         <div className="flex items-center gap-3">
           <button
-            onClick={openModal}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#7A3F1E] hover:bg-[#B85333] text-white text-xs font-semibold tracking-wide transition-all shadow-md hover:shadow-[#7A3F1E]/30"
-            title="Generate a partner upload link"
-          >
-            <Link2 className="w-3.5 h-3.5" />
-            Generate Link
-          </button>
-          <button
             onClick={fetchCertificates}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-mist/30 text-xs text-warm-stone hover:bg-carbon-ink/40 transition-colors disabled:opacity-50"
+            className="sa-btn-secondary"
             title="Refresh database records"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
@@ -256,39 +218,82 @@ export default function SuperadminCertificatesPage() {
       </div>
 
       {/* KPI Counters */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-[#1C1D21] border border-white/5 rounded-xl p-3.5 flex items-center justify-between">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "16px",
+        }}
+      >
+        <div className="sa-stat-card">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-400">
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "var(--sa-radius-sm)",
+                background: "var(--sa-sand)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--sa-muted)",
+              }}
+            >
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[11px] font-mono text-slate-mist uppercase">Total Certificates</p>
-              <p className="text-xl font-semibold text-warm-stone">{totalCount}</p>
+              <div className="sa-stat-label">Total Certificates</div>
+              <div className="sa-stat-value">{totalCount}</div>
             </div>
           </div>
         </div>
 
-        <div className="bg-[#1C1D21] border border-amber-500/20 rounded-xl p-3.5 flex items-center justify-between">
+        <div className="sa-stat-card">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "var(--sa-radius-sm)",
+                background: "var(--sa-warning-tint)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--sa-warning)",
+              }}
+            >
               <Clock className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[11px] font-mono text-amber-400/80 uppercase">Pending Review</p>
-              <p className="text-xl font-semibold text-amber-300">{pendingCount}</p>
+              <div className="sa-stat-label">Pending Review</div>
+              <div className="sa-stat-value" style={{ color: "var(--sa-warning-fg)" }}>
+                {pendingCount}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-[#1C1D21] border border-emerald-500/20 rounded-xl p-3.5 flex items-center justify-between">
+        <div className="sa-stat-card">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "var(--sa-radius-sm)",
+                background: "var(--sa-success-tint)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--sa-success)",
+              }}
+            >
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[11px] font-mono text-emerald-400/80 uppercase">Verified</p>
-              <p className="text-xl font-semibold text-emerald-400">{verifiedCount}</p>
+              <div className="sa-stat-label">Verified</div>
+              <div className="sa-stat-value" style={{ color: "var(--sa-success)" }}>
+                {verifiedCount}
+              </div>
             </div>
           </div>
         </div>
@@ -297,58 +302,104 @@ export default function SuperadminCertificatesPage() {
       {/* Toast Alert */}
       {toastMessage && (
         <div
-          className={`p-3.5 rounded-xl border text-xs flex items-center justify-between animate-in fade-in duration-200 ${
-            toastMessage.type === "success"
-              ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-200"
-              : "bg-red-950/40 border-red-500/30 text-red-200"
-          }`}
+          style={{
+            padding: "12px 16px",
+            borderRadius: "var(--sa-radius-sm)",
+            fontSize: "13px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            background:
+              toastMessage.type === "success"
+                ? "var(--sa-success-tint)"
+                : "var(--sa-danger-tint)",
+            color:
+              toastMessage.type === "success"
+                ? "var(--sa-success-fg)"
+                : "var(--sa-danger-fg)",
+            border: `1px solid ${
+              toastMessage.type === "success"
+                ? "rgba(45,125,70,0.2)"
+                : "rgba(192,57,43,0.2)"
+            }`,
+          }}
         >
           <div className="flex items-center gap-2">
             {toastMessage.type === "success" ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0" />
             )}
             <span>{toastMessage.text}</span>
           </div>
           <button
             onClick={() => setToastMessage(null)}
-            className="text-xs opacity-70 hover:opacity-100 ml-4"
+            style={{
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "12px",
+              opacity: 0.7,
+            }}
           >
             Dismiss
           </button>
         </div>
       )}
 
-      {/* Main Workspace: Split View (List on Left, Substantial Iframe on Right) */}
+      {/* Main Workspace: Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Certificate List (5 cols on lg) */}
+        {/* Left Column: Certificate List */}
         <div className="lg:col-span-4 space-y-3">
           {/* Search & Filters */}
-          <div className="bg-[#1C1D21] border border-white/5 rounded-xl p-3 space-y-2.5">
+          <div
+            className="sa-card"
+            style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "10px" }}
+          >
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-mist" />
+              <Search
+                className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2"
+                style={{ color: "var(--sa-caption)" }}
+              />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search partner or type..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#121316] border border-white/10 text-xs text-warm-stone placeholder-slate-mist/60 focus:outline-none focus:border-deep-clay transition-all"
+                className="sa-input"
+                style={{ paddingLeft: "30px", fontSize: "12px" }}
               />
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 pt-1">
+            <div className="flex items-center gap-1.5">
               {(["ALL", "Pending", "Verified"] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setStatusFilter(tab)}
-                  className={`flex-1 py-1 px-2 text-[11px] font-mono rounded-lg transition-all ${
-                    statusFilter === tab
-                      ? "bg-deep-clay text-white shadow-sm"
-                      : "bg-[#121316] text-slate-mist hover:text-warm-stone hover:bg-white/5"
-                  }`}
+                  style={{
+                    flex: 1,
+                    padding: "4px 8px",
+                    fontSize: "11px",
+                    borderRadius: "var(--sa-radius-sm)",
+                    fontWeight: 500,
+                    border: "1px solid",
+                    cursor: "pointer",
+                    transition: "all 150ms ease",
+                    borderColor:
+                      statusFilter === tab
+                        ? "var(--sa-accent)"
+                        : "var(--sa-border)",
+                    background:
+                      statusFilter === tab
+                        ? "var(--sa-accent-tint)"
+                        : "var(--sa-white)",
+                    color:
+                      statusFilter === tab
+                        ? "var(--sa-accent)"
+                        : "var(--sa-muted)",
+                  }}
                 >
                   {tab}
                 </button>
@@ -357,14 +408,31 @@ export default function SuperadminCertificatesPage() {
           </div>
 
           {/* List items */}
-          <div className="space-y-2 max-h-[calc(100vh-340px)] overflow-y-auto pr-1 custom-scrollbar">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              maxHeight: "calc(100vh - 340px)",
+              overflowY: "auto",
+            }}
+          >
             {loading ? (
-              <div className="p-8 text-center bg-[#1C1D21] border border-white/5 rounded-xl text-slate-mist text-xs">
-                <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-deep-clay" />
+              <div
+                className="sa-card"
+                style={{ padding: "32px", textAlign: "center", color: "var(--sa-muted)", fontSize: "13px" }}
+              >
+                <RefreshCw
+                  className="w-5 h-5 animate-spin mx-auto mb-2"
+                  style={{ color: "var(--sa-accent)" }}
+                />
                 Loading certificates...
               </div>
             ) : filteredCertificates.length === 0 ? (
-              <div className="p-8 text-center bg-[#1C1D21] border border-white/5 rounded-xl text-slate-mist text-xs">
+              <div
+                className="sa-card"
+                style={{ padding: "32px", textAlign: "center", color: "var(--sa-muted)", fontSize: "13px" }}
+              >
                 <FileText className="w-6 h-6 mx-auto mb-2 opacity-40" />
                 No certificates match your criteria.
               </div>
@@ -372,28 +440,45 @@ export default function SuperadminCertificatesPage() {
               filteredCertificates.map((cert) => {
                 const isSelected =
                   selectedCert &&
-                  (selectedCert.id === cert.id || selectedCert.drive_file_id === cert.drive_file_id);
-                const isVerified = (cert.status || "").toLowerCase() === "verified";
+                  (selectedCert.id === cert.id ||
+                    selectedCert.drive_file_id === cert.drive_file_id);
+                const isVerified =
+                  (cert.status || "").toLowerCase() === "verified";
 
                 return (
                   <div
                     key={cert.id || cert.drive_file_id}
                     onClick={() => setSelectedCert(cert)}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left ${
-                      isSelected
-                        ? "bg-[#252830] border-deep-clay shadow-md"
-                        : "bg-[#1C1D21] border-white/5 hover:border-white/15 hover:bg-[#202329]"
-                    }`}
+                    className="sa-card"
+                    style={{
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                      transition: "all 150ms ease",
+                      borderLeft: isSelected
+                        ? "3px solid var(--sa-accent)"
+                        : "1px solid var(--sa-border)",
+                      background: isSelected
+                        ? "var(--sa-accent-tint)"
+                        : "var(--sa-white)",
+                    }}
                   >
                     <div className="flex items-start justify-between gap-2 mb-1.5">
-                      <p className="text-sm font-medium text-warm-stone truncate">
+                      <p
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          color: "var(--sa-ink)",
+                          margin: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {cert.partner_name || "Unnamed Partner"}
                       </p>
                       <span
-                        className={`inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full shrink-0 ${
-                          isVerified
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                            : "bg-amber-500/10 text-amber-300 border border-amber-500/30"
+                        className={`sa-pill ${
+                          isVerified ? "sa-pill-verified" : "sa-pill-pending"
                         }`}
                       >
                         {isVerified ? (
@@ -410,16 +495,24 @@ export default function SuperadminCertificatesPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-slate-mist">
-                      <span className="font-mono text-[#D4705A] text-[11px]">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        fontSize: "12px",
+                        color: "var(--sa-muted)",
+                      }}
+                    >
+                      <span style={{ color: "var(--sa-accent)", fontWeight: 500 }}>
                         {cert.certificate_type || "General"}
                       </span>
                       {cert.created_at ? (
-                        <span className="text-[10px] text-slate-mist/80 font-mono">
+                        <span style={{ fontSize: "11px", color: "var(--sa-caption)" }}>
                           {new Date(cert.created_at).toLocaleDateString()}
                         </span>
                       ) : (
-                        <span className="text-[10px] text-slate-mist/60 font-mono">
+                        <span style={{ fontSize: "11px", color: "var(--sa-caption)", fontFamily: "monospace" }}>
                           ID: {String(cert.id || cert.drive_file_id || "").slice(0, 8)}
                         </span>
                       )}
@@ -431,23 +524,51 @@ export default function SuperadminCertificatesPage() {
           </div>
         </div>
 
-        {/* Right Column: Substantial Iframe Display & Verification Action (8 cols on lg) */}
+        {/* Right Column: Substantial Iframe Display */}
         <div className="lg:col-span-8">
           {selectedCert ? (
-            <div className="bg-[#1C1D21] border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[calc(100vh-210px)] min-h-[640px]">
-              {/* Header Bar Next to / Above the Iframe */}
-              <div className="p-4 sm:p-5 border-b border-white/10 bg-[#161719] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="min-w-0">
+            <div
+              className="sa-card"
+              style={{
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                height: "calc(100vh - 210px)",
+                minHeight: "640px",
+              }}
+            >
+              {/* Header Bar Above Iframe */}
+              <div
+                style={{
+                  padding: "16px 20px",
+                  borderBottom: "1px solid var(--sa-border)",
+                  background: "var(--sa-sand)",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "12px",
+                }}
+              >
+                <div style={{ minWidth: 0 }}>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-mono uppercase text-deep-clay font-semibold">
+                    <span
+                      style={{
+                        fontSize: "11px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        fontWeight: 600,
+                        color: "var(--sa-accent)",
+                      }}
+                    >
                       {selectedCert.certificate_type}
                     </span>
-                    <span className="text-white/20">•</span>
+                    <span style={{ color: "var(--sa-caption)" }}>•</span>
                     <span
-                      className={`inline-flex items-center gap-1 text-[11px] font-mono px-2.5 py-0.5 rounded-full ${
+                      className={`sa-pill ${
                         (selectedCert.status || "").toLowerCase() === "verified"
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                          : "bg-amber-500/10 text-amber-300 border border-amber-500/30"
+                          ? "sa-pill-verified"
+                          : "sa-pill-pending"
                       }`}
                     >
                       {(selectedCert.status || "").toLowerCase() === "verified" ? (
@@ -463,19 +584,30 @@ export default function SuperadminCertificatesPage() {
                       )}
                     </span>
                   </div>
-                  <h2 className="text-xl font-serif text-warm-stone truncate">
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-serif, serif)",
+                      fontSize: "20px",
+                      color: "var(--sa-ink)",
+                      margin: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {selectedCert.partner_name}
                   </h2>
                 </div>
 
-                {/* Actions: Verify Button and Open in Drive */}
-                <div className="flex items-center gap-3 shrink-0">
+                {/* Actions */}
+                <div className="flex items-center gap-2 shrink-0">
                   {selectedCert.drive_webview_link && (
                     <a
                       href={selectedCert.drive_webview_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/10 text-xs text-warm-stone hover:bg-white/5 transition-colors font-mono"
+                      className="sa-btn-secondary"
+                      style={{ fontSize: "12px", padding: "6px 12px" }}
                       title="Open in Google Drive"
                     >
                       <span>Drive</span>
@@ -483,10 +615,12 @@ export default function SuperadminCertificatesPage() {
                     </a>
                   )}
 
-                  {/* Verify Button next to the iframe */}
                   {(selectedCert.status || "").toLowerCase() === "verified" ? (
-                    <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
-                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <div
+                      className="sa-pill sa-pill-verified"
+                      style={{ padding: "6px 12px", fontSize: "12px" }}
+                    >
+                      <ShieldCheck className="w-4 h-4" />
                       <span>Verified</span>
                     </div>
                   ) : (
@@ -494,7 +628,8 @@ export default function SuperadminCertificatesPage() {
                       type="button"
                       disabled={updatingId === selectedCert.id}
                       onClick={() => handleVerify(selectedCert)}
-                      className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#7A3F1E] hover:bg-[#B85333] text-white text-xs font-semibold tracking-wide transition-all shadow-lg hover:shadow-[#7A3F1E]/30 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      className="sa-btn-primary"
+                      style={{ fontSize: "12px", padding: "6px 14px" }}
                     >
                       {updatingId === selectedCert.id ? (
                         <>
@@ -503,7 +638,7 @@ export default function SuperadminCertificatesPage() {
                         </>
                       ) : (
                         <>
-                          <CheckCircle2 className="w-4 h-4" />
+                          <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>Verify Certificate</span>
                         </>
                       )}
@@ -512,23 +647,49 @@ export default function SuperadminCertificatesPage() {
                 </div>
               </div>
 
-              {/* Document Display Iframe taking up substantial screen real estate */}
-              <div className="flex-1 bg-[#121316] relative flex flex-col">
+              {/* Document Display Iframe */}
+              <div
+                style={{
+                  flex: 1,
+                  background: "var(--sa-canvas)",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <iframe
                   key={selectedCert.id || selectedCert.drive_file_id}
                   src={getEmbedUrl(selectedCert)}
                   title={`${selectedCert.partner_name} - ${selectedCert.certificate_type}`}
-                  className="w-full flex-1 border-0 bg-transparent"
+                  style={{
+                    width: "100%",
+                    flex: 1,
+                    border: "none",
+                    background: "transparent",
+                  }}
                   allow="autoplay"
                 />
 
                 {/* Footer bar with metadata */}
-                <div className="p-2.5 px-4 bg-[#161719] border-t border-white/5 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-mist">
-                  <span className="truncate max-w-xs">
-                    File ID: <span className="text-warm-stone/80">{selectedCert.drive_file_id || "N/A"}</span>
+                <div
+                  style={{
+                    padding: "8px 16px",
+                    background: "var(--sa-sand)",
+                    borderTop: "1px solid var(--sa-border)",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    fontSize: "11px",
+                    fontFamily: "ui-monospace, monospace",
+                    color: "var(--sa-muted)",
+                  }}
+                >
+                  <span>
+                    File ID: {selectedCert.drive_file_id || "N/A"}
                   </span>
                   {selectedCert.drive_webview_link && (
-                    <span className="text-[10px] text-slate-mist/70">
+                    <span style={{ fontSize: "10px", color: "var(--sa-caption)" }}>
                       If preview is blocked by browser restrictions, click "Drive ↗" to view directly.
                     </span>
                   )}
@@ -536,148 +697,34 @@ export default function SuperadminCertificatesPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-[#1C1D21] border border-white/10 rounded-2xl p-16 text-center h-[calc(100vh-210px)] min-h-[640px] flex flex-col items-center justify-center text-slate-mist">
-              <FileCheck className="w-12 h-12 mb-3 text-slate-mist/30" />
-              <p className="text-sm text-warm-stone font-medium">No Certificate Selected</p>
-              <p className="text-xs text-slate-mist mt-1 max-w-xs">
+            <div
+              className="sa-card"
+              style={{
+                padding: "64px 32px",
+                textAlign: "center",
+                height: "calc(100vh - 210px)",
+                minHeight: "640px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--sa-muted)",
+              }}
+            >
+              <FileCheck
+                className="w-12 h-12 mb-3"
+                style={{ color: "var(--sa-border-strong)" }}
+              />
+              <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--sa-ink)" }}>
+                No Certificate Selected
+              </p>
+              <p style={{ fontSize: "12px", color: "var(--sa-muted)", marginTop: "4px", maxWidth: "300px" }}>
                 Select a certificate from the list on the left to preview the document and perform verification.
               </p>
             </div>
           )}
         </div>
       </div>
-      {/* Generate Upload Link Modal */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
-        >
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4 animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#7A3F1E]/20 border border-[#7A3F1E]/40 flex items-center justify-center">
-                  <Link2 className="w-4 h-4 text-[#D4705A]" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-semibold text-warm-stone">Generate Upload Link</h2>
-                  <p className="text-[11px] text-slate-mist font-mono">Create a shareable partner upload URL</p>
-                </div>
-              </div>
-              <button
-                onClick={closeModal}
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-mist hover:text-warm-stone hover:bg-white/5 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {generatedUrl ? (
-              /* ── Success / Result View ── */
-              <div className="space-y-4">
-                <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <p className="text-xs text-emerald-200">
-                    Link generated for <span className="font-semibold">{partnerName}</span>
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-mono text-slate-mist mb-1.5 uppercase tracking-wider">Shareable URL</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      readOnly
-                      value={generatedUrl}
-                      className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-[#121316] border border-white/10 text-xs text-warm-stone/80 font-mono focus:outline-none truncate"
-                      onClick={(e) => (e.target as HTMLInputElement).select()}
-                    />
-                    <button
-                      onClick={handleCopy}
-                      className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                        copied
-                          ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-300"
-                          : "bg-[#7A3F1E] hover:bg-[#B85333] text-white"
-                      }`}
-                    >
-                      {copied ? (
-                        <><Check className="w-3.5 h-3.5" /> Copied!</>
-                      ) : (
-                        <><Copy className="w-3.5 h-3.5" /> Copy</>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-1">
-                  <button
-                    onClick={() => { setGeneratedUrl(null); setCopied(false); }}
-                    className="text-xs text-slate-mist hover:text-warm-stone transition-colors"
-                  >
-                    ← Generate another
-                  </button>
-                  <button
-                    onClick={closeModal}
-                    className="px-4 py-1.5 rounded-lg border border-slate-mist/30 text-xs text-warm-stone hover:bg-white/5 transition-colors"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            ) : (
-              /* ── Input Form View ── */
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-[11px] font-mono text-slate-mist mb-1.5 uppercase tracking-wider">
-                    Partner Name
-                  </label>
-                  <input
-                    type="text"
-                    value={partnerName}
-                    onChange={(e) => setPartnerName(e.target.value)}
-                    placeholder="e.g. Bare Necessities"
-                    className="w-full px-3 py-2.5 rounded-lg bg-[#121316] border border-white/10 text-xs text-warm-stone placeholder-slate-mist/50 focus:outline-none focus:border-[#D4705A]/60 transition-all"
-                    autoFocus
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-mono text-slate-mist mb-1.5 uppercase tracking-wider">
-                    Google Drive Folder ID
-                  </label>
-                  <input
-                    type="text"
-                    value={driveLink}
-                    onChange={(e) => setDriveLink(e.target.value)}
-                    placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs"
-                    className="w-full px-3 py-2.5 rounded-lg bg-[#121316] border border-white/10 text-xs text-warm-stone placeholder-slate-mist/50 focus:outline-none focus:border-[#D4705A]/60 transition-all font-mono"
-                  />
-                  <p className="mt-1.5 text-[10px] text-slate-mist/60">
-                    Paste the Folder ID from the Drive URL (the long alphanumeric string after /folders/).
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-1">
-                  <button
-                    onClick={closeModal}
-                    className="px-4 py-2 rounded-lg border border-slate-mist/30 text-xs text-warm-stone hover:bg-white/5 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleGenerateLink}
-                    disabled={!partnerName.trim() || !driveLink.trim()}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#7A3F1E] hover:bg-[#B85333] text-white text-xs font-semibold tracking-wide transition-all shadow-lg hover:shadow-[#7A3F1E]/30 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <Link2 className="w-3.5 h-3.5" />
-                    Create Link
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
