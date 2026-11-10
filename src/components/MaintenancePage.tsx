@@ -37,11 +37,6 @@ export default function MaintenancePage() {
         <p className="max-w-md text-sm sm:text-base text-[#57534E] dark:text-[#B3A998] font-normal leading-relaxed">
           We are migrating the Varna platform to a new enterprise cloud environment to bring you faster insights and enhanced security. The dashboard will be back online shortly.
         </p>
-
-        {/* Contact / Inquiries Line */}
-        <p className="mt-12 text-xs text-[#A8A29E] tracking-wide font-sans">
-          For urgent inquiries, please contact your Developer.
-        </p>
       </motion.div>
     </main>
   );
