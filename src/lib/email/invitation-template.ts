@@ -105,7 +105,9 @@ export function renderInvitationEmail(
     ? ` and to be considered for procurement partnerships by ${client_name}`
     : "";
 
-  const introCopy = `Varna is inviting ${enterprise_name} to join the Varna partner network${clientCopy}. The idea is not to grade, but to evaluate our partner capabilities using a transparent scientific process which will enable us to showcase your brand for a global appeal and build consumer confidence while preserving the nuances of your business.`;
+  const introPara1 = `Varna invites ${enterprise_name} to participate in its Supplier Sustainability Assessment as part of our partner network${clientCopy}.`;
+  const introPara2 = `The assessment is designed to understand and evaluate your organisation’s sustainability practices, capabilities, and performance across key Environmental, Social, Governance, and Cultural dimensions. Through a structured, transparent, and evidence-based framework, we aim to recognise existing strengths, identify opportunities for improvement, and gain a deeper understanding of your sustainability journey.`;
+  const introPara3 = `Our objective is not simply to assign a score, but to create a meaningful assessment that recognises your efforts, reflects the unique nature of your business, and helps showcase your sustainability commitments to our hospitality partners and a wider global audience.`;
 
   // HTML Email Template
   const html = `<!DOCTYPE html>
@@ -209,8 +211,14 @@ export function renderInvitationEmail(
               </h1>
 
               <!-- Intro Copy -->
+              <p class="text-body" style="margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; color: #3C3734;">
+                ${escapeHtml(introPara1)}
+              </p>
+              <p class="text-body" style="margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; color: #3C3734;">
+                ${escapeHtml(introPara2)}
+              </p>
               <p class="text-body" style="margin: 0 0 24px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; color: #3C3734;">
-                ${escapeHtml(introCopy)}
+                ${escapeHtml(introPara3)}
               </p>
 
               ${
@@ -372,7 +380,11 @@ export function renderInvitationEmail(
 
 Dear ${contact_person},
 
-${introCopy}
+${introPara1}
+
+${introPara2}
+
+${introPara3}
 ${textNote}
 WHAT TO EXPECT:
 1. About 20–30 minutes
