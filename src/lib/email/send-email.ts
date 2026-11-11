@@ -41,37 +41,29 @@ const emailRateLimiter = createRateLimiter({
  * Soft-fails with a warning if the table or columns are not yet provisioned.
  */
 async function recordInvitationMessage(data: {
-  recipient_email: string;
-  enterprise_name: string;
-  invitation_url: string;
   subject: string;
   html_body?: string;
   plain_body?: string;
   message_id?: string;
-  status: "sent" | "failed";
-  error_message?: string;
+  status: "sent" | "bounced";
   invitation_id?: string;
-  enterprise_id?: string;
 }): Promise<void> {
+  if (!data.invitation_id) {
+    return;
+  }
   try {
     const supabase = createAdminClient();
     const payload: Record<string, unknown> = {
+      invitation_id: data.invitation_id,
       direction: "outbound",
-      recipient_email: data.recipient_email,
-      enterprise_name: data.enterprise_name,
-      invitation_url: data.invitation_url,
       subject: data.subject,
+      html_body: data.html_body || null,
+      plain_body: data.plain_body || null,
+      provider_message_id: data.message_id || null,
       status: data.status,
       sent_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
     };
-
-    if (data.html_body) payload.html_body = data.html_body;
-    if (data.plain_body) payload.plain_body = data.plain_body;
-    if (data.message_id) payload.message_id = data.message_id;
-    if (data.error_message) payload.error_message = data.error_message;
-    if (data.invitation_id) payload.invitation_id = data.invitation_id;
-    if (data.enterprise_id) payload.enterprise_id = data.enterprise_id;
 
     const { error } = await supabase.from("invitation_messages").insert(payload);
     if (error) {
@@ -125,14 +117,23 @@ export async function sendInvitationEmail(
   // Render email templates
   const { html, text, subject } = renderInvitationEmail(params);
 
-  const fromEmail =
-    process.env.INVITATION_FROM_EMAIL || "invitations@varnacollective.com";
-  const fromName =
+  const rawFromEmail =
+    process.env.INVITATION_FROM_EMAIL ||
+    process.env.SMTP_FROM ||
+    process.env.SMTP_USER ||
+    "tech@varnacollective.com";
+  const cleanFromEmail = rawFromEmail.replace(/^["']|["']$/g, "").trim();
+
+  const rawFromName =
     process.env.INVITATION_FROM_NAME || "Varna Collective";
-  const replyTo =
+  const cleanFromName = rawFromName.replace(/^["']|["']$/g, "").trim();
+
+  const replyTo = (
     process.env.INVITATION_REPLY_TO ||
     process.env.VARNA_HELP_EMAIL ||
-    "yuvraj@varnacollective.com";
+    process.env.SMTP_USER ||
+    "tech@varnacollective.com"
+  ).replace(/^["']|["']$/g, "").trim();
 
   const isSmtpConfigured = Boolean(
     process.env.SMTP_HOST &&
@@ -146,7 +147,7 @@ export async function sendInvitationEmail(
 
     console.log(
       `\n================= [DEV MODE] INVITATION EMAIL =================\n` +
-      `From: "${fromName}" <${fromEmail}>\n` +
+      `From: "${cleanFromName}" <${cleanFromEmail}>\n` +
       `To: ${recipient}\n` +
       `Reply-To: ${replyTo}\n` +
       `Subject: ${subject}\n` +
@@ -157,16 +158,12 @@ export async function sendInvitationEmail(
     );
 
     await recordInvitationMessage({
-      recipient_email: recipient,
-      enterprise_name: params.enterprise_name,
-      invitation_url: params.invitation_url,
       subject,
       html_body: html,
       plain_body: text,
       message_id: simulatedMessageId,
       status: "sent",
       invitation_id: params.invitation_id,
-      enterprise_id: params.enterprise_id,
     });
 
     return {
@@ -191,7 +188,10 @@ export async function sendInvitationEmail(
     });
 
     const info = await transporter.sendMail({
-      from: `"${fromName}" <${fromEmail}>`,
+      from: {
+        name: cleanFromName,
+        address: cleanFromEmail,
+      },
       to: recipient,
       replyTo,
       subject,
@@ -202,16 +202,12 @@ export async function sendInvitationEmail(
     const messageId = info.messageId || `smtp-${Date.now()}`;
 
     await recordInvitationMessage({
-      recipient_email: recipient,
-      enterprise_name: params.enterprise_name,
-      invitation_url: params.invitation_url,
       subject,
       html_body: html,
       plain_body: text,
       message_id: messageId,
       status: "sent",
       invitation_id: params.invitation_id,
-      enterprise_id: params.enterprise_id,
     });
 
     return {
@@ -225,16 +221,11 @@ export async function sendInvitationEmail(
     console.error("[sendInvitationEmail] Error sending invitation:", errorMessage);
 
     await recordInvitationMessage({
-      recipient_email: recipient,
-      enterprise_name: params.enterprise_name,
-      invitation_url: params.invitation_url,
       subject,
       html_body: html,
       plain_body: text,
-      status: "failed",
-      error_message: errorMessage,
+      status: "bounced",
       invitation_id: params.invitation_id,
-      enterprise_id: params.enterprise_id,
     });
 
     return {

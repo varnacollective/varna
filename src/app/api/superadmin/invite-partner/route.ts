@@ -3,6 +3,7 @@ import { getSession } from "@/lib/session";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { generatePartnerSlug } from "@/lib/slug";
 import { generateInvitationEmail } from "@/lib/email/invitation-template";
+import { sendInvitationEmail } from "@/lib/email/send-email";
 
 export async function GET(request: NextRequest) {
   try {
@@ -188,17 +189,40 @@ export async function POST(request: NextRequest) {
 
     const invitationId = invitation.id;
 
-    // D. If action === 'send', record in invitation_messages
+    // D. If action === 'send', dispatch email via SMTP
+    let emailResult = null;
     if (action === "send") {
-      await supabase.from("invitation_messages").insert({
+      emailResult = await sendInvitationEmail({
+        to: contact_email.trim().toLowerCase(),
+        contact_person: contact_person.trim(),
+        enterprise_name: enterprise_name.trim(),
+        invitation_url,
+        client_name: clientName,
+        personal_note: personal_note?.trim() || null,
+        validity_days: validity,
         invitation_id: invitationId,
-        direction: "outbound",
-        subject: emailData.subject,
-        html_body: emailData.html,
-        plain_body: emailData.text,
-        sent_at: nowIso,
-        status: "sent",
       });
+
+      if (!emailResult.success) {
+        console.error("Failed to send invitation email:", emailResult.error);
+        return NextResponse.json(
+          {
+            error: `Invitation saved but email failed to send: ${emailResult.error}`,
+            invitation_url,
+            slug,
+            invitation_id: invitationId,
+          },
+          { status: 500 }
+        );
+      }
+
+      // Update provider_message_id on partner_invitations
+      if (emailResult.messageId) {
+        await supabase
+          .from("partner_invitations")
+          .update({ provider_message_id: emailResult.messageId })
+          .eq("id", invitationId);
+      }
     }
 
     // E. Insert into assessment_pipeline
@@ -234,6 +258,8 @@ export async function POST(request: NextRequest) {
       status,
       supplier_id: supplierId,
       invitation_id: invitationId,
+      email_sent: action === "send" ? (emailResult?.success ?? false) : false,
+      message_id: emailResult?.messageId || null,
     });
   } catch (err: any) {
     console.error("Unexpected error in /api/superadmin/invite-partner:", err);

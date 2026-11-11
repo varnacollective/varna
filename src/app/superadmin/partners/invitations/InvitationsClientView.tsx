@@ -13,6 +13,7 @@ import {
   Building2,
   AlertCircle,
   Calendar,
+  Loader2,
 } from "lucide-react";
 import InvitePartnerButton, { ClientOption } from "@/components/SuperAdmin/InvitePartnerButton";
 
@@ -49,6 +50,9 @@ export default function InvitationsClientView({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [sentSuccessId, setSentSuccessId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const clientMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -93,6 +97,39 @@ export default function InvitationsClientView({
       setTimeout(() => setCopiedId(null), 2000);
     } catch (err) {
       console.error("Copy failed", err);
+    }
+  };
+
+  const handleSendEmail = async (inv: InvitationRecord) => {
+    setSendingId(inv.id);
+    setActionError(null);
+    try {
+      const res = await fetch("/api/superadmin/invitations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invitation_id: inv.id }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Failed to send email");
+      }
+      setSentSuccessId(inv.id);
+      setTimeout(() => setSentSuccessId(null), 3000);
+      setInvitations((prev) =>
+        prev.map((item) =>
+          item.id === inv.id
+            ? {
+                ...item,
+                status: "sent",
+                sent_at: data.sent_at || new Date().toISOString(),
+              }
+            : item
+        )
+      );
+    } catch (err: any) {
+      setActionError(`Failed to send email to ${inv.contact_email}: ${err.message}`);
+    } finally {
+      setSendingId(null);
     }
   };
 
@@ -281,6 +318,33 @@ export default function InvitationsClientView({
         />
       </div>
 
+      {actionError && (
+        <div
+          className="sa-card"
+          style={{
+            borderColor: "var(--sa-danger-border, #fca5a5)",
+            background: "var(--sa-danger-tint, #fef2f2)",
+            color: "var(--sa-danger, #b91c1c)",
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "13px",
+          }}
+        >
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span style={{ flex: 1 }}>{actionError}</span>
+          <button
+            type="button"
+            onClick={() => setActionError(null)}
+            className="sa-btn-secondary"
+            style={{ padding: "2px 8px", fontSize: "11px" }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Table */}
       <div className="sa-card" style={{ overflow: "hidden" }}>
         <table className="sa-table">
@@ -293,7 +357,7 @@ export default function InvitationsClientView({
               <th>Status</th>
               <th>Sent At</th>
               <th>Expires At</th>
-              <th style={{ textAlign: "right" }}>Invitation Link</th>
+              <th style={{ textAlign: "right" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -362,6 +426,32 @@ export default function InvitationsClientView({
                     </td>
                     <td style={{ textAlign: "right" }}>
                       <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        <button
+                          type="button"
+                          onClick={() => handleSendEmail(inv)}
+                          disabled={sendingId === inv.id}
+                          className={sentSuccessId === inv.id ? "sa-btn-primary" : "sa-btn-secondary"}
+                          style={{ padding: "4px 8px", fontSize: "11px" }}
+                          title={inv.status === "sent" ? "Resend invitation email via SMTP" : "Send invitation email via SMTP"}
+                        >
+                          {sendingId === inv.id ? (
+                            <>
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              Sending...
+                            </>
+                          ) : sentSuccessId === inv.id ? (
+                            <>
+                              <Check className="w-3 h-3" />
+                              Sent ✓
+                            </>
+                          ) : (
+                            <>
+                              <Send className="w-3 h-3" />
+                              {inv.status === "sent" ? "Resend" : "Send"}
+                            </>
+                          )}
+                        </button>
+
                         <button
                           type="button"
                           onClick={() => handleCopyLink(inv)}
