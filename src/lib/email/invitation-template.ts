@@ -221,9 +221,8 @@ export function renderInvitationEmail(
                 ${escapeHtml(introPara3)}
               </p>
 
-              ${
-                personal_note
-                  ? `<!-- Personal Note Box -->
+              ${personal_note
+      ? `<!-- Personal Note Box -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="note-bg" style="margin: 0 0 28px 0; background-color: #FAF8F5; border-left: 4px solid #9A4A2E; border-radius: 4px;">
                 <tr>
                   <td style="padding: 16px 20px;">
@@ -236,8 +235,8 @@ export function renderInvitationEmail(
                   </td>
                 </tr>
               </table>`
-                  : ""
-              }
+      : ""
+    }
 
               <!-- What to expect: 3-box strip -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 0 0 32px 0;">

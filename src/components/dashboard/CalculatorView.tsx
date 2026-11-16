@@ -33,6 +33,7 @@ import {
   Sparkles,
   Scale,
   ShoppingBag,
+  ArrowUpRight,
 } from "lucide-react";
 
 interface CalculatorViewProps {
@@ -334,34 +335,39 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
           </div>
         </motion.div>
 
-        {/* KPI 2: Net Saving If Switched */}
-        <motion.div
+        {/* KPI 2: Offset Footprint CTA */}
+        <motion.a
+          href="https://www.varnacollective.com/brands"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Offset your footprint by choosing varna sustainable alternatives (opens varnacollective.com/brands in a new tab)"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
           className="
-            bg-[#FAF8F5] dark:bg-[#1E2228] border border-[#E8E2D9] dark:border-white/10
-            p-5 rounded-[22px] shadow-sm flex flex-col justify-between
+            group relative p-5 rounded-[22px] shadow-sm
+            bg-gradient-to-br from-[#FAF5EE] via-[#F6EFE5] to-[#EFE7D8]
+            dark:bg-gradient-to-br dark:from-[#26221D] dark:via-[#201D19] dark:to-[#1A1815]
+            border border-[#E0D5C1] dark:border-[#4A4135]
+            hover:border-[#C4A88E] dark:hover:border-[#6F5B4B] hover:shadow-md
+            hover:from-[#F8F1E7] hover:to-[#EAE0CF] dark:hover:from-[#2B2620] dark:hover:to-[#1E1B17]
+            transition-all duration-200
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D3F1E] dark:focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#1A1815]
+            flex flex-col justify-between
           "
         >
-          <div>
-            <div className="flex items-center justify-between text-xs text-[#6F675A] dark:text-[#A8A196] font-medium mb-1">
-              <span>Net Saving If Switched</span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#55705A] dark:text-[#88A88D]">
-
-              </span>
-            </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl lg:text-4xl font-serif font-bold text-[#55705A] dark:text-[#88A88D] tabular-nums">
-                {format3Decimals(netSavingKg)}
-              </span>
-              <span className="text-lg font-serif text-[#6F675A] dark:text-[#A8A196]">kg CO₂e</span>
-            </div>
+          <div className="my-auto">
+            <span className="font-serif text-[22px] sm:text-[24px] lg:text-[26px] font-normal sm:font-medium leading-[1.3] text-[#7D3F1E] dark:text-[#FAF8F5] [text-wrap:balance] block text-left">
+              Offset your footprint by choosing varna sustainable alternatives
+            </span>
           </div>
-          <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs text-[#7A7265] dark:text-[#9A9182]">
-            {/* <span>Get better insights on Net Saving If Switched by using Varna.</span> */}
+          <div className="flex justify-end items-center pt-3">
+            <ArrowUpRight
+              className="w-5 h-5 text-[#7D3F1E] dark:text-[#FAF8F5] transition-transform duration-200 motion-safe:group-hover:translate-x-1 motion-safe:group-hover:-translate-y-1 shrink-0"
+              aria-hidden="true"
+            />
           </div>
-        </motion.div>
+        </motion.a>
       </div>
 
       {/* ─── Main Two-Column Layout ────────────────────────────────────────── */}
