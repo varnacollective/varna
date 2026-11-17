@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, defaultHref: "/dashboard?section=overview" },
   { id: "suppliers", label: "Partners", icon: Store, defaultHref: "/dashboard?section=suppliers" },
   { id: "orders", label: "Orders", icon: ShoppingBag, defaultHref: "/dashboard?section=orders" },
-  { id: "calculator", label: "Calculator", icon: Calculator, defaultHref: "/dashboard?section=calculator" },
+  { id: "calculator", label: "Estimator", icon: Calculator, defaultHref: "/dashboard?section=calculator" },
   { id: "impact", label: "Impact", icon: Leaf, defaultHref: "/dashboard?section=impact" },
   { id: "algorithm", label: "Framework", icon: Network, defaultHref: "/algorithm" },
 ];
