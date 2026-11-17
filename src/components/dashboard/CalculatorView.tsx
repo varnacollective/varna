@@ -340,32 +340,49 @@ export default function CalculatorView({ clientName = "Your Property" }: Calcula
           href="https://www.varnacollective.com/brands"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Offset your footprint by choosing varna sustainable alternatives (opens varnacollective.com/brands in a new tab)"
+          aria-label="Explore Varna sustainable alternatives (opens varnacollective.com/brands in a new tab)"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
           className="
-            group relative p-5 rounded-[22px] shadow-sm
-            bg-gradient-to-br from-[#FAF5EE] via-[#F6EFE5] to-[#EFE7D8]
-            dark:bg-gradient-to-br dark:from-[#26221D] dark:via-[#201D19] dark:to-[#1A1815]
-            border border-[#E0D5C1] dark:border-[#4A4135]
-            hover:border-[#C4A88E] dark:hover:border-[#6F5B4B] hover:shadow-md
-            hover:from-[#F8F1E7] hover:to-[#EAE0CF] dark:hover:from-[#2B2620] dark:hover:to-[#1E1B17]
-            transition-all duration-200
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D3F1E] dark:focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#1A1815]
+            group relative p-6 lg:p-7 rounded-[22px] shadow-sm cursor-pointer
+            bg-gradient-to-br from-[#F7F0E5] to-[#F3EADB] hover:from-[#F4EBDD] hover:to-[#EEE2D0]
+            dark:bg-gradient-to-br dark:from-[#26221D] dark:to-[#1E1B17] dark:hover:from-[#2B2721] dark:hover:to-[#221E19]
+            border border-[#E3D2BC] hover:border-[#D5C1A7] dark:border-[#4A4135] dark:hover:border-[#6F5B4B]
+            hover:shadow-md transition-all duration-200
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B5532F] dark:focus-visible:ring-[#E07A57] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#1A1815]
             flex flex-col justify-between
           "
         >
-          <div className="my-auto">
-            <span className="font-serif text-[22px] sm:text-[24px] lg:text-[26px] font-normal sm:font-medium leading-[1.3] text-[#7D3F1E] dark:text-[#FAF8F5] [text-wrap:balance] block text-left">
-              Offset your footprint by choosing varna sustainable alternatives
-            </span>
+          <div>
+            <div className="text-xs font-bold uppercase tracking-[0.2em] text-[#B5532F] dark:text-[#E07A57]">
+              A MORE CONSCIOUS CHOICE
+            </div>
+            <div className="w-10 h-[2px] bg-[#B5532F] dark:bg-[#E07A57] mt-2 mb-3" />
+            <h3 className="text-2xl sm:text-3xl font-sans font-bold text-[#2A2420] dark:text-[#FAF8F5] leading-tight tracking-tight">
+              Choose a lighter footprint.
+            </h3>
+            <p className="text-sm sm:text-base font-normal text-[#6B625A] dark:text-[#B3A998] mt-2 leading-relaxed">
+              Discover Varna&apos;s sustainable alternatives for your next purchase.
+            </p>
           </div>
-          <div className="flex justify-end items-center pt-3">
-            <ArrowUpRight
-              className="w-5 h-5 text-[#7D3F1E] dark:text-[#FAF8F5] transition-transform duration-200 motion-safe:group-hover:translate-x-1 motion-safe:group-hover:-translate-y-1 shrink-0"
-              aria-hidden="true"
-            />
+
+          <div className="flex items-center justify-between mt-6 pt-2">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#B5532F] dark:text-[#E07A57]">
+              <span>EXPLORE ALTERNATIVES</span>
+              <ArrowRight
+                className="w-5 h-5 transition-transform duration-200 motion-safe:group-hover:translate-x-1"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            </div>
+            <div className="w-14 h-14 rounded-full bg-[#EBD9C3] dark:bg-[#3D2C22] group-hover:bg-[#E2CEB6] dark:group-hover:bg-[#4D382B] flex items-center justify-center shrink-0 transition-colors duration-200">
+              <ArrowRight
+                className="w-6 h-6 text-[#B5532F] dark:text-[#E07A57] transition-transform duration-200 motion-safe:group-hover:translate-x-1"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </motion.a>
       </div>
