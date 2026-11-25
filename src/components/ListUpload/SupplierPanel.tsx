@@ -100,7 +100,7 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
             </h2>
             <span className={`sa-pill mt-1 ${view.pill}`}>{view.label}</span>
           </div>
-          <button type="button" onClick={() => dialog.current?.close()} aria-label="Close" className="rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)]">
+          <button type="button" onClick={() => dialog.current?.close()} aria-label="Close" className="cursor-pointer disabled:cursor-not-allowed! rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)]">
             <X className="h-5 w-5" aria-hidden />
           </button>
         </header>
@@ -194,22 +194,22 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
           ) : (
             <>
               {changed.length > 0 && (
-                <button type="submit" form="supplier-form" className="sa-btn-secondary mr-auto disabled:opacity-50" disabled={saving}>
+                <button type="submit" form="supplier-form" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary mr-auto disabled:opacity-50" disabled={saving}>
                   Save changes
                 </button>
               )}
               <div className="ml-auto flex gap-2">
                 {supplier.decision === "pending" ? (
                   <>
-                    <button type="button" className="sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("rejected")}>
+                    <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("rejected")}>
                       Reject
                     </button>
-                    <button type="button" className="sa-btn-primary disabled:opacity-50" disabled={saving} onClick={() => decide("approved")}>
+                    <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={saving} onClick={() => decide("approved")}>
                       <Check className="h-4 w-4" aria-hidden /> Approve
                     </button>
                   </>
                 ) : (
-                  <button type="button" className="sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("pending")}>
+                  <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("pending")}>
                     <Undo2 className="h-4 w-4" aria-hidden /> Undo {supplier.decision === "approved" ? "approval" : "rejection"}
                   </button>
                 )}
@@ -232,7 +232,7 @@ function OtherValues({ values, disabled, onUse }: { values: string[]; disabled: 
           type="button"
           disabled={disabled}
           onClick={() => onUse(v)}
-          className="rounded bg-[var(--sa-sand)] px-1.5 py-0.5 text-[var(--sa-ink-2)] hover:bg-[var(--sa-sand-hover)] disabled:opacity-50"
+          className="cursor-pointer disabled:cursor-not-allowed! rounded bg-[var(--sa-sand)] px-1.5 py-0.5 text-[var(--sa-ink-2)] hover:bg-[var(--sa-sand-hover)] disabled:opacity-50"
           title="Use this one"
         >
           {v}

@@ -165,7 +165,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
             <label htmlFor="list-client" className="sa-label">Hotel (optional)</label>
             <select
               id="list-client"
-              className="sa-input"
+              className="cursor-pointer disabled:cursor-not-allowed! sa-input"
               value={clientId}
               disabled={busy}
               onChange={(e) => setClientId(e.target.value)}
@@ -196,7 +196,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
               type="button"
               disabled={busy}
               onClick={() => input.current?.click()}
-              className="font-medium text-[var(--sa-accent)] underline underline-offset-2 hover:text-[var(--sa-accent-hover)] disabled:opacity-50"
+              className="cursor-pointer disabled:cursor-not-allowed! font-medium text-[var(--sa-accent)] underline underline-offset-2 hover:text-[var(--sa-accent-hover)] disabled:opacity-50"
             >
               choose files
             </button>
@@ -231,10 +231,10 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
               onChange={(e) => setPasted(e.target.value)}
             />
             <div className="flex flex-wrap gap-2">
-              <button type="button" className="sa-btn-primary disabled:opacity-50" disabled={!pasted.trim() || busy} onClick={addPasted}>
+              <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={!pasted.trim() || busy} onClick={addPasted}>
                 <Plus className="h-4 w-4" aria-hidden /> Add text
               </button>
-              <button type="button" className="sa-btn-secondary" onClick={() => setPasteOpen(false)}>Cancel</button>
+              <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary" onClick={() => setPasteOpen(false)}>Cancel</button>
             </div>
           </div>
         ) : (
@@ -242,7 +242,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
             type="button"
             disabled={busy}
             onClick={() => setPasteOpen(true)}
-            className="inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-[var(--sa-accent)] hover:underline disabled:opacity-50"
+            className="cursor-pointer disabled:cursor-not-allowed! inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-[var(--sa-accent)] hover:underline disabled:opacity-50"
           >
             <ClipboardPaste className="h-4 w-4" aria-hidden /> Paste text instead
           </button>
@@ -261,7 +261,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
                     type="button"
                     disabled={busy}
                     onClick={() => setFiles(files.filter((_, j) => j !== i))}
-                    className="rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)] hover:text-[var(--sa-ink)] disabled:opacity-50"
+                    className="cursor-pointer disabled:cursor-not-allowed! rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)] hover:text-[var(--sa-ink)] disabled:opacity-50"
                     aria-label={`Remove ${file.name}`}
                   >
                     <X className="h-4 w-4" aria-hidden />
@@ -273,7 +273,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
               type="button"
               disabled={busy || files.length >= MAX_FILES}
               onClick={() => input.current?.click()}
-              className="sa-btn-secondary w-fit disabled:opacity-50"
+              className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary w-fit disabled:opacity-50"
             >
               <Plus className="h-4 w-4" aria-hidden /> Add more files
             </button>
@@ -309,12 +309,12 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-[var(--sa-caption)]">Keep this page open. A long list can take a few minutes.</p>
-            <button type="button" className="sa-btn-secondary" onClick={() => stopper.current?.abort()}>Stop</button>
+            <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary" onClick={() => stopper.current?.abort()}>Stop</button>
           </div>
         </div>
       ) : (
         <div className="flex justify-end">
-          <button type="button" className="sa-btn-primary disabled:cursor-not-allowed disabled:opacity-50" disabled={files.length === 0} onClick={start}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={files.length === 0} onClick={start}>
             Read {files.length === 1 ? "the file" : files.length > 1 ? `${files.length} files` : "the list"}
           </button>
         </div>

@@ -120,7 +120,7 @@ export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, 
             onClick={() => dialog.current?.close()}
             disabled={busy}
             aria-label="Close"
-            className="rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)] disabled:opacity-40"
+            className="cursor-pointer disabled:cursor-not-allowed! rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)] disabled:opacity-40"
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
@@ -153,11 +153,11 @@ export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, 
                 <p className="truncate text-xs text-[var(--sa-muted)]">To: {current?.email}</p>
               </div>
               <div className="flex items-center gap-1">
-                <button type="button" className="rounded p-1.5 hover:bg-[var(--sa-sand)] disabled:opacity-40" disabled={index === 0} onClick={() => setIndex(index - 1)} aria-label="Previous email">
+                <button type="button" className="cursor-pointer disabled:cursor-not-allowed! rounded p-1.5 hover:bg-[var(--sa-sand)] disabled:opacity-40" disabled={index === 0} onClick={() => setIndex(index - 1)} aria-label="Previous email">
                   <ChevronLeft className="h-4 w-4" aria-hidden />
                 </button>
                 <span className="text-xs tabular-nums text-[var(--sa-muted)]">{index + 1} of {queue.length}</span>
-                <button type="button" className="rounded p-1.5 hover:bg-[var(--sa-sand)] disabled:opacity-40" disabled={index >= queue.length - 1} onClick={() => setIndex(index + 1)} aria-label="Next email">
+                <button type="button" className="cursor-pointer disabled:cursor-not-allowed! rounded p-1.5 hover:bg-[var(--sa-sand)] disabled:opacity-40" disabled={index >= queue.length - 1} onClick={() => setIndex(index + 1)} aria-label="Next email">
                   <ChevronRight className="h-4 w-4" aria-hidden />
                 </button>
               </div>
@@ -182,9 +182,9 @@ export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, 
         <footer className="flex flex-wrap items-center gap-3 border-t border-[var(--sa-border)] px-5 py-3">
           {sending ? (
             finished ? (
-              <button type="button" className="sa-btn-primary ml-auto" onClick={() => dialog.current?.close()}>Close</button>
+              <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary ml-auto" onClick={() => dialog.current?.close()}>Close</button>
             ) : (
-              <button type="button" className="sa-btn-secondary ml-auto" onClick={() => stopper.current?.abort()}>Stop sending</button>
+              <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary ml-auto" onClick={() => stopper.current?.abort()}>Stop sending</button>
             )
           ) : (
             <>
@@ -197,7 +197,7 @@ export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, 
                   <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden /> Sending is turned off on this server. Previews only.
                 </p>
               )}
-              <button type="button" className="sa-btn-primary disabled:cursor-not-allowed disabled:opacity-50" disabled={!canSend} onClick={sendAll}>
+              <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={!canSend} onClick={sendAll}>
                 <Send className="h-4 w-4" aria-hidden /> Send {queue.length === 1 ? "invitation" : `${queue.length} invitations`}
               </button>
             </>

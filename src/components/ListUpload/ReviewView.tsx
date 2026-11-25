@@ -119,7 +119,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                 type="button"
                 aria-pressed={active}
                 onClick={() => setFilter(key)}
-                className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`cursor-pointer disabled:cursor-not-allowed! shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                   active
                     ? "border-[var(--sa-accent)] bg-[var(--sa-accent-tint)] text-[var(--sa-accent)]"
                     : "border-[var(--sa-border)] bg-[var(--sa-white)] text-[var(--sa-ink-2)] hover:bg-[var(--sa-sand)]"
@@ -145,7 +145,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
           </div>
           <button
             type="button"
-            className="sa-btn-primary justify-center disabled:cursor-not-allowed disabled:opacity-50"
+            className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary justify-center disabled:opacity-50"
             disabled={toInvite.length === 0}
             onClick={() => setInviting(true)}
           >
@@ -164,7 +164,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
           }`}
         >
           <span>{message.text}</span>
-          <button type="button" onClick={() => setMessage(null)} aria-label="Dismiss" className="shrink-0 rounded p-0.5 hover:bg-black/5">
+          <button type="button" onClick={() => setMessage(null)} aria-label="Dismiss" className="cursor-pointer disabled:cursor-not-allowed! shrink-0 rounded p-0.5 hover:bg-black/5">
             <X className="h-4 w-4" aria-hidden />
           </button>
         </div>
@@ -173,13 +173,13 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
       {selected.size > 0 && (
         <div className="sticky top-2 z-10 flex flex-wrap items-center gap-2 rounded-[var(--sa-radius-md)] border border-[var(--sa-border-strong)] bg-[var(--sa-white)] px-4 py-2.5 shadow-[var(--sa-shadow-md)]">
           <span className="mr-auto text-[13px] font-medium text-[var(--sa-ink)]">{selected.size} selected</span>
-          <button type="button" className="sa-btn-primary disabled:opacity-50" disabled={saving} onClick={() => decide("approved")}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={saving} onClick={() => decide("approved")}>
             <Check className="h-4 w-4" aria-hidden /> Approve
           </button>
-          <button type="button" className="sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("rejected")}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("rejected")}>
             Reject
           </button>
-          <button type="button" className="sa-btn-secondary" onClick={() => setSelected(new Set())}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary" onClick={() => setSelected(new Set())}>
             Clear
           </button>
         </div>
@@ -201,7 +201,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                     aria-label="Select all shown"
                     checked={allSelected}
                     onChange={() => setSelected(allSelected ? new Set() : new Set(selectable.map((s) => s.id)))}
-                    className="h-4 w-4 accent-[var(--sa-accent)]"
+                    className="cursor-pointer disabled:cursor-not-allowed! h-4 w-4 accent-[var(--sa-accent)]"
                   />
                 </th>
                 <th>Status</th>
@@ -225,7 +225,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                         disabled={!!s.invitation_id}
                         checked={selected.has(s.id)}
                         onChange={() => toggle(s.id)}
-                        className="h-4 w-4 accent-[var(--sa-accent)]"
+                        className="cursor-pointer disabled:cursor-not-allowed! h-4 w-4 accent-[var(--sa-accent)]"
                       />
                     </td>
                     <td><span className={`sa-pill ${view.pill}`}>{view.label}</span></td>
@@ -242,7 +242,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                           setOpenId(s.id);
                         }}
                         aria-label={`Open ${s.company_name ?? "supplier"}`}
-                        className="rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand-hover)]"
+                        className="cursor-pointer disabled:cursor-not-allowed! rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand-hover)]"
                       >
                         <ChevronRight className="h-4 w-4" aria-hidden />
                       </button>
@@ -265,9 +265,9 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                     disabled={!!s.invitation_id}
                     checked={selected.has(s.id)}
                     onChange={() => toggle(s.id)}
-                    className="mt-1 h-4 w-4 shrink-0 accent-[var(--sa-accent)]"
+                    className="cursor-pointer disabled:cursor-not-allowed! mt-1 h-4 w-4 shrink-0 accent-[var(--sa-accent)]"
                   />
-                  <button type="button" onClick={() => setOpenId(s.id)} className="flex min-w-0 flex-1 flex-col items-start gap-1 text-left">
+                  <button type="button" onClick={() => setOpenId(s.id)} className="cursor-pointer disabled:cursor-not-allowed! flex min-w-0 flex-1 flex-col items-start gap-1 text-left">
                     <span className="flex w-full items-center justify-between gap-2">
                       <span className="truncate text-[14px] font-medium text-[var(--sa-ink)]">{s.company_name ?? "No company name"}</span>
                       <span className={`sa-pill shrink-0 ${view.pill}`}>{view.label}</span>
