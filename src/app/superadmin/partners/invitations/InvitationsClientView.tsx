@@ -14,7 +14,9 @@ import {
   AlertCircle,
   Calendar,
   Loader2,
+  FileUp,
 } from "lucide-react";
+import Link from "next/link";
 import InvitePartnerButton, { ClientOption } from "@/components/SuperAdmin/InvitePartnerButton";
 
 interface InvitationRecord {
@@ -311,11 +313,17 @@ export default function InvitationsClientView({
           </select>
         </div>
 
-        <InvitePartnerButton
-          clients={clients}
-          initialOpen={autoOpenInvite}
-          onSuccess={refreshInvitations}
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          <Link href="/superadmin/partners/invitations/upload" className="sa-btn-secondary">
+            <FileUp className="w-4 h-4 shrink-0" aria-hidden />
+            <span>Upload a list</span>
+          </Link>
+          <InvitePartnerButton
+            clients={clients}
+            initialOpen={autoOpenInvite}
+            onSuccess={refreshInvitations}
+          />
+        </div>
       </div>
 
       {actionError && (
