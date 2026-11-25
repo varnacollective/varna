@@ -129,7 +129,10 @@ export default function SuperAdminClientLayout({
   // Breadcrumb
   const pathParts = pathname.split("/").filter(Boolean);
   const breadcrumb = pathParts.map((part, i) => ({
-    label: part.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+    // An id in the path (a record's own page) reads as "Details", not as the id.
+    label: /^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(part)
+      ? "Details"
+      : part.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
     href: "/" + pathParts.slice(0, i + 1).join("/"),
   }));
 
@@ -259,10 +262,7 @@ export default function SuperAdminClientLayout({
       </aside>
 
       {/* Main area */}
-      <div
-        className="flex flex-col flex-1 min-h-screen"
-        style={{ marginLeft: "256px" }}
-      >
+      <div className="flex flex-col flex-1 min-w-0 min-h-screen md:ml-[256px]">
         {/* Top bar */}
         <header className="sa-topbar sticky top-0 z-30">
           {/* Mobile menu button */}
@@ -276,14 +276,14 @@ export default function SuperAdminClientLayout({
           </button>
 
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-1 flex-1" style={{ fontSize: "13px", color: "var(--sa-muted)" }}>
+          <nav className="flex items-center gap-1 flex-1 min-w-0 whitespace-nowrap" style={{ fontSize: "13px", color: "var(--sa-muted)" }}>
             {breadcrumb.map((crumb, i) => (
               <React.Fragment key={crumb.href}>
-                {i > 0 && <ChevronRight className="w-3.5 h-3.5 opacity-40" />}
+                {i > 0 && <ChevronRight className="hidden sm:block w-3.5 h-3.5 opacity-40" />}
                 {i === breadcrumb.length - 1 ? (
-                  <span style={{ color: "var(--sa-ink)", fontWeight: 500 }}>{crumb.label}</span>
+                  <span className="truncate" style={{ color: "var(--sa-ink)", fontWeight: 500 }}>{crumb.label}</span>
                 ) : (
-                  <Link href={crumb.href} style={{ color: "var(--sa-muted)" }} className="hover:underline">
+                  <Link href={crumb.href} style={{ color: "var(--sa-muted)" }} className="hidden sm:inline hover:underline">
                     {crumb.label}
                   </Link>
                 )}

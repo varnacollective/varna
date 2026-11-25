@@ -42,10 +42,10 @@ export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, 
   const current = queue[index];
   const busy = sending !== null && !finished;
 
+  // Open as a modal once mounted. No close() on cleanup: its "close" event
+  // would tell the parent to remove this dialog again.
   useEffect(() => {
-    const el = dialog.current;
-    el?.showModal();
-    return () => el?.close();
+    if (!dialog.current?.open) dialog.current?.showModal();
   }, []);
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import { AlertTriangle, Check, ChevronRight, Search, Send, X } from "lucide-reac
 import type { Decision, FailedPart, ReviewSupplier } from "@/lib/list-uploads/types";
 import InviteDialog from "./InviteDialog";
 import { VIEWS, viewInfo, viewOf, type View } from "./labels";
+import { formatPhone } from "./format";
 import { errorFrom } from "./read-stream";
 import SupplierPanel from "./SupplierPanel";
 
@@ -231,7 +232,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                     <td className="max-w-56 truncate font-medium text-[var(--sa-ink)]">{s.company_name ?? <Missing />}</td>
                     <td className="max-w-40 truncate">{s.contact_name ?? <Missing />}</td>
                     <td className="max-w-60 truncate">{s.email ?? <Missing />}</td>
-                    <td className="hidden whitespace-nowrap lg:table-cell">{s.phone ?? <Missing />}</td>
+                    <td className="hidden whitespace-nowrap lg:table-cell">{formatPhone(s.phone) ?? <Missing />}</td>
                     <td className="hidden max-w-32 truncate xl:table-cell">{s.city ?? <Missing />}</td>
                     <td>
                       <button
@@ -273,7 +274,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
                     </span>
                     <span className="w-full truncate text-xs text-[var(--sa-ink-2)]">{s.email ?? "No email"}</span>
                     <span className="w-full truncate text-xs text-[var(--sa-muted)]">
-                      {[s.contact_name, s.phone, s.city].filter(Boolean).join(" · ") || "No other details"}
+                      {[s.contact_name, formatPhone(s.phone), s.city].filter(Boolean).join(" · ") || "No other details"}
                     </span>
                   </button>
                 </li>

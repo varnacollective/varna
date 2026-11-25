@@ -33,10 +33,10 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
   const view = viewInfo(viewOf(supplier));
   const changed = EDITABLE_FIELDS.filter((f) => draft[f].trim() !== (supplier[f] ?? ""));
 
+  // Open as a modal once mounted. No close() on cleanup: its "close" event
+  // would tell the parent to remove this dialog again.
   useEffect(() => {
-    const el = dialog.current;
-    el?.showModal();
-    return () => el?.close();
+    if (!dialog.current?.open) dialog.current?.showModal();
   }, []);
 
   // A saved supplier comes back from the server: show its values.

@@ -31,7 +31,7 @@ type Phase =
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  return `${Number((bytes / 1024 / 1024).toFixed(1))} MB`;
 }
 
 /** Share of the work done, 0 to 1. Pages are read first, then rows. */
@@ -157,23 +157,26 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
   const percent = Math.round(share(phase) * 100);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex max-w-3xl flex-col gap-5">
       <div className="sa-card flex flex-col gap-4 p-4 sm:p-6">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="list-client" className="sa-label">Hotel</label>
-          <select
-            id="list-client"
-            className="sa-input"
-            value={clientId}
-            disabled={busy}
-            onChange={(e) => setClientId(e.target.value)}
-          >
-            <option value="">No hotel (choose later)</option>
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-        </div>
+        {/* Only shown when hotels are set up (Partners → Clients). */}
+        {clients.length > 0 && (
+          <div className="flex flex-col gap-1.5 sm:max-w-sm">
+            <label htmlFor="list-client" className="sa-label">Hotel (optional)</label>
+            <select
+              id="list-client"
+              className="sa-input"
+              value={clientId}
+              disabled={busy}
+              onChange={(e) => setClientId(e.target.value)}
+            >
+              <option value="">General Pool (no hotel)</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div
           onDragOver={(e) => {

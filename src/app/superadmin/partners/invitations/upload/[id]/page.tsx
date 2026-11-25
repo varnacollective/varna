@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ListChecks } from "lucide-react";
+import { ListChecks } from "lucide-react";
+import PageHeader from "@/components/ListUpload/PageHeader";
 import ReviewView from "@/components/ListUpload/ReviewView";
 import RunDetails from "@/components/ListUpload/RunDetails";
 import { invitesEnabled } from "@/lib/list-uploads/config";
@@ -26,21 +27,11 @@ export default async function ReviewUploadPage({ params }: PageProps<"/superadmi
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <header className="flex flex-col gap-2 border-b border-[var(--sa-border)] pb-4">
-        <Link
-          href="/superadmin/partners/invitations"
-          className="inline-flex w-fit items-center gap-1 text-xs text-[var(--sa-muted)] hover:text-[var(--sa-ink)] hover:underline"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> Invitations
-        </Link>
-        <div className="flex items-center gap-2">
-          <ListChecks className="h-5 w-5 text-[var(--sa-accent)]" aria-hidden />
-          <h1 className="sa-page-title">Review suppliers</h1>
-        </div>
-        <p className="break-words text-[13px] text-[var(--sa-muted)]">
-          {upload.clientName ?? "No hotel"} · {fileNames} · {when}
-        </p>
-      </header>
+      <PageHeader
+        icon={ListChecks}
+        title="Review Suppliers"
+        subtitle={`${upload.clientName ?? "General Pool"} · ${fileNames} · ${when}`}
+      />
 
       {upload.status === "review" || upload.status === "done" ? (
         <ReviewView uploadId={id} initialSuppliers={suppliers} failedParts={upload.failedParts} canSend={invitesEnabled()} />
