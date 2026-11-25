@@ -157,7 +157,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
   const percent = Math.round(share(phase) * 100);
 
   return (
-    <div className="flex max-w-3xl flex-col gap-5">
+    <div className="flex flex-col gap-5">
       <div className="sa-card flex flex-col gap-4 p-4 sm:p-6">
         {/* Only shown when hotels are set up (Partners → Clients). */}
         {clients.length > 0 && (
