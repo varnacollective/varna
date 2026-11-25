@@ -185,12 +185,12 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
-          className={`flex flex-col items-center gap-3 rounded-[var(--sa-radius-md)] border-2 border-dashed px-4 py-8 text-center transition-colors ${
+          className={`flex flex-col items-center gap-3 rounded-[var(--sa-radius-md)] border-2 border-dashed px-4 py-12 text-center transition-colors sm:py-16 ${
             dragging ? "border-[var(--sa-accent)] bg-[var(--sa-accent-tint)]" : "border-[var(--sa-border-strong)] bg-[var(--sa-canvas)]"
           }`}
         >
-          <Upload className="h-6 w-6 text-[var(--sa-accent)]" aria-hidden />
-          <p className="text-[13px] text-[var(--sa-ink-2)]">
+          <Upload className="h-8 w-8 text-[var(--sa-accent)]" aria-hidden />
+          <p className="text-[15px] text-[var(--sa-ink-2)]">
             Drop files here, or{" "}
             <button
               type="button"
