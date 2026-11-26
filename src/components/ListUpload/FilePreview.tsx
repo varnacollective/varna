@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download, ExternalLink, Loader2, X } from "lucide-react";
+import { ExternalLink, Loader2, X } from "lucide-react";
 import PdfPages from "./PdfPages";
 
 /**
@@ -110,23 +110,15 @@ export default function FilePreview({ name, load, page, sheet: startSheet, row: 
         <header className="flex items-center gap-2 border-b border-[var(--sa-border)] px-4 py-3 sm:px-5">
           <h2 className="min-w-0 flex-1 truncate text-[15px] font-semibold" title={name}>{name}</h2>
           {content && (
-            <>
-              <a
-                href={page && content.kind === "pdf" ? `${content.url}#page=${page}` : content.url}
-                target="_blank"
-                rel="noopener"
-                className="hidden items-center gap-1.5 rounded px-2 py-1 text-[13px] text-[var(--sa-ink-2)] hover:bg-[var(--sa-sand)] sm:inline-flex"
-              >
-                <ExternalLink className="h-4 w-4" aria-hidden /> New tab
-              </a>
-              <a
-                href={content.url}
-                download={name}
-                className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-[13px] text-[var(--sa-ink-2)] hover:bg-[var(--sa-sand)]"
-              >
-                <Download className="h-4 w-4" aria-hidden /> <span className="hidden sm:inline">Download</span>
-              </a>
-            </>
+            <a
+              href={page && content.kind === "pdf" ? `${content.url}#page=${page}` : content.url}
+              target="_blank"
+              rel="noopener"
+              aria-label="Open in a new tab"
+              className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-[13px] text-[var(--sa-ink-2)] hover:bg-[var(--sa-sand)]"
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden /> <span className="hidden sm:inline">New tab</span>
+            </a>
           )}
           <button
             type="button"
@@ -209,10 +201,16 @@ export default function FilePreview({ name, load, page, sheet: startSheet, row: 
               ) : (
                 <p className="p-6 text-[13px] text-[var(--sa-muted)]">This sheet is empty.</p>
               )}
-              {current?.more && <p className="p-3 text-xs text-[var(--sa-caption)]">Showing the first {MAX_ROWS} rows. Download the file to see the rest.</p>}
+              {current?.more && (
+                <p className="p-3 text-xs text-[var(--sa-caption)]">
+                  Showing the first {MAX_ROWS} rows.
+                </p>
+              )}
             </div>
           ) : (
-            <p className="p-6 text-[13px] text-[var(--sa-muted)]">This kind of photo (HEIC) can&apos;t be shown in the browser. Download it to see it.</p>
+            <p className="p-6 text-[13px] text-[var(--sa-muted)]">
+              This kind of photo (HEIC) can&apos;t be shown in the browser. It can still be read.
+            </p>
           )}
         </div>
       </div>

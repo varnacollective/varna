@@ -64,7 +64,7 @@ export default function PdfPages({ data, page }: { data: Blob; page?: number }) 
       } catch (error) {
         if (cancelled) return;
         console.warn("PDF preview failed:", error);
-        setState({ error: "This PDF could not be shown. Download it to open it." });
+        setState({ error: "This PDF could not be shown here." });
       }
     })();
 
