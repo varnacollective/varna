@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { AlertTriangle, Check, FileSearch, Info, Undo2, X } from "lucide-react";
+import { AlertTriangle, Check, Eye, FileSearch, Info, Undo2, X } from "lucide-react";
 import {
   EDITABLE_FIELDS,
   type Decision,
@@ -9,7 +9,9 @@ import {
   type ReviewSupplier,
 } from "@/lib/list-uploads/types";
 import { FIELD_LABELS, viewInfo, viewOf } from "./labels";
+import FilePreview, { type PreviewTarget } from "./FilePreview";
 import { errorFrom } from "./read-stream";
+import { uploadedFile } from "./uploaded-file";
 
 interface Props {
   uploadId: string;
@@ -29,6 +31,7 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
   const [draft, setDraft] = useState<Draft>(() => draftOf(supplier));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const locked = !!supplier.invitation_id;
   const view = viewInfo(viewOf(supplier));
   const changed = EDITABLE_FIELDS.filter((f) => draft[f].trim() !== (supplier[f] ?? ""));
@@ -162,7 +165,26 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
             <h3 id="evidence-title" className="flex items-center gap-2 text-[13px] font-semibold">
               <FileSearch className="h-4 w-4 text-[var(--sa-accent)]" aria-hidden /> Where did this come from?
             </h3>
-            <p className="mt-1 break-words text-xs text-[var(--sa-muted)]">{where}</p>
+            <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+              <p className="min-w-0 break-words text-xs text-[var(--sa-muted)]">{where}</p>
+              {supplier.file_id && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPreview({
+                      name: evidence.fileName,
+                      load: uploadedFile(uploadId, supplier.file_id ?? ""),
+                      ...(evidence.page
+                        ? { page: evidence.page }
+                        : { ...(evidence.sheet ? { sheet: evidence.sheet } : {}), ...(evidence.row ? { row: evidence.row } : {}) }),
+                    })
+                  }
+                  className="cursor-pointer inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium text-[var(--sa-accent)] hover:bg-[var(--sa-accent-tint)]"
+                >
+                  <Eye className="h-3.5 w-3.5" aria-hidden /> Open file{evidence.page ? ` at page ${evidence.page}` : evidence.row ? ` at row ${evidence.row}` : ""}
+                </button>
+              )}
+            </div>
             {evidence.readFromImage && (
               <p className="mt-2 text-xs text-[var(--sa-warning-fg)]">Read by AI from a PDF or photo. Compare with the original page.</p>
             )}
@@ -218,6 +240,7 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
           )}
         </footer>
       </div>
+      {preview && <FilePreview {...preview} onClose={() => setPreview(null)} />}
     </dialog>
   );
 }

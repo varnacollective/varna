@@ -5,7 +5,7 @@ import type { ReviewSupplier, UploadSummary } from "./types";
 /** Reads for the review page. Only the server can read these tables. */
 
 const SUPPLIER_COLUMNS =
-  "id, position, company_name, brand_name, contact_name, email, other_emails, phone, other_phones, " +
+  "id, file_id, position, company_name, brand_name, contact_name, email, other_emails, phone, other_phones, " +
   "city, state, check_status, issues, decision, duplicate_of, invitation_id, evidence:extracted->evidence";
 
 export async function getUpload(id: string): Promise<UploadSummary | null> {

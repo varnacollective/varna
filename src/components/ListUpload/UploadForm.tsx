@@ -2,10 +2,11 @@
 
 import { useRef, useState, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ClipboardPaste, FileText, Loader2, Plus, Upload, X } from "lucide-react";
+import { AlertCircle, ClipboardPaste, Eye, FileText, Loader2, Plus, Upload, X } from "lucide-react";
 import { ACCEPT_ATTRIBUTE, ACCEPTED_FILE, MAX_FILE_BYTES, MAX_FILES, UPLOAD_BUCKET } from "@/lib/list-uploads/files";
 import type { ReadEvent } from "@/lib/list-uploads/types";
 import { createClient } from "@/utils/supabase/client";
+import FilePreview, { type PreviewTarget } from "./FilePreview";
 import { errorFrom, readEvents } from "./read-stream";
 
 interface Client {
@@ -63,6 +64,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
   const [dragging, setDragging] = useState(false);
   const [phase, setPhase] = useState<Phase>({ kind: "choose" });
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const busy = phase.kind !== "choose";
 
   function addFiles(list: Iterable<File>) {
@@ -259,6 +261,14 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
                   <span className="shrink-0 text-xs tabular-nums text-[var(--sa-caption)]">{formatBytes(file.size)}</span>
                   <button
                     type="button"
+                    onClick={() => setPreview({ name: file.name, load: () => Promise.resolve(file) })}
+                    className="cursor-pointer inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs font-medium text-[var(--sa-accent)] hover:bg-[var(--sa-accent-tint)]"
+                    aria-label={`Preview ${file.name}`}
+                  >
+                    <Eye className="h-4 w-4" aria-hidden /> <span className="hidden sm:inline">Preview</span>
+                  </button>
+                  <button
+                    type="button"
                     disabled={busy}
                     onClick={() => setFiles(files.filter((_, j) => j !== i))}
                     className="cursor-pointer disabled:cursor-not-allowed! rounded p-1 text-[var(--sa-muted)] hover:bg-[var(--sa-sand)] hover:text-[var(--sa-ink)] disabled:opacity-50"
@@ -318,6 +328,9 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
             Read {files.length === 1 ? "the file" : files.length > 1 ? `${files.length} files` : "the list"}
           </button>
         </div>
+      )}
+      {preview && (
+        <FilePreview {...preview} onClose={() => setPreview(null)} />
       )}
     </div>
   );

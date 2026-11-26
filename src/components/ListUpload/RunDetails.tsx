@@ -1,4 +1,6 @@
+import type { ReactNode } from "react";
 import type { UploadSummary } from "@/lib/list-uploads/types";
+import UploadedFiles from "./UploadedFiles";
 
 const number = (n: number) => n.toLocaleString("en-IN");
 
@@ -13,8 +15,19 @@ export default function RunDetails({ upload }: { upload: UploadSummary }) {
     upload.visionModel && upload.visionModel !== upload.model
       ? `${upload.model} (pages and photos: ${upload.visionModel})`
       : upload.model;
-  const rows: [string, string][] = [
-    ["Files", upload.files.map((f) => `${f.name} (${formatSize(f.sizeBytes)}${f.pageCount ? `, ${f.pageCount} pages` : ""})`).join(", ")],
+  const rows: [string, ReactNode][] = [
+    [
+      "Files",
+      <UploadedFiles
+        key="files"
+        uploadId={upload.id}
+        files={upload.files.map((f) => ({
+          id: f.id,
+          name: f.name,
+          detail: `${formatSize(f.sizeBytes)}${f.pageCount ? `, ${f.pageCount} pages` : ""}`,
+        }))}
+      />,
+    ],
     ["AI model", models ?? "—"],
     ["Instructions", upload.promptVersion ?? "—"],
     [
