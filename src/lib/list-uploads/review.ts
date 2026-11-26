@@ -2,7 +2,8 @@ import "server-only";
 import { z } from "zod/v4";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { REVIEW_SUPPLIER_COLUMNS } from "./queries";
-import { isSendableEmail, recheck } from "./review-row";
+import { checkEmailDomains, domainOf } from "./email-domains";
+import { checkStatus, emailDomainIssue, isSendableEmail, recheck } from "./review-row";
 import { DECISIONS, EDITABLE_FIELDS, type Decision, type EditableField, type ReviewSupplier } from "./types";
 
 /** A reviewer's edits and decisions, checked and recorded in the audit log. */
@@ -59,7 +60,21 @@ export async function changeSupplier(
   }
   const next = { ...row, ...Object.fromEntries(edits) } as ReviewSupplier;
   const update: Record<string, unknown> = Object.fromEntries(edits);
-  if (edits.length > 0) Object.assign(update, recheck(next, edits.map(([f]) => f)));
+  if (edits.length > 0) {
+    const checked = recheck(next, edits.map(([f]) => f));
+    // A newly typed email gets the same domain check as one read from the file.
+    const newEmail = edits.find(([f]) => f === "email")?.[1];
+    if (newEmail) {
+      const domain = domainOf(newEmail);
+      const verdict = (await checkEmailDomains([domain])).get(domain);
+      if (verdict === "no_domain" || verdict === "no_mail") {
+        checked.issues.push(emailDomainIssue(domain, verdict));
+        checked.check_status = checkStatus({ ...next, issues: checked.issues });
+      }
+    }
+    next.issues = checked.issues;
+    Object.assign(update, checked);
+  }
 
   if (change.decision !== undefined && change.decision !== row.decision) {
     const reason = change.decision === "approved" ? cannotApprove(next) : null;

@@ -15,7 +15,8 @@ import {
 } from "@/agents/list/pipeline/extract-workbook";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { listReaders } from "./config";
-import { checkStatus, existingSupplierIssue, toReviewRow, type NewReviewRow } from "./review-row";
+import { checkEmailDomains, domainOf } from "./email-domains";
+import { checkStatus, emailDomainIssue, existingSupplierIssue, toReviewRow, type NewReviewRow } from "./review-row";
 import { UPLOAD_BUCKET } from "./files";
 import type { FailedPart, ReadEvent } from "./types";
 
@@ -94,6 +95,7 @@ export async function readUpload(
       }
     }
 
+    await markBadEmailDomains(rows);
     await markExistingSuppliers(db, rows);
     await insertBatches(db, "list_upload_suppliers", rows);
     await insertBatches(db, "list_upload_ai_calls", calls.flatMap(({ file, call }) =>
@@ -177,6 +179,19 @@ async function readFile(
     // A stop or an outage ends the whole upload; a bad file only itself.
     if (signal.aborted) throw error;
     return { error: errorMessage(error) };
+  }
+}
+
+/** Flag emails whose domain doesn't exist or takes no email (DNS only, no AI). */
+async function markBadEmailDomains(rows: NewReviewRow[]): Promise<void> {
+  const verdicts = await checkEmailDomains(rows.flatMap((r) => (r.email ? [domainOf(r.email)] : [])));
+  for (const row of rows) {
+    if (!row.email) continue;
+    const domain = domainOf(row.email);
+    const verdict = verdicts.get(domain);
+    if (verdict !== "no_domain" && verdict !== "no_mail") continue;
+    row.issues.push(emailDomainIssue(domain, verdict));
+    row.check_status = checkStatus(row);
   }
 }
 

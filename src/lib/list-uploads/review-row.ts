@@ -35,6 +35,7 @@ const ISSUE_FIELD: Record<string, EditableField> = {
   shared_email: "email",
   missing_email: "email",
   email_suggestion: "email",
+  email_domain: "email",
   invalid_phone: "phone",
   corrupted_value: "phone",
 };
@@ -58,6 +59,18 @@ export function existingSupplierIssue(): Issue {
     code: "already_supplier",
     level: "attention",
     message: "This email is already in the supplier list",
+  };
+}
+
+/** The email's domain doesn't exist or takes no email: most likely misread or mistyped. */
+export function emailDomainIssue(domain: string, verdict: "no_domain" | "no_mail"): Issue {
+  return {
+    code: "email_domain",
+    level: "attention",
+    message:
+      verdict === "no_domain"
+        ? `The email domain "${domain}" doesn't exist. Check the email for a typo or misread.`
+        : `The email domain "${domain}" doesn't accept email. Check the email.`,
   };
 }
 
