@@ -13,6 +13,15 @@ export interface Issue {
   code: string;
   level: "attention" | "info";
   message: string;
+  /** Other suppliers in this upload the issue is about (duplicates, shared email). */
+  related?: RelatedRow[];
+}
+
+/** Another supplier an issue points to, and where it is in the files. */
+export interface RelatedRow {
+  id: string;
+  /** "row 7", "page 2", or "vendor-list.pdf, page 1" when in another file. */
+  place: string;
 }
 
 /** Where a supplier was found, and the text of every cell in its rows. */

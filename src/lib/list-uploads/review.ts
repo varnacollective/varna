@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { REVIEW_SUPPLIER_COLUMNS } from "./queries";
 import { checkEmailDomains, domainOf } from "./email-domains";
-import { checkStatus, emailDomainIssue, isSendableEmail, recheck } from "./review-row";
+import { checkStatus, emailDomainIssue, isSendableEmail, linkRelatedRows, recheck } from "./review-row";
 import { DECISIONS, EDITABLE_FIELDS, type Decision, type EditableField, type ReviewSupplier } from "./types";
 
 /** A reviewer's edits and decisions, checked and recorded in the audit log. */
@@ -28,7 +28,8 @@ export const BulkDecision = z.strictObject({
 });
 
 export type ChangeResult =
-  | { ok: true; supplier: ReviewSupplier }
+  /** `others`: suppliers whose issues changed because of this edit (same email). */
+  | { ok: true; supplier: ReviewSupplier; others: ReviewSupplier[] }
   | { ok: false; status: number; error: string };
 
 /** Why a supplier can't be approved, or null if it can. */
@@ -81,7 +82,7 @@ export async function changeSupplier(
     if (reason) return { ok: false, status: 400, error: reason };
     Object.assign(update, decisionFields(change.decision, userId));
   }
-  if (Object.keys(update).length === 0) return { ok: true, supplier: row };
+  if (Object.keys(update).length === 0) return { ok: true, supplier: row, others: [] };
 
   const { data: saved, error } = await db
     .from("list_upload_suppliers")
@@ -92,7 +93,45 @@ export async function changeSupplier(
     .single<ReviewSupplier>();
   if (error) return { ok: false, status: 500, error: error.message };
   await audit(userId, "list_upload_supplier", id, pick(row, update), pick(saved, update));
-  return { ok: true, supplier: saved };
+  if (!edits.some(([field]) => field === "email")) return { ok: true, supplier: saved, others: [] };
+
+  // A new email can start or end "same email as" on this row and on others.
+  const relinked = await relinkUpload(uploadId);
+  return {
+    ok: true,
+    supplier: relinked.find((s) => s.id === id) ?? saved,
+    others: relinked.filter((s) => s.id !== id),
+  };
+}
+
+/** Rebuild the "same email" and "same supplier" links of an upload; returns the rows that changed. */
+async function relinkUpload(uploadId: string): Promise<ReviewSupplier[]> {
+  const db = createAdminClient();
+  const { data, error } = await db
+    .from("list_upload_suppliers")
+    .select(`${REVIEW_SUPPLIER_COLUMNS}, group:extracted->supplier->>duplicate_group_id`)
+    .eq("upload_id", uploadId)
+    .returns<(ReviewSupplier & { group: string | null })[]>();
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  const changed = linkRelatedRows(rows);
+  const updated = await Promise.all(
+    rows
+      .filter((row) => changed.has(row.id) && !row.invitation_id)
+      .map(async (row) => {
+        const issues = changed.get(row.id) ?? row.issues;
+        const { data: saved, error: updateError } = await db
+          .from("list_upload_suppliers")
+          .update({ issues, check_status: checkStatus({ ...row, issues }), updated_at: new Date().toISOString() })
+          .eq("id", row.id)
+          .is("invitation_id", null)
+          .select(REVIEW_SUPPLIER_COLUMNS)
+          .single<ReviewSupplier>();
+        if (updateError) throw new Error(updateError.message);
+        return saved;
+      }),
+  );
+  return updated;
 }
 
 /** Approve or reject many at once. Rows that can't be approved are skipped. */

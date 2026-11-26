@@ -46,10 +46,12 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
   const selectable = shown.filter((s) => !s.invitation_id);
   const allSelected = selectable.length > 0 && selectable.every((s) => selected.has(s.id));
   const toInvite = suppliers.filter((s) => s.decision === "approved" && !s.invitation_id);
-  const open = suppliers.find((s) => s.id === openId) ?? null;
+  const byId = useMemo(() => new Map(suppliers.map((s) => [s.id, s])), [suppliers]);
+  const open = (openId && byId.get(openId)) || null;
 
-  function replace(updated: ReviewSupplier) {
-    setSuppliers((list) => list.map((s) => (s.id === updated.id ? updated : s)));
+  function replace(updated: ReviewSupplier[]) {
+    const byId = new Map(updated.map((s) => [s.id, s]));
+    setSuppliers((list) => list.map((s) => byId.get(s.id) ?? s));
   }
 
   function toggle(id: string) {
@@ -285,7 +287,15 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
       )}
 
       {open && (
-        <SupplierPanel uploadId={uploadId} supplier={open} onSaved={replace} onClose={() => setOpenId(null)} />
+        <SupplierPanel
+          key={open.id}
+          uploadId={uploadId}
+          supplier={open}
+          suppliers={byId}
+          onSaved={replace}
+          onOpen={setOpenId}
+          onClose={() => setOpenId(null)}
+        />
       )}
       {inviting && (
         <InviteDialog

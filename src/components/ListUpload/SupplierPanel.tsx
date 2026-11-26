@@ -6,8 +6,10 @@ import {
   EDITABLE_FIELDS,
   type Decision,
   type EditableField,
+  type Issue,
   type ReviewSupplier,
 } from "@/lib/list-uploads/types";
+import { LINKED_ISSUES } from "@/lib/list-uploads/review-row";
 import { FIELD_LABELS, viewInfo, viewOf } from "./labels";
 import FilePreview, { type PreviewTarget } from "./FilePreview";
 import { errorFrom } from "./read-stream";
@@ -16,7 +18,11 @@ import { uploadedFile } from "./uploaded-file";
 interface Props {
   uploadId: string;
   supplier: ReviewSupplier;
-  onSaved: (supplier: ReviewSupplier) => void;
+  /** Every supplier of the upload, to name and open the ones an issue points to. */
+  suppliers: ReadonlyMap<string, ReviewSupplier>;
+  /** Saved suppliers: this one first, then any others the change affected. */
+  onSaved: (suppliers: ReviewSupplier[]) => void;
+  onOpen: (id: string) => void;
   onClose: () => void;
 }
 
@@ -26,7 +32,7 @@ const draftOf = (s: ReviewSupplier): Draft =>
   Object.fromEntries(EDITABLE_FIELDS.map((f) => [f, s[f] ?? ""])) as Draft;
 
 /** One supplier: what was found, where it came from, and the decision. */
-export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: Props) {
+export default function SupplierPanel({ uploadId, supplier, suppliers, onSaved, onOpen, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState<Draft>(() => draftOf(supplier));
   const [saving, setSaving] = useState(false);
@@ -59,7 +65,8 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
         body: JSON.stringify(body),
       });
       if (!response.ok) throw new Error(await errorFrom(response));
-      onSaved(((await response.json()) as { supplier: ReviewSupplier }).supplier);
+      const saved = (await response.json()) as { supplier: ReviewSupplier; others: ReviewSupplier[] };
+      onSaved([saved.supplier, ...saved.others]);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Saving failed.");
     } finally {
@@ -125,7 +132,7 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
                   ) : (
                     <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                   )}
-                  <span>{issue.message}</span>
+                  <IssueText issue={issue} suppliers={suppliers} onOpen={onOpen} />
                 </li>
               ))}
             </ul>
@@ -262,5 +269,38 @@ function OtherValues({ values, disabled, onUse }: { values: string[]; disabled: 
         </button>
       ))}
     </p>
+  );
+}
+
+/** An issue's text; one that points at other suppliers names them as links. */
+function IssueText({
+  issue,
+  suppliers,
+  onOpen,
+}: {
+  issue: Issue;
+  suppliers: ReadonlyMap<string, ReviewSupplier>;
+  onOpen: (id: string) => void;
+}) {
+  const lead = LINKED_ISSUES[issue.code as keyof typeof LINKED_ISSUES] as string | undefined;
+  const related = (issue.related ?? []).filter((r) => suppliers.has(r.id));
+  if (!lead || related.length === 0) return <span>{issue.message}</span>;
+  return (
+    <span>
+      {lead}{" "}
+      {related.map((r, n) => (
+        <span key={r.id}>
+          {n > 0 && (n === related.length - 1 ? " and " : ", ")}
+          <button
+            type="button"
+            onClick={() => onOpen(r.id)}
+            className="cursor-pointer font-semibold underline underline-offset-2 hover:no-underline"
+          >
+            {suppliers.get(r.id)?.company_name?.trim() || "a supplier with no name"}
+          </button>{" "}
+          ({r.place})
+        </span>
+      ))}
+    </span>
   );
 }

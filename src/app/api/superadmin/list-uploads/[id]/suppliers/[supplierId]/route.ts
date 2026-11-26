@@ -15,5 +15,5 @@ export async function PATCH(
 
   const result = await changeSupplier(id, supplierId, parsed.data, userId);
   if (!result.ok) return Response.json({ error: result.error }, { status: result.status });
-  return Response.json({ supplier: result.supplier });
+  return Response.json({ supplier: result.supplier, others: result.others });
 }

@@ -16,7 +16,15 @@ import {
 import { createAdminClient } from "@/utils/supabase/admin";
 import { listReaders } from "./config";
 import { checkEmailDomains, domainOf } from "./email-domains";
-import { checkStatus, emailDomainIssue, existingSupplierIssue, toReviewRow, type NewReviewRow } from "./review-row";
+import {
+  checkStatus,
+  emailDomainIssue,
+  existingSupplierIssue,
+  linkRelatedRows,
+  linkRowOf,
+  toReviewRow,
+  type NewReviewRow,
+} from "./review-row";
 import { UPLOAD_BUCKET } from "./files";
 import type { FailedPart, ReadEvent } from "./types";
 
@@ -83,6 +91,7 @@ export async function readUpload(
       }
       for (const supplier of run.suppliers) {
         rows.push(toReviewRow(supplier, {
+          id: randomUUID(),
           uploadId,
           fileId: file.id,
           fileName: file.file_name,
@@ -97,6 +106,7 @@ export async function readUpload(
 
     await markBadEmailDomains(rows);
     await markExistingSuppliers(db, rows);
+    linkRelated(rows);
     await insertBatches(db, "list_upload_suppliers", rows);
     await insertBatches(db, "list_upload_ai_calls", calls.flatMap(({ file, call }) =>
       call.attempts.map((a, i) => ({
@@ -191,6 +201,17 @@ async function markBadEmailDomains(rows: NewReviewRow[]): Promise<void> {
     const verdict = verdicts.get(domain);
     if (verdict !== "no_domain" && verdict !== "no_mail") continue;
     row.issues.push(emailDomainIssue(domain, verdict));
+    row.check_status = checkStatus(row);
+  }
+}
+
+/** Name the other rows in "may be the same supplier" and "same email" issues. */
+function linkRelated(rows: NewReviewRow[]): void {
+  const changed = linkRelatedRows(rows.map(linkRowOf));
+  for (const row of rows) {
+    const issues = changed.get(row.id);
+    if (!issues) continue;
+    row.issues = issues;
     row.check_status = checkStatus(row);
   }
 }
