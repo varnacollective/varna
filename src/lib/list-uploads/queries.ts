@@ -1,5 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { paidCostUsd, type TokenUse } from "./pricing";
 import type { ReviewSupplier, UploadSummary } from "./types";
 
 /** Reads for the review page. Only the server can read these tables. */
@@ -13,9 +14,10 @@ export async function getUpload(id: string): Promise<UploadSummary | null> {
   const { data: u } = await db
     .from("list_uploads")
     .select(
-      "id, client_id, status, created_at, finished_at, model, vision_model, prompt_version, input_tokens, " +
-        "output_tokens, thinking_tokens, duration_ms, failed_parts, error, " +
-        "client:partner_clients(name), files:list_upload_files(id, file_name, size_bytes, page_count, created_at)",
+      "id, client_id, status, created_at, finished_at, model, vision_model, input_tokens, " +
+        "output_tokens, thinking_tokens, failed_parts, error, " +
+        "client:partner_clients(name), files:list_upload_files(id, file_name, size_bytes, page_count, created_at), " +
+        "calls:list_upload_ai_calls(model, input_tokens, output_tokens), suppliers:list_upload_suppliers(count)",
     )
     .eq("id", id)
     .maybeSingle<RawUpload>();
@@ -29,11 +31,11 @@ export async function getUpload(id: string): Promise<UploadSummary | null> {
     finishedAt: u.finished_at,
     model: u.model,
     visionModel: u.vision_model,
-    promptVersion: u.prompt_version,
     inputTokens: u.input_tokens,
     outputTokens: u.output_tokens,
     thinkingTokens: u.thinking_tokens,
-    durationMs: u.duration_ms,
+    paidCostUsd: paidCostUsd(u.calls),
+    supplierCount: u.suppliers[0]?.count ?? 0,
     failedParts: u.failed_parts,
     error: u.error,
     files: [...u.files]
@@ -75,13 +77,13 @@ interface RawUpload {
   finished_at: string | null;
   model: string | null;
   vision_model: string | null;
-  prompt_version: string | null;
   input_tokens: number;
   output_tokens: number;
   thinking_tokens: number;
-  duration_ms: number | null;
   failed_parts: UploadSummary["failedParts"];
   error: string | null;
   client: { name: string } | null;
   files: { id: string; file_name: string; size_bytes: number; page_count: number | null; created_at: string }[];
+  calls: TokenUse[];
+  suppliers: { count: number }[];
 }

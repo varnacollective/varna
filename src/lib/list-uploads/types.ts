@@ -49,11 +49,12 @@ export interface UploadSummary {
   finishedAt: string | null;
   model: string | null;
   visionModel: string | null;
-  promptVersion: string | null;
   inputTokens: number;
   outputTokens: number;
   thinkingTokens: number;
-  durationMs: number | null;
+  /** At Google's paid prices, in US dollars; null if a model's price is unknown. */
+  paidCostUsd: number | null;
+  supplierCount: number;
   failedParts: FailedPart[];
   error: string | null;
   files: { id: string; name: string; sizeBytes: number; pageCount: number | null }[];

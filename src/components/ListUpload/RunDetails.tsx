@@ -9,7 +9,19 @@ function formatSize(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-/** How the list was read: files, model, tokens, time, and what was kept. */
+/** "$0.044 at Google's paid prices (about $0.44 per 1,000 suppliers)". */
+function costText(usd: number, suppliers: number): string {
+  const total = `${dollars(usd)} at Google's paid prices`;
+  return suppliers > 0 ? `${total} (about ${dollars((usd / suppliers) * 1000)} per 1,000 suppliers)` : total;
+}
+
+/** Two significant figures under $1 ($0.044), cents above ($12.40). */
+function dollars(usd: number): string {
+  if (usd < 0.001) return "under $0.001";
+  return usd < 1 ? `$${usd.toPrecision(2)}` : `$${usd.toFixed(2)}`;
+}
+
+/** How the list was read: files, model, tokens and what it would cost. */
 export default function RunDetails({ upload }: { upload: UploadSummary }) {
   const models =
     upload.visionModel && upload.visionModel !== upload.model
@@ -29,14 +41,15 @@ export default function RunDetails({ upload }: { upload: UploadSummary }) {
       />,
     ],
     ["AI model", models ?? "—"],
-    ["Instructions", upload.promptVersion ?? "—"],
     [
       "Tokens",
       `${number(upload.inputTokens)} in, ${number(upload.outputTokens)} out${
         upload.thinkingTokens ? ` (${number(upload.thinkingTokens)} of them thinking)` : ""
       }`,
     ],
-    ["Time", upload.durationMs === null ? "—" : `${(upload.durationMs / 1000).toFixed(1)} s`],
+    ...(upload.paidCostUsd === null
+      ? []
+      : ([["AI cost", costText(upload.paidCostUsd, upload.supplierCount)]] as [string, ReactNode][])),
   ];
 
   return (
@@ -52,9 +65,6 @@ export default function RunDetails({ upload }: { upload: UploadSummary }) {
           </div>
         ))}
       </dl>
-      <p className="mt-4 border-t border-[var(--sa-border)] pt-3 text-xs text-[var(--sa-caption)]">
-        The original files and every AI answer are kept with this upload, so any result can be traced back to its source.
-      </p>
     </details>
   );
 }
