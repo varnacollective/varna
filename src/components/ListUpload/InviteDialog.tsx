@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Info, Loader2, Send, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Send, X } from "lucide-react";
 import type { ReviewSupplier } from "@/lib/list-uploads/types";
 import { errorFrom } from "./read-stream";
 
 interface Props {
   uploadId: string;
   suppliers: ReviewSupplier[];
-  canSend: boolean;
   onInvited: (supplierId: string, invitationId: string) => void;
   onClose: () => void;
 }
@@ -34,7 +33,7 @@ const wait = (ms: number, signal: AbortSignal) =>
 type Ending = "done" | "stopped" | "offline";
 
 /** Preview each approved supplier's email, then send them one by one. */
-export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, onClose }: Props) {
+export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const stopper = useRef<AbortController | null>(null);
   const [queue] = useState(suppliers);
@@ -222,16 +221,10 @@ export default function InviteDialog({ uploadId, suppliers, canSend, onInvited, 
             )
           ) : (
             <>
-              {canSend ? (
-                <p className="flex-1 text-xs text-[var(--sa-muted)]">
-                  Each email is sent with the supplier&apos;s own details. About {minutesLeft} min for all, because of the email limit.
-                </p>
-              ) : (
-                <p className="flex flex-1 items-start gap-1.5 text-xs text-[var(--sa-muted)]">
-                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden /> Sending is turned off on this server. Previews only.
-                </p>
-              )}
-              <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={!canSend} onClick={sendAll}>
+              <p className="flex-1 text-xs text-[var(--sa-muted)]">
+                Each email is sent with the supplier&apos;s own details. About {minutesLeft} min for all, because of the email limit.
+              </p>
+              <button type="button" className="cursor-pointer sa-btn-primary" onClick={sendAll}>
                 <Send className="h-4 w-4" aria-hidden /> Send {queue.length === 1 ? "invitation" : `${queue.length} invitations`}
               </button>
             </>

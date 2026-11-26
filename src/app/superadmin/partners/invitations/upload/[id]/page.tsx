@@ -4,7 +4,6 @@ import { ListChecks } from "lucide-react";
 import PageHeader from "@/components/ListUpload/PageHeader";
 import ReviewView from "@/components/ListUpload/ReviewView";
 import RunDetails from "@/components/ListUpload/RunDetails";
-import { invitesEnabled } from "@/lib/list-uploads/config";
 import { getReviewSuppliers, getUpload } from "@/lib/list-uploads/queries";
 
 export const metadata = { title: "Review suppliers" };
@@ -34,7 +33,7 @@ export default async function ReviewUploadPage({ params }: PageProps<"/superadmi
       />
 
       {upload.status === "review" || upload.status === "done" ? (
-        <ReviewView uploadId={id} initialSuppliers={suppliers} failedParts={upload.failedParts} canSend={invitesEnabled()} />
+        <ReviewView uploadId={id} initialSuppliers={suppliers} failedParts={upload.failedParts} />
       ) : (
         <div role="status" className="sa-card p-6 text-[13px] text-[var(--sa-ink-2)]">
           {upload.status === "reading"

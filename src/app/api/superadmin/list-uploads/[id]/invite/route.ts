@@ -1,7 +1,6 @@
 import { z } from "zod/v4";
 import { createInvitation } from "@/lib/invitations/create-invitation";
 import { badRequest, superadminId, unauthorized } from "@/lib/list-uploads/auth";
-import { invitesEnabled } from "@/lib/list-uploads/config";
 import { getUpload, getReviewSupplier } from "@/lib/list-uploads/queries";
 import { greetingName } from "@/lib/list-uploads/review-row";
 import { createAdminClient } from "@/utils/supabase/admin";
@@ -9,7 +8,6 @@ import { createAdminClient } from "@/utils/supabase/admin";
 /**
  * Preview or send the invitation for one approved supplier. One per request:
  * the page sends them one after another, within the email limit.
- * Sending only works where LIST_UPLOAD_INVITES_ENABLED is "true".
  */
 
 const Body = z.strictObject({
@@ -26,9 +24,6 @@ export async function POST(request: Request, ctx: RouteContext<"/api/superadmin/
   if (!parsed.success) return badRequest(parsed.error.issues[0]?.message ?? "Invalid request");
   const { supplierId, action } = parsed.data;
 
-  if (action === "send" && !invitesEnabled()) {
-    return Response.json({ error: "Sending invitations is turned off on this server." }, { status: 403 });
-  }
   const [upload, supplier] = await Promise.all([getUpload(id), getReviewSupplier(id, supplierId)]);
   if (!upload || !supplier) return Response.json({ error: "Supplier not found." }, { status: 404 });
   if (supplier.decision !== "approved") return badRequest("Approve the supplier first.");

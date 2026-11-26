@@ -15,9 +15,6 @@ import { ApiExecutor } from "@/agents/list/ai/api-executor";
  *   GEMINI_THINKING         optional: minimal | low | medium | high
  *   GEMINI_VISION_THINKING  optional: the same, for PDF pages and photos
  *   GEMINI_RPM              optional: most AI requests per minute (free keys)
- *   LIST_UPLOAD_INVITES_ENABLED  "true" to let approved suppliers be invited.
- *                           Off by default, so a local copy pointed at a live
- *                           database can never create invitations or send email.
  */
 
 export class ListUploadConfigError extends Error {}
@@ -67,8 +64,4 @@ export function listReaders(): ListReaders {
     model,
     visionModel,
   };
-}
-
-export function invitesEnabled(): boolean {
-  return process.env.LIST_UPLOAD_INVITES_ENABLED === "true";
 }

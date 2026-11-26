@@ -13,12 +13,11 @@ interface Props {
   uploadId: string;
   initialSuppliers: ReviewSupplier[];
   failedParts: FailedPart[];
-  canSend: boolean;
 }
 
 type Filter = "all" | View;
 
-export default function ReviewView({ uploadId, initialSuppliers, failedParts, canSend }: Props) {
+export default function ReviewView({ uploadId, initialSuppliers, failedParts }: Props) {
   const [suppliers, setSuppliers] = useState(initialSuppliers);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
@@ -301,7 +300,6 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts, ca
         <InviteDialog
           uploadId={uploadId}
           suppliers={toInvite}
-          canSend={canSend}
           onInvited={(id, invitationId) =>
             setSuppliers((list) => list.map((s) => (s.id === id ? { ...s, invitation_id: invitationId } : s)))
           }
