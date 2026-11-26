@@ -54,7 +54,6 @@ export interface UploadSummary {
   thinkingTokens: number;
   /** At Google's paid prices, in US dollars; null if a model's price is unknown. */
   paidCostUsd: number | null;
-  supplierCount: number;
   failedParts: FailedPart[];
   error: string | null;
   files: { id: string; name: string; sizeBytes: number; pageCount: number | null }[];

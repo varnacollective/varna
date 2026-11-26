@@ -9,12 +9,6 @@ function formatSize(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-/** "$0.044 at Google's paid prices (about $0.44 per 1,000 suppliers)". */
-function costText(usd: number, suppliers: number): string {
-  const total = `${dollars(usd)} at Google's paid prices`;
-  return suppliers > 0 ? `${total} (about ${dollars((usd / suppliers) * 1000)} per 1,000 suppliers)` : total;
-}
-
 /** Two significant figures under $1 ($0.044), cents above ($12.40). */
 function dollars(usd: number): string {
   if (usd < 0.001) return "under $0.001";
@@ -49,7 +43,7 @@ export default function RunDetails({ upload }: { upload: UploadSummary }) {
     ],
     ...(upload.paidCostUsd === null
       ? []
-      : ([["AI cost", costText(upload.paidCostUsd, upload.supplierCount)]] as [string, ReactNode][])),
+      : ([["AI cost", `${dollars(upload.paidCostUsd)} at Google's paid prices`]] as [string, ReactNode][])),
   ];
 
   return (

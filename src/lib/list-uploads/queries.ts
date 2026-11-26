@@ -17,7 +17,7 @@ export async function getUpload(id: string): Promise<UploadSummary | null> {
       "id, client_id, status, created_at, finished_at, model, vision_model, input_tokens, " +
         "output_tokens, thinking_tokens, failed_parts, error, " +
         "client:partner_clients(name), files:list_upload_files(id, file_name, size_bytes, page_count, created_at), " +
-        "calls:list_upload_ai_calls(model, input_tokens, output_tokens), suppliers:list_upload_suppliers(count)",
+        "calls:list_upload_ai_calls(model, input_tokens, output_tokens)",
     )
     .eq("id", id)
     .maybeSingle<RawUpload>();
@@ -35,7 +35,6 @@ export async function getUpload(id: string): Promise<UploadSummary | null> {
     outputTokens: u.output_tokens,
     thinkingTokens: u.thinking_tokens,
     paidCostUsd: paidCostUsd(u.calls),
-    supplierCount: u.suppliers[0]?.count ?? 0,
     failedParts: u.failed_parts,
     error: u.error,
     files: [...u.files]
@@ -85,5 +84,4 @@ interface RawUpload {
   client: { name: string } | null;
   files: { id: string; file_name: string; size_bytes: number; page_count: number | null; created_at: string }[];
   calls: TokenUse[];
-  suppliers: { count: number }[];
 }
