@@ -10,7 +10,9 @@ import type { SheetCell, SheetData, WorkbookData } from "./spreadsheet";
  *   source ("this supplier is from row 7": is that email really in row 7?).
  * - Values are JSON-quoted, so content can't break the format: a cell with a
  *   line break or `"` can never fake another row. File content is untrusted.
- * - Chunks stay small (models drop rows or change digits in long answers).
+ * - Chunks stay small (models drop rows or change digits in long answers),
+ *   and even: rows are shared equally, so no chunk is a small leftover that
+ *   costs a whole AI call (103 rows → 52 + 51, not 50 + 50 + 3).
  *   Each chunk after the first repeats the sheet's first rows as context, so
  *   the AI still sees the headings. Context rows are listed separately and
  *   are never to be extracted from that chunk.
@@ -19,10 +21,15 @@ import type { SheetCell, SheetData, WorkbookData } from "./spreadsheet";
  */
 
 export interface ChunkOptions {
-  /** Most rows to extract per chunk. */
+  /** Target most rows to extract per chunk. */
   maxRows: number;
-  /** Rough size limit per chunk, in characters (wide or long rows). */
+  /** Target size limit per chunk, in characters (wide or long rows). */
   maxChars: number;
+  /**
+   * How far a chunk may go past both targets (0.1 = 10%: up to 55 rows),
+   * used only when that saves a whole chunk.
+   */
+  stretch: number;
   /** How many of the sheet's first rows to repeat as context in later chunks. */
   contextRows: number;
 }
@@ -30,6 +37,7 @@ export interface ChunkOptions {
 export const DEFAULT_CHUNK_OPTIONS: ChunkOptions = {
   maxRows: 50,
   maxChars: 10_000,
+  stretch: 0.1,
   contextRows: 5,
 };
 
@@ -59,27 +67,47 @@ export function sheetToChunks(
 ): SheetChunk[] {
   const lines = rowLines(sheet);
   if (lines.length === 0) return [];
-
-  // Group rows into chunks without splitting a row.
-  const groups: RowLine[][] = [];
-  let current: RowLine[] = [];
-  let size = 0;
-  for (const line of lines) {
-    const full =
-      current.length >= options.maxRows ||
-      (current.length > 0 && size + line.text.length > options.maxChars);
-    if (full) {
-      groups.push(current);
-      current = [];
-      size = 0;
-    }
-    current.push(line);
-    size += line.text.length + 1;
-  }
-  groups.push(current);
-
   const context = lines.slice(0, options.contextRows);
-  return groups.map((group) => makeChunk(sheet, group, context));
+  return evenGroups(lines, options).map((group) =>
+    makeChunk(sheet, group, context),
+  );
+}
+
+/**
+ * Share rows equally over the fewest chunks that fit the stretched limits.
+ * Rows of very different lengths can still push one chunk over the
+ * character limit; then one more chunk is used. A single row too long for
+ * any chunk gets a chunk of its own.
+ */
+function evenGroups(
+  lines: readonly RowLine[],
+  options: ChunkOptions,
+): RowLine[][] {
+  const rowCap = Math.max(
+    1,
+    Math.floor(options.maxRows * (1 + options.stretch)),
+  );
+  const charCap = options.maxChars * (1 + options.stretch);
+  const chars = lines.reduce((total, l) => total + l.text.length + 1, 0);
+  let count = Math.min(
+    lines.length,
+    Math.max(Math.ceil(lines.length / rowCap), Math.ceil(chars / charCap)),
+  );
+  for (;;) {
+    const groups = Array.from({ length: count }, (_, i) =>
+      lines.slice(
+        Math.round((i * lines.length) / count),
+        Math.round(((i + 1) * lines.length) / count),
+      ),
+    );
+    const fits = groups.every(
+      (g) =>
+        g.length <= 1 ||
+        g.reduce((total, l) => total + l.text.length + 1, 0) <= charCap,
+    );
+    if (fits || count >= lines.length) return groups;
+    count += 1;
+  }
 }
 
 /**
