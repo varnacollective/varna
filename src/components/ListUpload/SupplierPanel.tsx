@@ -186,7 +186,7 @@ export default function SupplierPanel({ uploadId, supplier, onSaved, onClose }: 
               )}
             </div>
             {evidence.readFromImage && (
-              <p className="mt-2 text-xs text-[var(--sa-warning-fg)]">Read by AI from a PDF or photo. Compare with the original page.</p>
+              <p className="mt-2 text-xs text-[var(--sa-muted)]">Read by AI from a PDF or photo, so there is no cell text to show.</p>
             )}
             {evidence.cells.length > 0 && (
               <table className="mt-3 w-full text-xs">

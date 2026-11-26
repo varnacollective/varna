@@ -19,7 +19,7 @@ const FLAG_ISSUES: Partial<Record<SupplierFlag, Omit<Issue, "code">>> = {
   possible_duplicate: { level: "attention", message: "May be the same supplier as another row in this list" },
   low_confidence: { level: "attention", message: "The AI was not sure about this one" },
   id_in_wrong_field: { level: "attention", message: "A business ID was in the wrong column" },
-  read_from_image: { level: "attention", message: "Read from a PDF or photo: compare with the original" },
+  read_from_image: { level: "info", message: "Read by AI from a PDF or photo" },
   corrupted_value: { level: "attention", message: "A value looks damaged in the file (for example 9.19877E+11)" },
   unverified_value: { level: "info", message: "A value could not be matched to the file exactly" },
   invalid_phone: { level: "info", message: "A phone number doesn't look valid" },
