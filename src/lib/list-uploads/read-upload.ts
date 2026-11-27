@@ -60,7 +60,7 @@ export async function readUpload(
     .eq("status", "reading")
     .is("model", null)
     .select("id, client_id")
-    .maybeSingle();
+    .maybeSingle<{ id: string; client_id: string | null }>();
   if (!upload) throw new UploadNotReadableError("This upload has already been read.");
 
   const { data: files, error: filesError } = await db
@@ -68,14 +68,15 @@ export async function readUpload(
     .select("id, file_name, storage_path")
     .eq("upload_id", uploadId)
     .order("created_at")
-    .order("file_name");
+    .order("file_name")
+    .overrideTypes<FileRow[], { merge: false }>();
   if (filesError) throw new Error(filesError.message);
 
   const rows: NewReviewRow[] = [];
   const calls: { file: FileRow; call: AiCallRecord }[] = [];
   const failed: FailedPart[] = [];
   try {
-    for (const [index, file] of (files as FileRow[]).entries()) {
+    for (const [index, file] of files.entries()) {
       emit({ type: "file", index, total: files.length, name: file.file_name });
       const run = await readFile(db, file, {
         client_id: upload.client_id ?? randomUUID(),
@@ -223,9 +224,12 @@ async function markExistingSuppliers(db: SupabaseClient, rows: NewReviewRow[]): 
   const { data, error } = await db
     .from("partner_suppliers")
     .select("id, contact_email")
-    .in("contact_email", emails);
+    .in("contact_email", emails)
+    .overrideTypes<{ id: string; contact_email: string | null }[], { merge: false }>();
   if (error) throw new Error(error.message);
-  const existing = new Map((data ?? []).map((s) => [String(s.contact_email).toLowerCase(), String(s.id)]));
+  const existing = new Map(
+    data.flatMap((s) => (s.contact_email ? [[s.contact_email.toLowerCase(), s.id] as const] : [])),
+  );
   for (const row of rows) {
     const id = row.email ? existing.get(row.email.toLowerCase()) : undefined;
     if (id === undefined) continue;

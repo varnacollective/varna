@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { AlertTriangle, Check, Eye, FileSearch, Info, Undo2, X } from "lucide-react";
 import {
   EDITABLE_FIELDS,
@@ -76,7 +76,7 @@ export default function SupplierPanel({ uploadId, supplier, suppliers, onSaved, 
 
   const fields = () => Object.fromEntries(changed.map((f) => [f, draft[f].trim() || null]));
 
-  function onSubmit(event: FormEvent) {
+  function onSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (changed.length > 0) void save({ fields: fields() });
   }

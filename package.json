@@ -10,7 +10,8 @@
     "test": "node --test tests/*.test.js && vitest run",
     "list:extract": "tsx src/agents/list/cli/extract.ts",
     "list:samples": "tsx scripts/list-agent/make-samples.mts",
-    "typecheck:strict": "tsx scripts/list-agent/typecheck-strict.mts"
+    "typecheck:strict": "tsx scripts/list-agent/typecheck-strict.mts",
+    "lint:strict": "eslint src/agents src/lib/list-uploads src/lib/invitations src/components/ListUpload src/app/api/superadmin/list-uploads src/app/superadmin/partners/invitations/upload tests/agents tests/list-uploads tests/support scripts/list-agent vitest.config.mts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.56",

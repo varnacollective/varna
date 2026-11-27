@@ -70,7 +70,7 @@ export default function FilePreview({ name, load, page, sheet: startSheet, row: 
 
   useEffect(() => {
     let url: string | null = null;
-    let live = true;
+    const stop = new AbortController();
     void (async () => {
       try {
         const blob = await load();
@@ -84,15 +84,15 @@ export default function FilePreview({ name, load, page, sheet: startSheet, row: 
               : kind === "pdf"
                 ? { kind, url, blob }
                 : { kind, url };
-        if (!live) return;
+        if (stop.signal.aborted) return;
         if (next.kind === "sheet") setSheet(Math.max(0, next.sheets.findIndex((x) => x.marked !== undefined)));
         setContent(next);
       } catch {
-        if (live) setError("The file could not be opened.");
+        if (!stop.signal.aborted) setError("The file could not be opened.");
       }
     })();
     return () => {
-      live = false;
+      stop.abort();
       if (url) URL.revokeObjectURL(url);
     };
   }, [load, name, startSheet, mark]);

@@ -12,11 +12,11 @@ const CONFIG = "tsconfig.strict.json";
 
 const host: ts.FormatDiagnosticsHost = {
   getCanonicalFileName: (f) => f,
-  getCurrentDirectory: ts.sys.getCurrentDirectory,
+  getCurrentDirectory: () => ts.sys.getCurrentDirectory(),
   getNewLine: () => ts.sys.newLine,
 };
 
-const read = ts.readConfigFile(CONFIG, ts.sys.readFile);
+const read = ts.readConfigFile(CONFIG, (path) => ts.sys.readFile(path));
 if (read.error) {
   console.error(ts.formatDiagnostics([read.error], host));
   process.exit(1);

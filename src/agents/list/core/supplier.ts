@@ -79,7 +79,7 @@ export const SupplierSource = z.strictObject({
       end: z.int().nonnegative(),
     })
     .refine((span) => span.end > span.start, {
-      message: "text_span.end must be after text_span.start",
+      error: "text_span.end must be after text_span.start",
     })
     .optional(),
 });

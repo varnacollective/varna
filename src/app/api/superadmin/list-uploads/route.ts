@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     .from("list_uploads")
     .insert({ client_id: clientId, created_by: userId })
     .select("id")
-    .single();
+    .single<{ id: string }>();
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
   const now = Date.now();

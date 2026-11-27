@@ -50,9 +50,9 @@ export async function getReviewSuppliers(uploadId: string): Promise<ReviewSuppli
     .select(SUPPLIER_COLUMNS)
     .eq("upload_id", uploadId)
     .order("position")
-    .returns<ReviewSupplier[]>();
+    .overrideTypes<ReviewSupplier[], { merge: false }>();
   if (error) throw new Error(error.message);
-  return data ?? [];
+  return data;
 }
 
 export async function getReviewSupplier(uploadId: string, id: string): Promise<ReviewSupplier | null> {

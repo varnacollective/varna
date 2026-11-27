@@ -15,11 +15,12 @@ import { sendInvitationEmail } from "@/lib/email/send-email";
 
 export type InvitationAction = "send" | "preview" | "save";
 
+/** Comes from request bodies, so the required fields are checked here too. */
 export interface InvitationInput {
-  enterprise_name: string;
+  enterprise_name?: string | null;
   brand_name?: string | null;
-  contact_person: string;
-  contact_email: string;
+  contact_person?: string | null;
+  contact_email?: string | null;
   phone?: string | null;
   client_id?: string | null;
   category?: string | null;
@@ -108,7 +109,7 @@ export async function createInvitation(
       .from("partner_clients")
       .select("name")
       .eq("id", cleanClientId)
-      .maybeSingle();
+      .maybeSingle<{ name: string | null }>();
     if (clientData?.name) clientName = clientData.name;
   }
 
@@ -146,7 +147,7 @@ export async function createInvitation(
       source,
     })
     .select("id")
-    .single();
+    .single<{ id: string }>();
   if (supplierError) {
     console.error("Error creating partner_supplier:", supplierError);
     return failure(500, `Failed to create partner supplier: ${supplierError.message}`);
@@ -184,7 +185,7 @@ export async function createInvitation(
       expires_at: expiresAt,
     })
     .select("id")
-    .single();
+    .single<{ id: string }>();
   if (invitationError) {
     console.error("Error creating partner_invitation:", invitationError);
     return failure(500, `Failed to create partner invitation: ${invitationError.message}`);
@@ -205,7 +206,7 @@ export async function createInvitation(
     });
     if (!emailResult.success) {
       console.error("Failed to send invitation email:", emailResult.error);
-      return failure(500, `Invitation saved but email failed to send: ${emailResult.error}`, {
+      return failure(500, `Invitation saved but email failed to send: ${emailResult.error ?? "unknown error"}`, {
         invitation_url,
         slug,
         invitation_id: invitationId,

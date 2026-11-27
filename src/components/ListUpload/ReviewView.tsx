@@ -174,10 +174,10 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
       {selected.size > 0 && (
         <div className="sticky top-2 z-10 flex flex-wrap items-center gap-2 rounded-[var(--sa-radius-md)] border border-[var(--sa-border-strong)] bg-[var(--sa-white)] px-4 py-2.5 shadow-[var(--sa-shadow-md)]">
           <span className="mr-auto text-[13px] font-medium text-[var(--sa-ink)]">{selected.size} selected</span>
-          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={saving} onClick={() => decide("approved")}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={saving} onClick={() => void decide("approved")}>
             <Check className="h-4 w-4" aria-hidden /> Approve
           </button>
-          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => decide("rejected")}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary disabled:opacity-50" disabled={saving} onClick={() => void decide("rejected")}>
             Reject
           </button>
           <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary" onClick={() => setSelected(new Set())}>
