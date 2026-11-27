@@ -11,14 +11,17 @@ import { errorFrom } from "./read-stream";
 import SupplierPanel from "./SupplierPanel";
 
 interface Props {
-  uploadId: string;
   initialSuppliers: ReviewSupplier[];
   failedParts: FailedPart[];
+  /** When suppliers come from several lists: each list's name, by upload id. */
+  sources?: ReadonlyMap<string, string>;
+  /** Shown when there are no suppliers at all. */
+  emptyText?: string;
 }
 
 type Filter = "all" | View;
 
-export default function ReviewView({ uploadId, initialSuppliers, failedParts }: Props) {
+export default function ReviewView({ initialSuppliers, failedParts, sources, emptyText = "No suppliers were found in this list." }: Props) {
   const [suppliers, setSuppliers] = useState(initialSuppliers);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
@@ -57,9 +60,9 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
       (s) =>
         (filter === "all" || viewOf(s) === filter) &&
         (!activeReason || (reasons.get(s.id) ?? []).some((r) => r.code === activeReason)) &&
-        (!q || [s.company_name, s.contact_name, s.email, s.phone, s.city].some((v) => v?.toLowerCase().includes(q))),
+        (!q || [s.company_name, s.contact_name, s.email, s.phone, s.city, sources?.get(s.upload_id)].some((v) => v?.toLowerCase().includes(q))),
     );
-  }, [suppliers, filter, query, reasons, activeReason]);
+  }, [suppliers, filter, query, reasons, activeReason, sources]);
 
   const selectable = shown.filter((s) => !s.invitation_id);
   const allSelected = selectable.length > 0 && selectable.every((s) => selected.has(s.id));
@@ -85,14 +88,28 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
     setSaving(true);
     setMessage(null);
     try {
-      const ids = [...selected];
-      const response = await fetch(`/api/superadmin/list-uploads/${uploadId}/suppliers`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids, decision }),
-      });
-      if (!response.ok) throw new Error(await errorFrom(response));
-      const { updated, skipped } = (await response.json()) as { updated: string[]; skipped: { id: string; reason: string }[] };
+      // Decisions are saved per list.
+      const byUpload = new Map<string, string[]>();
+      for (const id of selected) {
+        const uploadId = byId.get(id)?.upload_id;
+        if (uploadId) byUpload.set(uploadId, [...(byUpload.get(uploadId) ?? []), id]);
+      }
+      const updated: string[] = [];
+      const skipped: { id: string; reason: string }[] = [];
+      for (const [uploadId, ids] of byUpload) {
+        const response = await fetch(`/api/superadmin/list-uploads/${uploadId}/suppliers`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids, decision }),
+        });
+        if (!response.ok) throw new Error(await errorFrom(response));
+        const result = (await response.json()) as { updated: string[]; skipped: { id: string; reason: string }[] };
+        updated.push(...result.updated);
+        skipped.push(...result.skipped);
+        // Show each list's result as soon as it is saved.
+        const saved = new Set(result.updated);
+        setSuppliers((list) => list.map((s) => (saved.has(s.id) ? { ...s, decision } : s)));
+      }
       const done = new Set(updated);
       setSuppliers((list) => list.map((s) => (done.has(s.id) ? { ...s, decision } : s)));
       setSelected(new Set(skipped.map((s) => s.id)));
@@ -111,8 +128,13 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
 
   const filters: { key: Filter; label: string }[] = [{ key: "all", label: "All" }, ...VIEWS.map((v) => ({ key: v.view, label: v.label }))];
 
+  // Nothing to filter, select or invite: just say so.
+  if (suppliers.length === 0 && failedParts.length === 0) {
+    return <p className="sa-card p-8 text-center text-[13px] text-[var(--sa-muted)]">{emptyText}</p>;
+  }
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="@container flex flex-col gap-4">
       {failedParts.length > 0 && (
         <div role="alert" className="flex gap-3 rounded-[var(--sa-radius-sm)] border border-[var(--sa-warning)] bg-[var(--sa-warning-tint)] px-4 py-3 text-[13px] text-[var(--sa-warning-fg)]">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
@@ -127,7 +149,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
         </div>
       )}
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-3 @7xl:flex-row @7xl:items-center @7xl:justify-between">
         <div role="group" aria-label="Show" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
           {filters.map(({ key, label }) => {
             const count = counts.get(key) ?? 0;
@@ -150,9 +172,9 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
             );
           })}
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 @xl:flex-row @xl:items-center">
           {reasonOptions.length > 0 && (
-            <div className="sm:w-52">
+            <div className="@xl:w-52">
               <select
                 className="sa-input"
                 aria-label="Filter by reason"
@@ -168,7 +190,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
               </select>
             </div>
           )}
-          <div className="relative sm:w-64">
+          <div className="relative @xl:min-w-48 @xl:flex-1 @7xl:w-64 @7xl:flex-none">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sa-caption)]" aria-hidden />
             <input
               type="search"
@@ -224,12 +246,12 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
 
       {shown.length === 0 ? (
         <p className="sa-card p-8 text-center text-[13px] text-[var(--sa-muted)]">
-          {suppliers.length === 0 ? "No suppliers were found in this list." : "No suppliers match."}
+          {suppliers.length === 0 ? emptyText : "No suppliers match."}
         </p>
       ) : (
-        <div className="sa-card overflow-hidden">
-          {/* Wide screens: a table. */}
-          <table className="sa-table hidden md:table">
+        <div className="sa-card overflow-x-auto">
+          {/* Wide enough: a table. */}
+          <table className="sa-table hidden @2xl:table">
             <thead>
               <tr>
                 <th className="w-10">
@@ -244,10 +266,11 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                 <th>Status</th>
                 <th>Reason</th>
                 <th>Company</th>
-                <th className="hidden lg:table-cell">Contact</th>
+                <th className="hidden @4xl:table-cell">Contact</th>
                 <th>Email</th>
-                <th className="hidden xl:table-cell">Phone</th>
-                <th className="hidden 2xl:table-cell">City</th>
+                <th className="hidden @6xl:table-cell">Phone</th>
+                <th className="hidden @7xl:table-cell">City</th>
+                {sources && <th className="hidden @5xl:table-cell">List</th>}
                 <th className="w-10"><span className="sr-only">Open</span></th>
               </tr>
             </thead>
@@ -269,10 +292,15 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                     <td><span className={`sa-pill whitespace-nowrap ${view.pill}`}>{view.label}</span></td>
                     <td className="max-w-60"><Reasons reasons={reasons.get(s.id) ?? []} /></td>
                     <td className="max-w-56 truncate font-medium text-[var(--sa-ink)]">{s.company_name ?? <Missing />}</td>
-                    <td className="hidden max-w-40 truncate lg:table-cell">{s.contact_name ?? <Missing />}</td>
+                    <td className="hidden max-w-40 truncate @4xl:table-cell">{s.contact_name ?? <Missing />}</td>
                     <td className="max-w-60 truncate">{s.email ?? <Missing />}</td>
-                    <td className="hidden whitespace-nowrap xl:table-cell">{formatPhone(s.phone) ?? <Missing />}</td>
-                    <td className="hidden max-w-32 truncate 2xl:table-cell">{s.city ?? <Missing />}</td>
+                    <td className="hidden whitespace-nowrap @6xl:table-cell">{formatPhone(s.phone) ?? <Missing />}</td>
+                    <td className="hidden max-w-32 truncate @7xl:table-cell">{s.city ?? <Missing />}</td>
+                    {sources && (
+                      <td className="hidden max-w-48 truncate text-[var(--sa-muted)] @5xl:table-cell" title={sources.get(s.upload_id)}>
+                        {sources.get(s.upload_id) ?? <Missing />}
+                      </td>
+                    )}
                     <td>
                       <button
                         type="button"
@@ -292,8 +320,8 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
             </tbody>
           </table>
 
-          {/* Phones and small tablets: cards. */}
-          <ul className="divide-y divide-[var(--sa-border)] md:hidden">
+          {/* Narrow: cards. */}
+          <ul className="divide-y divide-[var(--sa-border)] @2xl:hidden">
             {shown.map((s) => {
               const view = viewInfo(viewOf(s));
               // The card already says "No company name" / "No email" in their own lines.
@@ -322,6 +350,9 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                     <span className="w-full truncate text-xs text-[var(--sa-muted)]">
                       {[s.contact_name, formatPhone(s.phone), s.city].filter(Boolean).join(" · ") || "No other details"}
                     </span>
+                    {sources?.get(s.upload_id) && (
+                      <span className="w-full truncate text-xs text-[var(--sa-caption)]">From {sources.get(s.upload_id)}</span>
+                    )}
                   </button>
                 </li>
               );
@@ -333,7 +364,6 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
       {open && (
         <SupplierPanel
           key={open.id}
-          uploadId={uploadId}
           supplier={open}
           suppliers={byId}
           onSaved={replace}
@@ -343,7 +373,6 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
       )}
       {inviting && (
         <InviteDialog
-          uploadId={uploadId}
           suppliers={toInvite}
           onInvited={(id, invitationId) =>
             setSuppliers((list) => list.map((s) => (s.id === id ? { ...s, invitation_id: invitationId } : s)))

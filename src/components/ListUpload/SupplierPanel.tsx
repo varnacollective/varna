@@ -16,7 +16,6 @@ import { errorFrom } from "./read-stream";
 import { uploadedFile } from "./uploaded-file";
 
 interface Props {
-  uploadId: string;
   supplier: ReviewSupplier;
   /** Every supplier of the upload, to name and open the ones an issue points to. */
   suppliers: ReadonlyMap<string, ReviewSupplier>;
@@ -32,7 +31,7 @@ const draftOf = (s: ReviewSupplier): Draft =>
   Object.fromEntries(EDITABLE_FIELDS.map((f) => [f, s[f] ?? ""])) as Draft;
 
 /** One supplier: what was found, where it came from, and the decision. */
-export default function SupplierPanel({ uploadId, supplier, suppliers, onSaved, onOpen, onClose }: Props) {
+export default function SupplierPanel({ supplier, suppliers, onSaved, onOpen, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState<Draft>(() => draftOf(supplier));
   const [saving, setSaving] = useState(false);
@@ -59,7 +58,7 @@ export default function SupplierPanel({ uploadId, supplier, suppliers, onSaved, 
     setSaving(true);
     setError(null);
     try {
-      const response = await fetch(`/api/superadmin/list-uploads/${uploadId}/suppliers/${supplier.id}`, {
+      const response = await fetch(`/api/superadmin/list-uploads/${supplier.upload_id}/suppliers/${supplier.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -180,7 +179,7 @@ export default function SupplierPanel({ uploadId, supplier, suppliers, onSaved, 
                   onClick={() =>
                     setPreview({
                       name: evidence.fileName,
-                      load: uploadedFile(uploadId, supplier.file_id ?? ""),
+                      load: uploadedFile(supplier.upload_id, supplier.file_id ?? ""),
                       ...(evidence.page
                         ? { page: evidence.page }
                         : { ...(evidence.sheet ? { sheet: evidence.sheet } : {}), ...(evidence.row ? { row: evidence.row } : {}) }),

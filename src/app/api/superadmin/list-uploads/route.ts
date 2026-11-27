@@ -11,8 +11,8 @@ import { createAdminClient } from "@/utils/supabase/admin";
  */
 
 const Body = z.strictObject({
-  /** A hotel code from client_master (e.g. CLT-001). */
-  clientId: z.string().trim().min(1).max(64).nullable(),
+  /** The hotel the list is for: a code from client_master (e.g. CLT-001). */
+  clientId: z.string({ error: "Choose the hotel this list is for." }).trim().min(1, "Choose the hotel this list is for.").max(64),
   files: z
     .array(
       z.strictObject({
@@ -34,6 +34,14 @@ export async function POST(request: Request) {
   const { clientId, files } = parsed.data;
 
   const db = createAdminClient();
+  const { data: hotel, error: hotelError } = await db
+    .from("client_master")
+    .select("client_id")
+    .eq("client_id", clientId)
+    .maybeSingle<{ client_id: string }>();
+  if (hotelError) return Response.json({ error: hotelError.message }, { status: 500 });
+  if (!hotel) return badRequest("That hotel no longer exists. Choose another or add it again.");
+
   const { data: upload, error } = await db
     .from("list_uploads")
     .insert({ client_id: clientId, created_by: userId })
