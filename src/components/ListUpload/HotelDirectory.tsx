@@ -5,14 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Plus, Search } from "lucide-react";
 import { hotelHref, NO_HOTEL, type HotelRow } from "@/lib/list-uploads/hotels";
+import LetterStrip from "./LetterStrip";
+import { LETTERS, letterOf } from "./letters";
 import NewHotelDialog from "./NewHotelDialog";
-
-const LETTERS = [...Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)), "#"];
-
-function letterOf(name: string): string {
-  const first = name.trim().charAt(0).toUpperCase();
-  return first >= "A" && first <= "Z" ? first : "#";
-}
 
 /** What a hotel has, in words. */
 function describe(h: HotelRow): string {
@@ -66,6 +61,12 @@ export default function HotelDirectory({ hotels }: { hotels: HotelRow[] }) {
         </button>
       </div>
 
+      {noHotel && !q && (
+        <div className="sa-card overflow-hidden">
+          <HotelLink hotel={noHotel} label="Lists uploaded without a hotel" />
+        </div>
+      )}
+
       <div className="flex gap-2">
         <div className="sa-card min-w-0 flex-1 overflow-hidden">
           {groups.length === 0 ? (
@@ -96,27 +97,11 @@ export default function HotelDirectory({ hotels }: { hotels: HotelRow[] }) {
           )}
         </div>
 
-        <nav aria-label="Jump to a letter" className="sticky top-4 flex shrink-0 flex-col self-start">
-          {LETTERS.map((l) => (
-            <button
-              key={l}
-              type="button"
-              disabled={!present.has(l)}
-              aria-label={l === "#" ? "Other hotels" : `Hotels starting with ${l}`}
-              onClick={() => document.getElementById(`letter-${l}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="cursor-pointer disabled:cursor-default! w-6 rounded py-px text-center text-[11px] font-semibold leading-4 text-[var(--sa-accent)] hover:bg-[var(--sa-accent-tint)] disabled:text-[var(--sa-border-strong)] disabled:hover:bg-transparent"
-            >
-              {l}
-            </button>
-          ))}
-        </nav>
+        <LetterStrip
+          present={present}
+          onJump={(letter) => document.getElementById(`letter-${letter}`)?.scrollIntoView({ block: "start" })}
+        />
       </div>
-
-      {noHotel && !q && (
-        <div className="sa-card overflow-hidden">
-          <HotelLink hotel={noHotel} label="Lists uploaded without a hotel" />
-        </div>
-      )}
 
       {adding && (
         <NewHotelDialog
