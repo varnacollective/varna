@@ -18,7 +18,9 @@ export default function PdfPages({ data, page }: { data: Blob; page?: number }) 
   useEffect(() => {
     const container = box.current;
     if (!container) return;
-    let cancelled = false;
+    const stop = new AbortController();
+    // A function, so TypeScript doesn't assume the value can't change mid-loop.
+    const stopped = () => stop.signal.aborted;
     let destroy: (() => void) | undefined;
 
     void (async () => {
@@ -33,7 +35,7 @@ export default function PdfPages({ data, page }: { data: Blob; page?: number }) 
         const ratio = window.devicePixelRatio || 1;
         const width = Math.max(240, container.clientWidth - 32);
 
-        for (let n = 1; n <= total && !cancelled; n++) {
+        for (let n = 1; n <= total && !stopped(); n++) {
           const pdfPage = await doc.getPage(n);
           const base = pdfPage.getViewport({ scale: 1 });
           const scale = Math.min(width / base.width, 1.6);
@@ -57,19 +59,19 @@ export default function PdfPages({ data, page }: { data: Blob; page?: number }) 
           container.append(figure);
 
           await pdfPage.render({ canvas, viewport }).promise;
-          if (cancelled) return;
+          if (stopped()) return;
           setState({ drawn: n, total });
           if (n === page) figure.scrollIntoView({ block: "start" });
         }
       } catch (error) {
-        if (cancelled) return;
+        if (stopped()) return;
         console.warn("PDF preview failed:", error);
         setState({ error: "This PDF could not be shown here." });
       }
     })();
 
     return () => {
-      cancelled = true;
+      stop.abort();
       destroy?.();
       container.replaceChildren();
     };

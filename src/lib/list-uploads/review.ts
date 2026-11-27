@@ -59,7 +59,7 @@ export async function changeSupplier(
   if (edits.some(([field, value]) => field === "email" && value !== null && !isSendableEmail(value))) {
     return { ok: false, status: 400, error: "That email doesn't look valid." };
   }
-  const next = { ...row, ...Object.fromEntries(edits) } as ReviewSupplier;
+  const next: ReviewSupplier = { ...row, ...Object.fromEntries(edits) };
   const update: Record<string, unknown> = Object.fromEntries(edits);
   if (edits.length > 0) {
     const checked = recheck(next, edits.map(([f]) => f));
@@ -111,9 +111,9 @@ async function relinkUpload(uploadId: string): Promise<ReviewSupplier[]> {
     .from("list_upload_suppliers")
     .select(`${REVIEW_SUPPLIER_COLUMNS}, group:extracted->supplier->>duplicate_group_id`)
     .eq("upload_id", uploadId)
-    .returns<(ReviewSupplier & { group: string | null })[]>();
+    .overrideTypes<(ReviewSupplier & { group: string | null })[], { merge: false }>();
   if (error) throw new Error(error.message);
-  const rows = data ?? [];
+  const rows = data;
   const changed = linkRelatedRows(rows);
   const updated = await Promise.all(
     rows
@@ -146,12 +146,16 @@ export async function decideMany(
     .from("list_upload_suppliers")
     .select("id, company_name, email, invitation_id")
     .eq("upload_id", uploadId)
-    .in("id", ids);
+    .in("id", ids)
+    .overrideTypes<
+      { id: string; company_name: string | null; email: string | null; invitation_id: string | null }[],
+      { merge: false }
+    >();
   if (error) throw new Error(error.message);
 
   const skipped: { id: string; reason: string }[] = [];
   const allowed: string[] = [];
-  for (const row of data ?? []) {
+  for (const row of data) {
     const reason = row.invitation_id
       ? "Already invited."
       : decision === "approved"

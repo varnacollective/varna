@@ -5,7 +5,11 @@ import { defineConfig } from "vitest/config";
 // The older JavaScript tests in tests/*.test.js run with `node --test`.
 export default defineConfig({
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Server-only modules are tested directly, outside Next.js.
+      "server-only": fileURLToPath(new URL("./tests/support/server-only.ts", import.meta.url)),
+    },
   },
   test: {
     include: ["tests/**/*.test.ts"],

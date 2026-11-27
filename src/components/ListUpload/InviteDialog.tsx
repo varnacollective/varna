@@ -64,7 +64,7 @@ export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }
 
   useEffect(() => {
     if (!current || previews[current.id]) return;
-    let live = true;
+    const stop = new AbortController();
     void (async () => {
       const response = await fetch(`/api/superadmin/list-uploads/${uploadId}/invite`, {
         method: "POST",
@@ -76,10 +76,10 @@ export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }
             (await response.json()) as { subject: string; preview_html: string },
           )
         : { error: await errorFrom(response) };
-      if (live) setPreviews((p) => ({ ...p, [current.id]: result }));
+      if (!stop.signal.aborted) setPreviews((p) => ({ ...p, [current.id]: result }));
     })();
     return () => {
-      live = false;
+      stop.abort();
     };
   }, [current, previews, uploadId]);
 
@@ -224,7 +224,7 @@ export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }
               <p className="flex-1 text-xs text-[var(--sa-muted)]">
                 Each email is sent with the supplier&apos;s own details. About {minutesLeft} min for all, because of the email limit.
               </p>
-              <button type="button" className="cursor-pointer sa-btn-primary" onClick={sendAll}>
+              <button type="button" className="cursor-pointer sa-btn-primary" onClick={() => void sendAll()}>
                 <Send className="h-4 w-4" aria-hidden /> Send {queue.length === 1 ? "invitation" : `${queue.length} invitations`}
               </button>
             </>

@@ -78,7 +78,7 @@ export const ReplySupplier = z
     reason: z.string().optional(),
   })
   .refine((s) => EXTRACT_FIELDS.some((f) => s[f] !== undefined), {
-    message: "each supplier needs at least one value",
+    error: "each supplier needs at least one value",
   });
 export type ReplySupplier = z.infer<typeof ReplySupplier>;
 

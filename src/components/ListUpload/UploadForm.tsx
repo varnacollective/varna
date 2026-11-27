@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AlertCircle, ClipboardPaste, Eye, FileText, Loader2, Plus, Upload, X } from "lucide-react";
 import { ACCEPT_ATTRIBUTE, ACCEPTED_FILE, MAX_FILE_BYTES, MAX_FILES, UPLOAD_BUCKET } from "@/lib/list-uploads/files";
 import type { ReadEvent } from "@/lib/list-uploads/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import FilePreview, { type PreviewTarget } from "./FilePreview";
 import { errorFrom, readEvents } from "./read-stream";
@@ -116,7 +117,8 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
         files: { path: string; token: string }[];
       };
 
-      const storage = createClient().storage.from(UPLOAD_BUCKET);
+      // The shared browser client is typed `any`; give it its real type here.
+      const storage = (createClient() as SupabaseClient).storage.from(UPLOAD_BUCKET);
       for (const [i, file] of files.entries()) {
         stop.signal.throwIfAborted();
         const target = targets[i];
@@ -128,7 +130,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
         setPhase({ kind: "uploading", done: i + 1, total: files.length });
       }
 
-      let finished = false;
+      const outcome = { finished: false };
       const read = await fetch(`/api/superadmin/list-uploads/${uploadId}/read`, { method: "POST", signal: stop.signal });
       if (!read.ok) throw new Error(await errorFrom(read));
       await readEvents(read, (event: ReadEvent) => {
@@ -143,10 +145,10 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
         } else if (event.type === "error") {
           throw new Error(event.message);
         } else {
-          finished = true;
+          outcome.finished = true;
         }
       });
-      if (!finished) throw new Error("The connection was lost before the list was read. Try again.");
+      if (!outcome.finished) throw new Error("The connection was lost before the list was read. Try again.");
       router.push(`/superadmin/partners/invitations/upload/${uploadId}`);
     } catch (caught) {
       setPhase({ kind: "choose" });
@@ -324,7 +326,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
         </div>
       ) : (
         <div className="flex justify-end">
-          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={files.length === 0} onClick={start}>
+          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={files.length === 0} onClick={() => void start()}>
             Read {files.length === 1 ? "the file" : files.length > 1 ? `${files.length} files` : "the list"}
           </button>
         </div>
