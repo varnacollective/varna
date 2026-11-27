@@ -41,7 +41,7 @@ export default function PipelineClientView({
   const filteredItems = useMemo(() => {
     return pipeline.filter((item) => {
       const supplierName = item.partner_suppliers?.enterprise_name || "";
-      const clientName = item.partner_clients?.name || "";
+      const clientName = item.client?.name || "";
       const q = search.toLowerCase();
 
       const matchesSearch =
@@ -271,7 +271,7 @@ export default function PipelineClientView({
                           {item.partner_suppliers?.enterprise_name || "Supplier"}
                         </div>
 
-                        {item.partner_clients?.name && (
+                        {item.client?.name && (
                           <div
                             style={{
                               fontSize: "11px",
@@ -283,7 +283,7 @@ export default function PipelineClientView({
                             }}
                           >
                             <Building2 className="w-3 h-3 opacity-60" />
-                            {item.partner_clients.name}
+                            {item.client.name}
                           </div>
                         )}
 
@@ -363,7 +363,7 @@ export default function PipelineClientView({
                         </div>
                       )}
                     </td>
-                    <td>{item.partner_clients?.name || "General Pool"}</td>
+                    <td>{item.client?.name || "General Pool"}</td>
                     <td>
                       <span className="sa-pill sa-pill-pending">
                         {item.status.replace(/_/g, " ")}

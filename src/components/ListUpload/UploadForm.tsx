@@ -163,24 +163,21 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="sa-card flex flex-col gap-4 p-4 sm:p-6">
-        {/* Only shown when hotels are set up (Partners → Clients). */}
-        {clients.length > 0 && (
-          <div className="flex flex-col gap-1.5 sm:max-w-sm">
-            <label htmlFor="list-client" className="sa-label">Hotel (optional)</label>
-            <select
-              id="list-client"
-              className="cursor-pointer disabled:cursor-not-allowed! sa-input"
-              value={clientId}
-              disabled={busy}
-              onChange={(e) => setClientId(e.target.value)}
-            >
-              <option value="">General Pool (no hotel)</option>
-              {clients.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-        )}
+        <div className="flex flex-col gap-1.5 sm:max-w-sm">
+          <label htmlFor="list-client" className="sa-label">Hotel (optional)</label>
+          <select
+            id="list-client"
+            className="cursor-pointer disabled:cursor-not-allowed! sa-input"
+            value={clientId}
+            disabled={busy}
+            onChange={(e) => setClientId(e.target.value)}
+          >
+            <option value="">General Pool (no hotel)</option>
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
 
         <div
           onDragOver={(e) => {

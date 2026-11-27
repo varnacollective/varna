@@ -11,7 +11,8 @@ import { createAdminClient } from "@/utils/supabase/admin";
  */
 
 const Body = z.strictObject({
-  clientId: z.uuid().nullable(),
+  /** A hotel code from client_master (e.g. CLT-001). */
+  clientId: z.string().trim().min(1).max(64).nullable(),
   files: z
     .array(
       z.strictObject({

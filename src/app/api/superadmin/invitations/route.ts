@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       .from("partner_invitations")
       .select(`
         *,
-        partner_clients ( name )
+        client:client_master ( name:client_name )
       `)
       .eq("id", invitation_id)
       .single();
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       contact_person: inv.contact_person,
       enterprise_name: inv.enterprise_name,
       invitation_url,
-      client_name: inv.partner_clients?.name || null,
+      client_name: inv.client?.name || null,
       personal_note: inv.personal_note || null,
       validity_days: inv.validity_days || 30,
       invitation_id: inv.id,

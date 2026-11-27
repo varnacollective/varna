@@ -59,6 +59,11 @@ describe("Supplier schema", () => {
     expect(Supplier.safeParse(validSupplier()).success).toBe(true);
   });
 
+  it("takes the dashboard's hotel code as client_id and rejects a blank one", () => {
+    expect(Supplier.safeParse({ ...validSupplier(), client_id: "CLT-001" }).success).toBe(true);
+    expect(errorPaths({ ...validSupplier(), client_id: "  " })).toContain("client_id");
+  });
+
   it("accepts a minimal supplier with only required fields", () => {
     const minimal = without(
       validSupplier(),

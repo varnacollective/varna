@@ -101,7 +101,8 @@ export type Suggestion = z.infer<typeof Suggestion>;
 export const Supplier = z
   .strictObject({
     id: z.uuid(),
-    client_id: z.uuid(),
+    /** The hotel's code from the dashboard (client_master.client_id). */
+    client_id: nonEmptyText,
     programme_id: z.uuid(),
     upload_id: z.uuid(),
 

@@ -3,39 +3,20 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { Users, Building2, CheckCircle2, Shield, Calendar, Search } from "lucide-react";
 import Link from "next/link";
 import ClientsClientView from "./ClientsClientView";
+import { CLIENT_COLUMNS, toClientRecord, type ClientMasterRow } from "@/lib/clients";
 
 export const revalidate = 0;
 
 export default async function PartnerClientsPage() {
   const supabase = createAdminClient();
 
-  // Fetch partner_clients
-  const { data: clientsData } = await supabase
-    .from("partner_clients")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  // If partner_clients is empty, check client_master as fallback
-  let clients = clientsData || [];
-  if (clients.length === 0) {
-    const { data: clientMasterData } = await supabase
-      .from("client_master")
-      .select("client_id, client_name, client_email, created_at");
-
-    if (clientMasterData && clientMasterData.length > 0) {
-      clients = clientMasterData.map((cm: any) => ({
-        id: cm.client_id,
-        name: cm.client_name,
-        contact_name: cm.client_name,
-        contact_email: cm.client_email || "contact@hotel.com",
-        status: "active",
-        outreach_mode: "approve_once",
-        reminder_max_count: 6,
-        reminder_window_days: 28,
-        created_at: cm.created_at || new Date().toISOString(),
-      }));
-    }
-  }
+  const { data: clientRows } = await supabase
+    .from("client_master")
+    .select(CLIENT_COLUMNS)
+    .order("created_at", { ascending: false })
+    .order("id")
+    .overrideTypes<ClientMasterRow[], { merge: false }>();
+  const clients = (clientRows ?? []).map(toClientRecord);
 
   // Fetch link counts
   const { data: linksData } = await supabase

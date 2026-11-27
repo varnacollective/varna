@@ -7,9 +7,10 @@ export const metadata = { title: "Upload a supplier list" };
 
 export default async function ListUploadPage() {
   const { data: clients } = await createAdminClient()
-    .from("partner_clients")
-    .select("id, name")
-    .order("name");
+    .from("client_master")
+    .select("id:client_id, name:client_name")
+    .order("client_name")
+    .overrideTypes<{ id: string; name: string | null }[], { merge: false }>();
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
@@ -18,7 +19,7 @@ export default async function ListUploadPage() {
         title="Upload a Supplier List"
         subtitle="Add the hotel's list as it came: a spreadsheet, a PDF, photos of the pages, or text pasted from an email. The suppliers are found for you, and nothing is sent until you approve it."
       />
-      <UploadForm clients={clients ?? []} />
+      <UploadForm clients={(clients ?? []).flatMap((c) => (c.name ? [{ id: c.id, name: c.name }] : []))} />
     </div>
   );
 }

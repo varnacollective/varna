@@ -106,11 +106,11 @@ export async function createInvitation(
   let clientName: string | null = null;
   if (cleanClientId) {
     const { data: clientData } = await supabase
-      .from("partner_clients")
-      .select("name")
-      .eq("id", cleanClientId)
-      .maybeSingle<{ name: string | null }>();
-    if (clientData?.name) clientName = clientData.name;
+      .from("client_master")
+      .select("client_name")
+      .eq("client_id", cleanClientId)
+      .maybeSingle<{ client_name: string | null }>();
+    if (clientData?.client_name) clientName = clientData.client_name;
   }
 
   const emailData = generateInvitationEmail({
