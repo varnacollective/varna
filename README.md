@@ -130,12 +130,15 @@ $$\text{Effective Score} = \text{Raw Score} \times \text{Evidence Multiplier}$$
 
 ```
 varna/
+├── .github/workflows/          # Checks run on every pull request (tests, strict type check and lint)
 ├── public/                     # Static assets, branding crystal marks, and login illustrations
 ├── scripts/                    # Database seeding, migration utilities, and schema audit scripts
 │   ├── seed_varna_database.js  # Database bootstrap & schema initialization
 │   ├── migrate-to-supabase.js  # Supabase migration pipeline
-│   └── sync-confidence-data.js # Confidence scores synchronization
+│   ├── sync-confidence-data.js # Confidence scores synchronization
+│   └── list-agent/             # List agent tools: sample lists, strict type check
 ├── src/
+│   ├── agents/list/            # List agent: reads supplier lists with AI and checks every answer
 │   ├── app/                    # Next.js App Router routes & API endpoints
 │   │   ├── (auth)/login/       # Client authentication & onboarding
 │   │   ├── algorithm/          # The Varna Framework documentation & methodology page
@@ -153,6 +156,7 @@ varna/
 │   │   ├── framework/          # Framework methodology redirect/alias
 │   │   ├── group/              # Multi-property hospitality group intelligence
 │   │   ├── superadmin/         # Administrative portal for system management
+│   │   │   └── partners/invitations/upload/ # Upload a supplier list, review, invite
 │   │   ├── upload-certificate/ # Supplier certification upload pipeline
 │   │   ├── globals.css         # Tailwind CSS v4 design tokens and global styles
 │   │   └── layout.tsx          # Root layout with preconnect hints & theme provider
@@ -164,12 +168,17 @@ varna/
 │   │   ├── layout/             # Navigation sidebars, headers, and footers
 │   │   ├── PDF/                # React-PDF templates for impact reporting
 │   │   ├── SuperAdmin/         # Administration tables, modals, and management forms
+│   │   ├── ListUpload/         # Supplier list upload, review and invite screens
 │   │   └── ui/                 # Core atom components (hover cards, watermarks, dialogs)
 │   ├── context/                # Client state contexts (e.g., Active client, session)
 │   ├── lib/                    # Core utilities, Supabase client, and mock dataset backups
+│   │   ├── invitations/        # Creating and sending supplier invitations
+│   │   └── list-uploads/       # List upload: reading, review rules, database access
 │   ├── types/                  # TypeScript interface definitions (scores, pillars, clients)
 │   └── utils/                  # Formatting helpers, color mappers, and calculations
-├── AGENTS.md                   # AI agent operational guidelines
+├── supabase/migrations/        # Database changes, one new file per change
+├── tests/                      # Tests (node --test for *.test.js, Vitest for *.test.ts)
+├── AGENTS.md                   # Rules for AI coding tools (CLAUDE.md points here)
 ├── package.json                # Project dependencies, metadata, and scripts
 ├── tailwind.config.js          # Design palette configurations
 └── tsconfig.json               # TypeScript compiler options
