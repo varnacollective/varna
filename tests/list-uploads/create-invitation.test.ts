@@ -43,14 +43,14 @@ const input = {
   enterprise_name: "  Example Handloom  ",
   contact_person: "Asha Rao",
   contact_email: " Asha@Example.com ",
-  client_id: "11111111-1111-4111-8111-111111111111",
+  client_id: "CLT-001",
 };
 const context = { action: "send" as const, createdBy: "admin-1", origin: "https://app.example.com" };
 
 beforeEach(() => {
   writes.length = 0;
   for (const key of Object.keys(answers)) Reflect.deleteProperty(answers, key);
-  answers.partner_clients = { data: { name: "Example Hotel" }, error: null };
+  answers.client_master = { data: { client_name: "Example Hotel" }, error: null };
   answers.partner_suppliers = { data: { id: "supplier-1" }, error: null };
   answers.partner_invitations = { data: { id: "invitation-1" }, error: null };
   sendInvitationEmail.mockReset().mockResolvedValue({ success: true, messageId: "msg-1" });

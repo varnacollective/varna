@@ -19,9 +19,9 @@ export default async function ScoringApprovalPage() {
         brand_name,
         contact_person
       ),
-      partner_clients (
-        id,
-        name
+      client:client_master (
+        id:client_id,
+        name:client_name
       )
     `)
     .order("created_at", { ascending: false });
@@ -43,7 +43,7 @@ export default async function ScoringApprovalPage() {
           enterprise_name: row.enterprise_name || row.enterprise_id,
           brand_name: row.brand_name || null,
         },
-        partner_clients: {
+        client: {
           name: row.client_id || "Hospitality Pool",
         },
         version: 1,

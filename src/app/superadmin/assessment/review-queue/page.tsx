@@ -12,9 +12,9 @@ export default async function ReviewQueuePage() {
     .from("review_queue_flags")
     .select(`
       *,
-      partner_clients (
-        id,
-        name
+      client:client_master (
+        id:client_id,
+        name:client_name
       )
     `)
     .order("created_at", { ascending: false });

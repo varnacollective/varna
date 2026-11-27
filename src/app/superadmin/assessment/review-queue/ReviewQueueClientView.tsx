@@ -20,7 +20,7 @@ interface FlagRecord {
   source_ref?: string;
   description?: string;
   client_id?: string;
-  partner_clients?: { id: string; name: string };
+  client?: { id: string; name: string };
   assigned_reviewer_id?: string;
   status: "open" | "accepted" | "corrected" | "escalated";
   resolution_reason?: string;

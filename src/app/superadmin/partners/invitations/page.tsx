@@ -21,9 +21,9 @@ export default async function PartnerInvitationsPage({ searchParams }: PageProps
       .select("*")
       .order("created_at", { ascending: false }),
     supabase
-      .from("partner_clients")
-      .select("id, name")
-      .order("name"),
+      .from("client_master")
+      .select("id:client_id, name:client_name")
+      .order("client_name"),
   ]);
 
   const invitations = invitationsRes.data || [];

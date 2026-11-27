@@ -20,9 +20,9 @@ export default async function AssessmentPipelinePage() {
         contact_person,
         contact_email
       ),
-      partner_clients (
-        id,
-        name
+      client:client_master (
+        id:client_id,
+        name:client_name
       )
     `)
     .order("created_at", { ascending: false });

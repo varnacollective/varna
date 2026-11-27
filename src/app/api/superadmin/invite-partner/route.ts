@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = createAdminClient();
     const [clientsRes, categoriesRes] = await Promise.all([
-      supabase.from("partner_clients").select("id, name").order("name"),
+      supabase.from("client_master").select("id:client_id, name:client_name").order("client_name"),
       supabase.from("category_master").select("id, name").eq("is_active", true).order("name"),
     ]);
 

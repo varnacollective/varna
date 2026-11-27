@@ -20,7 +20,7 @@ interface ScoreRecord {
     enterprise_name: string;
     brand_name?: string | null;
   };
-  partner_clients?: {
+  client?: {
     name: string;
   };
   version: number;
@@ -283,7 +283,7 @@ export default function ScoringClientView({
                         {score.partner_suppliers?.enterprise_name || "Supplier"}
                       </div>
                       <div style={{ fontSize: "11px", color: "var(--sa-caption)" }}>
-                        v{score.version} · {score.partner_clients?.name || "Global"}
+                        v{score.version} · {score.client?.name || "Global"}
                       </div>
                     </td>
                     <td>

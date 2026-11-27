@@ -16,7 +16,7 @@ export async function getUpload(id: string): Promise<UploadSummary | null> {
     .select(
       "id, client_id, status, created_at, finished_at, model, vision_model, input_tokens, " +
         "output_tokens, thinking_tokens, failed_parts, error, " +
-        "client:partner_clients(name), files:list_upload_files(id, file_name, size_bytes, page_count, created_at), " +
+        "client:client_master(name:client_name), files:list_upload_files(id, file_name, size_bytes, page_count, created_at), " +
         "calls:list_upload_ai_calls(model, input_tokens, output_tokens)",
     )
     .eq("id", id)
