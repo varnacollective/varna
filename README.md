@@ -199,6 +199,13 @@ varna/
    npm install
    ```
 
+### Tests and checks
+
+* `npm test`: all tests (`node --test` for `tests/*.test.js`, Vitest for `tests/**/*.test.ts`). The List agent tests use a fake AI, so they run offline with no key.
+* `npm run typecheck:strict`: stricter type check for the List agent and list-upload code.
+* `npm run list:samples`: writes made-up messy supplier lists to `.list-agent/samples/` (gitignored).
+* `npm run list:extract -- <file>`: runs the List agent on one file from the terminal and writes the results to `.list-agent/out/` (gitignored). Needs `GEMINI_API_KEY` and `GEMINI_MODEL` in `.env.local`. With a free Gemini key, only use made-up lists, never real supplier data.
+
 
 ##  Disclaimer
 

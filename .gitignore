@@ -65,3 +65,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
+# List agent: local results and synthetic samples (may hold real data)
+/.list-agent/
