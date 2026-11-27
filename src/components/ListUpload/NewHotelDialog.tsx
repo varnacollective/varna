@@ -6,14 +6,16 @@ import type { HotelOption } from "@/lib/list-uploads/hotels";
 import { errorFrom } from "./read-stream";
 
 interface Props {
+  /** Pre-filled name, e.g. what was searched for. */
+  initialName?: string;
   onCreated: (hotel: HotelOption) => void;
   onClose: () => void;
 }
 
 /** Adds a hotel (the same as Partners → Clients → add). */
-export default function NewHotelDialog({ onCreated, onClose }: Props) {
+export default function NewHotelDialog({ initialName = "", onCreated, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(initialName);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [saving, setSaving] = useState(false);

@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { FileUp, ListChecks } from "lucide-react";
-import HotelNav from "@/components/ListUpload/HotelNav";
-import HotelOverview from "@/components/ListUpload/HotelOverview";
+import HotelDirectory from "@/components/ListUpload/HotelDirectory";
 import HotelTabs from "@/components/ListUpload/HotelTabs";
 import PageHeader from "@/components/ListUpload/PageHeader";
 import ReviewView from "@/components/ListUpload/ReviewView";
 import UploadList from "@/components/ListUpload/UploadList";
 import { formatWhen } from "@/components/ListUpload/format";
 import { getHotelSuppliers, listHotels, listUploads } from "@/lib/list-uploads/hotel-queries";
-import { NO_HOTEL, newListHref, readSelection, summariseHotels } from "@/lib/list-uploads/hotels";
+import { hotelHref, NO_HOTEL, newListHref, readSelection, summariseHotels } from "@/lib/list-uploads/hotels";
 
 export const metadata = { title: "Supplier lists" };
 
@@ -32,11 +31,12 @@ export default async function SupplierListsPage({ searchParams }: PageProps<"/su
         title={hotel ? hotel.name : "Supplier Lists"}
         subtitle={
           !hotel
-            ? "Each hotel's supplier lists: upload a list, check the suppliers found, then invite them."
+            ? "Choose a hotel to see its suppliers and lists, or upload a new list."
             : hotel.id === NO_HOTEL
               ? "Lists uploaded before a hotel had to be chosen."
               : `Hotel code ${hotel.id} · all suppliers from this hotel's lists`
         }
+        {...(hotel ? { back: { href: hotelHref(), label: "All hotels" } } : {})}
         actions={
           hotel?.id === NO_HOTEL ? undefined : (
             <Link href={newListHref(canUpload ? hotel.id : null)} className="sa-btn-primary">
@@ -46,34 +46,28 @@ export default async function SupplierListsPage({ searchParams }: PageProps<"/su
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
-        <HotelNav hotels={hotels} selectedId={hotel?.id ?? null} />
-
+      {!hotel ? (
+        <HotelDirectory hotels={hotels} />
+      ) : (
         <div className="flex min-w-0 flex-col gap-4">
-          {!hotel ? (
-            <HotelOverview hotels={hotels} />
+          <HotelTabs hotel={hotel} tab={tab} />
+          {tab === "lists" ? (
+            <UploadList uploads={hotelUploads} />
           ) : (
-            <>
-              <HotelTabs hotel={hotel} tab={tab} />
-              {tab === "lists" ? (
-                <UploadList uploads={hotelUploads} />
-              ) : (
-                <ReviewView
-                  key={hotel.id}
-                  initialSuppliers={suppliers}
-                  failedParts={[]}
-                  sources={sources}
-                  emptyText={
-                    hotelUploads.length === 0
-                      ? "No lists uploaded for this hotel yet. Use “Upload a list” to add one."
-                      : "No suppliers to review yet. Open “Uploaded lists” to see each list."
-                  }
-                />
-              )}
-            </>
+            <ReviewView
+              key={hotel.id}
+              initialSuppliers={suppliers}
+              failedParts={[]}
+              sources={sources}
+              emptyText={
+                hotelUploads.length === 0
+                  ? "No lists uploaded for this hotel yet. Use “Upload a list” to add one."
+                  : "No suppliers to review yet. Open “Uploaded lists” to see each list."
+              }
+            />
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
