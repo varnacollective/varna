@@ -31,15 +31,15 @@ export default async function SupplierListsPage({ searchParams }: PageProps<"/su
         title={hotel ? hotel.name : "Supplier Lists"}
         subtitle={
           !hotel
-            ? "Choose a hotel to see its suppliers and lists, or upload a new list."
+            ? "Which hotel is the list for? Choose it to upload a list and see its suppliers."
             : hotel.id === NO_HOTEL
               ? "Lists uploaded before a hotel had to be chosen."
               : `Hotel code ${hotel.id} · all suppliers from this hotel's lists`
         }
         {...(hotel ? { back: { href: hotelHref(), label: "All hotels" } } : {})}
         actions={
-          hotel?.id === NO_HOTEL ? undefined : (
-            <Link href={newListHref(canUpload ? hotel.id : null)} className="sa-btn-primary">
+          !canUpload ? undefined : (
+            <Link href={newListHref(hotel.id)} className="sa-btn-primary">
               <FileUp className="h-4 w-4" aria-hidden /> Upload a list
             </Link>
           )
