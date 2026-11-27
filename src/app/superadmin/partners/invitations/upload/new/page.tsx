@@ -2,12 +2,13 @@ import { FileUp } from "lucide-react";
 import PageHeader from "@/components/ListUpload/PageHeader";
 import UploadForm from "@/components/ListUpload/UploadForm";
 import { listHotels } from "@/lib/list-uploads/hotel-queries";
-import { hotelHref } from "@/lib/list-uploads/hotels";
+import { hotelChoices, hotelHref } from "@/lib/list-uploads/hotels";
 
 export const metadata = { title: "Upload a supplier list" };
 
 export default async function NewListPage({ searchParams }: PageProps<"/superadmin/partners/invitations/upload/new">) {
-  const [hotels, params] = await Promise.all([listHotels(), searchParams]);
+  const [named, params] = await Promise.all([listHotels(), searchParams]);
+  const hotels = hotelChoices(named);
   const chosen = hotels.find((h) => h.id === params.hotel);
 
   return (

@@ -35,4 +35,5 @@ export const FIELD_LABELS = {
   phone: "Phone",
   city: "City",
   state: "State",
+  category: "Category",
 } as const;

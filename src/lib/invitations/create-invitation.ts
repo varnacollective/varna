@@ -6,8 +6,8 @@ import { sendInvitationEmail } from "@/lib/email/send-email";
 
 /**
  * Invite one supplier: create the supplier, link it to the hotel, create the
- * invitation, send the email, and record it. Used by the manual invite form
- * and by the supplier list upload, so both behave the same.
+ * invitation, send the email, and record it. Every supplier comes this way,
+ * after review, whether it was in an uploaded list or added by hand.
  *
  * "preview" only renders the email; "save" stores it unsent; "send" also
  * emails it.

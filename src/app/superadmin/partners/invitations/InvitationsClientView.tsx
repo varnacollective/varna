@@ -15,9 +15,13 @@ import {
   Calendar,
   Loader2,
   FileUp,
+  UserPlus,
 } from "lucide-react";
 import Link from "next/link";
-import InvitePartnerButton, { ClientOption } from "@/components/SuperAdmin/InvitePartnerButton";
+interface ClientOption {
+  id: string;
+  name: string;
+}
 
 interface InvitationRecord {
   id: string;
@@ -42,11 +46,9 @@ interface InvitationRecord {
 export default function InvitationsClientView({
   initialInvitations,
   clients,
-  autoOpenInvite = false,
 }: {
   initialInvitations: InvitationRecord[];
   clients: ClientOption[];
-  autoOpenInvite?: boolean;
 }) {
   const [invitations, setInvitations] = useState<InvitationRecord[]>(initialInvitations);
   const [search, setSearch] = useState("");
@@ -135,14 +137,6 @@ export default function InvitationsClientView({
     }
   };
 
-  const refreshInvitations = () => {
-    fetch("/api/superadmin/invitations")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.invitations) setInvitations(d.invitations);
-      })
-      .catch(() => {});
-  };
 
   const getStatusPill = (status: string) => {
     switch (status.toLowerCase()) {
@@ -318,11 +312,10 @@ export default function InvitationsClientView({
             <FileUp className="w-4 h-4 shrink-0" aria-hidden />
             <span>Upload a list</span>
           </Link>
-          <InvitePartnerButton
-            clients={clients}
-            initialOpen={autoOpenInvite}
-            onSuccess={refreshInvitations}
-          />
+          <Link href="/superadmin/partners/invitations/upload/add" className="sa-btn-primary">
+            <UserPlus className="w-4 h-4 shrink-0" aria-hidden />
+            <span>Add a supplier</span>
+          </Link>
         </div>
       </div>
 

@@ -180,9 +180,9 @@ export default async function SuperAdminOverviewPage() {
 
       {/* Quick actions */}
       <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Link href="/superadmin/partners/invitations?action=invite" className="sa-btn-primary">
+        <Link href="/superadmin/partners/invitations/upload/add" className="sa-btn-primary">
           <Mail className="w-4 h-4" />
-          + Invite Partner
+          + Add a supplier
         </Link>
         <Link href="/superadmin/partners/suppliers" className="sa-btn-secondary">
           <Package className="w-4 h-4" />

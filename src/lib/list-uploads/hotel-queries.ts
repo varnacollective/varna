@@ -32,6 +32,7 @@ export async function listHotels(): Promise<HotelOption[]> {
 interface RawUpload {
   id: string;
   client_id: string | null;
+  source: UploadRow["source"];
   status: UploadStatus;
   created_at: string;
   files: { file_name: string; created_at: string }[];
@@ -44,7 +45,7 @@ export async function listUploads(): Promise<UploadRow[]> {
     readAll((from, to) =>
       db
         .from("list_uploads")
-        .select("id, client_id, status, created_at, files:list_upload_files(file_name, created_at)")
+        .select("id, client_id, source, status, created_at, files:list_upload_files(file_name, created_at)")
         .order("created_at", { ascending: false })
         .order("id")
         .range(from, to)
@@ -63,6 +64,7 @@ export async function listUploads(): Promise<UploadRow[]> {
   return uploads.map((u) => ({
     id: u.id,
     hotelId: u.client_id,
+    source: u.source,
     status: u.status,
     createdAt: u.created_at,
     fileNames: [...u.files].sort((a, b) => a.created_at.localeCompare(b.created_at)).map((f) => f.file_name),
@@ -93,4 +95,16 @@ export async function getHotelSuppliers(hotelId: string, uploads: readonly Uploa
   );
   const rank = new Map(order.map((id, i) => [id, i]));
   return rows.sort((a, b) => (rank.get(a.upload_id) ?? 0) - (rank.get(b.upload_id) ?? 0) || a.position - b.position);
+}
+
+/** Product categories to choose from (the same list as the rest of the dashboard). */
+export async function listCategories(): Promise<string[]> {
+  const { data, error } = await createAdminClient()
+    .from("category_master")
+    .select("name")
+    .eq("is_active", true)
+    .order("name")
+    .overrideTypes<{ name: string }[], { merge: false }>();
+  if (error) throw new Error(error.message);
+  return data.map((c) => c.name);
 }

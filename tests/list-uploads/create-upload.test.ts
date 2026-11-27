@@ -44,13 +44,20 @@ beforeEach(() => {
 });
 
 describe("starting an upload", () => {
-  it("needs a hotel", async () => {
-    for (const clientId of [undefined, null, "", "   "]) {
-      const response = await post({ clientId, files });
+  it("needs a hotel or No hotel to be chosen", async () => {
+    for (const body of [{ files }, { clientId: "", files }, { clientId: "   ", files }]) {
+      const response = await post(body);
       expect(response.status).toBe(400);
-      expect(((await response.json()) as { error: string }).error).toBe("Choose the hotel this list is for.");
+      expect(((await response.json()) as { error: string }).error).toBe("Choose the hotel this list is for, or No hotel.");
     }
     expect(inserts).toEqual([]);
+  });
+
+  it("records an upload for No hotel without looking up a hotel", async () => {
+    answers.client_master = { data: null, error: null };
+    const response = await post({ clientId: null, files });
+    expect(response.status).toBe(200);
+    expect(inserts[0]).toEqual({ table: "list_uploads", values: { client_id: null, created_by: "admin-1" } });
   });
 
   it("refuses a hotel that does not exist", async () => {

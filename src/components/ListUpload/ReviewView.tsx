@@ -17,17 +17,19 @@ interface Props {
   sources?: ReadonlyMap<string, string>;
   /** Shown when there are no suppliers at all. */
   emptyText?: string;
+  /** A supplier to show in the side panel straight away (e.g. one just added). */
+  initialOpenId?: string;
 }
 
 type Filter = "all" | View;
 
-export default function ReviewView({ initialSuppliers, failedParts, sources, emptyText = "No suppliers were found in this list." }: Props) {
+export default function ReviewView({ initialSuppliers, failedParts, sources, emptyText = "No suppliers were found in this list.", initialOpenId }: Props) {
   const [suppliers, setSuppliers] = useState(initialSuppliers);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [reasonFilter, setReasonFilter] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(initialOpenId ?? null);
   const [inviting, setInviting] = useState(false);
   const [message, setMessage] = useState<{ tone: "error" | "info"; text: string } | null>(null);
   const [saving, setSaving] = useState(false);

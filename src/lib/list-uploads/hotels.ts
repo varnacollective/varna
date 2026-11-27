@@ -6,8 +6,9 @@ import type { CheckStatus, Decision, UploadStatus } from "./types";
  * tests share them; the database reads are in hotel-queries.ts.
  */
 
-/** The "hotel" of uploads made before a hotel was required. */
+/** The group for lists and suppliers not linked to a hotel. Always offered. */
 export const NO_HOTEL = "none";
+export const NO_HOTEL_NAME = "No hotel";
 
 export interface HotelOption {
   id: string;
@@ -19,6 +20,8 @@ export type ViewCounts = Record<View, number> & { total: number };
 export interface UploadRow {
   id: string;
   hotelId: string | null;
+  /** "file": an uploaded list. "manual": one supplier added by hand. */
+  source: "file" | "manual";
   status: UploadStatus;
   createdAt: string;
   fileNames: string[];
@@ -29,6 +32,7 @@ export interface HotelRow {
   /** A hotel code, or NO_HOTEL. */
   id: string;
   name: string;
+  /** Uploaded lists (suppliers added by hand are counted in `counts` only). */
   uploads: number;
   lastUploadAt: string | null;
   counts: ViewCounts;
@@ -62,29 +66,27 @@ export function countByUpload(suppliers: readonly SupplierState[]): Map<string, 
 }
 
 /**
- * One row per hotel, in name order, then "No hotel" last if any upload has
- * none. Hotels without uploads are listed too, so a new hotel can be picked.
+ * "No hotel" first (always, even when empty), then one row per hotel in
+ * name order. Hotels without uploads are listed too, so they can be picked.
  */
 export function summariseHotels(hotels: readonly HotelOption[], uploads: readonly UploadRow[]): HotelRow[] {
+  const ordered = [{ id: NO_HOTEL, name: NO_HOTEL_NAME }, ...[...hotels].sort((a, b) => a.name.localeCompare(b.name))];
   const rows = new Map<string, HotelRow>(
-    [...hotels]
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((h) => [h.id, { id: h.id, name: h.name, uploads: 0, lastUploadAt: null, counts: emptyCounts() }]),
+    ordered.map((h) => [h.id, { id: h.id, name: h.name, uploads: 0, lastUploadAt: null, counts: emptyCounts() }]),
   );
   for (const upload of uploads) {
     const id = upload.hotelId ?? NO_HOTEL;
     let row = rows.get(id);
     if (!row) {
-      row = { id, name: id === NO_HOTEL ? "No hotel" : id, uploads: 0, lastUploadAt: null, counts: emptyCounts() };
+      // A hotel code that is no longer in the hotel list: keep its lists visible.
+      row = { id, name: id, uploads: 0, lastUploadAt: null, counts: emptyCounts() };
       rows.set(id, row);
     }
-    row.uploads += 1;
+    if (upload.source === "file") row.uploads += 1;
     if (!row.lastUploadAt || upload.createdAt > row.lastUploadAt) row.lastUploadAt = upload.createdAt;
     add(row.counts, upload.counts);
   }
-  const noHotel = rows.get(NO_HOTEL);
-  rows.delete(NO_HOTEL);
-  return noHotel ? [...rows.values(), noHotel] : [...rows.values()];
+  return [...rows.values()];
 }
 
 export type Tab = "suppliers" | "lists";
@@ -99,17 +101,36 @@ export function readSelection(
   return { hotel, tab: params.tab === "lists" ? "lists" : "suppliers" };
 }
 
-/** A link to a hotel's page (or the overview, with no hotel). */
-export function hotelHref(hotelId?: string | null, tab: Tab = "suppliers"): string {
+/** A link to a hotel's page (or the overview, with no hotel), optionally with a supplier opened. */
+export function hotelHref(hotelId?: string | null, tab: Tab = "suppliers", openSupplierId?: string): string {
   const base = "/superadmin/partners/invitations/upload";
   if (!hotelId) return base;
   const query = new URLSearchParams({ hotel: hotelId });
   if (tab !== "suppliers") query.set("tab", tab);
+  if (openSupplierId) query.set("open", openSupplierId);
   return `${base}?${query.toString()}`;
 }
 
-/** The upload page, with the hotel already chosen when known. */
+/** The upload page, with the hotel (or NO_HOTEL) already chosen when known. */
 export function newListHref(hotelId?: string | null): string {
-  const base = "/superadmin/partners/invitations/upload/new";
-  return hotelId && hotelId !== NO_HOTEL ? `${base}?hotel=${encodeURIComponent(hotelId)}` : base;
+  return withHotel("/superadmin/partners/invitations/upload/new", hotelId);
+}
+
+/** The add-a-supplier page, with the hotel (or NO_HOTEL) already chosen when known. */
+export function addSupplierHref(hotelId?: string | null): string {
+  return withHotel("/superadmin/partners/invitations/upload/add", hotelId);
+}
+
+function withHotel(base: string, hotelId?: string | null): string {
+  return hotelId ? `${base}?hotel=${encodeURIComponent(hotelId)}` : base;
+}
+
+/** The hotel code to store for a choice: null for NO_HOTEL. */
+export function hotelCodeOf(choice: string): string | null {
+  return choice === NO_HOTEL ? null : choice;
+}
+
+/** Hotels to choose from when uploading or adding: "No hotel" first. */
+export function hotelChoices(hotels: readonly HotelOption[]): HotelOption[] {
+  return [{ id: NO_HOTEL, name: NO_HOTEL_NAME }, ...hotels];
 }

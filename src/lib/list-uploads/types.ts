@@ -43,6 +43,7 @@ export interface FailedPart {
 export interface UploadSummary {
   id: string;
   clientId: string | null;
+  source: "file" | "manual";
   clientName: string | null;
   status: UploadStatus;
   createdAt: string;
@@ -67,6 +68,7 @@ export const EDITABLE_FIELDS = [
   "phone",
   "city",
   "state",
+  "category",
 ] as const;
 export type EditableField = (typeof EDITABLE_FIELDS)[number];
 
@@ -84,6 +86,8 @@ export interface ReviewSupplier {
   other_phones: string[];
   city: string | null;
   state: string | null;
+  /** Product category, carried to the invitation. */
+  category: string | null;
   check_status: CheckStatus;
   issues: Issue[];
   evidence: Evidence;

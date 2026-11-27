@@ -7,14 +7,14 @@ import type { ReviewSupplier, UploadSummary } from "./types";
 
 const SUPPLIER_COLUMNS =
   "id, upload_id, file_id, position, company_name, brand_name, contact_name, email, other_emails, phone, other_phones, " +
-  "city, state, check_status, issues, decision, duplicate_of, invitation_id, evidence:extracted->evidence";
+  "city, state, category, check_status, issues, decision, duplicate_of, invitation_id, evidence:extracted->evidence";
 
 export async function getUpload(id: string): Promise<UploadSummary | null> {
   const db = createAdminClient();
   const { data: u } = await db
     .from("list_uploads")
     .select(
-      "id, client_id, status, created_at, finished_at, model, vision_model, input_tokens, " +
+      "id, client_id, source, status, created_at, finished_at, model, vision_model, input_tokens, " +
         "output_tokens, thinking_tokens, failed_parts, error, " +
         "client:client_master(name:client_name), files:list_upload_files(id, file_name, size_bytes, page_count, created_at), " +
         "calls:list_upload_ai_calls(model, input_tokens, output_tokens)",
@@ -25,6 +25,7 @@ export async function getUpload(id: string): Promise<UploadSummary | null> {
   return {
     id: u.id,
     clientId: u.client_id,
+    source: u.source,
     clientName: u.client?.name ?? null,
     status: u.status,
     createdAt: u.created_at,
@@ -71,6 +72,7 @@ export const REVIEW_SUPPLIER_COLUMNS = SUPPLIER_COLUMNS;
 interface RawUpload {
   id: string;
   client_id: string | null;
+  source: UploadSummary["source"];
   status: UploadSummary["status"];
   created_at: string;
   finished_at: string | null;

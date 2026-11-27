@@ -3,7 +3,7 @@
 import { useRef, useState, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ClipboardPaste, Eye, FileText, Loader2, Plus, Upload, X } from "lucide-react";
-import type { HotelOption } from "@/lib/list-uploads/hotels";
+import { hotelCodeOf, NO_HOTEL, type HotelOption } from "@/lib/list-uploads/hotels";
 import { ACCEPT_ATTRIBUTE, ACCEPTED_FILE, MAX_FILE_BYTES, MAX_FILES, UPLOAD_BUCKET } from "@/lib/list-uploads/files";
 import type { ReadEvent } from "@/lib/list-uploads/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -111,7 +111,7 @@ export default function UploadForm({ hotels: initialHotels, initialHotelId }: Pr
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clientId: hotelId,
+          clientId: hotelCodeOf(hotelId),
           files: files.map((f) => ({ name: f.name, size: f.size, type: f.type })),
         }),
         signal: stop.signal,
@@ -180,7 +180,7 @@ export default function UploadForm({ hotels: initialHotels, initialHotelId }: Pr
               disabled={busy}
               onChange={(e) => setHotelId(e.target.value)}
             >
-              <option value="" disabled>Choose the hotel this list is for</option>
+              <option value="" disabled>Choose the hotel this list is for, or No hotel</option>
               {hotels.map((h) => (
                 <option key={h.id} value={h.id}>{h.name}</option>
               ))}
@@ -368,7 +368,11 @@ export default function UploadForm({ hotels: initialHotels, initialHotelId }: Pr
         <NewHotelDialog
           onClose={() => setAddingHotel(false)}
           onCreated={(hotel) => {
-            setHotels((list) => [...list, hotel].sort((a, b) => a.name.localeCompare(b.name)));
+            setHotels((list) => {
+              const [noHotel, ...named] = list;
+              const sorted = [...named, hotel].sort((a, b) => a.name.localeCompare(b.name));
+              return noHotel?.id === NO_HOTEL ? [noHotel, ...sorted] : sorted;
+            });
             setHotelId(hotel.id);
             setAddingHotel(false);
           }}

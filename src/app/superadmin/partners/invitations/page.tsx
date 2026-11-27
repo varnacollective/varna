@@ -5,14 +5,7 @@ import InvitationsClientView from "./InvitationsClientView";
 
 export const revalidate = 0;
 
-interface PageProps {
-  searchParams: Promise<{ action?: string }>;
-}
-
-export default async function PartnerInvitationsPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const autoOpenInvite = params?.action === "invite";
-
+export default async function PartnerInvitationsPage() {
   const supabase = createAdminClient();
 
   const [invitationsRes, clientsRes] = await Promise.all([
@@ -57,7 +50,6 @@ export default async function PartnerInvitationsPage({ searchParams }: PageProps
       <InvitationsClientView
         initialInvitations={invitations}
         clients={clients}
-        autoOpenInvite={autoOpenInvite}
       />
     </div>
   );
