@@ -387,7 +387,7 @@ export default function InvitationsClientView({
                 const isCopied = copiedId === inv.id;
                 const clientName = inv.client_id
                   ? clientMap.get(inv.client_id) || "Client"
-                  : "General Pool";
+                  : "No hotel";
 
                 return (
                   <tr key={inv.id}>
