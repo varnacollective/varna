@@ -152,19 +152,21 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           {reasonOptions.length > 0 && (
-            <select
-              className="sa-input sm:w-56"
-              aria-label="Filter by reason"
-              value={activeReason}
-              onChange={(e) => setReasonFilter(e.target.value)}
-            >
-              <option value="">Any reason</option>
-              {reasonOptions.map((o) => (
-                <option key={o.code} value={o.code}>
-                  {o.label} ({o.count})
-                </option>
-              ))}
-            </select>
+            <div className="sm:w-52">
+              <select
+                className="sa-input"
+                aria-label="Filter by reason"
+                value={activeReason}
+                onChange={(e) => setReasonFilter(e.target.value)}
+              >
+                <option value="">Any reason</option>
+                {reasonOptions.map((o) => (
+                  <option key={o.code} value={o.code}>
+                    {o.label} ({o.count})
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
           <div className="relative sm:w-64">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sa-caption)]" aria-hidden />
@@ -180,7 +182,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
           </div>
           <button
             type="button"
-            className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary justify-center disabled:opacity-50"
+            className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary justify-center whitespace-nowrap disabled:opacity-50"
             disabled={toInvite.length === 0}
             onClick={() => setInviting(true)}
           >
@@ -294,6 +296,8 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
           <ul className="divide-y divide-[var(--sa-border)] md:hidden">
             {shown.map((s) => {
               const view = viewInfo(viewOf(s));
+              // The card already says "No company name" / "No email" in their own lines.
+              const cardReasons = (reasons.get(s.id) ?? []).filter((r) => r.code !== "missing_name" && r.code !== "missing_email");
               return (
                 <li key={s.id} className="flex items-start gap-3 px-4 py-3">
                   <input
@@ -309,9 +313,9 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                       <span className="truncate text-[14px] font-medium text-[var(--sa-ink)]">{s.company_name ?? "No company name"}</span>
                       <span className={`sa-pill shrink-0 ${view.pill}`}>{view.label}</span>
                     </span>
-                    {(reasons.get(s.id) ?? []).length > 0 && (
+                    {cardReasons.length > 0 && (
                       <span className="w-full text-xs">
-                        <Reasons reasons={reasons.get(s.id) ?? []} />
+                        <Reasons reasons={cardReasons} />
                       </span>
                     )}
                     <span className="w-full truncate text-xs text-[var(--sa-ink-2)]">{s.email ?? "No email"}</span>
