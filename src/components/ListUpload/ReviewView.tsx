@@ -6,6 +6,7 @@ import type { Decision, FailedPart, ReviewSupplier } from "@/lib/list-uploads/ty
 import InviteDialog from "./InviteDialog";
 import { VIEWS, viewInfo, viewOf, type View } from "./labels";
 import { formatPhone } from "./format";
+import { reasonsOf, type Reason } from "./reasons";
 import { errorFrom } from "./read-stream";
 import SupplierPanel from "./SupplierPanel";
 
@@ -21,6 +22,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
   const [suppliers, setSuppliers] = useState(initialSuppliers);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
+  const [reasonFilter, setReasonFilter] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [openId, setOpenId] = useState<string | null>(null);
   const [inviting, setInviting] = useState(false);
@@ -33,14 +35,31 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
     return c;
   }, [suppliers]);
 
+  const reasons = useMemo(() => new Map(suppliers.map((s) => [s.id, reasonsOf(s)])), [suppliers]);
+
+  /** Every reason in this upload, with how many suppliers have it, in table order. */
+  const reasonOptions = useMemo(() => {
+    const options = new Map<string, { label: string; count: number }>();
+    for (const list of reasons.values()) {
+      for (const r of list) {
+        const option = options.get(r.code);
+        if (option) option.count += 1;
+        else options.set(r.code, { label: r.label, count: 1 });
+      }
+    }
+    return [...options].map(([code, o]) => ({ code, ...o })).sort((a, b) => a.label.localeCompare(b.label));
+  }, [reasons]);
+  const activeReason = reasonOptions.some((o) => o.code === reasonFilter) ? reasonFilter : "";
+
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
     return suppliers.filter(
       (s) =>
         (filter === "all" || viewOf(s) === filter) &&
+        (!activeReason || (reasons.get(s.id) ?? []).some((r) => r.code === activeReason)) &&
         (!q || [s.company_name, s.contact_name, s.email, s.phone, s.city].some((v) => v?.toLowerCase().includes(q))),
     );
-  }, [suppliers, filter, query]);
+  }, [suppliers, filter, query, reasons, activeReason]);
 
   const selectable = shown.filter((s) => !s.invitation_id);
   const allSelected = selectable.length > 0 && selectable.every((s) => selected.has(s.id));
@@ -132,6 +151,23 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
           })}
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          {reasonOptions.length > 0 && (
+            <div className="sm:w-52">
+              <select
+                className="sa-input"
+                aria-label="Filter by reason"
+                value={activeReason}
+                onChange={(e) => setReasonFilter(e.target.value)}
+              >
+                <option value="">Any reason</option>
+                {reasonOptions.map((o) => (
+                  <option key={o.code} value={o.code}>
+                    {o.label} ({o.count})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="relative sm:w-64">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sa-caption)]" aria-hidden />
             <input
@@ -146,7 +182,7 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
           </div>
           <button
             type="button"
-            className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary justify-center disabled:opacity-50"
+            className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary justify-center whitespace-nowrap disabled:opacity-50"
             disabled={toInvite.length === 0}
             onClick={() => setInviting(true)}
           >
@@ -206,11 +242,12 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                   />
                 </th>
                 <th>Status</th>
+                <th>Reason</th>
                 <th>Company</th>
-                <th>Contact</th>
+                <th className="hidden lg:table-cell">Contact</th>
                 <th>Email</th>
-                <th className="hidden lg:table-cell">Phone</th>
-                <th className="hidden xl:table-cell">City</th>
+                <th className="hidden xl:table-cell">Phone</th>
+                <th className="hidden 2xl:table-cell">City</th>
                 <th className="w-10"><span className="sr-only">Open</span></th>
               </tr>
             </thead>
@@ -229,12 +266,13 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                         className="cursor-pointer disabled:cursor-not-allowed! h-4 w-4 accent-[var(--sa-accent)]"
                       />
                     </td>
-                    <td><span className={`sa-pill ${view.pill}`}>{view.label}</span></td>
+                    <td><span className={`sa-pill whitespace-nowrap ${view.pill}`}>{view.label}</span></td>
+                    <td className="max-w-60"><Reasons reasons={reasons.get(s.id) ?? []} /></td>
                     <td className="max-w-56 truncate font-medium text-[var(--sa-ink)]">{s.company_name ?? <Missing />}</td>
-                    <td className="max-w-40 truncate">{s.contact_name ?? <Missing />}</td>
+                    <td className="hidden max-w-40 truncate lg:table-cell">{s.contact_name ?? <Missing />}</td>
                     <td className="max-w-60 truncate">{s.email ?? <Missing />}</td>
-                    <td className="hidden whitespace-nowrap lg:table-cell">{formatPhone(s.phone) ?? <Missing />}</td>
-                    <td className="hidden max-w-32 truncate xl:table-cell">{s.city ?? <Missing />}</td>
+                    <td className="hidden whitespace-nowrap xl:table-cell">{formatPhone(s.phone) ?? <Missing />}</td>
+                    <td className="hidden max-w-32 truncate 2xl:table-cell">{s.city ?? <Missing />}</td>
                     <td>
                       <button
                         type="button"
@@ -258,6 +296,8 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
           <ul className="divide-y divide-[var(--sa-border)] md:hidden">
             {shown.map((s) => {
               const view = viewInfo(viewOf(s));
+              // The card already says "No company name" / "No email" in their own lines.
+              const cardReasons = (reasons.get(s.id) ?? []).filter((r) => r.code !== "missing_name" && r.code !== "missing_email");
               return (
                 <li key={s.id} className="flex items-start gap-3 px-4 py-3">
                   <input
@@ -273,6 +313,11 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
                       <span className="truncate text-[14px] font-medium text-[var(--sa-ink)]">{s.company_name ?? "No company name"}</span>
                       <span className={`sa-pill shrink-0 ${view.pill}`}>{view.label}</span>
                     </span>
+                    {cardReasons.length > 0 && (
+                      <span className="w-full text-xs">
+                        <Reasons reasons={cardReasons} />
+                      </span>
+                    )}
                     <span className="w-full truncate text-xs text-[var(--sa-ink-2)]">{s.email ?? "No email"}</span>
                     <span className="w-full truncate text-xs text-[var(--sa-muted)]">
                       {[s.contact_name, formatPhone(s.phone), s.city].filter(Boolean).join(" · ") || "No other details"}
@@ -307,6 +352,31 @@ export default function ReviewView({ uploadId, initialSuppliers, failedParts }: 
         />
       )}
     </div>
+  );
+}
+
+/** The main reason in full, then how many more; all of them on hover and for screen readers. */
+function Reasons({ reasons }: { reasons: readonly Reason[] }) {
+  const [first, ...rest] = reasons;
+  if (!first) return <Missing />;
+  const all = reasons.map((r) => r.label).join(", ");
+  return (
+    <span title={rest.length > 0 ? all : undefined} className="flex min-w-0 items-baseline gap-1.5">
+      <span
+        className={`truncate ${first.level === "attention" ? "font-medium text-[var(--sa-warning-fg)]" : "text-[var(--sa-muted)]"}`}
+        aria-hidden={rest.length > 0}
+      >
+        {first.label}
+      </span>
+      {rest.length > 0 && (
+        <>
+          <span className="shrink-0 whitespace-nowrap text-[var(--sa-caption)]" aria-hidden>
+            +{rest.length} more
+          </span>
+          <span className="sr-only">{all}</span>
+        </>
+      )}
+    </span>
   );
 }
 

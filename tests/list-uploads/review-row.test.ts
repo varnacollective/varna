@@ -76,6 +76,23 @@ describe("issuesFor", () => {
     expect(issues).toEqual([{ code: "email_suggestion", level: "attention", message: "typo: did you mean rao@gmail.com?" }]);
   });
 
+  it("shows the AI's reason when it was unsure", () => {
+    const [issue] = issuesFor(
+      supplier({
+        flags: ["low_confidence"],
+        suggestions: [{ field: "supplier", issue: "AI was unsure: might be a section heading" }],
+      }),
+    );
+    expect(issue).toEqual({ code: "low_confidence", level: "attention", message: "The AI was not sure: might be a section heading" });
+  });
+
+  it("keeps the plain message when the AI gave no reason", () => {
+    const [issue] = issuesFor(
+      supplier({ flags: ["low_confidence"], suggestions: [{ field: "supplier", issue: "AI was unsure" }] }),
+    );
+    expect(issue?.message).toBe("The AI was not sure about this one");
+  });
+
   it("notes a missing contact name, with the company in the greeting", () => {
     const [issue] = issuesFor(supplier({ contact_name: undefined }));
     expect(issue).toMatchObject({ code: "no_contact_name", level: "info" });
