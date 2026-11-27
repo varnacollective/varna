@@ -79,7 +79,9 @@ export function issuesFor(supplier: Supplier): Issue[] {
   const issues: Issue[] = [];
   for (const flag of supplier.flags) {
     const issue = FLAG_ISSUES[flag];
-    if (issue) issues.push({ code: flag, ...issue });
+    if (!issue) continue;
+    const reason = flag === "low_confidence" ? unsureReason(supplier) : undefined;
+    issues.push({ code: flag, ...issue, ...(reason ? { message: `The AI was not sure: ${reason}` } : {}) });
   }
   for (const s of supplier.suggestions) {
     if (s.field !== "emails" || s.suggested_value === undefined) continue;
@@ -93,6 +95,13 @@ export function issuesFor(supplier: Supplier): Issue[] {
     issues.push(noContactNameIssue(supplier.company_name ?? null));
   }
   return issues;
+}
+
+/** The AI's own words on why it was unsure, if it gave any. */
+function unsureReason(supplier: Supplier): string | undefined {
+  const prefix = "AI was unsure: ";
+  const note = supplier.suggestions.find((s) => s.field === "supplier" && s.issue.startsWith(prefix));
+  return note?.issue.slice(prefix.length).trim() || undefined;
 }
 
 /** Ready needs a company name, a valid email, and nothing left to look at. */
