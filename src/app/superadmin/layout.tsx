@@ -1,24 +1,17 @@
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
 import SuperAdminClientLayout from "./SuperAdminClientLayout";
 import "./sa-styles.css";
 
+// Second check after src/proxy.ts: only a signed superadmin session may enter.
 export default async function SuperAdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const session = await getSession();
-  const isAuthorized = Boolean(user) || session?.role === "superadmin";
 
-  if (!isAuthorized) {
+  if (session?.role !== "superadmin") {
     redirect("/");
   }
 
