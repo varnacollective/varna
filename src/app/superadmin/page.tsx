@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import Link from "next/link";
 import {
   Building2,
@@ -19,6 +20,12 @@ import {
 
 export const revalidate = 0;
 
+/** Number of Supabase Auth logins (users), read with the server-only key. */
+async function countLogins(): Promise<{ count: number | null }> {
+  const { data, error } = await createAdminClient().auth.admin.listUsers({ page: 1, perPage: 1000 });
+  return { count: error ? null : data.users.length };
+}
+
 export default async function SuperAdminOverviewPage() {
   const supabase = await createClient();
 
@@ -38,7 +45,7 @@ export default async function SuperAdminOverviewPage() {
     supabase.from("scores_summary").select("*", { count: "exact", head: true }),
     supabase.from("client_summary").select("*", { count: "exact", head: true }),
     supabase.from("order_register").select("*", { count: "exact", head: true }),
-    supabase.from("client_credentials").select("*", { count: "exact", head: true }),
+    countLogins(),
     Promise.resolve(supabase.from("partner_invitations").select("*", { count: "exact", head: true })).then(r => ({ count: r.count })).catch(() => ({ count: 0 })),
     Promise.resolve(supabase.from("partner_suppliers").select("*", { count: "exact", head: true })).then(r => ({ count: r.count })).catch(() => ({ count: 0 })),
     Promise.resolve(supabase.from("partner_documents").select("*", { count: "exact", head: true }).eq("status", "awaiting_verification")).then(r => ({ count: r.count })).catch(() => ({ count: 0 })),
@@ -87,7 +94,7 @@ export default async function SuperAdminOverviewPage() {
     },
     {
       title: "Client Credentials",
-      table: "client_credentials",
+      table: "auth.users",
       href: "/superadmin/credentials",
       icon: KeyRound,
       count: credentialsCount ?? 0,

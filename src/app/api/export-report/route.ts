@@ -3,13 +3,15 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import React from "react";
 import path from "path";
 import fs from "fs";
-import { cookies } from "next/headers";
+import { getSession } from "@/lib/session";
 import { createClient } from "@/utils/supabase/server";
 import VarnaReportPDF from "@/components/PDF/VarnaReportPDF";
 
 export async function GET(request: NextRequest) {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("varna_session");
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Please sign in." }, { status: 401 });
+  }
 
   const { searchParams } = new URL(request.url);
   const queryClientId = searchParams.get("clientId");
@@ -17,21 +19,9 @@ export async function GET(request: NextRequest) {
   const endDate = searchParams.get("endDate");
   const rangeLabel = searchParams.get("rangeLabel");
 
-  let clientId: string = "CLT-001";
-  let clientName: string = "The Astor Dubai";
-
-  if (sessionCookie?.value) {
-    try {
-      const session = JSON.parse(sessionCookie.value);
-      clientId = session.clientId || "CLT-001";
-      clientName = session.clientName || "The Astor Dubai";
-    } catch {
-      // Keep default
-    }
-  } else if (queryClientId) {
-    clientId = queryClientId;
-    clientName = queryClientId;
-  }
+  // Row level security limits the rows to the clients this user may see.
+  const clientId: string = queryClientId || session.clientId;
+  const clientName: string = queryClientId && queryClientId !== session.clientId ? queryClientId : session.clientName;
 
   const supabase = await createClient();
 

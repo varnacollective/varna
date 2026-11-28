@@ -11,7 +11,7 @@
     "list:extract": "tsx src/agents/list/cli/extract.ts",
     "list:samples": "tsx scripts/list-agent/make-samples.mts",
     "typecheck:strict": "next typegen && tsx scripts/list-agent/typecheck-strict.mts",
-    "lint:strict": "next typegen && eslint src/agents src/lib/list-uploads src/lib/invitations src/components/ListUpload src/app/api/superadmin/list-uploads src/app/superadmin/partners/invitations/upload tests/agents tests/list-uploads tests/support scripts/list-agent vitest.config.mts"
+    "lint:strict": "next typegen && eslint src/agents src/lib/list-uploads src/lib/invitations src/components/ListUpload src/app/api/superadmin/list-uploads src/app/superadmin/partners/invitations/upload tests/agents tests/list-uploads tests/support tests/auth src/lib/auth src/app/api/superadmin/logins src/app/superadmin/credentials scripts/list-agent vitest.config.mts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.56",

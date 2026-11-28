@@ -1,5 +1,6 @@
+import "server-only";
 import { unstable_cache } from "next/cache";
-import { createAnonClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { getSupplierLogoFallback } from "@/lib/mock-data";
 
 export interface AuthoritativePartner {
@@ -59,7 +60,7 @@ export interface AuthoritativePartnersResult {
 
 export const getCachedAuthoritativeScores = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("scores_summary")
       .select(`
@@ -81,7 +82,7 @@ export const getCachedAuthoritativeScores = unstable_cache(
 
 export const getCachedAuthoritativeEnterpriseMaster = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("enterprise_master")
       .select("enterprise_id, enterprise_name, active_status, logo_path, is_material_innovation_yn, is_womenled_yn, is_craftled_yn, is_cooperative_or_shg_yn, udyam_number, district, state, country, latitude, longitude")
@@ -95,7 +96,7 @@ export const getCachedAuthoritativeEnterpriseMaster = unstable_cache(
 
 export const getCachedAuthoritativeAssessmentInputs = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("assessment_inputs")
       .select("enterprise_id, enterprise_name_auto, tier_used_auto, s1_employment_input_worker_count, s2_gender_input_pct_women, s3_wages_input_wage_ratio")
@@ -109,7 +110,7 @@ export const getCachedAuthoritativeAssessmentInputs = unstable_cache(
 
 export const getCachedAuthoritativeConfidenceSummary = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("confidence_summary")
       .select("supplier, confidence_pct");
@@ -122,7 +123,7 @@ export const getCachedAuthoritativeConfidenceSummary = unstable_cache(
 
 export const getCachedAuthoritativeConfidenceScoring = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("confidence_scoring")
       .select("supplier, item, score");
@@ -135,7 +136,7 @@ export const getCachedAuthoritativeConfidenceScoring = unstable_cache(
 
 export const getCachedAuthoritativeSustainability = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("supplier_sustainability")
       .select("enterprise_id, environmental_certifications, has_lca, has_sustainability_report");
@@ -148,7 +149,7 @@ export const getCachedAuthoritativeSustainability = unstable_cache(
 
 export const getCachedAuthoritativeSocial = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("supplier_social")
       .select("enterprise_id, social_certifications, health_safety_description");
@@ -161,7 +162,7 @@ export const getCachedAuthoritativeSocial = unstable_cache(
 
 export const getCachedAuthoritativeSdgs = unstable_cache(
   async () => {
-    const supabase = createAnonClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("supplier_sdgs")
       .select("*")

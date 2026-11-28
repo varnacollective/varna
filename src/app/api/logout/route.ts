@@ -1,16 +1,20 @@
 /**
- * GET/POST /api/logout
- * Deletes the signed session cookie and redirects to the login page.
+ * GET/POST /api/logout – signs out of Supabase Auth (clears the auth cookies).
  */
 import { NextResponse } from "next/server";
-import { deleteSession } from "@/lib/session";
+import { createClient } from "@/utils/supabase/server";
+
+async function signOut(): Promise<void> {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+}
 
 export async function POST() {
-  await deleteSession();
+  await signOut();
   return NextResponse.json({ success: true });
 }
 
-export async function GET() {
-  await deleteSession();
-  return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"));
+export async function GET(request: Request) {
+  await signOut();
+  return NextResponse.redirect(new URL("/", request.url));
 }

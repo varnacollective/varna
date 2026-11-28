@@ -30,7 +30,7 @@ export default async function DashboardServerPage({ searchParams }: DashboardPag
   const session = await getSession();
 
   // If no active session and no explicit hotel requested via query, redirect to login
-  if (!session && !queryClientId) {
+  if (!session) {
     redirect("/");
   }
 
