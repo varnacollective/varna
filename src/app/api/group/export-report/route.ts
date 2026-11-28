@@ -1,31 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import React from "react";
-import { cookies } from "next/headers";
+import { getSession } from "@/lib/session";
 import { createClient } from "@/utils/supabase/server";
 import GroupReportPDFDocument from "@/components/PDF/GroupReportPDFDocument";
 import { fetchHotelReportData, fetchGroupReportData } from "@/lib/group-reports-data";
 
 export async function GET(request: NextRequest) {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("varna_session");
+  const session = await getSession();
+  if (!session || (session.role !== "group" && session.role !== "superadmin")) {
+    return NextResponse.json({ error: "Please sign in." }, { status: 401 });
+  }
 
   const { searchParams } = new URL(request.url);
   const queryClientId = searchParams.get("clientId");
   const isAllHotels = searchParams.get("all") === "true";
 
-  let parentGroup = "Meridian Hospitality Group (DEMO)";
-
-  if (sessionCookie?.value) {
-    try {
-      const session = JSON.parse(sessionCookie.value);
-      if (session.parentGroup) {
-        parentGroup = session.parentGroup;
-      }
-    } catch {
-      // Ignore parse failure; continue with defaults or query param
-    }
-  }
+  const parentGroup = session.parentGroup ?? "Meridian Hospitality Group (DEMO)";
 
   const supabase = await createClient();
 
@@ -37,7 +28,7 @@ export async function GET(request: NextRequest) {
   const dateSlug = new Date().toISOString().slice(0, 10);
 
   try {
-    if (isAllHotels || (!queryClientId && !sessionCookie)) {
+    if (isAllHotels || !queryClientId) {
       // ── Generate Consolidated All Hotels Report ──
       const groupData = await fetchGroupReportData(supabase, parentGroup);
 

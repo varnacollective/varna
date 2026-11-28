@@ -28,7 +28,7 @@ const CAROUSEL_SLIDES = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const [clientId, setClientId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -58,13 +58,12 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const cleanClientId = clientId.trim();
 
     try {
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: cleanClientId, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       const data = await res.json();
@@ -139,19 +138,20 @@ export default function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-5 w-full">
-            {/* User ID Field */}
+            {/* Email Field */}
             <div className="space-y-1.5 text-left w-full">
-              <label className="text-xs uppercase tracking-[0.1em] font-semibold text-[#1C1917] block font-sans">
-                User ID
+              <label htmlFor="login-email" className="text-xs uppercase tracking-[0.1em] font-semibold text-[#1C1917] block font-sans">
+                Email
               </label>
               <input
-                type="text"
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
+                id="login-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 h-12 bg-white border border-[#DFD9CE] text-[#1C1917] placeholder-stone-400 focus:border-[#1C1917] focus:ring-1 focus:ring-[#1C1917] outline-none transition-all duration-200 text-sm sm:text-base font-sans rounded-lg shadow-xs"
-                placeholder="Enter Username"
+                placeholder="Enter email"
                 required
-                autoComplete="username"
+                autoComplete="email"
               />
             </div>
 
@@ -223,7 +223,7 @@ export default function LoginPage() {
             {/* CTA Button: Deep Espresso */}
             <button
               type="submit"
-              disabled={loading || !clientId || !password}
+              disabled={loading || !email || !password}
               className="w-full mt-3 h-12 bg-[#1C1917] hover:bg-[#332E2A] active:scale-[0.99] text-[#FAF8F5] font-sans font-medium text-sm tracking-[0.08em] uppercase rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (

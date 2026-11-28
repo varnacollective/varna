@@ -1,6 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey =
@@ -32,14 +31,3 @@ export const createClient = async () => {
     },
   });
 };
-
-/**
- * Cookie-free anon client — for global/shared read-only queries inside
- * unstable_cache. Does NOT call cookies(), so it is safe to use inside cache
- * factory functions (passing the Supabase client instance to unstable_cache
- * causes a circular-JSON error because Next.js serialises cache arguments).
- */
-export const createAnonClient = () =>
-  createSupabaseClient(supabaseUrl, supabaseKey, {
-    auth: { persistSession: false },
-  });

@@ -28,7 +28,7 @@ const CAROUSEL_SLIDES = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const [clientId, setClientId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -58,13 +58,12 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const cleanClientId = clientId.trim();
 
     try {
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: cleanClientId, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       const data = await res.json();
@@ -136,19 +135,20 @@ export default function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6 w-full">
-            {/* User ID Field */}
+            {/* Email Field */}
             <div className="space-y-2 text-left w-full">
-              <label className="text-sm sm:text-[14.5px] font-bold text-stone-900 block font-sans">
-                User ID
+              <label htmlFor="login-email" className="text-sm sm:text-[14.5px] font-bold text-stone-900 block font-sans">
+                Email
               </label>
               <input
-                type="text"
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
+                id="login-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3.5 sm:py-4 bg-white border border-stone-200 text-stone-900 placeholder-stone-400 focus:border-stone-500 focus:ring-1 focus:ring-stone-500 outline-none transition-all duration-200 text-base font-sans rounded-lg"
-                placeholder="Enter Username"
+                placeholder="Enter email"
                 required
-                autoComplete="username"
+                autoComplete="email"
               />
             </div>
 
@@ -220,7 +220,7 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading || !clientId || !password}
+              disabled={loading || !email || !password}
               className="w-full mt-4 py-4 sm:py-4.5 bg-[#6D7D6D] hover:bg-[#5C6C5E] active:scale-[0.99] text-white font-sans font-semibold text-base sm:text-[17px] rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (

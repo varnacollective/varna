@@ -18,6 +18,10 @@
     "tests/agents/**/*",
     "tests/list-uploads/**/*",
     "scripts/list-agent/**/*",
+    "src/lib/auth/**/*",
+    "src/app/api/superadmin/logins/**/*",
+    "src/app/superadmin/credentials/**/*",
+    "tests/auth/**/*",
     "vitest.config.mts"
   ]
 }

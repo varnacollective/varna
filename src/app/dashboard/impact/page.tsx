@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import ImpactClient from "./ImpactClient";
@@ -20,19 +20,9 @@ export default async function ImpactServerPage({ searchParams }: PageProps) {
       ? rawClientId[0]
       : undefined;
 
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("varna_session");
+  const session = await getSession();
 
-  let session: { clientId: string; clientName: string; isGroup?: boolean } | null = null;
-  if (sessionCookie?.value) {
-    try {
-      session = JSON.parse(sessionCookie.value);
-    } catch {
-      // ignore
-    }
-  }
-
-  if (!session && !queryClientId) {
+  if (!session) {
     redirect("/");
   }
 

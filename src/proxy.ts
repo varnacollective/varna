@@ -1,111 +1,54 @@
 /**
- * proxy.ts – Varna Collective Route Guard
+ * proxy.ts – refreshes the Supabase Auth session and guards protected pages.
  *
- * Deny-by-default protection for:
- *   • /superadmin/*  → requires a valid signed session with role === 'superadmin'
- *   • /dashboard/*   → requires any valid signed session
- *   • /group/*       → requires a valid signed session with role === 'group' OR 'superadmin'
- *   • /group-dashboard/* → same as /group
+ *   • /superadmin/*            → superadmin only
+ *   • /group/*, /group-dashboard/* → group or superadmin
+ *   • /dashboard/*             → any signed-in user
  *
- * NOTE: This file performs OPTIMISTIC checks only (as per Next.js 16 guidance).
- * Full cryptographic verification happens inside each Route Handler / Server Action.
- *
- * The signed session cookie (`varna_session`) is a HMAC-SHA256 JWT produced by
- * src/lib/session.ts using AUTH_SECRET.  We verify it here using `jose`
- * (Edge-compatible, no Node.js crypto module needed).
+ * This is the first check only. Pages and route handlers check the session
+ * again, and row level security in the database decides which rows a user
+ * can read.
  */
-
 import { NextResponse, type NextRequest } from "next/server";
-import { jwtVerify } from "jose";
-
-// ── Types ────────────────────────────────────────────────────────────────────
-
-type SessionRole = "superadmin" | "client" | "group";
-
-interface SessionPayload {
-  userId: string;
-  clientId: string;
-  clientName: string;
-  parentGroup: string | null;
-  role: SessionRole;
-  isGroup: boolean;
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function getEncodedSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET ?? "";
-  if (secret.length < 32) {
-    // Proxy still runs; unauthenticated paths will just not match the cookie,
-    // so every protected route will redirect.  This is fail-safe, not fail-open.
-    console.error("[proxy] AUTH_SECRET is missing or too short!");
-  }
-  return new TextEncoder().encode(secret);
-}
-
-async function verifySession(
-  request: NextRequest
-): Promise<SessionPayload | null> {
-  const token = request.cookies.get("varna_session")?.value;
-  if (!token) return null;
-  try {
-    const { payload } = await jwtVerify(token, getEncodedSecret(), {
-      algorithms: ["HS256"],
-    });
-    return payload as unknown as SessionPayload;
-  } catch {
-    // Expired, tampered, or signed with wrong key → treat as unauthenticated.
-    return null;
-  }
-}
-
-// ── Main proxy function ───────────────────────────────────────────────────────
+import { createServerClient } from "@supabase/ssr";
+import { canOpen, sessionFromClaims } from "@/lib/auth/claims";
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  let response = NextResponse.next({ request });
 
-  // Only run on protected routes (see matcher below).
-  const session = await verifySession(request);
-
-  // ── /superadmin ──────────────────────────────────────────────────────────
-  if (pathname.startsWith("/superadmin")) {
-    if (!session || session.role !== "superadmin") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    return NextResponse.next();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    console.error("[proxy] Supabase URL or publishable key is missing.");
+    return canOpen(request.nextUrl.pathname, null) ? response : NextResponse.redirect(new URL("/", request.url));
   }
 
-  // ── /dashboard ───────────────────────────────────────────────────────────
-  if (pathname.startsWith("/dashboard")) {
-    if (!session) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    return NextResponse.next();
-  }
+  const supabase = createServerClient(url, key, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        response = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+      },
+    },
+  });
 
-  // ── /group and /group-dashboard ──────────────────────────────────────────
-  if (pathname.startsWith("/group") || pathname.startsWith("/group-dashboard")) {
-    if (!session || (session.role !== "group" && session.role !== "superadmin")) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    return NextResponse.next();
-  }
+  // Verifies the access token and refreshes it when needed (sets new cookies).
+  const { data } = await supabase.auth.getClaims();
+  const session = data ? sessionFromClaims(data.claims) : null;
 
-  return NextResponse.next();
+  if (!canOpen(request.nextUrl.pathname, session)) {
+    const redirect = NextResponse.redirect(new URL("/", request.url));
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  }
+  return response;
 }
 
-// ── Matcher ───────────────────────────────────────────────────────────────────
-// Explicitly match all protected path prefixes. The proxy runs ONLY on these.
-
+// Runs on every page and API route so sessions stay fresh; skips static files.
 export const config = {
-  matcher: [
-    "/superadmin",
-    "/superadmin/:path*",
-    "/dashboard",
-    "/dashboard/:path*",
-    "/group",
-    "/group/:path*",
-    "/group-dashboard",
-    "/group-dashboard/:path*",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?)$).*)"],
 };
