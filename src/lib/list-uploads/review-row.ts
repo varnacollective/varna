@@ -1,4 +1,4 @@
-import type { Supplier, SupplierFlag } from "@/agents/list/core/supplier";
+import type { Suggestion, Supplier, SupplierFlag } from "@/agents/list/core/supplier";
 import type {
   CheckStatus,
   EditableField,
@@ -39,6 +39,7 @@ const ISSUE_FIELD: Record<string, EditableField> = {
   email_domain: "email",
   invalid_phone: "phone",
   corrupted_value: "phone",
+  in_other_list: "email",
 };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -76,14 +77,30 @@ export function emailDomainIssue(domain: string, verdict: "no_domain" | "no_mail
 }
 
 export function issuesFor(supplier: Supplier): Issue[] {
+  return issuesFromChecks(supplier.flags, supplier.suggestions, {
+    company: supplier.company_name ?? null,
+    contact: supplier.contact_name ?? null,
+    unsure: unsureReason(supplier),
+  });
+}
+
+/**
+ * The issues for a supplier's check results (flags and suggestions from the
+ * agent's rules), whether it was read from a file or typed in by hand.
+ */
+export function issuesFromChecks(
+  flags: readonly SupplierFlag[],
+  suggestions: readonly Suggestion[],
+  { company, contact, unsure }: { company: string | null; contact: string | null; unsure?: string | undefined },
+): Issue[] {
   const issues: Issue[] = [];
-  for (const flag of supplier.flags) {
+  for (const flag of flags) {
     const issue = FLAG_ISSUES[flag];
     if (!issue) continue;
-    const reason = flag === "low_confidence" ? unsureReason(supplier) : undefined;
+    const reason = flag === "low_confidence" ? unsure : undefined;
     issues.push({ code: flag, ...issue, ...(reason ? { message: `The AI was not sure: ${reason}` } : {}) });
   }
-  for (const s of supplier.suggestions) {
+  for (const s of suggestions) {
     if (s.field !== "emails" || s.suggested_value === undefined) continue;
     issues.push({
       code: "email_suggestion",
@@ -91,10 +108,17 @@ export function issuesFor(supplier: Supplier): Issue[] {
       message: `${s.issue}: did you mean ${s.suggested_value}?`,
     });
   }
-  if (!supplier.contact_name) {
-    issues.push(noContactNameIssue(supplier.company_name ?? null));
-  }
+  if (!contact) issues.push(noContactNameIssue(company));
   return issues;
+}
+
+/** The email is already a supplier of the same hotel (or of No hotel), from another list or added by hand. */
+export function inOtherListIssue(place: string): Issue {
+  return {
+    code: "in_other_list",
+    level: "attention",
+    message: `This email is already among this hotel's suppliers (${place})`,
+  };
 }
 
 /** The AI's own words on why it was unsure, if it gave any. */
@@ -129,6 +153,7 @@ export interface NewReviewRow {
   id: string;
   upload_id: string;
   file_id: string;
+  category: string | null;
   position: number;
   company_name: string | null;
   brand_name: string | null;
@@ -167,6 +192,7 @@ export function toReviewRow(
     other_phones: otherPhones,
     city: supplier.city ?? null,
     state: supplier.state ?? null,
+    category: supplier.category ?? null,
     issues,
   };
   return {

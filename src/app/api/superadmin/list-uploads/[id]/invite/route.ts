@@ -38,8 +38,9 @@ export async function POST(request: Request, ctx: RouteContext<"/api/superadmin/
       contact_email: supplier.email,
       phone: supplier.phone,
       state: supplier.state,
+      category: supplier.category,
       client_id: upload.clientId,
-      source: "bulk_upload",
+      source: upload.source === "manual" ? "manual" : "bulk_upload",
     },
     { action, createdBy: userId, origin: new URL(request.url).origin },
   );

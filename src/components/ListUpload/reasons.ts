@@ -17,6 +17,7 @@ const REASONS: readonly (readonly [code: string, label: string])[] = [
   ["email_domain", "Email domain looks wrong"],
   ["email_suggestion", "Possible typo in email"],
   ["already_supplier", "Already a supplier"],
+  ["in_other_list", "Already in this hotel"],
   ["possible_duplicate", "Possible duplicate"],
   ["shared_email", "Same email as another row"],
   ["corrupted_value", "Damaged value in file"],

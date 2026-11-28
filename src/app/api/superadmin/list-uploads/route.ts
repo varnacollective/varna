@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod/v4";
 import { badRequest, superadminId, unauthorized } from "@/lib/list-uploads/auth";
 import { ACCEPTED_FILE, MAX_FILE_BYTES, MAX_FILES, UPLOAD_BUCKET } from "@/lib/list-uploads/files";
+import { missingHotel } from "@/lib/list-uploads/hotel-check";
 import { createAdminClient } from "@/utils/supabase/admin";
 
 /**
@@ -10,9 +11,11 @@ import { createAdminClient } from "@/utils/supabase/admin";
  * never pass through this server), then calls ./[id]/read.
  */
 
+const CHOOSE_HOTEL = "Choose the hotel this list is for, or No hotel.";
+
 const Body = z.strictObject({
-  /** The hotel the list is for: a code from client_master (e.g. CLT-001). */
-  clientId: z.string({ error: "Choose the hotel this list is for." }).trim().min(1, "Choose the hotel this list is for.").max(64),
+  /** The hotel the list is for: a code from client_master (e.g. CLT-001), or null for "No hotel". Must be chosen. */
+  clientId: z.string({ error: CHOOSE_HOTEL }).trim().min(1, CHOOSE_HOTEL).max(64).nullable(),
   files: z
     .array(
       z.strictObject({
@@ -34,13 +37,8 @@ export async function POST(request: Request) {
   const { clientId, files } = parsed.data;
 
   const db = createAdminClient();
-  const { data: hotel, error: hotelError } = await db
-    .from("client_master")
-    .select("client_id")
-    .eq("client_id", clientId)
-    .maybeSingle<{ client_id: string }>();
-  if (hotelError) return Response.json({ error: hotelError.message }, { status: 500 });
-  if (!hotel) return badRequest("That hotel no longer exists. Choose another or add it again.");
+  const missing = await missingHotel(clientId);
+  if (missing) return missing;
 
   const { data: upload, error } = await db
     .from("list_uploads")

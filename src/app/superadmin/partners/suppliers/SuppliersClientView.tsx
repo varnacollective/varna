@@ -12,7 +12,8 @@ import {
   Building2,
   ExternalLink,
 } from "lucide-react";
-import InvitePartnerButton, { ClientOption } from "@/components/SuperAdmin/InvitePartnerButton";
+import Link from "next/link";
+import { UserPlus } from "lucide-react";
 
 interface SupplierRecord {
   id: string;
@@ -30,12 +31,10 @@ interface SupplierRecord {
 
 export default function SuppliersClientView({
   initialSuppliers,
-  clients,
 }: {
   initialSuppliers: SupplierRecord[];
-  clients: ClientOption[];
 }) {
-  const [suppliers, setSuppliers] = useState<SupplierRecord[]>(initialSuppliers);
+  const [suppliers] = useState<SupplierRecord[]>(initialSuppliers);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [stateFilter, setStateFilter] = useState("ALL");
@@ -75,15 +74,6 @@ export default function SuppliersClientView({
   const statesCount = uniqueStates.length;
   const manualCount = suppliers.filter((s) => s.source === "manual").length;
 
-  const handlePartnerInvited = () => {
-    // Refresh or reload list
-    fetch("/api/superadmin/suppliers")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.suppliers) setSuppliers(d.suppliers);
-      })
-      .catch(() => {});
-  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -249,11 +239,10 @@ export default function SuppliersClientView({
           )}
         </div>
 
-        {/* Invite Partner Button */}
-        <InvitePartnerButton
-          clients={clients}
-          onSuccess={handlePartnerInvited}
-        />
+        <Link href="/superadmin/partners/invitations/upload/add" className="sa-btn-primary">
+          <UserPlus className="w-4 h-4 shrink-0" aria-hidden />
+          <span>Add a supplier</span>
+        </Link>
       </div>
 
       {/* Table */}

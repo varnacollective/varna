@@ -38,12 +38,6 @@ export default async function PartnerSuppliersPage() {
     }
   }
 
-  // Fetch clients for the Invite Partner modal
-  const { data: clientsData } = await supabase
-    .from("client_master")
-    .select("id:client_id, name:client_name")
-    .order("client_name");
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Page Header */}
@@ -71,7 +65,6 @@ export default async function PartnerSuppliersPage() {
 
       <SuppliersClientView
         initialSuppliers={suppliers}
-        clients={clientsData || []}
       />
     </div>
   );

@@ -11,10 +11,10 @@ import NewHotelDialog from "./NewHotelDialog";
 
 /** What a hotel has, in words. */
 function describe(h: HotelRow): string {
-  if (h.uploads === 0) return "No lists yet";
+  if (h.counts.total === 0 && h.uploads === 0) return "No suppliers yet";
   const toCheck = h.counts.needs_attention + h.counts.missing_contact;
   return [
-    `${h.uploads} ${h.uploads === 1 ? "list" : "lists"}`,
+    ...(h.uploads > 0 ? [`${h.uploads} ${h.uploads === 1 ? "list" : "lists"}`] : []),
     `${h.counts.total} ${h.counts.total === 1 ? "supplier" : "suppliers"}`,
     ...(toCheck > 0 ? [`${toCheck} to check`] : []),
     `${h.counts.invited} invited`,
@@ -61,9 +61,9 @@ export default function HotelDirectory({ hotels }: { hotels: HotelRow[] }) {
         </button>
       </div>
 
-      {noHotel && !q && (
+      {noHotel && (!q || noHotel.name.toLowerCase().includes(q)) && (
         <div className="sa-card overflow-hidden">
-          <HotelLink hotel={noHotel} label="Lists uploaded without a hotel" />
+          <HotelLink hotel={noHotel} />
         </div>
       )}
 
@@ -118,12 +118,12 @@ export default function HotelDirectory({ hotels }: { hotels: HotelRow[] }) {
   );
 }
 
-function HotelLink({ hotel, label }: { hotel: HotelRow; label?: string }) {
+function HotelLink({ hotel }: { hotel: HotelRow }) {
   const toCheck = hotel.counts.needs_attention + hotel.counts.missing_contact;
   return (
     <Link href={hotelHref(hotel.id)} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--sa-sand)]">
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="truncate text-[14px] font-medium text-[var(--sa-ink)]">{label ?? hotel.name}</span>
+        <span className="truncate text-[14px] font-medium text-[var(--sa-ink)]">{hotel.name}</span>
         <span className={`truncate text-xs ${toCheck > 0 ? "text-[var(--sa-ink-2)]" : "text-[var(--sa-muted)]"}`}>{describe(hotel)}</span>
       </span>
       <ChevronRight className="h-4 w-4 shrink-0 text-[var(--sa-muted)]" aria-hidden />

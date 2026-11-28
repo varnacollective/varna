@@ -15,9 +15,14 @@ import {
   Calendar,
   Loader2,
   FileUp,
+  UserPlus,
 } from "lucide-react";
 import Link from "next/link";
-import InvitePartnerButton, { ClientOption } from "@/components/SuperAdmin/InvitePartnerButton";
+import { invitationStatus } from "@/lib/invitations/status";
+interface ClientOption {
+  id: string;
+  name: string;
+}
 
 interface InvitationRecord {
   id: string;
@@ -42,11 +47,9 @@ interface InvitationRecord {
 export default function InvitationsClientView({
   initialInvitations,
   clients,
-  autoOpenInvite = false,
 }: {
   initialInvitations: InvitationRecord[];
   clients: ClientOption[];
-  autoOpenInvite?: boolean;
 }) {
   const [invitations, setInvitations] = useState<InvitationRecord[]>(initialInvitations);
   const [search, setSearch] = useState("");
@@ -135,33 +138,10 @@ export default function InvitationsClientView({
     }
   };
 
-  const refreshInvitations = () => {
-    fetch("/api/superadmin/invitations")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.invitations) setInvitations(d.invitations);
-      })
-      .catch(() => {});
-  };
 
   const getStatusPill = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "accepted":
-      case "registration_completed":
-        return <span className="sa-pill sa-pill-active">Accepted</span>;
-      case "sent":
-      case "delivered":
-        return <span className="sa-pill sa-pill-sent">Sent</span>;
-      case "pending":
-        return <span className="sa-pill sa-pill-pending">Pending</span>;
-      case "expired":
-        return <span className="sa-pill sa-pill-expired">Expired</span>;
-      case "declined":
-      case "bounced":
-        return <span className="sa-pill sa-pill-declined">{status}</span>;
-      default:
-        return <span className="sa-pill sa-pill-draft">{status}</span>;
-    }
+    const { label, pill } = invitationStatus(status);
+    return <span className={`sa-pill ${pill}`}>{label}</span>;
   };
 
   return (
@@ -318,11 +298,10 @@ export default function InvitationsClientView({
             <FileUp className="w-4 h-4 shrink-0" aria-hidden />
             <span>Upload a list</span>
           </Link>
-          <InvitePartnerButton
-            clients={clients}
-            initialOpen={autoOpenInvite}
-            onSuccess={refreshInvitations}
-          />
+          <Link href="/superadmin/partners/invitations/upload/add" className="sa-btn-primary">
+            <UserPlus className="w-4 h-4 shrink-0" aria-hidden />
+            <span>Add a supplier</span>
+          </Link>
         </div>
       </div>
 

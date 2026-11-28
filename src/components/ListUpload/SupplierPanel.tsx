@@ -10,7 +10,7 @@ import {
   type ReviewSupplier,
 } from "@/lib/list-uploads/types";
 import { LINKED_ISSUES } from "@/lib/list-uploads/review-row";
-import { FIELD_LABELS, viewInfo, viewOf } from "./labels";
+import { FIELD_LABELS, pillOf } from "./labels";
 import FilePreview, { type PreviewTarget } from "./FilePreview";
 import { errorFrom } from "./read-stream";
 import { uploadedFile } from "./uploaded-file";
@@ -38,7 +38,7 @@ export default function SupplierPanel({ supplier, suppliers, onSaved, onOpen, on
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const locked = !!supplier.invitation_id;
-  const view = viewInfo(viewOf(supplier));
+  const view = pillOf(supplier);
   const changed = EDITABLE_FIELDS.filter((f) => draft[f].trim() !== (supplier[f] ?? ""));
 
   // Open as a modal once mounted. No close() on cleanup: its "close" event

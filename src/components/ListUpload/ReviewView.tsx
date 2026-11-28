@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { AlertTriangle, Check, ChevronRight, Search, Send, X } from "lucide-react";
 import type { Decision, FailedPart, ReviewSupplier } from "@/lib/list-uploads/types";
 import InviteDialog from "./InviteDialog";
-import { VIEWS, viewInfo, viewOf, type View } from "./labels";
+import { pillOf, VIEWS, viewOf, type View } from "./labels";
 import { formatPhone } from "./format";
 import { reasonsOf, type Reason } from "./reasons";
 import { errorFrom } from "./read-stream";
@@ -17,17 +17,19 @@ interface Props {
   sources?: ReadonlyMap<string, string>;
   /** Shown when there are no suppliers at all. */
   emptyText?: string;
+  /** A supplier to show in the side panel straight away (e.g. one just added). */
+  initialOpenId?: string;
 }
 
 type Filter = "all" | View;
 
-export default function ReviewView({ initialSuppliers, failedParts, sources, emptyText = "No suppliers were found in this list." }: Props) {
+export default function ReviewView({ initialSuppliers, failedParts, sources, emptyText = "No suppliers were found in this list.", initialOpenId }: Props) {
   const [suppliers, setSuppliers] = useState(initialSuppliers);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [reasonFilter, setReasonFilter] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(initialOpenId ?? null);
   const [inviting, setInviting] = useState(false);
   const [message, setMessage] = useState<{ tone: "error" | "info"; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
@@ -276,7 +278,7 @@ export default function ReviewView({ initialSuppliers, failedParts, sources, emp
             </thead>
             <tbody>
               {shown.map((s) => {
-                const view = viewInfo(viewOf(s));
+                const view = pillOf(s);
                 return (
                   <tr key={s.id} className="cursor-pointer" onClick={() => setOpenId(s.id)}>
                     <td onClick={(e) => e.stopPropagation()}>
@@ -323,7 +325,7 @@ export default function ReviewView({ initialSuppliers, failedParts, sources, emp
           {/* Narrow: cards. */}
           <ul className="divide-y divide-[var(--sa-border)] @2xl:hidden">
             {shown.map((s) => {
-              const view = viewInfo(viewOf(s));
+              const view = pillOf(s);
               // The card already says "No company name" / "No email" in their own lines.
               const cardReasons = (reasons.get(s.id) ?? []).filter((r) => r.code !== "missing_name" && r.code !== "missing_email");
               return (
@@ -374,8 +376,10 @@ export default function ReviewView({ initialSuppliers, failedParts, sources, emp
       {inviting && (
         <InviteDialog
           suppliers={toInvite}
-          onInvited={(id, invitationId) =>
-            setSuppliers((list) => list.map((s) => (s.id === id ? { ...s, invitation_id: invitationId } : s)))
+          onInvited={(id, invitationId, status) =>
+            setSuppliers((list) =>
+              list.map((s) => (s.id === id ? { ...s, invitation_id: invitationId, invitation: { status } } : s)),
+            )
           }
           onClose={() => setInviting(false)}
         />

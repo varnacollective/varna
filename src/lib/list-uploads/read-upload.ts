@@ -15,11 +15,9 @@ import {
 } from "@/agents/list/pipeline/extract-workbook";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { listReaders } from "./config";
-import { checkEmailDomains, domainOf } from "./email-domains";
+import { markBadEmailDomains, markExistingSuppliers, markInOtherLists } from "./checks";
 import {
   checkStatus,
-  emailDomainIssue,
-  existingSupplierIssue,
   linkRelatedRows,
   linkRowOf,
   toReviewRow,
@@ -107,6 +105,7 @@ export async function readUpload(
 
     await markBadEmailDomains(rows);
     await markExistingSuppliers(db, rows);
+    await markInOtherLists(db, rows, { clientId: upload.client_id, uploadId });
     linkRelated(rows);
     await insertBatches(db, "list_upload_suppliers", rows);
     await insertBatches(db, "list_upload_ai_calls", calls.flatMap(({ file, call }) =>
@@ -193,19 +192,6 @@ async function readFile(
   }
 }
 
-/** Flag emails whose domain doesn't exist or takes no email (DNS only, no AI). */
-async function markBadEmailDomains(rows: NewReviewRow[]): Promise<void> {
-  const verdicts = await checkEmailDomains(rows.flatMap((r) => (r.email ? [domainOf(r.email)] : [])));
-  for (const row of rows) {
-    if (!row.email) continue;
-    const domain = domainOf(row.email);
-    const verdict = verdicts.get(domain);
-    if (verdict !== "no_domain" && verdict !== "no_mail") continue;
-    row.issues.push(emailDomainIssue(domain, verdict));
-    row.check_status = checkStatus(row);
-  }
-}
-
 /** Name the other rows in "may be the same supplier" and "same email" issues. */
 function linkRelated(rows: NewReviewRow[]): void {
   const changed = linkRelatedRows(rows.map(linkRowOf));
@@ -213,28 +199,6 @@ function linkRelated(rows: NewReviewRow[]): void {
     const issues = changed.get(row.id);
     if (!issues) continue;
     row.issues = issues;
-    row.check_status = checkStatus(row);
-  }
-}
-
-/** Flag suppliers whose email is already in the supplier list. */
-async function markExistingSuppliers(db: SupabaseClient, rows: NewReviewRow[]): Promise<void> {
-  const emails = [...new Set(rows.flatMap((r) => (r.email ? [r.email.toLowerCase()] : [])))];
-  if (emails.length === 0) return;
-  const { data, error } = await db
-    .from("partner_suppliers")
-    .select("id, contact_email")
-    .in("contact_email", emails)
-    .overrideTypes<{ id: string; contact_email: string | null }[], { merge: false }>();
-  if (error) throw new Error(error.message);
-  const existing = new Map(
-    data.flatMap((s) => (s.contact_email ? [[s.contact_email.toLowerCase(), s.id] as const] : [])),
-  );
-  for (const row of rows) {
-    const id = row.email ? existing.get(row.email.toLowerCase()) : undefined;
-    if (id === undefined) continue;
-    row.duplicate_of = id;
-    row.issues.push(existingSupplierIssue());
     row.check_status = checkStatus(row);
   }
 }
