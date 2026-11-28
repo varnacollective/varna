@@ -18,6 +18,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import Link from "next/link";
+import { invitationStatus } from "@/lib/invitations/status";
 interface ClientOption {
   id: string;
   name: string;
@@ -139,23 +140,8 @@ export default function InvitationsClientView({
 
 
   const getStatusPill = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "accepted":
-      case "registration_completed":
-        return <span className="sa-pill sa-pill-active">Accepted</span>;
-      case "sent":
-      case "delivered":
-        return <span className="sa-pill sa-pill-sent">Sent</span>;
-      case "pending":
-        return <span className="sa-pill sa-pill-pending">Pending</span>;
-      case "expired":
-        return <span className="sa-pill sa-pill-expired">Expired</span>;
-      case "declined":
-      case "bounced":
-        return <span className="sa-pill sa-pill-declined">{status}</span>;
-      default:
-        return <span className="sa-pill sa-pill-draft">{status}</span>;
-    }
+    const { label, pill } = invitationStatus(status);
+    return <span className={`sa-pill ${pill}`}>{label}</span>;
   };
 
   return (

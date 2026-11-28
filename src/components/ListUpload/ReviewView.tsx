@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { AlertTriangle, Check, ChevronRight, Search, Send, X } from "lucide-react";
 import type { Decision, FailedPart, ReviewSupplier } from "@/lib/list-uploads/types";
 import InviteDialog from "./InviteDialog";
-import { VIEWS, viewInfo, viewOf, type View } from "./labels";
+import { pillOf, VIEWS, viewOf, type View } from "./labels";
 import { formatPhone } from "./format";
 import { reasonsOf, type Reason } from "./reasons";
 import { errorFrom } from "./read-stream";
@@ -278,7 +278,7 @@ export default function ReviewView({ initialSuppliers, failedParts, sources, emp
             </thead>
             <tbody>
               {shown.map((s) => {
-                const view = viewInfo(viewOf(s));
+                const view = pillOf(s);
                 return (
                   <tr key={s.id} className="cursor-pointer" onClick={() => setOpenId(s.id)}>
                     <td onClick={(e) => e.stopPropagation()}>
@@ -325,7 +325,7 @@ export default function ReviewView({ initialSuppliers, failedParts, sources, emp
           {/* Narrow: cards. */}
           <ul className="divide-y divide-[var(--sa-border)] @2xl:hidden">
             {shown.map((s) => {
-              const view = viewInfo(viewOf(s));
+              const view = pillOf(s);
               // The card already says "No company name" / "No email" in their own lines.
               const cardReasons = (reasons.get(s.id) ?? []).filter((r) => r.code !== "missing_name" && r.code !== "missing_email");
               return (
@@ -376,8 +376,10 @@ export default function ReviewView({ initialSuppliers, failedParts, sources, emp
       {inviting && (
         <InviteDialog
           suppliers={toInvite}
-          onInvited={(id, invitationId) =>
-            setSuppliers((list) => list.map((s) => (s.id === id ? { ...s, invitation_id: invitationId } : s)))
+          onInvited={(id, invitationId, status) =>
+            setSuppliers((list) =>
+              list.map((s) => (s.id === id ? { ...s, invitation_id: invitationId, invitation: { status } } : s)),
+            )
           }
           onClose={() => setInviting(false)}
         />

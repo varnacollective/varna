@@ -1,3 +1,4 @@
+import { invitationStatus } from "@/lib/invitations/status";
 import type { ReviewSupplier } from "@/lib/list-uploads/types";
 
 /** What the reviewer sees for a supplier: its state and pill style. */
@@ -26,6 +27,12 @@ export function viewOf(s: Pick<ReviewSupplier, "invitation_id" | "decision" | "c
 
 export function viewInfo(view: View): ViewInfo {
   return VIEW_INFO[view];
+}
+
+/** The pill for a supplier: once invited, the invitation's own status (Sent, Accepted…), as on Invitations. */
+export function pillOf(s: Pick<ReviewSupplier, "invitation_id" | "invitation" | "decision" | "check_status">): { label: string; pill: string } {
+  if (s.invitation_id) return invitationStatus(s.invitation?.status);
+  return viewInfo(viewOf(s));
 }
 
 export const FIELD_LABELS = {

@@ -7,7 +7,9 @@ import type { ReviewSupplier, UploadSummary } from "./types";
 
 const SUPPLIER_COLUMNS =
   "id, upload_id, file_id, position, company_name, brand_name, contact_name, email, other_emails, phone, other_phones, " +
-  "city, state, category, check_status, issues, decision, duplicate_of, invitation_id, evidence:extracted->evidence";
+  "city, state, category, check_status, issues, decision, duplicate_of, invitation_id, evidence:extracted->evidence, " +
+  // The invitation's status is read from the invitation itself, never copied.
+  "invitation:partner_invitations(status)";
 
 export async function getUpload(id: string): Promise<UploadSummary | null> {
   const db = createAdminClient();

@@ -7,7 +7,8 @@ import { errorFrom } from "./read-stream";
 
 interface Props {
   suppliers: ReviewSupplier[];
-  onInvited: (supplierId: string, invitationId: string) => void;
+  /** status: the invitation's status as saved ("sent", or "pending" when the email failed). */
+  onInvited: (supplierId: string, invitationId: string, status: string) => void;
   onClose: () => void;
 }
 
@@ -111,8 +112,8 @@ export default function InviteDialog({ suppliers, onInvited, onClose }: Props) {
         end = "offline";
         break;
       }
-      const body = (await response.json().catch(() => ({}))) as { invitation_id?: string; error?: string };
-      if (body.invitation_id) onInvited(supplier.id, body.invitation_id);
+      const body = (await response.json().catch(() => ({}))) as { invitation_id?: string; status?: string; error?: string };
+      if (body.invitation_id) onInvited(supplier.id, body.invitation_id, response.ok ? (body.status ?? "sent") : "pending");
       if (!response.ok) failed.push({ name: supplier.company_name ?? "Supplier", error: body.error ?? "Sending failed." });
       done = i + 1;
       setSending({ done, failed: [...failed] });

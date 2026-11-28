@@ -94,6 +94,8 @@ export interface ReviewSupplier {
   decision: Decision;
   duplicate_of: string | null;
   invitation_id: string | null;
+  /** The invitation, once invited: its status lives in partner_invitations. */
+  invitation: { status: string } | null;
 }
 
 /** Streamed by the read route, one JSON object per line. */
