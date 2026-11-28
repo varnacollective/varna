@@ -4,6 +4,7 @@ import { ListChecks } from "lucide-react";
 import PageHeader from "@/components/ListUpload/PageHeader";
 import ReviewView from "@/components/ListUpload/ReviewView";
 import RunDetails from "@/components/ListUpload/RunDetails";
+import { hotelHref, newListHref, NO_HOTEL } from "@/lib/list-uploads/hotels";
 import { getReviewSuppliers, getUpload } from "@/lib/list-uploads/queries";
 
 export const metadata = { title: "Review suppliers" };
@@ -29,18 +30,19 @@ export default async function ReviewUploadPage({ params }: PageProps<"/superadmi
       <PageHeader
         icon={ListChecks}
         title="Review Suppliers"
-        subtitle={`${upload.clientName ?? "General Pool"} · ${fileNames} · ${when}`}
+        subtitle={`${upload.clientName ?? "No hotel"} · ${fileNames} · ${when}`}
+        back={{ href: hotelHref(upload.clientId ?? NO_HOTEL, "lists"), label: `Back to ${upload.clientName ?? "lists with no hotel"}` }}
       />
 
       {upload.status === "review" || upload.status === "done" ? (
-        <ReviewView uploadId={id} initialSuppliers={suppliers} failedParts={upload.failedParts} />
+        <ReviewView initialSuppliers={suppliers} failedParts={upload.failedParts} />
       ) : (
         <div role="status" className="sa-card p-6 text-[13px] text-[var(--sa-ink-2)]">
           {upload.status === "reading"
             ? "This list is still being read, or reading was interrupted. Upload it again if nothing changes."
             : `This list could not be read${upload.error ? `: ${upload.error}` : "."} Upload it again to try once more.`}
           <div className="mt-4">
-            <Link href="/superadmin/partners/invitations/upload" className="sa-btn-primary">Upload a list</Link>
+            <Link href={newListHref(upload.clientId)} className="sa-btn-primary">Upload a list</Link>
           </div>
         </div>
       )}

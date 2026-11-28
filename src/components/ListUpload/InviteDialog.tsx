@@ -6,7 +6,6 @@ import type { ReviewSupplier } from "@/lib/list-uploads/types";
 import { errorFrom } from "./read-stream";
 
 interface Props {
-  uploadId: string;
   suppliers: ReviewSupplier[];
   onInvited: (supplierId: string, invitationId: string) => void;
   onClose: () => void;
@@ -33,7 +32,7 @@ const wait = (ms: number, signal: AbortSignal) =>
 type Ending = "done" | "stopped" | "offline";
 
 /** Preview each approved supplier's email, then send them one by one. */
-export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }: Props) {
+export default function InviteDialog({ suppliers, onInvited, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const stopper = useRef<AbortController | null>(null);
   const [queue] = useState(suppliers);
@@ -66,7 +65,7 @@ export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }
     if (!current || previews[current.id]) return;
     const stop = new AbortController();
     void (async () => {
-      const response = await fetch(`/api/superadmin/list-uploads/${uploadId}/invite`, {
+      const response = await fetch(`/api/superadmin/list-uploads/${current.upload_id}/invite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ supplierId: current.id, action: "preview" }),
@@ -81,7 +80,7 @@ export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }
     return () => {
       stop.abort();
     };
-  }, [current, previews, uploadId]);
+  }, [current, previews]);
 
   /**
    * One email at a time, 13 s apart. Stop takes effect between emails: an
@@ -102,7 +101,7 @@ export default function InviteDialog({ uploadId, suppliers, onInvited, onClose }
       }
       let response: Response;
       try {
-        response = await fetch(`/api/superadmin/list-uploads/${uploadId}/invite`, {
+        response = await fetch(`/api/superadmin/list-uploads/${supplier.upload_id}/invite`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ supplierId: supplier.id, action: "send" }),

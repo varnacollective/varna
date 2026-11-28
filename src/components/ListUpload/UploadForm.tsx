@@ -3,17 +3,14 @@
 import { useRef, useState, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ClipboardPaste, Eye, FileText, Loader2, Plus, Upload, X } from "lucide-react";
+import type { HotelOption } from "@/lib/list-uploads/hotels";
 import { ACCEPT_ATTRIBUTE, ACCEPTED_FILE, MAX_FILE_BYTES, MAX_FILES, UPLOAD_BUCKET } from "@/lib/list-uploads/files";
 import type { ReadEvent } from "@/lib/list-uploads/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import FilePreview, { type PreviewTarget } from "./FilePreview";
+import NewHotelDialog from "./NewHotelDialog";
 import { errorFrom, readEvents } from "./read-stream";
-
-interface Client {
-  id: string;
-  name: string;
-}
 
 type Phase =
   | { kind: "choose" }
@@ -54,11 +51,19 @@ function describe(phase: Phase): string {
   return `${file}opening…`;
 }
 
-export default function UploadForm({ clients }: { clients: Client[] }) {
+interface Props {
+  hotels: HotelOption[];
+  /** The hotel to start with, when the page was opened from a hotel. */
+  initialHotelId?: string;
+}
+
+export default function UploadForm({ hotels: initialHotels, initialHotelId }: Props) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const stopper = useRef<AbortController | null>(null);
-  const [clientId, setClientId] = useState("");
+  const [hotels, setHotels] = useState(initialHotels);
+  const [hotelId, setHotelId] = useState(initialHotels.some((h) => h.id === initialHotelId) ? (initialHotelId ?? "") : "");
+  const [addingHotel, setAddingHotel] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [pasted, setPasted] = useState("");
   const [pasteOpen, setPasteOpen] = useState(false);
@@ -106,7 +111,7 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clientId: clientId || null,
+          clientId: hotelId,
           files: files.map((f) => ({ name: f.name, size: f.size, type: f.type })),
         }),
         signal: stop.signal,
@@ -163,20 +168,35 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="sa-card flex flex-col gap-4 p-4 sm:p-6">
-        <div className="flex flex-col gap-1.5 sm:max-w-sm">
-          <label htmlFor="list-client" className="sa-label">Hotel (optional)</label>
-          <select
-            id="list-client"
-            className="cursor-pointer disabled:cursor-not-allowed! sa-input"
-            value={clientId}
-            disabled={busy}
-            onChange={(e) => setClientId(e.target.value)}
-          >
-            <option value="">General Pool (no hotel)</option>
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="list-hotel" className="sa-label">Hotel</label>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <select
+              id="list-hotel"
+              className="cursor-pointer disabled:cursor-not-allowed! sa-input sm:max-w-sm"
+              value={hotelId}
+              required
+              aria-describedby="list-hotel-hint"
+              disabled={busy}
+              onChange={(e) => setHotelId(e.target.value)}
+            >
+              <option value="" disabled>Choose the hotel this list is for</option>
+              {hotels.map((h) => (
+                <option key={h.id} value={h.id}>{h.name}</option>
+              ))}
+            </select>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => setAddingHotel(true)}
+              className="cursor-pointer disabled:cursor-not-allowed! sa-btn-secondary w-fit whitespace-nowrap disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" aria-hidden /> New hotel
+            </button>
+          </div>
+          <p id="list-hotel-hint" className="text-xs text-[var(--sa-caption)]">
+            Not listed? Add it with “New hotel”.
+          </p>
         </div>
 
         <div
@@ -323,13 +343,36 @@ export default function UploadForm({ clients }: { clients: Client[] }) {
         </div>
       ) : (
         <div className="flex justify-end">
-          <button type="button" className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50" disabled={files.length === 0} onClick={() => void start()}>
-            Read {files.length === 1 ? "the file" : files.length > 1 ? `${files.length} files` : "the list"}
-          </button>
+          <div className="flex flex-col items-end gap-1.5">
+            <button
+              type="button"
+              className="cursor-pointer disabled:cursor-not-allowed! sa-btn-primary disabled:opacity-50"
+              disabled={files.length === 0 || !hotelId}
+              aria-describedby={!hotelId || files.length === 0 ? "read-hint" : undefined}
+              onClick={() => void start()}
+            >
+              Read {files.length === 1 ? "the file" : files.length > 1 ? `${files.length} files` : "the list"}
+            </button>
+            {(!hotelId || files.length === 0) && (
+              <p id="read-hint" className="text-xs text-[var(--sa-caption)]">
+                {!hotelId && files.length === 0 ? "Choose the hotel and add the list first." : !hotelId ? "Choose the hotel first." : "Add the list first."}
+              </p>
+            )}
+          </div>
         </div>
       )}
       {preview && (
         <FilePreview {...preview} onClose={() => setPreview(null)} />
+      )}
+      {addingHotel && (
+        <NewHotelDialog
+          onClose={() => setAddingHotel(false)}
+          onCreated={(hotel) => {
+            setHotels((list) => [...list, hotel].sort((a, b) => a.name.localeCompare(b.name)));
+            setHotelId(hotel.id);
+            setAddingHotel(false);
+          }}
+        />
       )}
     </div>
   );

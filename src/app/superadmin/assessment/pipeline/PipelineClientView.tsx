@@ -363,7 +363,7 @@ export default function PipelineClientView({
                         </div>
                       )}
                     </td>
-                    <td>{item.client?.name || "General Pool"}</td>
+                    <td>{item.client?.name || "No hotel"}</td>
                     <td>
                       <span className="sa-pill sa-pill-pending">
                         {item.status.replace(/_/g, " ")}

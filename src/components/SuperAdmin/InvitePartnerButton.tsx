@@ -492,7 +492,7 @@ export default function InvitePartnerButton({
                         value={clientId}
                         onChange={(e) => setClientId(e.target.value)}
                       >
-                        <option value="">None / General pool</option>
+                        <option value="">No hotel</option>
                         {clientsList.map((client) => (
                           <option key={client.id} value={client.id}>
                             {client.name}

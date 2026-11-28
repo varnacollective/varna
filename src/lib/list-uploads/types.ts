@@ -72,6 +72,7 @@ export type EditableField = (typeof EDITABLE_FIELDS)[number];
 
 export interface ReviewSupplier {
   id: string;
+  upload_id: string;
   file_id: string | null;
   position: number;
   company_name: string | null;
